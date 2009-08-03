@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
+  <servlet>
+	<servlet-name>GetAllSubmissions</servlet-name>
+	<servlet-class>com.google.yaw.admin.GetAllSubmissions</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetAllSubmissions</servlet-name>
+    <url-pattern>/GetAllSubmissions</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<servlet-name>UploadResponseHandler</servlet-name>
+	<servlet-class>com.google.yaw.UploadResponseHandler</servlet-class>
+  </servlet>	
+  <servlet-mapping>
+    <servlet-name>UploadResponseHandler</servlet-name>
+    <url-pattern>/UploadResponseHandler</url-pattern>
+  </servlet-mapping>      
+  
+  <servlet>
+	<servlet-name>GetUploadToken</servlet-name>
+	<servlet-class>com.google.yaw.GetUploadToken</servlet-class>
+  </servlet>	
+  <servlet-mapping>
+    <servlet-name>GetUploadToken</servlet-name>
+    <url-pattern>/GetUploadToken</url-pattern>
+  </servlet-mapping>    
+  
+  <servlet>
+	<servlet-name>AuthsubHandler</servlet-name>
+	<servlet-class>com.google.yaw.AuthSubHandler</servlet-class>
+  </servlet>	
+  <servlet-mapping>
+    <servlet-name>AuthsubHandler</servlet-name>
+    <url-pattern>/AuthsubHandler</url-pattern>
+  </servlet-mapping>  
+
+  <servlet>
+   <servlet-name>LogoutHandler</servlet-name>
+   <servlet-class>com.google.yaw.LogoutHandler</servlet-class>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>LogoutHandler</servlet-name>
+    <url-pattern>/LogoutHandler</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+   <servlet-name>embed</servlet-name>
+   <jsp-file>/embed.jsp</jsp-file>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>embed</servlet-name>
+    <url-pattern>/embed</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>admin</servlet-name>
+   <jsp-file>/admin.jsp</jsp-file>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>admin</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
+  
+  <security-constraint>
+    <web-resource-collection>
+        <url-pattern>/admin</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>  
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

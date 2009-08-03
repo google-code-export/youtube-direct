@@ -1,0 +1,36 @@
+body {
+	background: lightGray;
+	font-size: 11px;
+	font-family: arial;
+}
+
+#main {
+	text-align: left;
+	width: 280px;
+}
+
+input {
+	font-size: 11px;
+	font-family: arial;
+}
+
+#message {
+	color: red;
+	fonts-size: 12px;
+	font-style: italic;
+}
+
+.inputBox {
+	width: 100%;
+}
+
+#uploadButton {
+	border: 0px solid black;
+	background: gray;
+	color: white;
+	font-size: 15px;
+	padding: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+	
+}
