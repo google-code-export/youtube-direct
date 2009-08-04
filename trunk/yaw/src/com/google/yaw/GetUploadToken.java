@@ -93,10 +93,6 @@ public class GetUploadToken extends HttpServlet {
 			apiManager.setToken(authSubToken);
 
 			try {
-				// This will make a POST request and obtain an upload token and
-				// URL
-				// that
-				// can be used to submit a new video with the given metadata.
 
 				FormUploadToken token = apiManager.getFormUploadToken(newEntry);
 
