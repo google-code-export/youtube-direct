@@ -12,6 +12,9 @@ function init() {
 		getUploadToken();			
 		return false;
 	});	
+	
+	jQuery("#date").datepicker();
+
 }
 
 function getUploadToken() {

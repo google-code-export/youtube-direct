@@ -9,9 +9,14 @@
 <head>
 <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <title>YAW</title>
-<link href="/css/yaw.css" rel="stylesheet" type="text/css" />
+
+<link type="text/css" href="/css/ext/ui.all.css" rel="stylesheet" />
+<link type="text/css" href="/css/yaw.css" rel="stylesheet" />
+
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
+<script type="text/javascript" src="/js/ext/ui.core.js"></script>
+<script type="text/javascript" src="/js/ext/ui.datepicker.js"></script>
 <script type="text/javascript" src="/js/yaw.js"></script>
 </head>
 
@@ -40,6 +45,10 @@
 <label for="location">Location:</label>
 <br>
 <input class="inputBox" type="text" name="location" id="location" />
+<br>
+<label for="date">Date:</label>
+<br>
+<input class="inputBox" type="text" name="date" id="date" />
 <br>
 <label for="tags">Tags:</label>&nbsp;<span style="font-size: 9px; font-style: italic;">(use "," to separate)</span>
 <br>
