@@ -30,8 +30,8 @@ public class VideoSubmission implements Serializable {
 	private int SCHEMA_VERSION;
 	
 	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
+  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+  private Key key;
 
 	// The id of the submission is based on the YouTube video ID.
 	// A submission is not allowed to be for multiple "articles".
@@ -47,7 +47,7 @@ public class VideoSubmission implements Serializable {
 
 	// The article on the news site that this submission belongs to.
 	@Persistent
-	private String articleId = null;
+	private String assignmentId = null;
 
 	@Persistent
 	private String videoTitle = null;
@@ -84,9 +84,6 @@ public class VideoSubmission implements Serializable {
 
 	@Persistent
 	private String articleUrl = null;
-
-	@Persistent
-	private String partnerId = null;
 	
 	@Persistent
 	private Long assignmentKey = null;
@@ -96,22 +93,21 @@ public class VideoSubmission implements Serializable {
 	 * 
 	 * @param videoId
 	 *            The YouTube video ID of the upload
-	 * @param articleId
+	 * @param assignmentId
 	 *            The news site article ID
 	 * @param uploader
 	 *            The YouTube username of the uploader
 	 */
-	public VideoSubmission(String partnerId, String articleId,
+	public VideoSubmission(String assignmentId,
 			String articleUrl, String videoId, String title,
 			String description, String tagList, String uploader,
 			String authSubToken, Long assignmentKey) {
 		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
-		this.partnerId = partnerId;
 		this.articleUrl = articleUrl;
 		this.id = "video-" + videoId;
 		this.videoId = videoId;
 		this.authSubToken = authSubToken;
-		this.articleId = articleId;
+		this.assignmentId = assignmentId;
 		this.youTubeName = uploader;
 		this.created = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -181,18 +177,18 @@ public class VideoSubmission implements Serializable {
 	/**
 	 * @return The site-specific article ID to tie this submission to.
 	 */
-	public String getArticleId() {
-		return articleId;
+	public String getassignmentId() {
+		return assignmentId;
 	}
 
 	/**
 	 * Sets the site-specific article ID the submission is tied to.
 	 * 
-	 * @param articleId
+	 * @param assignmentId
 	 *            The new ID.
 	 */
-	public void setArticleId(String articleId) {
-		this.articleId = articleId;
+	public void setassignmentId(String assignmentId) {
+		this.assignmentId = assignmentId;
 	}
 
 	/**
@@ -325,14 +321,6 @@ public class VideoSubmission implements Serializable {
 
 	public String getArticleUrl() {
 		return articleUrl;
-	}
-
-	public String getPartnerId() {
-		return partnerId;
-	}
-
-	public void setPartnerId(String partnerId) {
-		this.partnerId = partnerId;
 	}
 
 	public void setArticleUrl(String articleUrl) {

@@ -30,9 +30,8 @@ public class Authenticator {
 		
 		this.userSession = UserSessionManager.getUserSession(request);
 
-		String articleId = request.getParameter("articleId");
+		String assignmentId = request.getParameter("assignmentId");
 		String articleUrl = request.getParameter("articleUrl");
-		String partnerId = request.getParameter("partnerId");
 
 		String selfUrl = Util.getSelfUrl(request);
 
@@ -41,9 +40,8 @@ public class Authenticator {
 			log.warning("No session. Creating new session.");
 
 			userSession = new UserSession();
-			userSession.setArticleId(articleId);
+			userSession.setassignmentId(assignmentId);
 			userSession.setArticleUrl(articleUrl);
-			userSession.setPartnerId(partnerId);
 			userSession.setSelfUrl(selfUrl);
 			userSession = UserSessionManager.save(userSession);
 
@@ -67,9 +65,8 @@ public class Authenticator {
 				// replace with new session
 
 				userSession = new UserSession();
-				userSession.setArticleId(articleId);
+				userSession.setassignmentId(assignmentId);
 				userSession.setArticleUrl(articleUrl);
-				userSession.setPartnerId(partnerId);
 				userSession.setSelfUrl(selfUrl);
 				userSession = UserSessionManager.save(userSession);
 

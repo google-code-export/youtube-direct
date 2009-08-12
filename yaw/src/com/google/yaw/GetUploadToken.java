@@ -46,19 +46,18 @@ public class GetUploadToken extends HttpServlet {
 			UserSession userSession = UserSessionManager.getUserSession(req);
 			String authSubToken = userSession.getAuthSubToken();
 			String articleUrl = userSession.getArticleUrl();
-			String articleId = userSession.getArticleId();
-			String partnerId = userSession.getPartnerId();
+			String assignmentId = userSession.getassignmentId();
 			
-			Assignment assignment = Util.getAssignmentByKey(articleId);
+			Assignment assignment = Util.getAssignmentByKey(assignmentId);
 			if (assignment == null) {
 			    throw new IllegalArgumentException(String.format(
-			            "Could not find an assignment with id <%s>.", articleId));
+			            "Could not find an assignment with id <%s>.", assignmentId));
 			}
 			AssignmentStatus status = assignment.getStatus();
 			if (status != AssignmentStatus.ACTIVE) {
 			    throw new IllegalArgumentException(String.format(
                         "Can't add a video to a non-ACTIVE assignment. " +
-                        "Current status of assignment id <%s> is %s.", articleId, status));
+                        "Current status of assignment id <%s> is %s.", assignmentId, status));
 			}
 			
 			userSession.setVideoTitle(title);
@@ -100,7 +99,7 @@ public class GetUploadToken extends HttpServlet {
 						defaultDeveloperTag));
 			}
 			
-			mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, articleId));
+			mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
 
 			YouTubeApiManager apiManager = new YouTubeApiManager();
 
@@ -117,7 +116,7 @@ public class GetUploadToken extends HttpServlet {
 				responseJsonObj.put("uploadToken", uploadToken);
 				responseJsonObj.put("uploadUrl", uploadUrl);
 
-				resp.setContentType("text/json");
+				resp.setContentType("text/javascript");
 				resp.getWriter().println(responseJsonObj.toString());
 
 			} catch (ServiceException e) {
@@ -129,7 +128,7 @@ public class GetUploadToken extends HttpServlet {
 				responseJsonObj.put("uploadUrl", "null");
 				responseJsonObj.put("error", e.toString());				
 
-				resp.setContentType("text/json");
+				resp.setContentType("text/javascript");
 				resp.getWriter().println(responseJsonObj.toString());				
 			}
 
