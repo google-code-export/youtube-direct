@@ -1,10 +1,13 @@
 package com.google.yaw.model;
 
+import com.google.appengine.api.datastore.Key;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -25,10 +28,14 @@ public class VideoSubmission implements Serializable {
 	// changes.
 	@Persistent
 	private int SCHEMA_VERSION;
+	
+	@PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Key key;
 
 	// The id of the submission is based on the YouTube video ID.
 	// A submission is not allowed to be for multiple "articles".
-	@PrimaryKey
+	@Persistent
 	private String id = null;
 
 	@Persistent
@@ -80,6 +87,9 @@ public class VideoSubmission implements Serializable {
 
 	@Persistent
 	private String partnerId = null;
+	
+	@Persistent
+	private Long assignmentKey = null;
 
 	/**
 	 * Create a new video submission entry object for the datastore.
@@ -94,7 +104,7 @@ public class VideoSubmission implements Serializable {
 	public VideoSubmission(String partnerId, String articleId,
 			String articleUrl, String videoId, String title,
 			String description, String tagList, String uploader,
-			String authSubToken) {
+			String authSubToken, Long assignmentKey) {
 		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
 		this.partnerId = partnerId;
 		this.articleUrl = articleUrl;
@@ -112,7 +122,7 @@ public class VideoSubmission implements Serializable {
 		this.videoTitle = title;
 		this.videoDescription = description;
 		this.videoTagList = tagList;
-
+		this.assignmentKey = assignmentKey;
 	}
 
 	/**
@@ -329,4 +339,11 @@ public class VideoSubmission implements Serializable {
 		this.articleUrl = articleUrl;
 	}
 
+	public Key getKey() {
+	    return key;
+	}
+	
+	public Long getAssignmentKey() {
+	    return assignmentKey;
+	}
 }
