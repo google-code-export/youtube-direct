@@ -31,19 +31,18 @@ public class UploadResponseHandler extends HttpServlet {
 			UserSession userSession = UserSessionManager.getUserSession(req);
 			String authSubToken = userSession.getAuthSubToken();
 			String articleUrl = userSession.getArticleUrl();
-			String articleId = userSession.getArticleId();
-			String partnerId = userSession.getPartnerId();
+			String assignmentId = userSession.getassignmentId();
 			String videoTitle = userSession.getVideoTitle();
 			String videoDescription = userSession.getVideoDescription();
 			String youTubeName = userSession.getYouTubeName();
 			String tagList = userSession.getVideoTagList();
 			
-			log.warning("articleId is " + articleId);
+			log.warning("assignmentId is " + assignmentId);
 			
 			// create and persist VideoSubmission entry
-			VideoSubmission submission = new VideoSubmission(partnerId,
-					articleId, articleUrl, videoId, videoTitle,
-					videoDescription, tagList, youTubeName, authSubToken, Long.parseLong(articleId));
+			VideoSubmission submission = new VideoSubmission(
+					assignmentId, articleUrl, videoId, videoTitle,
+					videoDescription, tagList, youTubeName, authSubToken, Long.parseLong(assignmentId));
 
 			Util.persistJdo(submission);
 

@@ -5,16 +5,12 @@ function Yaw() {
 	
 }
 
-Yaw.prototype.setArticleId = function(id) {
-	this.articleId = id;
+Yaw.prototype.setassignmentId = function(id) {
+	this.assignmentId = id;
 };	
 
 Yaw.prototype.setArticleUrl = function(url) {
 	this.articleUrl = url;
-};	
-
-Yaw.prototype.setPartnerId = function(id) {
-	this.partnerId = id;
 };	
 
 Yaw.prototype.embed = function(containerId, width, height) {
@@ -26,8 +22,7 @@ Yaw.prototype.embed = function(containerId, width, height) {
     this.articleUrl = this.articleUrl || document.location.href;
     
 	var iframeUrl = YAW_EMBED_URL + '?articleUrl=' 
-		+ this.articleUrl + '&articleId=' + this.articleId 
-		+ '&partnerId=' + this.partnerId;
+		+ this.articleUrl + '&assignmentId=' + this.assignmentId;
     
     iframeElement.src = iframeUrl;
     

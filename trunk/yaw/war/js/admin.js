@@ -28,7 +28,7 @@ function test(data) {
 	grid.colModel.push({name: 'articleUrl', index: 'articleUrl', width: 200, sorttype: 'string'});
 	
 	grid.colNames.push('Assignment ID');
-	grid.colModel.push({name: 'articleId', index: 'articleId', width: 100, sorttype: 'string'});
+	grid.colModel.push({name: 'assignmentId', index: 'assignmentId', width: 100, sorttype: 'string'});
 	
 	grid.colNames.push('Title');
 	grid.colModel.push({name: 'title', index: 'title', width: 100, sorttype: 'string'});
@@ -97,8 +97,7 @@ function displaySubmissions(videos) {
 	for (var i = 0; i < videos.length; i++) {
 		var video = videos[i];
 		var videoId = video.videoId;
-		var articleId = video.articleId;
-		var partnerId = video.partnerId;
+		var assignmentId = video.assignmentId;
 		var articleUrl = video.articleUrl;
 		var tags = video.tags;
 		var title = video.title;
@@ -111,10 +110,9 @@ function displaySubmissions(videos) {
 		html.push('<div>uploader id: ' + uploader + '</div>');
 		html.push('<div>title: ' + title + '</div>');
 		html.push('<div>description: ' + description + '</div>');
-		html.push('<div>tags: ' + tags + '</div>');	
-		html.push('<div>partner id: ' + partnerId + '</div>');		
+		html.push('<div>tags: ' + tags + '</div>');
 		html.push('<div>article url: ' + articleUrl + '</div>');
-		html.push('<div>article id: ' + articleId + '</div>');
+		html.push('<div>article id: ' + assignmentId + '</div>');
 		html.push('<div>updated: ' + updated + '</div>');
 		html.push('<div>status: ' + status + '</div>');
 		html.push('<div><a href=\'javascript:displayVideo(\"' + videoId + '\");\'>preview</a></div>');

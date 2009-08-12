@@ -22,10 +22,7 @@ public class UserSession {
 	private String authSubToken = null;
 
 	@Persistent
-	private String articleId = null;
-
-	@Persistent
-	private String partnerId = null;
+	private String assignmentId = null;
 
 	@Persistent
 	private String articleUrl = null;
@@ -73,20 +70,12 @@ public class UserSession {
 
 	}
 
-	public String getArticleId() {
-		return articleId;
+	public String getassignmentId() {
+		return assignmentId;
 	}
 
-	public void setArticleId(String articleId) {
-		this.articleId = articleId;
-	}
-
-	public String getPartnerId() {
-		return partnerId;
-	}
-
-	public void setPartnerId(String partnerId) {
-		this.partnerId = partnerId;
+	public void setassignmentId(String assignmentId) {
+		this.assignmentId = assignmentId;
 	}
 
 	public String getArticleUrl() {

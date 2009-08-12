@@ -35,9 +35,8 @@ public class GetAllSubmissions extends HttpServlet {
 
 		for (VideoSubmission entry : list) {
 			String videoId = entry.getVideoId();
-			String articleId = entry.getArticleId();
+			String assignmentId = entry.getassignmentId();
 			String articleUrl = entry.getArticleUrl();
-			String partnerId = entry.getPartnerId();
 			String title = entry.getVideoTitle();
 			String description = entry.getVideoDescription();
 			String tagList = entry.getVideoTagList();
@@ -49,8 +48,7 @@ public class GetAllSubmissions extends HttpServlet {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("videoId", videoId);
 				jsonObj.put("articleUrl", articleUrl);
-				jsonObj.put("partnerId", partnerId);
-				jsonObj.put("articleId", articleId);
+				jsonObj.put("assignmentId", assignmentId);
 				jsonObj.put("title", title);
 				jsonObj.put("description", description);
 				jsonObj.put("tags", tagList);
