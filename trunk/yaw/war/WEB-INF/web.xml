@@ -15,6 +15,15 @@
   </servlet-mapping>
   
   <servlet>
+  <servlet-name>GetAllAssignments</servlet-name>
+  <servlet-class>com.google.yaw.admin.GetAllAssignments</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetAllAssignments</servlet-name>
+    <url-pattern>/GetAllAssignments</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
 	<servlet-name>UploadResponseHandler</servlet-name>
 	<servlet-class>com.google.yaw.UploadResponseHandler</servlet-class>
   </servlet>	
@@ -49,6 +58,15 @@
     <servlet-name>LogoutHandler</servlet-name>
     <url-pattern>/LogoutHandler</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>AssignmentHandler</servlet-name>
+   <servlet-class>com.google.yaw.AssignmentHandler</servlet-class>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>AssignmentHandler</servlet-name>
+    <url-pattern>/AssignmentHandler</url-pattern>
+  </servlet-mapping>
     
   <servlet>
    <servlet-name>embed</servlet-name>
@@ -66,6 +84,15 @@
   <servlet-mapping>
     <servlet-name>admin</servlet-name>
     <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>assignments</servlet-name>
+   <jsp-file>/assignments.jsp</jsp-file>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>assignments</servlet-name>
+    <url-pattern>/assignments</url-pattern>
   </servlet-mapping>
   
   <security-constraint>

@@ -3,6 +3,8 @@ package com.google.yaw;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.gdata.client.youtube.YouTubeService;
@@ -92,5 +94,17 @@ public class YouTubeApiManager {
 			log.severe("Hard-coded URL fails to parse!");
 		}
 		return null;
+	}
+	
+	public static List<String> getCategoryCodes() {
+	    //TODO: parse data from http://gdata.youtube.com/schemas/2007/categories.cat
+	    // instead of returning a static array.
+	    
+	    List<String> categories = new ArrayList<String>();
+	    categories.add("News");
+	    categories.add("Sports");
+	    categories.add("Music");
+
+	    return categories;
 	}
 }

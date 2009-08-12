@@ -20,7 +20,9 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
 import com.google.gdata.util.ServiceException;
+import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
+import com.google.yaw.model.Assignment.AssignmentStatus;
 
 public class GetUploadToken extends HttpServlet {
 
@@ -47,14 +49,27 @@ public class GetUploadToken extends HttpServlet {
 			String articleId = userSession.getArticleId();
 			String partnerId = userSession.getPartnerId();
 			
+			Assignment assignment = Util.getAssignmentByKey(articleId);
+			if (assignment == null) {
+			    throw new IllegalArgumentException(String.format(
+			            "Could not find an assignment with id <%s>.", articleId));
+			}
+			AssignmentStatus status = assignment.getStatus();
+			if (status != AssignmentStatus.ACTIVE) {
+			    throw new IllegalArgumentException(String.format(
+                        "Can't add a video to a non-ACTIVE assignment. " +
+                        "Current status of assignment id <%s> is %s.", articleId, status));
+			}
+			
 			userSession.setVideoTitle(title);
 			userSession.setVideoDescription(description);
 			userSession.setVideoLocation(location);
 			userSession.setVideoTagList(tagsArray.toString());
 			UserSessionManager.save(userSession);
 
-			if (title.length() > 100) {
-				title = title.substring(0, 99);
+			// Title length is 60 characters or 100 bytes.
+			if (title.length() > 60) {
+				title = title.substring(0, 59);
 			}
 
 			VideoEntry newEntry = new VideoEntry();
@@ -64,11 +79,11 @@ public class GetUploadToken extends HttpServlet {
 			mg.getTitle().setPlainTextContent(title);
 
 			mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
-					"News"));
+					assignment.getCategory()));
 
+			mg.setKeywords(new MediaKeywords());
 			for (int i = 0; i < tagsArray.length(); i++) {
 				String tag = tagsArray.getString(i).trim();
-				mg.setKeywords(new MediaKeywords());
 				mg.getKeywords().addKeyword(tag);
 			}
 
@@ -84,9 +99,8 @@ public class GetUploadToken extends HttpServlet {
 						YouTubeNamespace.DEVELOPER_TAG_SCHEME,
 						defaultDeveloperTag));
 			}
-
-			mg.addCategory(new MediaCategory(
-					YouTubeNamespace.DEVELOPER_TAG_SCHEME, articleId));
+			
+			mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, articleId));
 
 			YouTubeApiManager apiManager = new YouTubeApiManager();
 
@@ -119,7 +133,7 @@ public class GetUploadToken extends HttpServlet {
 				resp.getWriter().println(responseJsonObj.toString());				
 			}
 
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			log.warning(e.getMessage());
 			resp.setContentType("text/plain");

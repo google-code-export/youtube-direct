@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
 
@@ -37,14 +38,12 @@ public class UploadResponseHandler extends HttpServlet {
 			String youTubeName = userSession.getYouTubeName();
 			String tagList = userSession.getVideoTagList();
 			
-			log.warning(articleId);
-			log.warning(partnerId);
-			log.warning(articleUrl);
+			log.warning("articleId is " + articleId);
 			
 			// create and persist VideoSubmission entry
 			VideoSubmission submission = new VideoSubmission(partnerId,
 					articleId, articleUrl, videoId, videoTitle,
-					videoDescription, tagList, youTubeName, authSubToken);
+					videoDescription, tagList, youTubeName, authSubToken, Long.parseLong(articleId));
 
 			Util.persistJdo(submission);
 

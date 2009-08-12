@@ -1,11 +1,15 @@
 package com.google.yaw;
 
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.yaw.model.Assignment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +42,37 @@ public class Util {
 		pm.deletePersistent(entry);
 		pm.close();
 	}
+	
+	/**
+	 * Retrieves an Assignment from the datastore given its key.
+	 * 
+	 * @param key A key corresponding to an Assignment object in the datastore.
+	 * @return The Assignment object whose key is specified, or null if the key is invalid.
+	 */
+	public static Assignment getAssignmentByKey(String key) {
+	    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+	    
+	    try {
+	        return pm.getObjectById(Assignment.class, Long.parseLong(key));
+	    } catch (NumberFormatException e) {
+	        return null;
+	    } catch (JDOObjectNotFoundException e) {
+	        return null;
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	/**
+	 * Quick helper method to check whether an assignment key exists in the datastore.
+	 * @param key A key that may correspond to an Assignment object in the datastore.
+	 * @return true if the key corresponds to a valid Assignment, and false otherwise.
+	 */
+	public static Boolean isValidAssignmentKey(String key) {
+	    Assignment assignment = Util.getAssignmentByKey(key);
+
+	    return assignment != null;
+	}
 
 	public static String getPostBody(HttpServletRequest req) throws IOException {
 		InputStream is = req.getInputStream();
@@ -65,5 +100,13 @@ public class Util {
 		}
 		
 		return url.toString();
+	}
+	
+	public static Boolean isNullOrEmpty(String input) {
+	    if (input == null || input.length() <= 0) {
+	        return true;
+	    } else {
+	        return false;
+	    }
 	}
 }
