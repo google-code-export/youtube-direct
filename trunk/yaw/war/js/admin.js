@@ -1,11 +1,60 @@
 jQuery(document).ready( function() {
-	console.log(window.isLoggedIn);
-
-	if (window.isLoggedIn) {
+	if (window.isLoggedIn) {		
+		jQuery('#tabs').tabs();		
 		init();
 	}
 });
 
+function init() {
+	getAllSubmissions();
+}
+
+function test(data) {
+	var gridimgpath = '/css/ext/images';
+	
+	var grid = {};
+	grid.datatype = 'local';
+	grid.height = 400;
+	grid.multiselect = false;
+	grid.caption = 'Video Submissions';
+	
+	grid.colNames = [];
+	grid.colModel = [];
+	
+	grid.colNames.push('Video ID');
+	grid.colModel.push({name: 'videoId', index: 'videoId', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Article URL');
+	grid.colModel.push({name: 'articleUrl', index: 'articleUrl', width: 200, sorttype: 'string'});
+	
+	grid.colNames.push('Assignment ID');
+	grid.colModel.push({name: 'articleId', index: 'articleId', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Title');
+	grid.colModel.push({name: 'title', index: 'title', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Description');
+	grid.colModel.push({name: 'description', index: 'description', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Tags');
+	grid.colModel.push({name: 'tags', index: 'tags', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Uploader');
+	grid.colModel.push({name: 'uploader', index: 'uploader', width: 100, sorttype: 'string'});
+	
+	grid.colNames.push('Updated');
+	grid.colModel.push({name: 'updated', index: 'updated', width: 100, sorttype: 'date'});
+	
+	grid.colNames.push('Approval Status');	
+	grid.colModel.push({name: 'status', index: 'status', width: 100, sorttype: 'int'});
+		
+	jQuery("#datagrid").jqGrid(grid);
+	
+	for(var i = 0; i <= data.length; i++) {
+		jQuery("#datagrid").addRowData(i + 1, data[i]); 	
+	}
+}
+	
 function getAllSubmissions() {
 	var url = '/GetAllSubmissions';
 	var ajaxCall = {};
@@ -15,11 +64,8 @@ function getAllSubmissions() {
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(json) {
 		console.log(json);
-		displaySubmissions(json);
-		jQuery('#status').empty();
+		test(json);		
 	};
-	
-	jQuery('#status').html('loading ...');
 	jQuery.ajax(ajaxCall);
 	
 }
@@ -77,8 +123,4 @@ function displaySubmissions(videos) {
 		jQuery('#videoList').append(html.join(''));
 	}
 
-}
-
-function init() {
-	getAllSubmissions();
 }

@@ -24,6 +24,9 @@ function getUploadToken() {
 	var tagsString = jQuery('#tags').val();
 	
 	var tags = tagsString.split(',');	
+	jQuery.each(tags, function(index, value) {
+		tags[index] = jQuery.trim(value);
+	});
 	
 	var jsonObj = {};
 	jsonObj.title = title;
