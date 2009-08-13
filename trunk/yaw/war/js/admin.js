@@ -95,6 +95,22 @@ function initDataGrid(data) {
 		edittype: 'select',
 		editable: true,
 		editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});
+
+	grid.colNames.push('Preview');	
+	grid.colModel.push({
+		name: 'preview', 
+		index: 'preview', 
+		width: 75, 
+		sortable: false,
+		sorttype: 'string'});		
+
+	
+	grid.afterInsertRow = function(rowid, rowdata, rowelem) {
+		var videoId = jQuery("#datagrid").getCell(rowid, 1);									
+		var button = '<input type="button" onclick=previewVideo("' + 
+			videoId + '") value="preview" />';		
+		jQuery('#datagrid').setCell(rowid, 'preview', button);
+	};
 	
 	grid.cellsubmit = 'clientArray';
 	
@@ -102,20 +118,12 @@ function initDataGrid(data) {
 	grid.autoWidth = true;
 	grid.cellEdit = true;
 	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
-		console.log(rowid);
-		console.log(cellname);
-		console.log(value);
-		console.log(iRow);
-		console.log(iCol);
-		
-		var videoId = jQuery("#datagrid").getCell(rowid, 1);
-		
-		previewVideo(videoId);
+		// save entry as JDO
 	};
 	
 	grid.pager = jQuery('#pager');	
 	
-	var jqGrid = jQuery("#datagrid").jqGrid(grid);
+	var jqGrid = jQuery('#datagrid').jqGrid(grid);
 	
 	for(var i = 0; i <= data.length; i++) {
 		jqGrid.addRowData(i + 1, data[i]); 	
