@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AssignmentHandler extends HttpServlet {
 
     private static final Logger log = Logger
-    .getLogger(UploadResponseHandler.class.getName());
+    .getLogger(AssignmentHandler.class.getName());
     
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -23,27 +23,28 @@ public class AssignmentHandler extends HttpServlet {
         String category = req.getParameter("category");
         String assignmentStatus = req.getParameter("assignmentStatus");
         
-        if (Util.isNullOrEmpty(description)) {
-            //TODO: Handle bad parameters gracefully.
-            log.warning("'description' parameter is null or empty.");
-        }
+        try {
+            if (Util.isNullOrEmpty(description)) {
+                throw new IllegalArgumentException("'description' parameter is null or empty.");
+            }
+            if (Util.isNullOrEmpty(category)) {
+                throw new IllegalArgumentException("'category' parameter is null or empty.");
+            }
+            if (Util.isNullOrEmpty(assignmentStatus)) {
+                throw new IllegalArgumentException("'assignmentStatus' parameter is null or empty.");
+            }
 
-        if (Util.isNullOrEmpty(category)) {
-            //TODO: Handle bad parameters gracefully.
-            log.warning("'category' parameter is null or empty.");
+            Assignment assignment = new Assignment(description, category,
+                            AssignmentStatus.valueOf(assignmentStatus));
+
+            Util.persistJdo(assignment);
+
+            //TODO: Don't hardcode this.
+            resp.sendRedirect("/assignments");
+        } catch(IllegalArgumentException e) {
+            log.finer(e.toString());
+            //TODO: Don't hardcode this.
+            resp.sendRedirect("/assignments?message=" + e.getMessage());
         }
-        
-        if (Util.isNullOrEmpty(assignmentStatus)) {
-            //TODO: Handle bad parameters gracefully.
-            log.warning("'assignmentStatus' parameter is null or empty.");
-        }
-        
-        Assignment assignment = new Assignment(description, category,
-                AssignmentStatus.valueOf(assignmentStatus));
-        
-        Util.persistJdo(assignment);
-        
-        //TODO: Do something more interesting here.
-        resp.sendRedirect("/assignments.jsp");
     }
 }

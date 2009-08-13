@@ -31,114 +31,109 @@ public class GetUploadToken extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
-		String json = Util.getPostBody(req);
+	        throws IOException {
+	    String json = Util.getPostBody(req);
 
-		try {
-			JSONObject jsonObj = new JSONObject(json);
+	    try {
+	        JSONObject jsonObj = new JSONObject(json);
 
-			String title = jsonObj.getString("title");
-			String description = jsonObj.getString("description");
-			String location = jsonObj.getString("location");
+	        String title = jsonObj.getString("title");
+	        String description = jsonObj.getString("description");
+	        String location = jsonObj.getString("location");
+	        JSONArray tagsArray = jsonObj.getJSONArray("tags");
 
-			JSONArray tagsArray = jsonObj.getJSONArray("tags");
+	        // Only check for required parameters 'title' and 'description'.
+	        if (Util.isNullOrEmpty(title)) {
+	            throw new IllegalArgumentException("'title' parameter is null or empty.");
+	        }
+	        if (Util.isNullOrEmpty(description)) {
+	            throw new IllegalArgumentException("'description' parameter is null or empty.");
+	        }
 
-			UserSession userSession = UserSessionManager.getUserSession(req);
-			String authSubToken = userSession.getAuthSubToken();
-			String articleUrl = userSession.getArticleUrl();
-			String assignmentId = userSession.getAssignmentId();
-			
-			Assignment assignment = Util.getAssignmentById(assignmentId);
-			if (assignment == null) {
-			    throw new IllegalArgumentException(String.format(
-			            "Could not find an assignment with id <%s>.", assignmentId));
-			}
-			AssignmentStatus status = assignment.getStatus();
-			if (status != AssignmentStatus.ACTIVE) {
-			    throw new IllegalArgumentException(String.format(
-                        "Can't add a video to a non-ACTIVE assignment. " +
-                        "Current status of assignment id <%s> is %s.", assignmentId, status));
-			}
-			
-			userSession.setVideoTitle(title);
-			userSession.setVideoDescription(description);
-			userSession.setVideoLocation(location);
-			userSession.setVideoTagList(tagsArray.toString());
-			UserSessionManager.save(userSession);
+	        UserSession userSession = UserSessionManager.getUserSession(req);
+	        if (userSession == null) {
+	            //TODO: Throw a better Exception class here.
+	            throw new IllegalArgumentException("No user session found.");
+	        }
+	        String authSubToken = userSession.getAuthSubToken();
+	        String articleUrl = userSession.getArticleUrl();
+	        String assignmentId = userSession.getassignmentId();
 
-			// Title length is 60 characters or 100 bytes.
-			if (title.length() > 60) {
-				title = title.substring(0, 59);
-			}
+	        Assignment assignment = Util.getAssignmentByKey(assignmentId);
+	        if (assignment == null) {
+	            throw new IllegalArgumentException(String.format(
+	                            "Could not find an assignment with id '%s'.", assignmentId));
+	        }
+	        AssignmentStatus status = assignment.getStatus();
+	        if (status != AssignmentStatus.ACTIVE) {
+	            throw new IllegalArgumentException(String.format(
+	                            "Can't add a video to a non-ACTIVE assignment. " +
+	                            "Current status of assignment id '%s' is '%s'.",
+	                            assignmentId, status));
+	        }
 
-			VideoEntry newEntry = new VideoEntry();
-			YouTubeMediaGroup mg = newEntry.getOrCreateMediaGroup();
+	        userSession.setVideoTitle(title);
+	        userSession.setVideoDescription(description);
+	        userSession.setVideoLocation(location);
+	        userSession.setVideoTagList(tagsArray.toString());
+	        UserSessionManager.save(userSession);
 
-			mg.setTitle(new MediaTitle());
-			mg.getTitle().setPlainTextContent(title);
+	        // Max title length is 60 characters or 100 bytes.
+	        if (title.length() > 60) {
+	            title = title.substring(0, 59);
+	        }
 
-			mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
-					assignment.getCategory()));
-			
-			mg.setKeywords(new MediaKeywords());
-			for (int i = 0; i < tagsArray.length(); i++) {
-				String tag = tagsArray.getString(i).trim();
-				mg.getKeywords().addKeyword(tag);
-			}
+	        VideoEntry newEntry = new VideoEntry();
+	        YouTubeMediaGroup mg = newEntry.getOrCreateMediaGroup();
 
-			mg.setDescription(new MediaDescription());
-			mg.getDescription().setPlainTextContent(
-					"Uploaded in response to " + articleUrl + "\n\n"
-							+ description);
+	        mg.setTitle(new MediaTitle());
+	        mg.getTitle().setPlainTextContent(title);
 
-			String defaultDeveloperTag = System
-					.getProperty("com.google.yaw.DefaultDeveloperTag");
-			if (defaultDeveloperTag != null && defaultDeveloperTag.length() > 0) {
-				mg.addCategory(new MediaCategory(
-						YouTubeNamespace.DEVELOPER_TAG_SCHEME,
-						defaultDeveloperTag));
-			}
-			
-			//mg.addCategory(
-			//		new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+	        mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
+	                        assignment.getCategory()));
 
-			YouTubeApiManager apiManager = new YouTubeApiManager();
+	        mg.setKeywords(new MediaKeywords());
+	        for (int i = 0; i < tagsArray.length(); i++) {
+	            String tag = tagsArray.getString(i).trim();
+	            mg.getKeywords().addKeyword(tag);
+	        }
 
-			apiManager.setToken(authSubToken);
+	        mg.setDescription(new MediaDescription());
+	        mg.getDescription().setPlainTextContent(String.format(
+	                        "Uploaded in response to %s\n\n%s", articleUrl, description));
 
-			try {
+	        String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
+	        if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
+	            mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
+	                            defaultDeveloperTag));
+	        }
 
-				FormUploadToken token = apiManager.getFormUploadToken(newEntry);
+	        //TODO: This might be longer than the max allowed developer tag.
+	        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
 
-				String uploadToken = token.getToken();
-				String uploadUrl = token.getUrl();
+	        YouTubeApiManager apiManager = new YouTubeApiManager();
+	        apiManager.setToken(authSubToken);
 
-				JSONObject responseJsonObj = new JSONObject();
-				responseJsonObj.put("uploadToken", uploadToken);
-				responseJsonObj.put("uploadUrl", uploadUrl);
+	        FormUploadToken token = apiManager.getFormUploadToken(newEntry);
 
-				resp.setContentType("text/javascript");
-				resp.getWriter().println(responseJsonObj.toString());
+	        String uploadToken = token.getToken();
+	        String uploadUrl = token.getUrl();
 
-			} catch (ServiceException e) {
-				log.severe("Upload token failed: " + e.toString());
-				e.printStackTrace();
-				
-				JSONObject responseJsonObj = new JSONObject();
-				responseJsonObj.put("uploadToken", "null");
-				responseJsonObj.put("uploadUrl", "null");
-				responseJsonObj.put("error", e.toString());				
+	        JSONObject responseJsonObj = new JSONObject();
+	        responseJsonObj.put("uploadToken", uploadToken);
+	        responseJsonObj.put("uploadUrl", uploadUrl);
 
-				resp.setContentType("text/javascript");
-				resp.getWriter().println(responseJsonObj.toString());				
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.warning(e.getMessage());
-			resp.setContentType("text/plain");
-			resp.getWriter().println(e.getMessage());
-		}
+	        resp.setContentType("text/javascript");
+	        resp.getWriter().println(responseJsonObj.toString());
+	    } catch (IllegalArgumentException e) {
+	        log.finer(e.toString());
+	        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+	    } catch (JSONException e) {
+	        log.warning(e.toString());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+	    } catch (ServiceException e) {
+	        log.warning(e.toString());
+	        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+	    }
 	}
-
 }

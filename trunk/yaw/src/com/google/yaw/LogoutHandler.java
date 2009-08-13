@@ -28,16 +28,17 @@ public class LogoutHandler extends HttpServlet {
 
 		UserSession userSession = UserSessionManager.getUserSession(req);
 
-		// revoke authsub token
+		// revoke AuthSub token
 		String authSubToken = userSession.getAuthSubToken();
 		if (authSubToken != null) {
 			try {
 				AuthSubUtil.revokeToken(authSubToken, null);
 			} catch (AuthenticationException e) {
-				log.warning("Authentication error revoking token: "
-						+ authSubToken);
+                log.warning(String.format("Error while revoking AuthSub token '%s': %s",
+                                authSubToken, e.toString()));
 			} catch (GeneralSecurityException e) {
-				log.warning("Security error revoking token: " + authSubToken);
+                log.warning(String.format("Error while revoking AuthSub token '%s': %s",
+                                authSubToken, e.toString()));
 			}
 		}
 
