@@ -32,13 +32,13 @@ function getAllAssignments() {
 function displayAssignments(assignments) {
   for (var i = 0; i < assignments.length; i++) {
     var assignment = assignments[i];
-    var key = assignment.key;
+    var id = assignment.id;
     var description = assignment.description;
     var category = assignment.category;
     var status = assignment.status;
           
     var html = [];
-    html.push('<div>Key: ' + key + '</div>');
+    html.push('<div>id: ' + id + '</div>');
     html.push('<div>Description: ' + description + '</div>');
     html.push('<div>Category: ' + category + '</div>');
     html.push('<div>Status: ' + status + '</div>');

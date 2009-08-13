@@ -32,8 +32,6 @@ public class Authenticator {
 
 		String assignmentId = request.getParameter("assignmentId");
 		String articleUrl = request.getParameter("articleUrl");
-
-		log.warning("assignmentId = " + assignmentId);
 		
 		String selfUrl = Util.getSelfUrl(request);
 

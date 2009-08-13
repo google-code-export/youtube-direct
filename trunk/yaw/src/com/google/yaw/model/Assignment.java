@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -30,8 +31,9 @@ public class Assignment implements Serializable {
     private int SCHEMA_VERSION;
 
     @PrimaryKey
+    @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Long key;
+    private String id;
 
     @Persistent
     private String description = null;
@@ -180,7 +182,7 @@ public class Assignment implements Serializable {
         this.status = status;
     }
     
-    public Long getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 }
