@@ -73,11 +73,10 @@ public class Authenticator {
 			} else {
 				// good token
 				log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
-
 			}
 		}
 	}
-
+	
 	public boolean isTokenValid(String token) {
 		try {
 			AuthSubUtil.getTokenInfo(token, null);
