@@ -10,7 +10,7 @@
   <title>Admin</title>
 
   
-  <link type="text/css" href="/css/ext/themes/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />  
+  <link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.7.2.custom.css" rel="stylesheet" />  
   <link type="text/css" href="/css/ext/ui.jqgrid.css" rel="stylesheet" />	
   <link type="text/css" href="/css/admin.css" rel="stylesheet" />
   
