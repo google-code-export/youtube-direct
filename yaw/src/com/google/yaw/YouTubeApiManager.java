@@ -21,6 +21,7 @@ public class YouTubeApiManager {
 
 	private YouTubeService service = null;
 	private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
+	private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
 	private static final Logger log = Logger.getLogger(YouTubeApiManager.class
 			.getName());
 
@@ -33,11 +34,11 @@ public class YouTubeApiManager {
 		String developerKey = System
 				.getProperty("com.google.yaw.YTDeveloperKey");
 
-		if (clientId == null || clientId.length() == 0) {
+		if (Util.isNullOrEmpty(clientId)) {
 			log.warning("com.google.yaw.YTClientID property is not set.");
 		}
 
-		if (developerKey == null || developerKey.length() == 0) {
+		if (Util.isNullOrEmpty(developerKey)) {
 			log.warning("com.google.yaw.YTDeveloperKey property is not set.");
 		}
 
@@ -59,18 +60,18 @@ public class YouTubeApiManager {
 	 * already been called to provide authentication.
 	 * 
 	 * @return The current username for the authenticated user.
+	 * @throws ServiceException 
+	 * @throws IOException 
 	 */
-	public String getCurrentUsername() {
-		try {
-			log.info("Attempting to get username from YouTube");
-			UserProfileEntry profile = service.getEntry(new URL(userEntry),
-					UserProfileEntry.class);
-
-			return profile.getUsername();
-		} catch (Exception e) {
-			log.warning("Fetching username failed: " + e.toString());
-			return null;
-		}
+	public String getCurrentUsername() throws IOException, ServiceException {
+	    try {
+	        UserProfileEntry profile = service.getEntry(new URL(userEntry), UserProfileEntry.class);
+	        return profile.getUsername();
+	    } catch (MalformedURLException e) {
+	        log.warning(e.toString());
+	    }
+	    
+	    return null;
 	}
 
 	/**
@@ -87,12 +88,12 @@ public class YouTubeApiManager {
 	public FormUploadToken getFormUploadToken(VideoEntry newEntry)
 			throws ServiceException, IOException {
 		try {
-			URL uploadUrl = new URL(
-					"http://gdata.youtube.com/action/GetUploadToken");
+			URL uploadUrl = new URL(uploadToken);
 			return service.getFormUploadToken(uploadUrl, newEntry);
 		} catch (MalformedURLException e) {
-			log.severe("Hard-coded URL fails to parse!");
+		    log.warning(e.toString());
 		}
+		
 		return null;
 	}
 	

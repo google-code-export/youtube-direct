@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AssignmentHandler extends HttpServlet {
 
-    private static final Logger log = Logger
-    .getLogger(AssignmentHandler.class.getName());
+    private static final Logger log = Logger.getLogger(AssignmentHandler.class.getName());
     
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -31,18 +30,22 @@ public class AssignmentHandler extends HttpServlet {
                 throw new IllegalArgumentException("'category' parameter is null or empty.");
             }
             if (Util.isNullOrEmpty(assignmentStatus)) {
-                throw new IllegalArgumentException("'assignmentStatus' parameter is null or empty.");
+                throw new IllegalArgumentException("'assignmentStatus' parameter is null or " +
+                		"empty.");
             }
-
+            
+            log.fine(String.format("Attempting to persist Assignment with description '%s', " +
+            		"category '%s', and status '%s'...", description, category,
+            		assignmentStatus.toString()));
             Assignment assignment = new Assignment(description, category,
                             AssignmentStatus.valueOf(assignmentStatus));
-
             Util.persistJdo(assignment);
+            log.fine(String.format("...Assignment with id %s persisted.", assignment.getId()));
 
             //TODO: Don't hardcode this.
             resp.sendRedirect("/assignments");
         } catch(IllegalArgumentException e) {
-            log.finer(e.toString());
+            log.fine(e.toString());
             //TODO: Don't hardcode this.
             resp.sendRedirect("/assignments?message=" + e.getMessage());
         }

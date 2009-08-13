@@ -1,6 +1,5 @@
 package com.google.yaw;
 
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.yaw.model.Assignment;
 
 import java.io.BufferedReader;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
