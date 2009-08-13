@@ -10,13 +10,14 @@
 <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <title>YAW</title>
 
-<link type="text/css" href="/css/ext/ui.all.css" rel="stylesheet" />
+<link type="text/css" href="/css/ext/themes/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+
 <link type="text/css" href="/css/yaw.css" rel="stylesheet" />
 
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
-<script type="text/javascript" src="/js/ext/ui.core.js"></script>
-<script type="text/javascript" src="/js/ext/ui.datepicker.js"></script>
+<script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
+
 <script type="text/javascript" src="/js/yaw.js"></script>
 </head>
 
