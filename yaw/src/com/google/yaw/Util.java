@@ -75,17 +75,6 @@ public class Util {
 		return entry;	    
 	    
 	}
-	
-	/**
-	 * Quick helper method to check whether an assignment id exists in the datastore.
-	 * @param id An ID that may correspond to an Assignment object in the datastore.
-	 * @return true if the key corresponds to a valid Assignment, and false otherwise.
-	 */
-	public static Boolean isValidAssignmentKey(String id) {
-	    Assignment assignment = Util.getAssignmentById(id);
-
-	    return assignment != null;
-	}
 
 	public static String getPostBody(HttpServletRequest req) throws IOException {
 		InputStream is = req.getInputStream();
@@ -102,20 +91,19 @@ public class Util {
 	}
 
 	public static String getSelfUrl(HttpServletRequest request) {
-		
 		StringBuffer url = new StringBuffer();
 		
 		url.append(request.getRequestURL());
-		
-		if (request.getQueryString().length() > 0) {
-			url.append("?");
-			url.append(request.getQueryString());		
+		String queryString = request.getQueryString();
+		if (!Util.isNullOrEmpty(queryString)) {
+		    url.append("?");
+            url.append(queryString);
 		}
 		
 		return url.toString();
 	}
 	
-	public static Boolean isNullOrEmpty(String input) {
+	public static boolean isNullOrEmpty(String input) {
 	    if (input == null || input.length() <= 0) {
 	        return true;
 	    } else {
