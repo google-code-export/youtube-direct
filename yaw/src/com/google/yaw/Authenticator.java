@@ -33,6 +33,8 @@ public class Authenticator {
 		String assignmentId = request.getParameter("assignmentId");
 		String articleUrl = request.getParameter("articleUrl");
 
+		log.warning("assignmentId = " + assignmentId);
+		
 		String selfUrl = Util.getSelfUrl(request);
 
 		if (userSession == null) {
@@ -40,7 +42,7 @@ public class Authenticator {
 			log.warning("No session. Creating new session.");
 
 			userSession = new UserSession();
-			userSession.setassignmentId(assignmentId);
+			userSession.setAssignmentId(assignmentId);
 			userSession.setArticleUrl(articleUrl);
 			userSession.setSelfUrl(selfUrl);
 			userSession = UserSessionManager.save(userSession);
@@ -65,7 +67,7 @@ public class Authenticator {
 				// replace with new session
 
 				userSession = new UserSession();
-				userSession.setassignmentId(assignmentId);
+				userSession.setAssignmentId(assignmentId);
 				userSession.setArticleUrl(articleUrl);
 				userSession.setSelfUrl(selfUrl);
 				userSession = UserSessionManager.save(userSession);

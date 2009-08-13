@@ -31,7 +31,7 @@ public class UploadResponseHandler extends HttpServlet {
 			UserSession userSession = UserSessionManager.getUserSession(req);
 			String authSubToken = userSession.getAuthSubToken();
 			String articleUrl = userSession.getArticleUrl();
-			String assignmentId = userSession.getassignmentId();
+			String assignmentId = userSession.getAssignmentId();
 			String videoTitle = userSession.getVideoTitle();
 			String videoDescription = userSession.getVideoDescription();
 			String youTubeName = userSession.getYouTubeName();

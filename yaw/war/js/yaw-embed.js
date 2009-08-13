@@ -5,7 +5,7 @@ function Yaw() {
 	
 }
 
-Yaw.prototype.setassignmentId = function(id) {
+Yaw.prototype.setAssignmentId = function(id) {
 	this.assignmentId = id;
 };	
 

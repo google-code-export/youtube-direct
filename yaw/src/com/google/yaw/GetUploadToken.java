@@ -46,7 +46,7 @@ public class GetUploadToken extends HttpServlet {
 			UserSession userSession = UserSessionManager.getUserSession(req);
 			String authSubToken = userSession.getAuthSubToken();
 			String articleUrl = userSession.getArticleUrl();
-			String assignmentId = userSession.getassignmentId();
+			String assignmentId = userSession.getAssignmentId();
 			
 			Assignment assignment = Util.getAssignmentByKey(assignmentId);
 			if (assignment == null) {
@@ -80,6 +80,8 @@ public class GetUploadToken extends HttpServlet {
 			mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
 					assignment.getCategory()));
 
+			log.warning("assignment category = " + assignment.getCategory());
+			
 			mg.setKeywords(new MediaKeywords());
 			for (int i = 0; i < tagsArray.length(); i++) {
 				String tag = tagsArray.getString(i).trim();
@@ -99,7 +101,7 @@ public class GetUploadToken extends HttpServlet {
 						defaultDeveloperTag));
 			}
 			
-			mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+			//mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
 
 			YouTubeApiManager apiManager = new YouTubeApiManager();
 

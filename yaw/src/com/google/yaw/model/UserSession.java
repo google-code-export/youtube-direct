@@ -70,11 +70,11 @@ public class UserSession {
 
 	}
 
-	public String getassignmentId() {
+	public String getAssignmentId() {
 		return assignmentId;
 	}
 
-	public void setassignmentId(String assignmentId) {
+	public void setAssignmentId(String assignmentId) {
 		this.assignmentId = assignmentId;
 	}
 

@@ -177,7 +177,7 @@ public class VideoSubmission implements Serializable {
 	/**
 	 * @return The site-specific article ID to tie this submission to.
 	 */
-	public String getassignmentId() {
+	public String getAssignmentId() {
 		return assignmentId;
 	}
 
@@ -187,7 +187,7 @@ public class VideoSubmission implements Serializable {
 	 * @param assignmentId
 	 *            The new ID.
 	 */
-	public void setassignmentId(String assignmentId) {
+	public void setAssignmentId(String assignmentId) {
 		this.assignmentId = assignmentId;
 	}
 
