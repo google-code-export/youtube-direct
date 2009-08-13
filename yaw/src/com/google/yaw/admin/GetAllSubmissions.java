@@ -30,15 +30,18 @@ public class GetAllSubmissions extends HttpServlet {
         PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
         PersistenceManager pm = pmf.getPersistenceManager();
 
-        Query query = pm.newQuery(VideoSubmission.class);
-        List<VideoSubmission> list = (List<VideoSubmission>) query.execute();
+
+		Query query = pm.newQuery(VideoSubmission.class);
+		query.declareImports("import java.util.Date");
+		query.setOrdering("updated desc");
+		List<VideoSubmission> list = (List<VideoSubmission>) query.execute();
 
         try {
             JSONArray jsonArray = new JSONArray();
 
             for (VideoSubmission entry : list) {
                 String videoId = entry.getVideoId();
-                String assignmentId = entry.getassignmentId();
+                String assignmentId = entry.getAssignmentId();
                 String articleUrl = entry.getArticleUrl();
                 String title = entry.getVideoTitle();
                 String description = entry.getVideoDescription();
