@@ -28,7 +28,7 @@ public class LogoutHandler extends HttpServlet {
 
 		UserSession userSession = UserSessionManager.getUserSession(req);
 
-		// revoke AuthSub token
+		// Revoke AuthSub token.
 		String authSubToken = userSession.getAuthSubToken();
 		if (authSubToken != null) {
 			try {
@@ -42,17 +42,16 @@ public class LogoutHandler extends HttpServlet {
 			}
 		}
 
-		// remove local cookie
+		// Remove local cookie.
 		UserSessionManager.destroySessionIdCookie(resp);
 
-		// get the original url to redirect
+		// Get the original URL to redirect.
 		String redirectUrl = userSession.getSelfUrl();
 
-		// remove the session entry
+		// Remove the session entry.
 		UserSessionManager.delete(userSession);
 
-		// send the redirect
+		// Send the redirect to our original URL.
 		resp.sendRedirect(redirectUrl);
-
 	}
 }

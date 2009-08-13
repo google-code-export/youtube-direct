@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
 import com.google.yaw.model.UserSession;
 
 /**
@@ -62,17 +63,16 @@ public class AuthSubHandler extends HttpServlet {
 		    UserSessionManager.save(userSession);
 
 		    response.sendRedirect(articleUrl);
+		} catch (ServiceException e) {
+		    log.warning(e.toString());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (IllegalArgumentException e) {
 		    log.warning(e.toString());
 		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (AuthenticationException e) {
-		    log.warning(e.toString());
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Server rejected one time use token.");
 		} catch (GeneralSecurityException e) {
 		    log.warning(e.toString());
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Security error while retrieving session token.");
+			                "Security error while retrieving session token.");
 		}
 	}
 }

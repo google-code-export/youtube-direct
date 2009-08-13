@@ -1,7 +1,5 @@
 package com.google.yaw.model;
 
-import org.mortbay.log.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

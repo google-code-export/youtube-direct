@@ -26,9 +26,9 @@ public class UploadResponseHandler extends HttpServlet {
 		String videoId = req.getParameter("id");
 		String status = req.getParameter("status");
 
+		UserSession userSession = UserSessionManager.getUserSession(req);
+		
 		if (status.equals("200")) {
-
-			UserSession userSession = UserSessionManager.getUserSession(req);
 			String authSubToken = userSession.getAuthSubToken();
 			String articleUrl = userSession.getArticleUrl();
 			String assignmentId = userSession.getAssignmentId();
@@ -37,29 +37,30 @@ public class UploadResponseHandler extends HttpServlet {
 			String youTubeName = userSession.getYouTubeName();
 			String tagList = userSession.getVideoTagList();
 			
-			log.warning("assignmentId is " + assignmentId);
-			
-			// create and persist VideoSubmission entry
+			log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' " +
+					"for assignment id '%s'...", videoId, assignmentId));
 			VideoSubmission submission = new VideoSubmission(
 					assignmentId, articleUrl, videoId, videoTitle,
 					videoDescription, tagList, youTubeName, authSubToken);
-
 			Util.persistJdo(submission);
+	        log.fine("...VideoSubmission persisted.");
 
 			try {
 				JSONObject responseJsonObj = new JSONObject();
 				responseJsonObj.put("videoId", videoId);
 				responseJsonObj.put("status", status);
+				
 				resp.setContentType("text/javascript");
 				resp.getWriter().println(responseJsonObj.toString());
 			} catch (JSONException e) {
-				e.printStackTrace();
-				log.severe(e.getMessage());
-				resp.setContentType("text/plain");
-				resp.getWriter().println("fail");
+	            log.warning(e.toString());
+	            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		} else {
-			// what to do ...			
+		    String code = req.getParameter("code");
+		    log.warning(String.format("Upload request for user with session id '%s' failed with " +
+		    		"status '%s' and code '%s'.", userSession.getId(), status, code));
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, code);
 		}
 	}
 }
