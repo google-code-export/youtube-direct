@@ -94,15 +94,23 @@ function initDataGrid(data) {
 		sorttype: 'string',			
 		edittype: 'select',
 		editable: true,
-		editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});				
+		editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});
 	
 	grid.cellsubmit = 'clientArray';
 	
 	grid.editurl = 'server.php';
-	grid.forceFit = true;
+	grid.autoWidth = true;
 	grid.cellEdit = true;
 	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
+		console.log(rowid);
+		console.log(cellname);
 		console.log(value);
+		console.log(iRow);
+		console.log(iCol);
+		
+		var videoId = jQuery("#datagrid").getCell(rowid, 1);
+		
+		previewVideo(videoId);
 	};
 	
 	grid.pager = jQuery('#pager');	
