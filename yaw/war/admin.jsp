@@ -53,7 +53,8 @@ window.isLoggedIn = false;
 	<div id="moderateTab">
 	  <span id="status" style="font-size: 11px; color: red;"></span>
 	  <br>
-	  <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table> 
+	  <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
+	  <div id="pager" class="scroll" style="text-align:center;"></div>  
 	  <div id="videoList"></div>	
 	  <div id="videoDisplay"></div>	
 	</div>
