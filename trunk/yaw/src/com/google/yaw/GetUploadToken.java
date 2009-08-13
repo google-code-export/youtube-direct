@@ -109,7 +109,7 @@ public class GetUploadToken extends HttpServlet {
 	        }
 
 	        //TODO: This might be longer than the max allowed developer tag.
-	        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+	        //mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
 
 	        YouTubeApiManager apiManager = new YouTubeApiManager();
 	        apiManager.setToken(authSubToken);
