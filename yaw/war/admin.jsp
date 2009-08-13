@@ -9,16 +9,17 @@
 <head>
   <title>Admin</title>
 
-  <link type="text/css" href="/css/admin.css" rel="stylesheet" />
   <link type="text/css" href="/css/ext/ui.all.css" rel="stylesheet" />
 
-  <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
-  <script type="text/javascript" src="/js/admin.js"></script>
+  <link type="text/css" href="/css/admin.css" rel="stylesheet" />
+  
+  <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script> 
   <script type="text/javascript" src="/js/ext/json2.js"></script>
-  <script type="text/javascript" src="/js/ext/ui.core.js"></script>
-  <script type="text/javascript" src="/js/ext/ui.tabs.js"></script>
+  <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
   <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script> 
-  <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>  
+  <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
+  
+   <script type="text/javascript" src="/js/admin.js"></script>  
   
 </head>
 
