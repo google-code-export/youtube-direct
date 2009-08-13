@@ -36,9 +36,6 @@ public class Authenticator {
 		String selfUrl = Util.getSelfUrl(request);
 
 		if (userSession == null) {
-			// there is no user session
-			log.warning("No session. Creating new session.");
-
 			userSession = new UserSession();
 			userSession.setAssignmentId(assignmentId);
 			userSession.setArticleUrl(articleUrl);
@@ -55,8 +52,8 @@ public class Authenticator {
 		if (authSubToken != null) {
 			// check for bad token
 			if (!isTokenValid(authSubToken)) {
-
-				log.warning("delete bad token, creating new session");
+				log.finer(String.format("AuthSub token '%s' is invalid. Creating new session.",
+				                authSubToken));
 
 				authSubToken = null;
 
@@ -75,7 +72,7 @@ public class Authenticator {
 						response);
 			} else {
 				// good token
-				log.warning("token = " + authSubToken);
+				log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
 
 			}
 		}

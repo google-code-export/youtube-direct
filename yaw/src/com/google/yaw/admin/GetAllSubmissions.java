@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.yaw.Util;
@@ -19,54 +20,54 @@ import com.google.yaw.model.VideoSubmission;
 
 public class GetAllSubmissions extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(GetAllSubmissions.class
-			.getName());
+    private static final Logger log = Logger.getLogger(GetAllSubmissions.class
+                    .getName());
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
+    throws IOException {
 
-		PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-		PersistenceManager pm = pmf.getPersistenceManager();
+        PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+        PersistenceManager pm = pmf.getPersistenceManager();
 
-		Query query = pm.newQuery(VideoSubmission.class);
-		List<VideoSubmission> list = (List<VideoSubmission>) query.execute();
+        Query query = pm.newQuery(VideoSubmission.class);
+        List<VideoSubmission> list = (List<VideoSubmission>) query.execute();
 
-		JSONArray jsonArray = new JSONArray();
+        try {
+            JSONArray jsonArray = new JSONArray();
 
-		for (VideoSubmission entry : list) {
-			String videoId = entry.getVideoId();
-			String assignmentId = entry.getAssignmentId();
-			String articleUrl = entry.getArticleUrl();
-			String title = entry.getVideoTitle();
-			String description = entry.getVideoDescription();
-			String tagList = entry.getVideoTagList();
-			String uploader = entry.getYouTubeName();
-			long updated = entry.getUpdated().getTime();
-			int status = entry.getStatus().ordinal();
+            for (VideoSubmission entry : list) {
+                String videoId = entry.getVideoId();
+                String assignmentId = entry.getassignmentId();
+                String articleUrl = entry.getArticleUrl();
+                String title = entry.getVideoTitle();
+                String description = entry.getVideoDescription();
+                String tagList = entry.getVideoTagList();
+                String uploader = entry.getYouTubeName();
+                long updated = entry.getUpdated().getTime();
+                int status = entry.getStatus().ordinal();
 
-			try {
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("videoId", videoId);
-				jsonObj.put("articleUrl", articleUrl);
-				jsonObj.put("assignmentId", assignmentId);
-				jsonObj.put("title", title);
-				jsonObj.put("description", description);
-				jsonObj.put("tags", tagList);
-				jsonObj.put("uploader", uploader);
-				jsonObj.put("updated", updated);
-				jsonObj.put("status", status);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("videoId", videoId);
+                jsonObj.put("articleUrl", articleUrl);
+                jsonObj.put("assignmentId", assignmentId);
+                jsonObj.put("title", title);
+                jsonObj.put("description", description);
+                jsonObj.put("tags", tagList);
+                jsonObj.put("uploader", uploader);
+                jsonObj.put("updated", updated);
+                jsonObj.put("status", status);
 
-				jsonArray.put(jsonObj);
+                jsonArray.put(jsonObj);
+            }
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		pm.close();
-
-		resp.setContentType("text/javascript");
-		resp.getWriter().println(jsonArray);
-
-	}
+            resp.setContentType("text/javascript");
+            resp.getWriter().println(jsonArray);
+        } catch(JSONException e) {
+            log.warning(e.toString());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } finally {
+            pm.close();
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.google.yaw;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,64 +15,64 @@ import com.google.yaw.model.UserSession;
 /**
  * Super simple class to handle doing the AuthSub token exchange to upgrade a
  * one-time token into a session token.
- * 
  */
 @SuppressWarnings("serial")
 public class AuthSubHandler extends HttpServlet {
-
+    private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
+    
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
 		String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
 
-		if (token == null) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No token specified.");
-			return;
-		}
-
 		try {
-			String articleUrl = request.getParameter("articleUrl");
-			if (articleUrl != null) {
-				String authSubToken = AuthSubUtil.exchangeForSessionToken(
-						token, null);
+		    if (token == null) {
+		        throw new IllegalArgumentException(String.format("Could not retrieve token from " +
+		                        "AuthSub response. request.getQueryString() => %s",
+		                        request.getQueryString()));
+		    }
+		    
+		    String articleUrl = request.getParameter("articleUrl");
+		    if (Util.isNullOrEmpty(articleUrl)) {
+		        throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
+		    }
 
-				UserSession userSession = UserSessionManager
-						.getUserSession(request);
+		    String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-				if (userSession == null) {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-							"No current user session is found.");
-					return;
-				} else {
-					userSession.setAuthSubToken(authSubToken);
+		    UserSession userSession = UserSessionManager.getUserSession(request);
 
-					// get YouTube username
+		    if (userSession == null) {
+		        //TODO: Throw a better Exception class here.
+		        throw new IllegalArgumentException("No user session found.");
+		    }
+		    
+		    userSession.setAuthSubToken(authSubToken);
 
-					YouTubeApiManager apiManager = new YouTubeApiManager();
-					apiManager.setToken(authSubToken);
+		    YouTubeApiManager apiManager = new YouTubeApiManager();
+		    apiManager.setToken(authSubToken);
+		    
+		    String youTubeName = apiManager.getCurrentUsername();
+		    if (Util.isNullOrEmpty(youTubeName)) {
+		        //TODO: Throw a better Exception class here.
+		        throw new IllegalArgumentException("Unable to retrieve a YouTube username for " +
+		        		"the authenticated user.");
+		    }
+		    userSession.setYouTubeName(youTubeName);
+		    UserSessionManager.save(userSession);
 
-					String youTubeName = apiManager.getCurrentUsername();
-
-					userSession.setYouTubeName(youTubeName);
-
-					UserSessionManager.save(userSession);
-				}
-
-				response.sendRedirect(articleUrl);
-			} else {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-						"Missing redirection URL");
-			}
+		    response.sendRedirect(articleUrl);
+		} catch (IllegalArgumentException e) {
+		    log.warning(e.toString());
+		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (AuthenticationException e) {
+		    log.warning(e.toString());
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Server rejected one time use token.");
 		} catch (GeneralSecurityException e) {
+		    log.warning(e.toString());
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Security error while retrieving session token.");
 		}
-		return;
 	}
-
 }

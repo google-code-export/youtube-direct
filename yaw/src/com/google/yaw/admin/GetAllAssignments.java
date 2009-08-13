@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class GetAllAssignments extends HttpServlet {
-    private static final Logger log = Logger.getLogger(GetAllSubmissions.class
+    private static final Logger log = Logger.getLogger(GetAllAssignments.class
             .getName());
 
     @Override
@@ -27,10 +27,10 @@ public class GetAllAssignments extends HttpServlet {
         PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
         PersistenceManager pm = pmf.getPersistenceManager();
 
+        Query query = pm.newQuery(Assignment.class);
+        List<Assignment> assignments = (List<Assignment>)query.execute();
+        
         try {
-            Query query = pm.newQuery(Assignment.class);
-            List<Assignment> assignments = (List<Assignment>)query.execute();
-
             JSONArray jsonArray = new JSONArray();
 
             for (Assignment assignment : assignments) {
@@ -52,7 +52,7 @@ public class GetAllAssignments extends HttpServlet {
             resp.getWriter().println(jsonArray);
         } catch (JSONException e) {
             log.warning(e.toString());
-            resp.sendError(500, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } finally {
             pm.close();
         }
