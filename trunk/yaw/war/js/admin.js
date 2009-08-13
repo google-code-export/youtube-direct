@@ -22,43 +22,88 @@ function initDataGrid(data) {
 	grid.colModel = [];
 	
 	grid.colNames.push('Last Updated');
-	grid.colModel.push({name: 'updated', index: 'updated', width: 200, sorttype: 'date', editable: true});
+	grid.colModel.push({
+		name: 'updated', 
+		index: 'updated', 
+		width: 200, 
+		sorttype: 'date'});
 	
 	grid.colNames.push('Video ID');
-	grid.colModel.push({name: 'videoId', index: 'videoId', width: 100, sorttype: 'string', editable: true});
+	grid.colModel.push({
+		name: 'videoId', 
+		index: 'videoId', 
+		width: 100, 
+		sorttype: 'string'});
 
 	grid.colNames.push('Assignment ID');
-	grid.colModel.push({name: 'assignmentId', index: 'assignmentId', width: 100, sorttype: 'string', editable: true});	
+	grid.colModel.push({
+		name: 'assignmentId', 
+		index: 'assignmentId', 
+		width: 100, 
+		sorttype: 'string'});	
 	
 	grid.colNames.push('Article URL');
-	grid.colModel.push({name: 'articleUrl', index: 'articleUrl', width: 200, sorttype: 'string', editable: true});	
-	
-	grid.colNames.push('Title');
-	grid.colModel.push({name: 'title', index: 'title', width: 150, sorttype: 'string', editable: true, editoptions:{size:"20",maxlength:"30"}});
-	
-	grid.colNames.push('Description');
-	grid.colModel.push({name: 'description', index: 'description', width: 200, sorttype: 'string', editable: true});
-	
-	grid.colNames.push('Tags');
-	grid.colModel.push({name: 'tags', index: 'tags', width: 150, sorttype: 'string', editable: true});
+	grid.colModel.push({
+		name: 'articleUrl', 
+		index: 'articleUrl', 
+		width: 200, 
+		sorttype: 'string'});	
 	
 	grid.colNames.push('Uploader');
-	grid.colModel.push({name: 'uploader', index: 'uploader', width: 100, sorttype: 'string', editable: true});	
+	grid.colModel.push({
+		name: 'uploader', 
+		index: 'uploader', 
+		width: 100, 
+		sorttype: 'string'});
+	
+	grid.colNames.push('Title');
+	grid.colModel.push({
+		name: 'title', 
+		index: 'title', 
+		width: 150, 
+		sorttype: 'string', 
+		editable: true,		
+		edittype: 'textarea',
+		editoptions: {rows:'2', cols: '20'},});
+	
+	grid.colNames.push('Description');
+	grid.colModel.push({
+		name: 'description', 
+		index: 'description', 
+		width: 200,
+		editable: true,
+		edittype: 'textarea',
+		editoptions: {rows:'3', cols: '30'},
+		sorttype: 'string'});
+	
+	grid.colNames.push('Tags');
+	grid.colModel.push({
+		name: 'tags', 
+		index: 'tags', 
+		width: 150, 
+		editable: true,
+		edittype: 'textarea',
+		editoptions: {rows:'2', cols: '20'},		
+		sorttype: 'string'});		
 	
 	grid.colNames.push('Approval Status');	
-	grid.colModel.push({name: 'status', index: 'status', width: 100, sorttype: 'string',			
-			editable: true, edittype:"select", 
-			editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});				
+	grid.colModel.push({
+		name: 'status', 
+		index: 'status', 
+		width: 100, 
+		sorttype: 'string',			
+		edittype: 'select',
+		editable: true,
+		editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});				
 	
-	grid.onSelectRow = function(id){ 
-		if(id && id!==lastsel) { 
-			jQuery('#datagrid').restoreRow(lastsel); 
-			jQuery('#datagrid').editRow(id,true); 
-			lastsel=id; 
-		}
+	grid.cellsubmit = 'clientArray';
+	
+	grid.editurl = 'server.php';
+	grid.forceFit = true;
+	grid.cellEdit = true;
+	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
+		alert(value);
 	};
-	
-	grid.editurl = 'server.php'; 		
 	
 	grid.pager = jQuery('#pager');	
 	
@@ -68,9 +113,12 @@ function initDataGrid(data) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
 
-	jQuery('#pager').navButtonAdd('#pager', {caption: 'Preview Video', onClickButton: function() {
-		var selectedRow = jqGrid.getGridParam("selrow");
-	}});	
+	jQuery('#pager').navButtonAdd('#pager', {
+		caption: 'Preview Video', 
+		onClickButton: function() {
+			var selectedRow = jqGrid.getGridParam("selrow");
+			}
+	});	
 	
 }
 
