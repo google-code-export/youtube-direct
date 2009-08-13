@@ -10,8 +10,14 @@
     <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <title>YAW Assignments</title>
 
-    <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
+    <link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.7.2.custom.css" rel="stylesheet" />  
+    <link type="text/css" href="/css/ext/ui.jqgrid.css" rel="stylesheet" />
+  
+    <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script> 
     <script type="text/javascript" src="/js/ext/json2.js"></script>
+    <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
+    <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script> 
+    <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
     <script type="text/javascript" src="/js/assignments.js"></script>
   </head>
 
@@ -61,7 +67,7 @@
       </form>
     </div>
     <h3>Current Assignments</h3>
-    <span id="status"></span>
-    <div id="currentAssignments"></div>
+    <table id="assignments"></table>
+    <div id="pager"></div>
   </body>
 </html>

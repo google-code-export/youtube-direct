@@ -7,48 +7,23 @@ jQuery(document).ready( function() {
   //}
 });
 
-function getAllAssignments() {
-  var url = '/GetAllAssignments';
-  var ajaxCall = {};
-  ajaxCall.cache = false;
-  ajaxCall.type = 'GET';
-  ajaxCall.url = url;
-  ajaxCall.dataType = 'json';
-  
-  ajaxCall.success = function(json) {
-    console.log(json);
-    displayAssignments(json);
-    jQuery('#status').empty();
-  };
-  
-  ajaxCall.error = function(XMLHttpRequest, textStatus, errorThrown) {
-    console.log('XMLHttpRequest to ' + url + ' failed: ' + textStatus);
-    jQuery('#status').html('Unable to retrieve assignments at this time.');
-  };
-  
-  jQuery('#status').html('Loading assignments ...');
-  jQuery.ajax(ajaxCall);  
-}
-
-function displayAssignments(assignments) {
-  for (var i = 0; i < assignments.length; i++) {
-    var assignment = assignments[i];
-    var id = assignment.id;
-    var description = assignment.description;
-    var category = assignment.category;
-    var status = assignment.status;
-          
-    var html = [];
-    html.push('<div>id: ' + id + '</div>');
-    html.push('<div>Description: ' + description + '</div>');
-    html.push('<div>Category: ' + category + '</div>');
-    html.push('<div>Status: ' + status + '</div>');
-    html.push('<br><br>')
-    
-    jQuery('#currentAssignments').append(html.join(''));
-  }
-}
-
 function init() {
-  getAllAssignments();
+  jQuery("#assignments").jqGrid({
+    url:'/GetAllAssignments',
+    datatype: 'json',
+    mtype: 'GET',
+    colNames:['Assignment ID', 'Description', 'Category', 'Status'],
+    colModel: [
+      {name: 'assignmentId', index: 'assignmentId', width: 240}, 
+      {name: 'description', index: 'description', width: 300}, 
+      {name: 'category', index: 'category', width: 80}, 
+      {name:'status', index:'status', width: 60}, 
+    ],
+    pager: '#pager',
+    rowNum: -1,
+    sortname: 'assignmentId',
+    sortorder: 'asc',
+    viewrecords: true,
+    caption: 'Assignments'
+  }); 
 }
