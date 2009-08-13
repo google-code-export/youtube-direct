@@ -16,7 +16,14 @@
   </head>
 
   <body>
-    <span id="message"></span>
+<%
+  String message = request.getParameter("message");
+  if (message != null && message.length() > 0) {
+%>
+    <span id="message"><%= message %></span>
+<%
+  }
+%>
     <h3>Create a New Assignment</h3>
     <div id="createAssignment">
       <form id="createAssignmentForm" action="AssignmentHandler" method="post">

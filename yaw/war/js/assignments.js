@@ -1,4 +1,5 @@
 jQuery(document).ready( function() {
+  //TODO: Ensure that users are logged in.
   //console.log(window.isLoggedIn);
 
   //if (window.isLoggedIn) {
