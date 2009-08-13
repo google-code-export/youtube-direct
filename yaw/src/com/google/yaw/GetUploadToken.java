@@ -48,7 +48,7 @@ public class GetUploadToken extends HttpServlet {
 			String articleUrl = userSession.getArticleUrl();
 			String assignmentId = userSession.getAssignmentId();
 			
-			Assignment assignment = Util.getAssignmentByKey(assignmentId);
+			Assignment assignment = Util.getAssignmentById(assignmentId);
 			if (assignment == null) {
 			    throw new IllegalArgumentException(String.format(
 			            "Could not find an assignment with id <%s>.", assignmentId));
@@ -79,8 +79,6 @@ public class GetUploadToken extends HttpServlet {
 
 			mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
 					assignment.getCategory()));
-
-			log.warning("assignment category = " + assignment.getCategory());
 			
 			mg.setKeywords(new MediaKeywords());
 			for (int i = 0; i < tagsArray.length(); i++) {
@@ -101,7 +99,8 @@ public class GetUploadToken extends HttpServlet {
 						defaultDeveloperTag));
 			}
 			
-			//mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+			//mg.addCategory(
+			//		new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
 
 			YouTubeApiManager apiManager = new YouTubeApiManager();
 

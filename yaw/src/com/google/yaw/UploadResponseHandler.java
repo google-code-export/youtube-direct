@@ -42,7 +42,7 @@ public class UploadResponseHandler extends HttpServlet {
 			// create and persist VideoSubmission entry
 			VideoSubmission submission = new VideoSubmission(
 					assignmentId, articleUrl, videoId, videoTitle,
-					videoDescription, tagList, youTubeName, authSubToken, Long.parseLong(assignmentId));
+					videoDescription, tagList, youTubeName, authSubToken);
 
 			Util.persistJdo(submission);
 

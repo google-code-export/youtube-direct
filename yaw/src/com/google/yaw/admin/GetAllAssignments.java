@@ -34,13 +34,13 @@ public class GetAllAssignments extends HttpServlet {
             JSONArray jsonArray = new JSONArray();
 
             for (Assignment assignment : assignments) {
-                Long key = assignment.getKey();
+                String id = assignment.getId();
                 String description = assignment.getDescription();
                 String category = assignment.getCategory();
                 String status = assignment.getStatus().toString();
 
                 JSONObject jsonObj = new JSONObject();
-                jsonObj.put("key", key);
+                jsonObj.put("id", id);
                 jsonObj.put("description", description);
                 jsonObj.put("category", category);
                 jsonObj.put("status", status);

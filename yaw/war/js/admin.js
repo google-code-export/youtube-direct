@@ -67,17 +67,10 @@ function initDataGrid(data) {
 	for(var i = 0; i <= data.length; i++) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
-	
-	/*
-	var pager = jQuery("#datagrid").navGrid('#pager',{
-        edit:true,add:false,del:false,search:false
-    })	
 
-	pager.navButtonAdd('#pager', {caption: 'Preview Video', onClickButton: function() {
+	jQuery('#pager').navButtonAdd('#pager', {caption: 'Preview Video', onClickButton: function() {
 		var selectedRow = jqGrid.getGridParam("selrow");
-
 	}});	
-	*/
 	
 }
 

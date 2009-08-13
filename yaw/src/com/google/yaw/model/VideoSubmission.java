@@ -29,12 +29,9 @@ public class VideoSubmission implements Serializable {
 	@Persistent
 	private int SCHEMA_VERSION;
 	
-	@PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Key key;
-
 	// The id of the submission is based on the YouTube video ID.
-	// A submission is not allowed to be for multiple "articles".
+	// A submission is not allowed to be for multiple "articles".	
+	@PrimaryKey
 	@Persistent
 	private String id = null;
 
@@ -84,9 +81,6 @@ public class VideoSubmission implements Serializable {
 
 	@Persistent
 	private String articleUrl = null;
-	
-	@Persistent
-	private Long assignmentKey = null;
 
 	/**
 	 * Create a new video submission entry object for the datastore.
@@ -101,7 +95,7 @@ public class VideoSubmission implements Serializable {
 	public VideoSubmission(String assignmentId,
 			String articleUrl, String videoId, String title,
 			String description, String tagList, String uploader,
-			String authSubToken, Long assignmentKey) {
+			String authSubToken) {
 		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
 		this.articleUrl = articleUrl;
 		this.id = "video-" + videoId;
@@ -118,7 +112,6 @@ public class VideoSubmission implements Serializable {
 		this.videoTitle = title;
 		this.videoDescription = description;
 		this.videoTagList = tagList;
-		this.assignmentKey = assignmentKey;
 	}
 
 	/**
@@ -172,13 +165,6 @@ public class VideoSubmission implements Serializable {
 	 */
 	public Date getUpdated() {
 		return updated;
-	}
-
-	/**
-	 * @return The site-specific article ID to tie this submission to.
-	 */
-	public String getAssignmentId() {
-		return assignmentId;
 	}
 
 	/**
@@ -326,12 +312,8 @@ public class VideoSubmission implements Serializable {
 	public void setArticleUrl(String articleUrl) {
 		this.articleUrl = articleUrl;
 	}
-
-	public Key getKey() {
-	    return key;
-	}
 	
-	public Long getAssignmentKey() {
-	    return assignmentKey;
+	public String getAssignmentId() {
+	    return assignmentId;
 	}
 }
