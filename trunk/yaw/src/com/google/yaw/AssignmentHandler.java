@@ -43,11 +43,12 @@ public class AssignmentHandler extends HttpServlet {
             log.fine(String.format("...Assignment with id %s persisted.", assignment.getId()));
 
             //TODO: Don't hardcode this.
-            resp.sendRedirect("/assignments");
+            resp.sendRedirect(String.format("/assignments?message=Assignment created with id '%s'.",
+                            assignment.getId()));
         } catch(IllegalArgumentException e) {
             log.fine(e.toString());
             //TODO: Don't hardcode this.
-            resp.sendRedirect("/assignments?message=" + e.getMessage());
+            resp.sendRedirect(String.format("/assignments?message=%s", e.getMessage()));
         }
     }
 }
