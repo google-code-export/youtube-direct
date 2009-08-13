@@ -35,7 +35,7 @@ public class GetAllSubmissions extends HttpServlet {
 
 		for (VideoSubmission entry : list) {
 			String videoId = entry.getVideoId();
-			String assignmentId = entry.getassignmentId();
+			String assignmentId = entry.getAssignmentId();
 			String articleUrl = entry.getArticleUrl();
 			String title = entry.getVideoTitle();
 			String description = entry.getVideoDescription();
