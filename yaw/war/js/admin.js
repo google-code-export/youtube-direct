@@ -102,7 +102,7 @@ function initDataGrid(data) {
 	grid.forceFit = true;
 	grid.cellEdit = true;
 	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
-		alert(value);
+		console.log(value);
 	};
 	
 	grid.pager = jQuery('#pager');	
@@ -121,6 +121,14 @@ function initDataGrid(data) {
 	});	
 	
 }
+
+function previewVideo(videoId) {
+	jQuery.ui.dialog.defaults.bgiframe = true;	
+	var div = jQuery('<div/>');
+	div.html(getVideoHTML(videoId));
+	div.dialog();		
+}
+
 
 function processData(data) {	
 	
@@ -179,9 +187,7 @@ function showLoading(status) {
 	
 }
 
-function displayVideo(videoId) {
-	
-	jQuery('#videoDisplay').html('loading video ...');
+function getVideoHTML(videoId) {
 	
 	var youtubeUrl = 'http://www.youtube.com/v/' + videoId;
 	
@@ -198,5 +204,5 @@ function displayVideo(videoId) {
 	html.push(' allowscriptaccess="always" allowfullscreen="true" width="250" height="200">');
 	html.push('</embed></object>');	
 	
-	jQuery('#videoDisplay').html(html.join(''));
+	return html.join('');
 }
