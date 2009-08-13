@@ -57,9 +57,9 @@ public class GetUploadToken extends HttpServlet {
 	        }
 	        String authSubToken = userSession.getAuthSubToken();
 	        String articleUrl = userSession.getArticleUrl();
-	        String assignmentId = userSession.getassignmentId();
+	        String assignmentId = userSession.getAssignmentId();
 
-	        Assignment assignment = Util.getAssignmentByKey(assignmentId);
+	        Assignment assignment = Util.getAssignmentById(assignmentId);
 	        if (assignment == null) {
 	            throw new IllegalArgumentException(String.format(
 	                            "Could not find an assignment with id '%s'.", assignmentId));
