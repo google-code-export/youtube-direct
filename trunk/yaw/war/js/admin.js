@@ -6,7 +6,10 @@ jQuery(document).ready( function() {
 });
 
 function init() {
-	getAllSubmissions();
+	getAllSubmissions(function(entries) {
+		entries = preProcessData(entries);	
+		initDataGrid(entries);
+	});	
 }
 
 function initDataGrid(data) {	
@@ -130,6 +133,23 @@ function initDataGrid(data) {
 	for(var i = 0; i <= data.length; i++) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
+
+	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false})
+	.navButtonAdd('#pager',{
+	   caption:"Refresh", 
+	   onClickButton: function(){
+		 
+	     getAllSubmissions(function(entries) {	    	 
+	    	 jqGrid.clearGridData();
+	    	 entries = preProcessData(entries);
+	    	 for(var i = 0; i <= entries.length; i++) {
+	    		 jqGrid.addRowData(i + 1, entries[i]); 	
+	    	 }
+	     });
+	   }, 
+	   position:"last"
+	});
+	
 	
 }
 
@@ -156,11 +176,9 @@ function preProcessData(data) {
 
 function postProcessEntry(entry) {
 	entry.status = stringToStatus(entry.status);
-	entry.videoTags = JSON.stringify(entry.videoTags.split(','));
-	
-	delete entry.updated; // TODO gson can't parse ...
-	delete entry.preview; // this is a button	
-	
+	entry.videoTags = JSON.stringify(entry.videoTags.split(','));	
+	delete entry.updated; // TODO gson can't parse date by default
+	delete entry.preview; // don't include the button		
 	return entry;
 }
 
@@ -202,17 +220,16 @@ function stringToStatus(str) {
 	return status;	
 }
 
-function getAllSubmissions() {
+function getAllSubmissions(callback) {
 	var url = '/GetAllSubmissions';
 	var ajaxCall = {};
 	ajaxCall.cache = false;
 	ajaxCall.type = 'GET';
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
-	ajaxCall.success = function(entries) {			
-		entries = preProcessData(entries);		
-		initDataGrid(entries);
+	ajaxCall.success = function(entries) {						
 		showLoading(false);
+		callback(entries);
 	};	
 	showLoading(true);
 	jQuery.ajax(ajaxCall);	
