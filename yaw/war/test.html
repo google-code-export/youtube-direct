@@ -27,7 +27,7 @@ function getAssignmentId(callback) {
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(entries) {
-		if (entries.total > 0) {
+		if (entries.total > 0 && entries.rows[0] != null) {
 			callback(entries.rows[0].cell[0]);
 		} else {
 			callback(null);

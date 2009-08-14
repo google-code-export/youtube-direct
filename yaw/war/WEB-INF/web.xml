@@ -24,6 +24,15 @@
   </servlet-mapping>
   
   <servlet>
+  <servlet-name>MutateAssignment</servlet-name>
+  <servlet-class>com.google.yaw.admin.MutateAssignment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MutateAssignment</servlet-name>
+    <url-pattern>/MutateAssignment</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
   <servlet-name>GetAllAssignments</servlet-name>
   <servlet-class>com.google.yaw.admin.GetAllAssignments</servlet-class>
   </servlet>

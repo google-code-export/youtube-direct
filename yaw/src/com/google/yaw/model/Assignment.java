@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -31,13 +33,15 @@ public class Assignment implements Serializable {
     @PrimaryKey
     @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    @Expose
     private String id;
 
     @Persistent
+    @Expose
     private String description = null;
 
-    // The AuthSub token used when uploading this video.
     @Persistent
+    @Expose
     private String category = null;
 
     @Persistent
@@ -51,6 +55,7 @@ public class Assignment implements Serializable {
     }
 
     @Persistent
+    @Expose
     private AssignmentStatus status;
 
     /**
