@@ -1,5 +1,7 @@
 package com.google.yaw;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.yaw.model.Assignment;
 
 import java.io.BufferedReader;
@@ -18,7 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 public class Util {
 	
 	private static final Logger log = Logger.getLogger(Util.class
-			.getName());
+			.getName());	
+
+	public final static Gson GSON = 
+		new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();	
 	
 	private static PersistenceManagerFactory pmf = null;
 
@@ -110,4 +115,11 @@ public class Util {
 	        return false;
 	    }
 	}
+	
+	public static String toJson(Object o) {		
+		return GSON.toJson(o);				
+	}
+	
+	
+	
 }

@@ -34,14 +34,14 @@ public class UploadResponseHandler extends HttpServlet {
 			String assignmentId = userSession.getAssignmentId();
 			String videoTitle = userSession.getVideoTitle();
 			String videoDescription = userSession.getVideoDescription();
-			String youTubeName = userSession.getYouTubeName();
-			String tagList = userSession.getVideoTagList();
+			String uploader = userSession.getYouTubeName();
+			String videoTags = userSession.getVideoTagList();
 			
 			log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' " +
 					"for assignment id '%s'...", videoId, assignmentId));
 			VideoSubmission submission = new VideoSubmission(
 					assignmentId, articleUrl, videoId, videoTitle,
-					videoDescription, tagList, youTubeName, authSubToken);
+					videoDescription, videoTags, uploader, authSubToken);
 			Util.persistJdo(submission);
 	        log.fine("...VideoSubmission persisted.");
 

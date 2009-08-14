@@ -34,39 +34,14 @@ public class GetAllSubmissions extends HttpServlet {
 		Query query = pm.newQuery(VideoSubmission.class);
 		query.declareImports("import java.util.Date");
 		query.setOrdering("updated desc");
-		List<VideoSubmission> list = (List<VideoSubmission>) query.execute();
+		List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
 
-        try {
-            JSONArray jsonArray = new JSONArray();
-
-            for (VideoSubmission entry : list) {
-                String videoId = entry.getVideoId();
-                String assignmentId = entry.getAssignmentId();
-                String articleUrl = entry.getArticleUrl();
-                String title = entry.getVideoTitle();
-                String description = entry.getVideoDescription();
-                String tagList = entry.getVideoTagList();
-                String uploader = entry.getYouTubeName();
-                long updated = entry.getUpdated().getTime();
-                int status = entry.getStatus().ordinal();
-
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("videoId", videoId);
-                jsonObj.put("articleUrl", articleUrl);
-                jsonObj.put("assignmentId", assignmentId);
-                jsonObj.put("title", title);
-                jsonObj.put("description", description);
-                jsonObj.put("tags", tagList);
-                jsonObj.put("uploader", uploader);
-                jsonObj.put("updated", updated);
-                jsonObj.put("status", status);
-
-                jsonArray.put(jsonObj);
-            }
-
+        try {        	
+        	String json = Util.GSON.toJson(videoEntries);
+        	
             resp.setContentType("text/javascript");
-            resp.getWriter().println(jsonArray);
-        } catch(JSONException e) {
+            resp.getWriter().println(json);
+        } catch(Exception e) {
             log.warning(e.toString());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } finally {

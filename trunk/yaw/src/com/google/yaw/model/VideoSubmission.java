@@ -1,6 +1,7 @@
 package com.google.yaw.model;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -30,34 +31,41 @@ public class VideoSubmission implements Serializable {
 	private int SCHEMA_VERSION;
 	
 	// The id of the submission is based on the YouTube video ID.
-	// A submission is not allowed to be for multiple "articles".	
+	// A submission is not allowed to be for multiple "articles".
 	@PrimaryKey
 	@Persistent
 	private String id = null;
 
+	@Expose
 	@Persistent
 	private String videoId = null;
 
-	// The AuthSub token used when uploading this video.
+	// The AuthSub token used when uploading this video.	
 	@Persistent
 	private String authSubToken = null;
 
 	// The article on the news site that this submission belongs to.
+	@Expose
 	@Persistent
 	private String assignmentId = null;
 
+	@Expose
 	@Persistent
 	private String videoTitle = null;
 
+	@Expose
 	@Persistent
 	private String videoDescription = null;
 
+	@Expose
 	@Persistent
 	private String videoLocation = null;
 
+	@Expose
 	@Persistent
-	private String videoTagList = null;
-
+	private String videoTags = null;
+	
+	@Expose
 	@Persistent
 	private Date created;
 
@@ -65,20 +73,24 @@ public class VideoSubmission implements Serializable {
 	@Persistent
 	private String createdIndex;
 
+	@Expose
 	@Persistent
 	private Date updated;
 
 	public enum ModerationStatus {
 		UNREVIEWED, APPROVED, REJECTED
 	}
-
+	
+	@Expose
 	@Persistent
 	private int status;
 
 	// YouTube username of the uploader
+	@Expose	
 	@Persistent
-	private String youTubeName = null;
+	private String uploader = null;
 
+	@Expose	
 	@Persistent
 	private String articleUrl = null;
 
@@ -102,7 +114,7 @@ public class VideoSubmission implements Serializable {
 		this.videoId = videoId;
 		this.authSubToken = authSubToken;
 		this.assignmentId = assignmentId;
-		this.youTubeName = uploader;
+		this.uploader = uploader;
 		this.created = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -111,9 +123,9 @@ public class VideoSubmission implements Serializable {
 		setStatus(ModerationStatus.UNREVIEWED);
 		this.videoTitle = title;
 		this.videoDescription = description;
-		this.videoTagList = tagList;
+		this.videoTags = tagList;
 	}
-
+	
 	/**
 	 * Get the moderation status of the video.
 	 * 
@@ -215,8 +227,8 @@ public class VideoSubmission implements Serializable {
 	 * 
 	 * @return The YouTube user who submitted this video.
 	 */
-	public String getYouTubeName() {
-		return youTubeName;
+	public String getUploader() {
+		return uploader;
 	}
 
 	/**
@@ -225,8 +237,8 @@ public class VideoSubmission implements Serializable {
 	 * @param uploader
 	 *            A YouTube username.
 	 */
-	public void setYouTubeName(String youTubeName) {
-		this.youTubeName = youTubeName;
+	public void setUploader(String youTubeName) {
+		this.uploader = youTubeName;
 	}
 
 	public static int getDEFAULT_SCHEMA_VERSION() {
@@ -269,12 +281,12 @@ public class VideoSubmission implements Serializable {
 		this.videoLocation = videoLocation;
 	}
 
-	public String getVideoTagList() {
-		return videoTagList;
+	public String getVideoTags() {
+		return videoTags;
 	}
 
-	public void setVideoTagList(String videoTagList) {
-		this.videoTagList = videoTagList;
+	public void setVideoTags(String videoTags) {
+		this.videoTags = videoTags;
 	}
 
 	public void setId(String id) {
