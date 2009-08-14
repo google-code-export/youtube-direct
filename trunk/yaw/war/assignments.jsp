@@ -26,10 +26,11 @@
   String message = request.getParameter("message");
   if (message != null && message.length() > 0) {
 %>
-    <span id="message"><%= message %></span>
+    <div><%= message %></div>
 <%
   }
 %>
+    <div id="message"></div>
     <h3>Create a New Assignment</h3>
     <div id="createAssignment">
       <form id="createAssignmentForm" action="AssignmentHandler" method="post">
@@ -39,11 +40,13 @@
         <br>
         <label for="assignmentStatus">Assignment Status:</label>
         <br>
+        <script>window._ytAssignmentStatuses = [];</script>
         <select name="assignmentStatus" id="assignmentStatus">
 <%
   List<String> statuses = Assignment.getAssignmentStatusNames();
   for (String status: statuses) {
 %>
+          <script>window._ytAssignmentStatuses.push('<%= status %>:<%= status %>');</script>
           <option value="<%= status %>"><%= status %></option>
 <%
   }
@@ -52,11 +55,13 @@
         <br>
         <label for="category">YouTube Category:</label>
         <br>
+        <script>window._ytCategories = [];</script>
         <select name="category" id="category">
 <%
   List<String> categories = YouTubeApiManager.getCategoryCodes();
   for (String category: categories) {
 %>
+          <script>window._ytCategories.push('<%= category %>:<%= category %>');</script>
           <option value="<%= category %>"><%= category %></option>
 <%
   }
@@ -67,7 +72,7 @@
       </form>
     </div>
     <h3>Current Assignments</h3>
-    <table id="assignments"></table>
-    <div id="pager"></div>
+    <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
+    <div id="pager" class="scroll" style="text-align:center;"></div>
   </body>
 </html>
