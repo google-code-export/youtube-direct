@@ -28,7 +28,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'updated', 
 		index: 'updated', 
-		width: 150, 
+		width: 155, 
 		sorttype: 'date'});
 	
 	grid.colNames.push('Video ID');
@@ -36,6 +36,7 @@ function initDataGrid(data) {
 		name: 'videoId', 
 		index: 'videoId', 
 		width: 100, 
+		hidden: true,
 		sorttype: 'string'});
 
 	grid.colNames.push('Assignment ID');
@@ -43,6 +44,7 @@ function initDataGrid(data) {
 		name: 'assignmentId', 
 		index: 'assignmentId', 
 		width: 100, 
+		hidden: true,
 		sorttype: 'string'});	
 	
 	grid.colNames.push('Article URL');
