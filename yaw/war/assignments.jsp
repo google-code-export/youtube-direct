@@ -19,60 +19,31 @@
     <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script> 
     <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
     <script type="text/javascript" src="/js/assignments.js"></script>
-  </head>
-
-  <body>
-<%
-  String message = request.getParameter("message");
-  if (message != null && message.length() > 0) {
-%>
-    <div><%= message %></div>
-<%
-  }
-%>
-    <div id="message"></div>
-    <h3>Create a New Assignment</h3>
-    <div id="createAssignment">
-      <form id="createAssignmentForm" action="AssignmentHandler" method="post">
-        <label for="description">Description:</label>
-        <br>
-        <textarea class="inputBox" name="description" id="description"></textarea>
-        <br>
-        <label for="assignmentStatus">Assignment Status:</label>
-        <br>
-        <script>window._ytAssignmentStatuses = [];</script>
-        <select name="assignmentStatus" id="assignmentStatus">
+    
+    <script>
+      window._ytAssignmentStatuses = [];
+      window._ytCategories = [];
 <%
   List<String> statuses = Assignment.getAssignmentStatusNames();
   for (String status: statuses) {
 %>
-          <script>window._ytAssignmentStatuses.push('<%= status %>:<%= status %>');</script>
-          <option value="<%= status %>"><%= status %></option>
+      window._ytAssignmentStatuses.push('<%= status %>:<%= status %>');
 <%
   }
-%>
-        </select>
-        <br>
-        <label for="category">YouTube Category:</label>
-        <br>
-        <script>window._ytCategories = [];</script>
-        <select name="category" id="category">
-<%
+  
   List<String> categories = YouTubeApiManager.getCategoryCodes();
   for (String category: categories) {
 %>
-          <script>window._ytCategories.push('<%= category %>:<%= category %>');</script>
-          <option value="<%= category %>"><%= category %></option>
+      window._ytCategories.push('<%= category %>:<%= category %>');
 <%
   }
 %>
-        </select>
-        <br>
-        <input type="submit" value="Create Assignment"/>
-      </form>
-    </div>
-    <h3>Current Assignments</h3>
-    <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
-    <div id="pager" class="scroll" style="text-align:center;"></div>
+    </script>
+  </head>
+
+  <body>
+    <div id="message"></div>
+    <table id="datagrid"></table>
+    <div id="pager"></div>
   </body>
 </html>

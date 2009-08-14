@@ -21,7 +21,7 @@ function initDataGrid(data) {
   grid.cellsubmit = 'clientArray';
   grid.cellEdit = true;
   grid.autoWidth = true;
-  grid.editurl = '/UpdateAssignment';
+  grid.editurl = '/MutateAssignment';
   
   grid.colNames = [];
   grid.colModel = [];
@@ -30,7 +30,7 @@ function initDataGrid(data) {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 240,
+    width: 300,
     sorttype: 'string',
   });
   
@@ -40,8 +40,10 @@ function initDataGrid(data) {
     index: 'description', 
     width: 300,
     editable: true,
+    cellurl: '/MutateAssignment',
     edittype: 'textarea',
     editoptions: {rows:'3', cols: '30'},
+    editrules: {required: true},
     sorttype: 'string',
   });
   
@@ -51,48 +53,62 @@ function initDataGrid(data) {
     index: 'category', 
     width: 100,
     editable: true,
+    cellurl: '/MutateAssignment',
     edittype: 'select',
     editoptions: {value: window._ytCategories.join(';')},
+    editrules: {required: true},
     sorttype: 'string',
   });
   
-  grid.colNames.push('Assignment Status');  
+  grid.colNames.push('Status');  
   grid.colModel.push({
     name: 'status', 
     index: 'status', 
-    width: 60,      
-    edittype: 'select',
+    width: 80,      
     editable: true,
+    cellurl: '/MutateAssignment',
+    edittype: 'select',
     editoptions: {value: window._ytAssignmentStatuses.join(';')},
+    editrules: {required: true},
     sorttype: 'string',
   });
   
   grid.afterSaveCell = function(rowid, cellname, value, iRow, iCol) {
     var entry = jQuery('#datagrid').getRowData(rowid);
+    entry.oper = 'edit';
     updateAssignment(entry);
   };
-  
+
   grid.pager = jQuery('#pager');  
   var jqGrid = jQuery('#datagrid').jqGrid(grid);
   
-  for(var i = 0; i <= data.length; i++) {
-    jqGrid.addRowData(i + 1, data[i]);  
+  for(var i = 0; i < data.length; i++) {
+    jqGrid.addRowData(data[i]['id'], data[i]);  
   }
 
   jqGrid.navGrid('#pager',
-		  {edit: true, add: true, del: false, search: false, refresh: false})
+		  {edit: false, add: false, del: false, search: false, refresh: false})  
   .navButtonAdd('#pager', {
-     caption: 'Refresh', 
+    caption: 'Add Assignment',
+    onClickButton: function() {
+      jQuery('#datagrid').editGridRow('new', {
+        width: 400,
+        closeAfterAdd: true,
+        reloadAfterSubmit: true,
+      });
+    },
+  })
+  .navButtonAdd('#pager', {
+     caption: 'Refresh Assignments', 
      onClickButton: function() {
        getAllAssignments(function(data) {         
          jqGrid.clearGridData();
 
-         for(var i = 0; i <= data.length; i++) {
-           jqGrid.addRowData(i + 1, data[i]);  
+         for(var i = 0; i < data.length; i++) {
+           jqGrid.addRowData(data[i]['id'], data[i]);  
          }
        });
      },
-     position:"last"
   });
 }
 
@@ -102,11 +118,10 @@ function showMessage(text) {
 }
 
 function getAllAssignments(callback) {
-  var url = '/GetAllAssignments';
   var ajaxCall = {};
   ajaxCall.cache = false;
   ajaxCall.type = 'GET';
-  ajaxCall.url = url;
+  ajaxCall.url = '/GetAllAssignments';
   ajaxCall.dataType = 'json';
   
   ajaxCall.success = function(data) {
@@ -123,11 +138,10 @@ function getAllAssignments(callback) {
 }
 
 function updateAssignment(entry) {
-  var url = '/UpdateAssignment';
   var ajaxCall = {};
   ajaxCall.type = 'POST';
-  ajaxCall.url = url;
-  ajaxCall.data = JSON.stringify(entry);
+  ajaxCall.url = '/MutateAssignment';
+  ajaxCall.data = jQuery.param(entry);
   ajaxCall.cache = false;
   ajaxCall.processData = false;
   ajaxCall.success = function() {
