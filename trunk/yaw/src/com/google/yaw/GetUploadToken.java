@@ -58,7 +58,9 @@ public class GetUploadToken extends HttpServlet {
 	        String authSubToken = userSession.getAuthSubToken();
 	        String articleUrl = userSession.getArticleUrl();
 	        String assignmentId = userSession.getAssignmentId();
-
+	        
+	        log.warning(assignmentId);
+	        
 	        Assignment assignment = Util.getAssignmentById(assignmentId);
 	        if (assignment == null) {
 	            throw new IllegalArgumentException(String.format(
@@ -113,9 +115,9 @@ public class GetUploadToken extends HttpServlet {
 
 	        YouTubeApiManager apiManager = new YouTubeApiManager();
 	        apiManager.setToken(authSubToken);
-
+	        
 	        FormUploadToken token = apiManager.getFormUploadToken(newEntry);
-
+	        
 	        String uploadToken = token.getToken();
 	        String uploadUrl = token.getUrl();
 
