@@ -258,9 +258,8 @@ function showLoading(status, text) {
 		text = text || 'loading ...';		
 		jQuery('#status').html(text);		
 	} else {
-		jQuery('#status').empty();		
-	}
-	
+		jQuery('#status').html('&nbsp;');	
+	}	
 }
 
 function getVideoHTML(videoId) {

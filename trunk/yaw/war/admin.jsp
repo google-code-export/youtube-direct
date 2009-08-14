@@ -53,7 +53,7 @@ window.isLoggedIn = false;
 	</ul>
 	<div id="moderateTab">
 	  <br>
-	  <div id="status" style="font-size: 11px; color: red;"></div>
+	  <div id="status" style="font-size: 11px; color: red;">&nbsp;</div>
 	  <br>
 	  <div>	  	  
 	  <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
