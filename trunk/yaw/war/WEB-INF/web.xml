@@ -76,15 +76,6 @@
     <servlet-name>LogoutHandler</servlet-name>
     <url-pattern>/LogoutHandler</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-   <servlet-name>AssignmentHandler</servlet-name>
-   <servlet-class>com.google.yaw.AssignmentHandler</servlet-class>
-  </servlet>  
-  <servlet-mapping>
-    <servlet-name>AssignmentHandler</servlet-name>
-    <url-pattern>/AssignmentHandler</url-pattern>
-  </servlet-mapping>
     
   <servlet>
    <servlet-name>embed</servlet-name>

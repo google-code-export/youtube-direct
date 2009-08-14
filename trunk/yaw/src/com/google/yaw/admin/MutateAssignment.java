@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.yaw.Util;
 import com.google.yaw.model.Assignment;
+import com.google.yaw.model.Assignment.AssignmentStatus;
 
 public class MutateAssignment extends HttpServlet {
 
@@ -26,39 +27,79 @@ public class MutateAssignment extends HttpServlet {
         PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
         PersistenceManager pm = pmf.getPersistenceManager();
         
-        String json = Util.getPostBody(req);
+        try {
+            String id = req.getParameter("id");
+            String description = req.getParameter("description");
+            String category = req.getParameter("category");
+            String status = req.getParameter("status");
+            String operation = req.getParameter("oper");
+            
+            if (Util.isNullOrEmpty(operation)) {
+                throw new IllegalArgumentException("'oper' parameter is null or empty.");
+            }
+            if (Util.isNullOrEmpty(description)) {
+                throw new IllegalArgumentException("'description' parameter is null or empty.");
+            }
+            if (Util.isNullOrEmpty(category)) {
+                throw new IllegalArgumentException("'category' parameter is null or empty.");
+            }
+            if (Util.isNullOrEmpty(status)) {
+                throw new IllegalArgumentException("'status' parameter is null or empty.");
+            }
+            
+            if (operation.equals("add")) {
+                // This is an attempt to add a new Assignment.
+                log.fine(String.format("Attempting to persist Assignment with description '%s', " +
+                                "category '%s', and status '%s'...", description, category,
+                                status));
+                Assignment assignment = new Assignment(description, category,
+                                AssignmentStatus.valueOf(status));
+                Util.persistJdo(assignment);
+                log.fine(String.format("...Assignment with id '%s' persisted.",
+                                assignment.getId()));
+                
+                resp.setContentType("text/javascript");
+                resp.getWriter().println(Util.GSON.toJson(assignment));
+            } else if (operation.equals("edit")) {
+                // This is an attempt to edit an existing Assignment.
+                if (Util.isNullOrEmpty(id)) {
+                    throw new IllegalArgumentException("'id' parameter is null or empty.");
+                }
+                
+                String filters = "id == id_";
+                Query query = pm.newQuery(Assignment.class, filters);
+                query.declareParameters("String id_");
 
-        log.warning(json);
+                List<Assignment> list = (List<Assignment>)query.executeWithArray(
+                                new Object[] { id });
 
-        Assignment incomingAssignment = Util.GSON.fromJson(json, Assignment.class);                      
-        String id = incomingAssignment.getId();
+                if (list.size() > 0) {
+                    Assignment assignment = list.get(0);
+                    assignment = pm.detachCopy(assignment);
 
-        String filters = "id == id_";
-        Query query = pm.newQuery(Assignment.class, filters);
-        query.declareParameters("String id_");
+                    assignment.setDescription(description);
+                    assignment.setCategory(category);
+                    assignment.setStatus(Assignment.AssignmentStatus.valueOf(status));
 
-        List<Assignment> list = (List<Assignment>)query.executeWithArray(
-                        new Object[] { id });
+                    log.fine(String.format("Attempting to update Assignment with id '%s'...", id));
+                    Util.persistJdo(assignment);
+                    log.fine(String.format("...Assignment with id '%s' updated.", id));
 
-        if (list.size() > 0) {
-            Assignment updatedAssignment = list.get(0);
-            updatedAssignment = pm.detachCopy(updatedAssignment);
-
-            updatedAssignment.setDescription(incomingAssignment.getDescription());
-            updatedAssignment.setCategory(incomingAssignment.getCategory());
-            updatedAssignment.setStatus(incomingAssignment.getStatus());
-
-            Util.persistJdo(updatedAssignment);            
-
-            resp.setContentType("text/javascript");
-            resp.getWriter().println(Util.GSON.toJson(updatedAssignment));
-        } else {
-            String error = String.format("Could not find Assignment with id '%s'.",
-                            incomingAssignment.getId());
-            log.warning(error);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, error);
+                    resp.setContentType("text/javascript");
+                    resp.getWriter().println(Util.GSON.toJson(assignment));
+                } else {
+                    throw new IllegalArgumentException(String.format("Could not find Assignment" +
+                    		" with id '%s'.", id));
+                }
+            } else {
+                throw new IllegalArgumentException(String.format("Operation type '%s' is not " +
+                		"supported.", operation));
+            }
+        } catch (IllegalArgumentException e) {
+            log.warning(e.toString());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } finally {
+            pm.close();
         }
-        
-        pm.close();
     }
 }
