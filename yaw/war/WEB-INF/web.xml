@@ -13,6 +13,15 @@
     <servlet-name>GetAllSubmissions</servlet-name>
     <url-pattern>/GetAllSubmissions</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+	<servlet-name>UpdateSubmission</servlet-name>
+	<servlet-class>com.google.yaw.admin.UpdateSubmission</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateSubmission</servlet-name>
+    <url-pattern>/UpdateSubmission</url-pattern>
+  </servlet-mapping>
   
   <servlet>
   <servlet-name>GetAllAssignments</servlet-name>

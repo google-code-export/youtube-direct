@@ -12,7 +12,7 @@ function init() {
 function initDataGrid(data) {	
 	var grid = {};
 	grid.datatype = 'local';
-	grid.height = 400;
+	grid.height = 300;
 	grid.multiselect = false;
 	grid.caption = 'Video Submissions';
 	grid.rowNum = 10;
@@ -25,7 +25,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'updated', 
 		index: 'updated', 
-		width: 200, 
+		width: 150, 
 		sorttype: 'date'});
 	
 	grid.colNames.push('Video ID');
@@ -46,7 +46,8 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'articleUrl', 
 		index: 'articleUrl', 
-		width: 200, 
+		width: 100, 
+		formatter: 'link',
 		sorttype: 'string'});	
 	
 	grid.colNames.push('Uploader');
@@ -56,34 +57,32 @@ function initDataGrid(data) {
 		width: 100, 
 		sorttype: 'string'});
 	
-	grid.colNames.push('Title');
+	grid.colNames.push('Video Title');
 	grid.colModel.push({
-		name: 'title', 
-		index: 'title', 
-		width: 150, 
+		name: 'videoTitle', 
+		index: 'videoTitle', 
+		width: 100, 
 		sorttype: 'string', 
 		editable: true,		
-		edittype: 'textarea',
-		editoptions: {rows:'2', cols: '20'},});
+		edittype: 'text'});
 	
-	grid.colNames.push('Description');
+	grid.colNames.push('Video Description');
 	grid.colModel.push({
-		name: 'description', 
-		index: 'description', 
+		name: 'videoDescription', 
+		index: 'videoDescription', 
 		width: 200,
 		editable: true,
 		edittype: 'textarea',
 		editoptions: {rows:'3', cols: '30'},
 		sorttype: 'string'});
 	
-	grid.colNames.push('Tags');
+	grid.colNames.push('Video Tags');
 	grid.colModel.push({
-		name: 'tags', 
-		index: 'tags', 
+		name: 'videoTags', 
+		index: 'videoTags', 
 		width: 150, 
 		editable: true,
-		edittype: 'textarea',
-		editoptions: {rows:'2', cols: '20'},		
+		edittype: 'text',		
 		sorttype: 'string'});		
 	
 	grid.colNames.push('Approval Status');	
@@ -118,7 +117,10 @@ function initDataGrid(data) {
 	grid.autoWidth = true;
 	grid.cellEdit = true;
 	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
-		// save entry as JDO
+		// save entry as JDO		
+		var entry = jQuery('#datagrid').getRowData(rowid);
+		entry = postProcessEntry(entry);
+		updateSubmission(entry);
 	};
 	
 	grid.pager = jQuery('#pager');	
@@ -128,13 +130,6 @@ function initDataGrid(data) {
 	for(var i = 0; i <= data.length; i++) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
-
-	jQuery('#pager').navButtonAdd('#pager', {
-		caption: 'Preview Video', 
-		onClickButton: function() {
-			var selectedRow = jqGrid.getGridParam("selrow");
-			}
-	});	
 	
 }
 
@@ -145,18 +140,28 @@ function previewVideo(videoId) {
 	div.dialog();		
 }
 
-
-function processData(data) {	
+function preProcessData(data) {	
 	
 	data = data;
 	
 	for (var i = 0; i < data.length; i++) {
 		var entry = data[i];
-		entry.status = statusToString(entry.status);
+		entry.status = statusToString(entry.status);		
 		entry.updated = new Date(entry.updated);
+		entry.videoTags = JSON.parse(entry.videoTags).join(',');
 	}
 	
 	return data;
+}
+
+function postProcessEntry(entry) {
+	entry.status = stringToStatus(entry.status);
+	entry.videoTags = JSON.stringify(entry.videoTags.split(','));
+	
+	delete entry.updated; // TODO gson can't parse ...
+	delete entry.preview; // this is a button	
+	
+	return entry;
 }
 
 function statusToString(status) {
@@ -178,6 +183,25 @@ function statusToString(status) {
 	return newStatus;	
 }
 
+function stringToStatus(str) {
+	
+	var status = 0;
+	
+	switch (str) {
+		case 'unreviewed':
+			status = 0;
+			break;
+		case 'approved':
+			status = 1;
+			break;
+		case 'rejected':
+			status = 2;
+			break;
+	}
+	
+	return status;	
+}
+
 function getAllSubmissions() {
 	var url = '/GetAllSubmissions';
 	var ajaxCall = {};
@@ -186,7 +210,7 @@ function getAllSubmissions() {
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(entries) {			
-		entries = processData(entries);		
+		entries = preProcessData(entries);		
 		initDataGrid(entries);
 		showLoading(false);
 	};	
@@ -194,9 +218,28 @@ function getAllSubmissions() {
 	jQuery.ajax(ajaxCall);	
 }
 
-function showLoading(status) {
-	if (status) {
-		jQuery('#status').html("loading ...");		
+function updateSubmission(entry) {
+	var url = '/UpdateSubmission';
+    var ajaxCall = {};
+    ajaxCall.type = 'POST';
+    ajaxCall.url = url;
+    ajaxCall.data = JSON.stringify(entry);
+    ajaxCall.cache = false;
+    ajaxCall.processData = false;
+    ajaxCall.success = function(res) { 
+      showLoading(false);
+      console.log(res);
+    };
+    
+    showLoading(true, 'saving ...');
+    jQuery.ajax(ajaxCall);	
+	
+}
+
+function showLoading(status, text) {
+	if (status) {		
+		text = text || 'loading ...';		
+		jQuery('#status').html(text);		
 	} else {
 		jQuery('#status').empty();		
 	}

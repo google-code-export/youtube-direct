@@ -35,11 +35,11 @@
 <br>
 <div id="uploaderMain">
 <form id="uploadForm" action="" method="post" enctype="multipart/form-data">
-<label for="title">Title:</label>
+<label for="title">Title:</label>&nbsp;<span class="small">* required</span>
 <br>
 <input class="inputBox" type="text" name="title" id="title" />
 <br>
-<label for="description">Description:</label>
+<label for="description">Description:</label>&nbsp;<span class="small">* required</span>
 <br>
 <textarea class="inputBox" name="description" id="description"></textarea>
 <br>
@@ -51,7 +51,7 @@
 <br>
 <input class="inputBox" type="text" name="date" id="date" />
 <br>
-<label for="tags">Tags:</label>&nbsp;<span style="font-size: 9px; font-style: italic;">(use "," to separate)</span>
+<label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
 <br>
 <input class="inputBox" type="text" name="tags" id="tags" />
 <br>
