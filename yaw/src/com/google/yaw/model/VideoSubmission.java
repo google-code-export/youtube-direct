@@ -64,6 +64,10 @@ public class VideoSubmission implements Serializable {
 	@Expose
 	@Persistent
 	private String videoTags = null;
+
+	@Expose
+	@Persistent
+	private String notifyEmail = null;		
 	
 	@Expose
 	@Persistent
@@ -327,5 +331,13 @@ public class VideoSubmission implements Serializable {
 	
 	public String getAssignmentId() {
 	    return assignmentId;
+	}	
+	
+	public String getNotifyEmail() {
+		return notifyEmail;
 	}
+
+	public void setNotifyEmail(String notifyEmail) {
+		this.notifyEmail = notifyEmail;
+	}	
 }

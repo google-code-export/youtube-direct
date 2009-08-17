@@ -34,12 +34,12 @@
 <span id="message"></span> 
 <br>
 <div id="uploaderMain">
-<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
-<label for="title">Title:</label>&nbsp;<span class="small">* required</span>
+
+<label for="title">Title:</label>
 <br>
 <input class="inputBox" type="text" name="title" id="title" />
 <br>
-<label for="description">Description:</label>&nbsp;<span class="small">* required</span>
+<label for="description">Description:</label>
 <br>
 <textarea class="inputBox" name="description" id="description"></textarea>
 <br>
@@ -54,17 +54,21 @@
 <label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
 <br>
 <input class="inputBox" type="text" name="tags" id="tags" />
+<br> 
+Email me on approval: <input id="emailCheckbox" type="checkbox" />
+<input id="email" type="text" value="" style="visibility: hidden"/>
 <br>
-<br> Choose file: 
-<input id="file" type="file" name="file" />
+<br> 
+<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
+Select file: <input id="file" type="file" name="file" />
 <br>
 <br>
 <div align="center">
-<br>
-<input id="uploadButton" type="submit" value="Upload" />
-<div id="uploading"></div>
+	<br>
+	<input id="token" type="hidden" name="token" value="">
+	<input id="uploadButton" type="submit" value="Upload" />
+	<div id="uploading"></div>
 </div>
-<input id="token" type="hidden" name="token" value="">
 </form>
 
 <%

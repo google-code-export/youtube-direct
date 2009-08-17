@@ -13,6 +13,16 @@ function init() {
 		return false;
 	});	
 	
+	jQuery('#emailCheckbox').change(function() {
+		var checked = jQuery(this).get(0).checked;
+		
+		if (checked) {
+			jQuery('#email').css('visibility', 'visible');			
+		} else {
+			jQuery('#email').css('visibility', 'hidden');			
+		}
+	});
+	
 	jQuery("#date").datepicker();
 
 }
@@ -21,6 +31,8 @@ function getUploadToken() {
 	var title = jQuery('#title').val();
 	var description = jQuery('#description').val();
 	var location = jQuery('#location').val();
+	var email = jQuery('#email').val();
+	
 	var tagsString = jQuery('#tags').val();
 	
 	var tags = tagsString.split(',');	
@@ -32,6 +44,7 @@ function getUploadToken() {
 	jsonObj.title = title;
 	jsonObj.description = description;
 	jsonObj.location = location;
+	jsonObj.email = email;
 	jsonObj.tags = tags;
 
 	console.log(jsonObj);

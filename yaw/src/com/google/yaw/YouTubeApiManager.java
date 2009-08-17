@@ -87,14 +87,17 @@ public class YouTubeApiManager {
 	 */
 	public FormUploadToken getFormUploadToken(VideoEntry newEntry)
 			throws ServiceException, IOException {
+		
+		FormUploadToken token = null;
+		
 		try {
 			URL uploadUrl = new URL(uploadToken);
-			return service.getFormUploadToken(uploadUrl, newEntry);
-		} catch (MalformedURLException e) {
-		    log.warning(e.toString());
+			token = service.getFormUploadToken(uploadUrl, newEntry);
+		} catch (Exception e) {			
+		    log.warning("upload token error: " + e.toString());
 		}
 		
-		return null;
+		return token;
 	}
 	
 	public static List<String> getCategoryCodes() {

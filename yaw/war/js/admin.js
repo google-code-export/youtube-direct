@@ -62,6 +62,13 @@ function initDataGrid(data) {
 		width: 100, 
 		sorttype: 'string'});
 	
+	grid.colNames.push('Email');
+	grid.colModel.push({
+		name: 'notifyEmail', 
+		index: 'notifyEmail', 
+		width: 100, 
+		sorttype: 'string'});	
+	
 	grid.colNames.push('Video Title');
 	grid.colModel.push({
 		name: 'videoTitle', 
@@ -75,7 +82,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'videoDescription', 
 		index: 'videoDescription', 
-		width: 200,
+		width: 150,
 		editable: true,
 		edittype: 'textarea',
 		editoptions: {rows:'3', cols: '30'},
@@ -229,7 +236,8 @@ function getAllSubmissions(callback) {
 	ajaxCall.type = 'GET';
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
-	ajaxCall.success = function(entries) {						
+	ajaxCall.success = function(entries) {
+		console.log(entries);
 		showLoading(false);
 		callback(entries);
 	};	

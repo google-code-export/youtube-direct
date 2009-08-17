@@ -35,6 +35,7 @@ public class UploadResponseHandler extends HttpServlet {
 			String videoTitle = userSession.getVideoTitle();
 			String videoDescription = userSession.getVideoDescription();
 			String uploader = userSession.getYouTubeName();
+			String email = userSession.getEmail();
 			String videoTags = userSession.getVideoTagList();
 			
 			log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' " +
@@ -42,14 +43,17 @@ public class UploadResponseHandler extends HttpServlet {
 			VideoSubmission submission = new VideoSubmission(
 					assignmentId, articleUrl, videoId, videoTitle,
 					videoDescription, videoTags, uploader, authSubToken);
+			
+			log.warning("email: " + email);
+			
+			submission.setNotifyEmail(email);
 			Util.persistJdo(submission);
 	        log.fine("...VideoSubmission persisted.");
 
 			try {
 				JSONObject responseJsonObj = new JSONObject();
 				responseJsonObj.put("videoId", videoId);
-				responseJsonObj.put("status", status);
-				
+				responseJsonObj.put("status", status);				
 				resp.setContentType("text/javascript");
 				resp.getWriter().println(responseJsonObj.toString());
 			} catch (JSONException e) {
