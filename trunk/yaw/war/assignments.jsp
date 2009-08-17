@@ -43,7 +43,14 @@
 
   <body>
     <div id="message"></div>
+    <br/>
     <table id="datagrid"></table>
     <div id="pager"></div>
+    <br/>
+    <form action="javascript:filterDescriptions()">
+      <label for="descriptionFilter">Search Descriptions:</label>
+      <input type="text" id="descriptionFilter"></input>
+      <input type="submit" value="Search"></input>
+    </form>
   </body>
 </html>
