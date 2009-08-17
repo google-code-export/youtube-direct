@@ -136,7 +136,7 @@ function initDataGrid(data) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
 
-	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false})
+	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false,refresh: false})
 	.navButtonAdd('#pager',{
 	   caption:"Refresh", 
 	   onClickButton: function(){
