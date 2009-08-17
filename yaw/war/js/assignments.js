@@ -47,8 +47,6 @@ function initDataGrid(data) {
     editoptions: {rows:'3', cols: '30'},
     editrules: {required: true},
     sorttype: 'string',
-    search: true,
-    stype: 'text',
   });
   
   grid.colNames.push('Category');
@@ -93,26 +91,28 @@ function initDataGrid(data) {
   jqGrid.navGrid('#pager',
 		  {edit: false, add: false, del: false, search: false, refresh: false})  
   .navButtonAdd('#pager', {
+    buttonicon: 'ui-icon-plus',
     caption: 'Add Assignment',
     onClickButton: function() {
       jQuery('#datagrid').editGridRow('new', {
         width: 400,
         closeAfterAdd: true,
-        reloadAfterSubmit: true,
+        reloadAfterSubmit: true, // This doesn't do anything...
       });
     },
   })
   .navButtonAdd('#pager', {
-     caption: 'Refresh', 
-     onClickButton: function() {
-       getAllAssignments(function(data) {     
-         jqGrid.clearGridData();
+    buttonicon: 'ui-icon-refresh',
+    caption: 'Refresh', 
+    onClickButton: function() {
+      getAllAssignments(function(data) {     
+        jqGrid.clearGridData();
 
-         for(var i = 0; i < data.length; i++) {
-           jqGrid.addRowData(data[i]['id'], data[i]);  
-         }
-       });
-     },
+        for(var i = 0; i < data.length; i++) {
+          jqGrid.addRowData(data[i]['id'], data[i]);  
+        }
+      });
+    },
   });
 }
 
@@ -136,7 +136,7 @@ function filterDescriptions() {
 }
 
 function showMessage(text) {
-  console.log(text);
+  // console.log(text);
 	jQuery('#message').html(text);
 }
 
