@@ -40,6 +40,7 @@ public class GetUploadToken extends HttpServlet {
 	        String title = jsonObj.getString("title");
 	        String description = jsonObj.getString("description");
 	        String location = jsonObj.getString("location");
+	        String email = jsonObj.getString("email");
 	        JSONArray tagsArray = jsonObj.getJSONArray("tags");
 
 	        // Only check for required parameters 'title' and 'description'.
@@ -59,7 +60,7 @@ public class GetUploadToken extends HttpServlet {
 	        String articleUrl = userSession.getArticleUrl();
 	        String assignmentId = userSession.getAssignmentId();
 	        
-	        log.warning(assignmentId);
+	        log.warning("current assignment id = " + assignmentId);
 	        
 	        Assignment assignment = Util.getAssignmentById(assignmentId);
 	        if (assignment == null) {
@@ -73,7 +74,8 @@ public class GetUploadToken extends HttpServlet {
 	                            "Current status of assignment id '%s' is '%s'.",
 	                            assignmentId, status));
 	        }
-
+	        
+	        userSession.setEmail(email);
 	        userSession.setVideoTitle(title);
 	        userSession.setVideoDescription(description);
 	        userSession.setVideoLocation(location);
@@ -118,8 +120,15 @@ public class GetUploadToken extends HttpServlet {
 	        
 	        FormUploadToken token = apiManager.getFormUploadToken(newEntry);
 	        
-	        String uploadToken = token.getToken();
-	        String uploadUrl = token.getUrl();
+	        String uploadToken = null;
+	        String uploadUrl = null;
+	        
+	        if (token == null) {
+	        	log.warning("upload token is null!");	        	
+	        } else {	        	
+	        	uploadToken = token.getToken();
+		        uploadUrl = token.getUrl();	        	
+	        }	        
 
 	        JSONObject responseJsonObj = new JSONObject();
 	        responseJsonObj.put("uploadToken", uploadToken);
