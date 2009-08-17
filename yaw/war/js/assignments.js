@@ -1,3 +1,5 @@
+var _ytLatestData = null;
+
 jQuery(document).ready( function() {
   //TODO: Ensure that users are logged in.
   //console.log(window.isLoggedIn);
@@ -11,7 +13,7 @@ function init() {
   getAllAssignments(initDataGrid);
 }
 
-function initDataGrid(data) { 
+function initDataGrid(data) {
   var grid = {};
   grid.datatype = 'local';
   grid.height = 300;
@@ -45,6 +47,8 @@ function initDataGrid(data) {
     editoptions: {rows:'3', cols: '30'},
     editrules: {required: true},
     sorttype: 'string',
+    search: true,
+    stype: 'text',
   });
   
   grid.colNames.push('Category');
@@ -99,9 +103,9 @@ function initDataGrid(data) {
     },
   })
   .navButtonAdd('#pager', {
-     caption: 'Refresh Assignments', 
+     caption: 'Refresh', 
      onClickButton: function() {
-       getAllAssignments(function(data) {         
+       getAllAssignments(function(data) {     
          jqGrid.clearGridData();
 
          for(var i = 0; i < data.length; i++) {
@@ -110,6 +114,25 @@ function initDataGrid(data) {
        });
      },
   });
+}
+
+function filterDescriptions() {
+  descriptionFilter = jQuery('#descriptionFilter').val().toLowerCase();
+  showMessage('Searching for "' + descriptionFilter + '" in assignment description...');
+  
+  jqGrid = jQuery('#datagrid');
+  jqGrid.clearGridData();
+  
+  count = 0;
+  for (var i = 0; i < _ytLatestData.length; i++) {
+    description = _ytLatestData[i]['description'];
+    if (description != null && description.toLowerCase().indexOf(descriptionFilter) != -1) {
+      count++;
+      jqGrid.addRowData(_ytLatestData[i]['id'], _ytLatestData[i]);
+    }
+  }
+  
+  showMessage('Found ' + count + ' article(s) whose description matches "' + descriptionFilter + '".');
 }
 
 function showMessage(text) {
@@ -125,6 +148,7 @@ function getAllAssignments(callback) {
   ajaxCall.dataType = 'json';
   
   ajaxCall.success = function(data) {
+    _ytLatestData = data;
     showMessage('Assignments loaded successfully.');
     callback(data);
   };
