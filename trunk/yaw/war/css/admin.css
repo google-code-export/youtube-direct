@@ -15,9 +15,12 @@ body {
 	font-size: 13px;	
 }
 
+#tabs {
+	width: 1000px;
+}
+
 #moderateTab {
 	height: 600px;
-	widht: 100%;
 	text-align: left;	
 }
 

@@ -1,3 +1,5 @@
+window.submissionData = [];
+
 jQuery(document).ready( function() {
 	if (window.isLoggedIn) {		
 		jQuery('#tabs').tabs();		
@@ -6,10 +8,39 @@ jQuery(document).ready( function() {
 });
 
 function init() {
+			
 	getAllSubmissions(function(entries) {
-		entries = preProcessData(entries);	
+		entries = preProcessData(entries);		
 		initDataGrid(entries);
-	});	
+	});
+	
+	jQuery('#searchText').keyup(function() {
+		var text = jQuery(this).val();
+		var matches = filterSubmissions(text);
+		refreshGridUI(matches);
+	});
+	
+}
+
+function filterSubmissions(text) {
+	
+	var ret = [];
+	
+	var regex = new RegExp(text, 'i');
+	
+	for (var i = 0; i < window.submissionData.length; i++) {
+		var entry = window.submissionData[i];
+		
+		var title = entry.videoTitle;
+		var description = entry.videoDescription;
+		var tags = entry.videoTags;
+		
+		if (regex.test(title) || regex.test(description) || regex.test(tags)) {			
+			ret.push(entry);
+		}
+	}
+	
+	return ret;
 }
 
 function initDataGrid(data) {	
@@ -60,6 +91,7 @@ function initDataGrid(data) {
 		name: 'uploader', 
 		index: 'uploader', 
 		width: 100, 
+		hidden: true,
 		sorttype: 'string'});
 	
 	grid.colNames.push('Email');
@@ -92,7 +124,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'videoTags', 
 		index: 'videoTags', 
-		width: 150, 
+		width: 130, 
 		editable: true,
 		edittype: 'text',		
 		sorttype: 'string'});		
@@ -101,7 +133,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'status', 
 		index: 'status', 
-		width: 100, 
+		width: 130, 
 		sorttype: 'string',			
 		edittype: 'select',
 		editable: true,
@@ -142,18 +174,14 @@ function initDataGrid(data) {
 	for(var i = 0; i <= data.length; i++) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
-
+	
 	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false,refresh: false})
 	.navButtonAdd('#pager',{
 	   caption:"Refresh", 
-	   onClickButton: function(){
-		 
-	     getAllSubmissions(function(entries) {	    	 
-	    	 jqGrid.clearGridData();
+	   onClickButton: function(){		 
+	     getAllSubmissions(function(entries) {
 	    	 entries = preProcessData(entries);
-	    	 for(var i = 0; i <= entries.length; i++) {
-	    		 jqGrid.addRowData(i + 1, entries[i]); 	
-	    	 }
+	    	 refreshGridUI(entries);
 	     });
 	   }, 
 	   position:"last"
@@ -162,10 +190,21 @@ function initDataGrid(data) {
 	
 }
 
+function refreshGridUI(entries) {	
+	var jqGrid = jQuery('#datagrid').clearGridData();		
+	for(var i = 0; i <= entries.length; i++) {
+		jqGrid.addRowData(i + 1, entries[i]); 	
+	}	
+}
+
 function previewVideo(videoId) {
+	
+	var width = 275;
+	var height = 250;
+	
 	jQuery.ui.dialog.defaults.bgiframe = true;	
 	var div = jQuery('<div/>');
-	div.html(getVideoHTML(videoId));
+	div.html(getVideoHTML(videoId, width, height));
 	div.dialog();		
 }
 
@@ -237,6 +276,7 @@ function getAllSubmissions(callback) {
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(entries) {
+		window.submissionData = entries;
 		console.log(entries);
 		showLoading(false);
 		callback(entries);
@@ -272,12 +312,15 @@ function showLoading(status, text) {
 	}	
 }
 
-function getVideoHTML(videoId) {
+function getVideoHTML(videoId, width, height) {
+	
+	width = width || 250;
+	height = height || 250;
 	
 	var youtubeUrl = 'http://www.youtube.com/v/' + videoId;
 	
 	var html = [];
-	html.push('<object width="250" height="200">');
+	html.push('<object width="' + width + '" height="' + height + '">');
 	html.push('<param name="movie" value="');
 	html.push(youtubeUrl);
 	html.push('&hl=en&fs=1&"></param>');
@@ -286,7 +329,7 @@ function getVideoHTML(videoId) {
 	html.push('<embed src="');
 	html.push(youtubeUrl);
 	html.push('&hl=en&fs=1&" type="application/x-shockwave-flash"');
-	html.push(' allowscriptaccess="always" allowfullscreen="true" width="250" height="200">');
+	html.push(' allowscriptaccess="always" allowfullscreen="true" width="' + width + '" height="' + height + '">');
 	html.push('</embed></object>');	
 	
 	return html.join('');

@@ -34,8 +34,6 @@ public class UpdateSubmission extends HttpServlet {
         
     	try {
 	    	String json = Util.getPostBody(req);
-	    	
-	    	log.warning(json);
 	    		    		    	
 	    	VideoSubmission entry = null;
 	    	

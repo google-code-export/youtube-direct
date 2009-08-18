@@ -30,7 +30,6 @@ public class GetAllSubmissions extends HttpServlet {
         PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
         PersistenceManager pm = pmf.getPersistenceManager();
 
-
 		Query query = pm.newQuery(VideoSubmission.class);
 		query.declareImports("import java.util.Date");
 		query.setOrdering("updated desc");
