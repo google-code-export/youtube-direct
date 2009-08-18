@@ -44,8 +44,6 @@ public class UploadResponseHandler extends HttpServlet {
 					assignmentId, articleUrl, videoId, videoTitle,
 					videoDescription, videoTags, uploader, authSubToken);
 			
-			log.warning("email: " + email);
-			
 			submission.setNotifyEmail(email);
 			Util.persistJdo(submission);
 	        log.fine("...VideoSubmission persisted.");

@@ -33,20 +33,25 @@ public class Authenticator {
 		String assignmentId = request.getParameter("assignmentId");
 		String articleUrl = request.getParameter("articleUrl");
 		
+		log.warning("article url = " + articleUrl);
+				
 		String selfUrl = Util.getSelfUrl(request);
 
 		if (userSession == null) {
 			userSession = new UserSession();
-			userSession.setAssignmentId(assignmentId);
-			userSession.setArticleUrl(articleUrl);
-			userSession.setSelfUrl(selfUrl);
 			userSession = UserSessionManager.save(userSession);
-
 			// stick the session id as cookie
 			UserSessionManager.sendSessionIdCookie(userSession.getId(),
 					response);
+			
+			log.warning("no session");
 		}
 
+		userSession.setAssignmentId(assignmentId);
+		userSession.setArticleUrl(articleUrl);
+		userSession.setSelfUrl(selfUrl);
+		userSession = UserSessionManager.save(userSession);
+		
 		String authSubToken = userSession.getAuthSubToken();
 		
 		if (authSubToken != null) {
@@ -70,10 +75,14 @@ public class Authenticator {
 				// stick the session id as cookie
 				UserSessionManager.sendSessionIdCookie(userSession.getId(),
 						response);
+				log.warning("bad authsub token");
 			} else {
 				// good token
 				log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
+				log.warning("good authsub token");
 			}
+		} else {
+			log.warning("has no authsub token");			
 		}
 	}
 	
@@ -108,6 +117,8 @@ public class Authenticator {
 
 	public String getLogInUrl() {
 		String articleUrl = userSession.getArticleUrl();
+		
+		log.warning("getLogInUrl articleUrl = " + articleUrl);			
 		
 		StringBuffer nextUrl = new StringBuffer();
 		nextUrl.append(request.getScheme());

@@ -30,7 +30,7 @@
     User user = userService.getCurrentUser();
     if (user != null) {
 %>
-<p><%= user.getNickname() %> [ <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">logout</a> ]</p>
+<p><b><%= user.getNickname() %></b> [ <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">logout</a> ]</p>
 <script type="text/javascript">
 window.isLoggedIn = true;
 </script>
@@ -52,14 +52,13 @@ window.isLoggedIn = false;
 		<li><a href="#configureTab">Configure</a></li>
 	</ul>
 	<div id="moderateTab">
-	
+	  <br>
+	  Filter: <input id="searchText" type="text" ><br>	
 	  <br>
 	  <div id="status" style="font-size: 11px; color: red;">&nbsp;</div>
-	  <br>
-	  <div align="center">	  	
+	  <br>  	
 	  <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	  <div id="pager" class="scroll" style="text-align:center;"></div>
-	  </div>
 	</div>
 	<div id="configureTab">
 		<p></p>

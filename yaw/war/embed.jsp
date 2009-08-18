@@ -26,20 +26,30 @@
 <div id="main">
 <%
 	if (!authenticator.isLoggedIn()) {		
-%> [ <a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';">login</a>
-] <%
+%> 
+<div align="center">
+<a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';"><img src="icon.png" border="0"></a>
+</div> 
+<script type="text/javascript">
+	window.isLoggedIn = false;
+</script>
+<%
 	} else {
-%> <%= authenticator.getUserSession().getYouTubeName() %> [ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] <br>
+%> <%= authenticator.getUserSession().getYouTubeName() %> [ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] 
+<script type="text/javascript">
+	window.isLoggedIn = true;
+</script>
+<br>
 <br>
 <span id="message"></span> 
 <br>
 <div id="uploaderMain">
 
-<label for="title">Title:</label>
+<label for="title">Video Title:</label>
 <br>
 <input class="inputBox" type="text" name="title" id="title" />
 <br>
-<label for="description">Description:</label>
+<label for="description">Video Description:</label>
 <br>
 <textarea class="inputBox" name="description" id="description"></textarea>
 <br>

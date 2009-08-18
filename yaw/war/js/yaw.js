@@ -2,29 +2,33 @@ jQuery(document).ready(function() {
 	init();	
 });
 
-function init() {
-	window.URL_PARAMS = getUrlParams();
-	
-	jQuery('#uploadButton').click(function() {		
-		var img = jQuery('<img/>');
-		img.attr('src', 'loading.gif');
-		jQuery('#uploading').append(img);		
-		getUploadToken();			
-		return false;
-	});	
-	
-	jQuery('#emailCheckbox').change(function() {
-		var checked = jQuery(this).get(0).checked;
+function init() {	
+	if (window.isLoggedIn) {
 		
-		if (checked) {
-			jQuery('#email').css('visibility', 'visible');			
-		} else {
-			jQuery('#email').css('visibility', 'hidden');			
-		}
-	});
-	
-	jQuery("#date").datepicker();
-
+		jQuery(document.body).css('background', 'lightGray');
+		
+		window.URL_PARAMS = getUrlParams();
+		
+		jQuery('#uploadButton').click(function() {		
+			var img = jQuery('<img/>');
+			img.attr('src', 'loading.gif');
+			jQuery('#uploading').append(img);		
+			getUploadToken();			
+			return false;
+		});	
+		
+		jQuery('#emailCheckbox').change(function() {
+			var checked = jQuery(this).get(0).checked;
+			
+			if (checked) {
+				jQuery('#email').css('visibility', 'visible');			
+			} else {
+				jQuery('#email').css('visibility', 'hidden');			
+			}
+		});
+		
+		jQuery("#date").datepicker();				
+	}
 }
 
 function getUploadToken() {
