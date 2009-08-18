@@ -136,10 +136,7 @@ function filterDescriptions() {
 }
 
 function showMessage(text) {
-<<<<<<< .mine
-=======
   // console.log(text);
->>>>>>> .r43
 	jQuery('#message').html(text);
 }
 
