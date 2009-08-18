@@ -41,6 +41,9 @@ public class UpdateSubmission extends HttpServlet {
 	    	
 	    	String id = jsonObj.getId();
 	    	
+	    	//entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);   
+	    	
+	    	
 			String filters = "id == id_";
 			Query query = pm.newQuery(VideoSubmission.class, filters);
 			query.declareParameters("String id_");
@@ -51,7 +54,7 @@ public class UpdateSubmission extends HttpServlet {
 			if (list.size() > 0) {
 				entry = list.get(0);
 				entry = pm.detachCopy(entry);
-			}
+			}			
 			
 			entry.setVideoId(jsonObj.getVideoId());
 			entry.setStatus(jsonObj.getStatus());

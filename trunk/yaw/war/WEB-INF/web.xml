@@ -23,6 +23,15 @@
     <url-pattern>/UpdateSubmission</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+	<servlet-name>DeleteSubmission</servlet-name>
+	<servlet-class>com.google.yaw.admin.DeleteSubmission</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSubmission</servlet-name>
+    <url-pattern>/DeleteSubmission</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
   <servlet-name>MutateAssignment</servlet-name>
   <servlet-class>com.google.yaw.admin.MutateAssignment</servlet-class>
