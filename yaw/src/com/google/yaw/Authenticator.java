@@ -15,7 +15,7 @@ public class Authenticator {
 
 	private HttpServletRequest request = null;
 	private HttpServletResponse response = null;
-
+	
 	private static final String SCOPE = "http://gdata.youtube.com";
 	private static final String AUTHSUB_HANDLER = "/AuthsubHandler";
 
@@ -32,8 +32,6 @@ public class Authenticator {
 
 		String assignmentId = request.getParameter("assignmentId");
 		String articleUrl = request.getParameter("articleUrl");
-		
-		log.warning("article url = " + articleUrl);
 				
 		String selfUrl = Util.getSelfUrl(request);
 
@@ -43,8 +41,6 @@ public class Authenticator {
 			// stick the session id as cookie
 			UserSessionManager.sendSessionIdCookie(userSession.getId(),
 					response);
-			
-			log.warning("no session");
 		}
 
 		userSession.setAssignmentId(assignmentId);
@@ -75,14 +71,10 @@ public class Authenticator {
 				// stick the session id as cookie
 				UserSessionManager.sendSessionIdCookie(userSession.getId(),
 						response);
-				log.warning("bad authsub token");
 			} else {
 				// good token
 				log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
-				log.warning("good authsub token");
 			}
-		} else {
-			log.warning("has no authsub token");			
 		}
 	}
 	
@@ -116,9 +108,7 @@ public class Authenticator {
 	}
 
 	public String getLogInUrl() {
-		String articleUrl = userSession.getArticleUrl();
-		
-		log.warning("getLogInUrl articleUrl = " + articleUrl);			
+		String articleUrl = userSession.getArticleUrl();	
 		
 		StringBuffer nextUrl = new StringBuffer();
 		nextUrl.append(request.getScheme());

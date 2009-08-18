@@ -51,7 +51,7 @@ function getUploadToken() {
 	jsonObj.email = email;
 	jsonObj.tags = tags;
 
-	console.log(jsonObj);
+	//console.log(jsonObj);
 	
     var ajaxCall = {};
     ajaxCall.type = 'POST';
@@ -63,8 +63,8 @@ function getUploadToken() {
         var uploadToken = res.uploadToken;
         var uploadUrl = res.uploadUrl;
         
-		console.log(uploadToken);
-		console.log(uploadUrl);
+		//console.log(uploadToken);
+		//console.log(uploadUrl);
         
 		if (uploadToken == 'null' || uploadUrl == 'null') {
 			// handle upload error

@@ -4,6 +4,7 @@ body {
 	font-family: arial;
 	text-align: center;
 }
+
 #videoDisplay {
 	position: absolute;
 	top: 0px;
@@ -16,7 +17,7 @@ body {
 }
 
 #tabs {
-	width: 1000px;
+	width: 1200px;
 }
 
 #moderateTab {

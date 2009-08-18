@@ -23,8 +23,8 @@ import com.google.yaw.model.VideoSubmission;
 public class UpdateSubmission extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(UpdateSubmission.class
-                    .getName());
-
+                    .getName());    
+    
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
     throws IOException {
@@ -39,20 +39,21 @@ public class UpdateSubmission extends HttpServlet {
 	    	
 	    	VideoSubmission jsonObj = Util.GSON.fromJson(json, VideoSubmission.class);	    		    	
 	    	
-	    	String videoId = jsonObj.getVideoId();
+	    	String id = jsonObj.getId();
 	    	
-			String filters = "videoId == videoId_";
+			String filters = "id == id_";
 			Query query = pm.newQuery(VideoSubmission.class, filters);
-			query.declareParameters("String videoId_");
+			query.declareParameters("String id_");
 			
 			List<VideoSubmission> list = (List<VideoSubmission>) 
-					query.executeWithArray(new Object[] { videoId });
+					query.executeWithArray(new Object[] { id });
 			
 			if (list.size() > 0) {
 				entry = list.get(0);
 				entry = pm.detachCopy(entry);
 			}
 			
+			entry.setVideoId(jsonObj.getVideoId());
 			entry.setStatus(jsonObj.getStatus());
 			entry.setVideoTitle(jsonObj.getVideoTitle());
 			entry.setVideoDescription(jsonObj.getVideoDescription());

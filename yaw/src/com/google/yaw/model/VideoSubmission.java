@@ -1,6 +1,5 @@
 package com.google.yaw.model;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
@@ -8,33 +7,30 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-/**
- * Model class for a video submission to the system.
- * 
- */
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class VideoSubmission implements Serializable {
 
 	// The default "version" of this model
 	private static int DEFAULT_SCHEMA_VERSION = 1;
-
+		
 	// The version of the model - used for upgrading entities if the data model
 	// changes.
 	@Persistent
 	private int SCHEMA_VERSION;
-	
-	// The id of the submission is based on the YouTube video ID.
-	// A submission is not allowed to be for multiple "articles".
-	@PrimaryKey
-	@Persistent
-	private String id = null;
+
+    @PrimaryKey
+    @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    @Expose
+    private String id;
 
 	@Expose
 	@Persistent
@@ -64,10 +60,6 @@ public class VideoSubmission implements Serializable {
 	@Expose
 	@Persistent
 	private String videoTags = null;
-
-	@Expose
-	@Persistent
-	private String notifyEmail = null;		
 	
 	@Expose
 	@Persistent
@@ -98,6 +90,10 @@ public class VideoSubmission implements Serializable {
 	@Persistent
 	private String articleUrl = null;
 
+	@Expose	
+	@Persistent
+	private String notifyEmail = null;		
+	
 	/**
 	 * Create a new video submission entry object for the datastore.
 	 * 
@@ -114,7 +110,6 @@ public class VideoSubmission implements Serializable {
 			String authSubToken) {
 		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
 		this.articleUrl = articleUrl;
-		this.id = "video-" + videoId;
 		this.videoId = videoId;
 		this.authSubToken = authSubToken;
 		this.assignmentId = assignmentId;
@@ -293,10 +288,6 @@ public class VideoSubmission implements Serializable {
 		this.videoTags = videoTags;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
@@ -331,13 +322,15 @@ public class VideoSubmission implements Serializable {
 	
 	public String getAssignmentId() {
 	    return assignmentId;
-	}	
-	
-	public String getNotifyEmail() {
-		return notifyEmail;
 	}
 
-	public void setNotifyEmail(String notifyEmail) {
-		this.notifyEmail = notifyEmail;
-	}	
+	public void setEmail(String email) {
+		this.notifyEmail = email;
+	}
+
+	public String getEmail() {
+		return notifyEmail;
+	}
+	
+	
 }
