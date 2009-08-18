@@ -17,8 +17,10 @@
 		for (var i=0; i<entries.length; i++) {
 			var entry = entries[i];
 			var id = entry.videoId;
+			var title = entry.videoTitle;
 			var status = entry.status;
 			if (status == 1) {
+				jQuery('#list').append('<b>' + title + '</b><br><br>');
 				jQuery('#list').append(getVideoHTML(id, 200, 175));
 				jQuery('#list').append('<br><br>');
 			}
@@ -71,6 +73,9 @@ body {
   font-family: arial;
 }
 b {
+	font-size: 13px;
+}
+h2 {
 	font-size: 15px;
 }
 </style>
@@ -78,7 +83,7 @@ b {
 <body>
 <div align=center>
 <div id="list">
-<b>Video Responses:</b><br><br>
+<h2>Video Responses:</h2><br><br>
 </div>
 </div>
 </body>

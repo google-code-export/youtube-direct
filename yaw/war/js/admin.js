@@ -8,7 +8,7 @@ jQuery(document).ready( function() {
 });
 
 function init() {
-			
+	
 	getAllSubmissions(function(entries) {
 		entries = preProcessData(entries);		
 		initDataGrid(entries);
@@ -59,7 +59,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'updated', 
 		index: 'updated', 
-		width: 155, 
+		width: 180, 
 		sorttype: 'date'});
 
 	grid.colNames.push('Entry ID');
@@ -76,7 +76,7 @@ function initDataGrid(data) {
 		index: 'videoId', 
 		width: 100, 
 		editable: true,	
-		hidden: false,
+		hidden: true,
 		sorttype: 'string'});
 
 	grid.colNames.push('Assignment ID');
@@ -91,8 +91,11 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'articleUrl', 
 		index: 'articleUrl', 
-		width: 100, 
-		formatter: 'link',
+		width: 80, 
+		formatter: function(cellvalue, options, rowObject) {
+			return '<a href="' + cellvalue + '" target="_blank">link</a>';
+		},
+		align: 'center',
 		sorttype: 'string'});	
 	
 	grid.colNames.push('Uploader');
@@ -153,15 +156,29 @@ function initDataGrid(data) {
 		name: 'preview', 
 		index: 'preview', 
 		width: 75, 
-		sortable: false,
+		align: 'center',
+		sortable: false,		
 		sorttype: 'string'});		
 
+	grid.colNames.push('Delete');	
+	grid.colModel.push({
+		name: 'delete', 
+		index: 'delete', 
+		width: 75, 
+		align: 'center',
+		sortable: false,
+		sorttype: 'string'});
 	
 	grid.afterInsertRow = function(rowid, rowdata, rowelem) {					
-		var videoId = jQuery("#datagrid").getCell(rowid, 2);									
-		var button = '<input type="button" onclick=previewVideo("' + 
+		var videoId = getVideoId(rowid);									
+		var previewButton = '<input type="button" onclick=previewVideo("' + 
 			videoId + '") value="preview" />';		
-		jQuery('#datagrid').setCell(rowid, 'preview', button);
+		jQuery('#datagrid').setCell(rowid, 'preview', previewButton);
+		
+		var entryId = getEntryId(rowid);									
+		var deleteButton = '<input type="button" onclick=deleteEntry("' + 
+		entryId + '") value="delete" />';		
+		jQuery('#datagrid').setCell(rowid, 'delete', deleteButton);		
 	};
 	
 	grid.cellsubmit = 'clientArray';
@@ -173,7 +190,7 @@ function initDataGrid(data) {
 		// save entry as JDO		
 		var entry = jQuery('#datagrid').getRowData(rowid);
 		entry = postProcessEntry(entry);
-		console.log(entry);
+		//console.log(entry);
 		updateSubmission(entry);
 	};
 	
@@ -185,14 +202,11 @@ function initDataGrid(data) {
 		jqGrid.addRowData(i + 1, data[i]); 	
 	}
 	
-	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false,refresh: false})
+	jqGrid.navGrid('#pager', {edit:false,add:false,del:false,search:false,refresh:false})
 	.navButtonAdd('#pager',{
 	   caption:"Refresh", 
 	   onClickButton: function(){		 
-	     getAllSubmissions(function(entries) {
-	    	 entries = preProcessData(entries);
-	    	 refreshGridUI(entries);
-	     });
+		   refreshGrid();
 	   }, 
 	   position:"last"
 	});
@@ -200,11 +214,41 @@ function initDataGrid(data) {
 	
 }
 
+function getEntryId(rowid) {
+	return jQuery("#datagrid").getCell(rowid, 1);	
+}
+
+function getVideoId(rowid) {
+	return jQuery("#datagrid").getCell(rowid, 2);	
+}
+
+function refreshGrid() {
+    getAllSubmissions(function(entries) {
+   	 	entries = preProcessData(entries);
+   	 	refreshGridUI(entries);
+    });		
+}
+
 function refreshGridUI(entries) {	
 	var jqGrid = jQuery('#datagrid').clearGridData();		
 	for(var i = 0; i <= entries.length; i++) {
 		jqGrid.addRowData(i + 1, entries[i]); 	
 	}	
+}
+
+function deleteEntry(entryId) {	
+	if (confirm("Delete this entry?")) {
+		var url = '/DeleteSubmission?id=' + entryId;
+		var ajaxCall = {};
+		ajaxCall.cache = false;
+		ajaxCall.type = 'GET';
+		ajaxCall.url = url;
+		ajaxCall.dataType = 'text';
+		ajaxCall.success = function(res) {
+			refreshGrid();
+		};	
+		jQuery.ajax(ajaxCall);					
+	}		
 }
 
 function previewVideo(videoId) {

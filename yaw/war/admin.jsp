@@ -18,8 +18,9 @@
   <script type="text/javascript" src="/js/ext/json2.js"></script>
   <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
   <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script> 
-  <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>  
-  <script type="text/javascript" src="/js/admin.js"></script>  
+  <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
+  <script type="text/javascript" src="/js/admin.js"></script>
+     
   
 </head>
 
@@ -48,9 +49,13 @@ window.isLoggedIn = false;
 
 <div id="tabs">
 	<ul>
-		<li><a href="#moderateTab">Moderate</a></li>
+		<li><a href="#assignmentsTab">Assignments</a></li>
+		<li><a href="#moderateTab">Video Submissions</a></li>
 		<li><a href="#configureTab">Configure</a></li>
 	</ul>
+	<div id="assignmentsTab">		
+		<iframe src="assignments.jsp" frameborder=0 width="1000" height="600" ></iframe>
+	</div>	
 	<div id="moderateTab">
 	  <br>
 	  Filter: <input id="searchText" type="text" ><br>	

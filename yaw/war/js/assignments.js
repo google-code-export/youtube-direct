@@ -32,7 +32,7 @@ function initDataGrid(data) {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 300,
+    width: 150,
     sorttype: 'string',
   });
   
@@ -44,7 +44,7 @@ function initDataGrid(data) {
     editable: true,
     cellurl: '/MutateAssignment',
     edittype: 'textarea',
-    editoptions: {rows:'3', cols: '30'},
+    editoptions: {rows:'3', cols: '50'},
     editrules: {required: true},
     sorttype: 'string',
   });
@@ -136,7 +136,10 @@ function filterDescriptions() {
 }
 
 function showMessage(text) {
+<<<<<<< .mine
+=======
   // console.log(text);
+>>>>>>> .r43
 	jQuery('#message').html(text);
 }
 

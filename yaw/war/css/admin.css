@@ -20,6 +20,11 @@ body {
 	width: 1200px;
 }
 
+#assignmentsTab {
+	height: 600px;
+	text-align: left;	
+}
+
 #moderateTab {
 	height: 600px;
 	text-align: left;	
