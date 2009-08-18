@@ -61,13 +61,22 @@ function initDataGrid(data) {
 		index: 'updated', 
 		width: 155, 
 		sorttype: 'date'});
+
+	grid.colNames.push('Entry ID');
+	grid.colModel.push({
+		name: 'id', 
+		index: 'id', 
+		width: 100, 
+		hidden: true,
+		sorttype: 'string'});	
 	
 	grid.colNames.push('Video ID');
 	grid.colModel.push({
 		name: 'videoId', 
 		index: 'videoId', 
 		width: 100, 
-		hidden: true,
+		editable: true,	
+		hidden: false,
 		sorttype: 'string'});
 
 	grid.colNames.push('Assignment ID');
@@ -114,7 +123,7 @@ function initDataGrid(data) {
 	grid.colModel.push({
 		name: 'videoDescription', 
 		index: 'videoDescription', 
-		width: 150,
+		width: 200,
 		editable: true,
 		edittype: 'textarea',
 		editoptions: {rows:'3', cols: '30'},
@@ -148,8 +157,8 @@ function initDataGrid(data) {
 		sorttype: 'string'});		
 
 	
-	grid.afterInsertRow = function(rowid, rowdata, rowelem) {
-		var videoId = jQuery("#datagrid").getCell(rowid, 1);									
+	grid.afterInsertRow = function(rowid, rowdata, rowelem) {					
+		var videoId = jQuery("#datagrid").getCell(rowid, 2);									
 		var button = '<input type="button" onclick=previewVideo("' + 
 			videoId + '") value="preview" />';		
 		jQuery('#datagrid').setCell(rowid, 'preview', button);
@@ -164,6 +173,7 @@ function initDataGrid(data) {
 		// save entry as JDO		
 		var entry = jQuery('#datagrid').getRowData(rowid);
 		entry = postProcessEntry(entry);
+		console.log(entry);
 		updateSubmission(entry);
 	};
 	
@@ -277,7 +287,6 @@ function getAllSubmissions(callback) {
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(entries) {
 		window.submissionData = entries;
-		console.log(entries);
 		showLoading(false);
 		callback(entries);
 	};	
@@ -295,7 +304,6 @@ function updateSubmission(entry) {
     ajaxCall.processData = false;
     ajaxCall.success = function(res) { 
       showLoading(false);
-      console.log(res);
     };
     
     showLoading(true, 'saving ...');
