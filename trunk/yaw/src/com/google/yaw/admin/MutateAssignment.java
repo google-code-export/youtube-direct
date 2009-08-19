@@ -35,20 +35,21 @@ public class MutateAssignment extends HttpServlet {
             String operation = req.getParameter("oper");
             
             if (Util.isNullOrEmpty(operation)) {
-                throw new IllegalArgumentException("'oper' parameter is null or empty.");
-            }
-            if (Util.isNullOrEmpty(description)) {
-                throw new IllegalArgumentException("'description' parameter is null or empty.");
-            }
-            if (Util.isNullOrEmpty(category)) {
-                throw new IllegalArgumentException("'category' parameter is null or empty.");
-            }
-            if (Util.isNullOrEmpty(status)) {
-                throw new IllegalArgumentException("'status' parameter is null or empty.");
+                operation = "edit";
             }
             
             if (operation.equals("add")) {
                 // This is an attempt to add a new Assignment.
+                if (Util.isNullOrEmpty(description)) {
+                    throw new IllegalArgumentException("'description' parameter is null or empty.");
+                }
+                if (Util.isNullOrEmpty(category)) {
+                    throw new IllegalArgumentException("'category' parameter is null or empty.");
+                }
+                if (Util.isNullOrEmpty(status)) {
+                    throw new IllegalArgumentException("'status' parameter is null or empty.");
+                }
+                
                 log.fine(String.format("Attempting to persist Assignment with description '%s', " +
                                 "category '%s', and status '%s'...", description, category,
                                 status));
@@ -66,20 +67,21 @@ public class MutateAssignment extends HttpServlet {
                     throw new IllegalArgumentException("'id' parameter is null or empty.");
                 }
                 
-                String filters = "id == id_";
-                Query query = pm.newQuery(Assignment.class, filters);
-                query.declareParameters("String id_");
-
-                List<Assignment> list = (List<Assignment>)query.executeWithArray(
-                                new Object[] { id });
-
-                if (list.size() > 0) {
-                    Assignment assignment = list.get(0);
+                Assignment assignment = pm.getObjectById(Assignment.class, id);
+                if (assignment != null) {
                     assignment = pm.detachCopy(assignment);
-
-                    assignment.setDescription(description);
-                    assignment.setCategory(category);
-                    assignment.setStatus(Assignment.AssignmentStatus.valueOf(status));
+                    
+                    if (!Util.isNullOrEmpty(description)) {
+                        assignment.setDescription(description);
+                    }
+                    
+                    if (!Util.isNullOrEmpty(category)) {
+                        assignment.setCategory(category);
+                    }
+                    
+                    if (!Util.isNullOrEmpty(status)) {
+                        assignment.setStatus(Assignment.AssignmentStatus.valueOf(status));
+                    }
 
                     log.fine(String.format("Attempting to update Assignment with id '%s'...", id));
                     Util.persistJdo(assignment);

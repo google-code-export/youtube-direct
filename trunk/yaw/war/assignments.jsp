@@ -19,26 +19,6 @@
     <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script> 
     <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
     <script type="text/javascript" src="/js/assignments.js"></script>
-    
-    <script>
-      window._ytAssignmentStatuses = [];
-      window._ytCategories = [];
-<%
-  List<String> statuses = Assignment.getAssignmentStatusNames();
-  for (String status: statuses) {
-%>
-      window._ytAssignmentStatuses.push('<%= status %>:<%= status %>');
-<%
-  }
-  
-  List<String> categories = YouTubeApiManager.getCategoryCodes();
-  for (String category: categories) {
-%>
-      window._ytCategories.push('<%= category %>:<%= category %>');
-<%
-  }
-%>
-    </script>
   </head>
 
   <body>
@@ -46,11 +26,5 @@
     <br/>
     <table id="datagrid"></table>
     <div id="pager"></div>
-    <br/>
-    <form action="javascript:filterDescriptions()">
-      <label for="descriptionFilter">Search Descriptions:</label>
-      <input type="text" id="descriptionFilter"></input>
-      <input type="submit" value="Search"></input>
-    </form>
   </body>
 </html>
