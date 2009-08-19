@@ -30,8 +30,16 @@ function loadDataGrid() {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 300,
+    width: 275,
     searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
+  });
+  
+  grid.colNames.push('Created On');
+  grid.colModel.push({
+    name: 'created', 
+    index: 'created', 
+    width: 200,
+    search: false,
   });
   
   grid.colNames.push('Description');
@@ -82,6 +90,15 @@ function loadDataGrid() {
       sopt: ['eq', 'ne'],
       dataUrl: '/GetOptionsHTML?type=status',
     },
+  });
+  
+  grid.colNames.push('# of Submissions');  
+  grid.colModel.push({
+    name: 'submissionCount',
+    index: 'submissionCount',
+    width: 100,
+    search: false,
+    sortable: false,
   });
   
   grid.loadError = function(xhr, status, error) {

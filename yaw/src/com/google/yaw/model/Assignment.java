@@ -6,7 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
+import com.google.yaw.Util;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -187,5 +191,19 @@ public class Assignment implements Serializable {
     
     public String getId() {
         return id;
+    }
+    
+    public int getSubmissionCount() {
+        PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+        PersistenceManager pm = pmf.getPersistenceManager();
+       
+        Query query = pm.newQuery(VideoSubmission.class, "assignmentId == assignmentIdParam");
+        query.declareParameters("String assignmentIdParam");
+        List<VideoSubmission> submissions = (List<VideoSubmission>)query.execute(id);
+        int size = submissions.size();
+        
+        pm.close();
+        
+        return size;
     }
 }
