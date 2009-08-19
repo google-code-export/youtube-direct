@@ -32,7 +32,7 @@ function initDataGrid(data) {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 150,
+    width: 300,
     sorttype: 'string',
   });
   
@@ -44,7 +44,7 @@ function initDataGrid(data) {
     editable: true,
     cellurl: '/MutateAssignment',
     edittype: 'textarea',
-    editoptions: {rows:'3', cols: '50'},
+    editoptions: {rows:'3', cols: '30'},
     editrules: {required: true},
     sorttype: 'string',
   });
