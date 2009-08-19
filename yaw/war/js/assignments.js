@@ -1,29 +1,27 @@
-var _ytLatestData = null;
-
 jQuery(document).ready( function() {
-  //TODO: Ensure that users are logged in.
-  //console.log(window.isLoggedIn);
-
-  //if (window.isLoggedIn) {
-  init();
-  //}
+  loadDataGrid();
 });
 
-function init() {
-  getAllAssignments(initDataGrid);
-}
-
-function initDataGrid(data) {
+function loadDataGrid() {
   var grid = {};
-  grid.datatype = 'local';
-  grid.height = 300;
-  grid.multiselect = false;
+  
+  grid.autoencode = true;
+  grid.autowidth = true;
   grid.caption = 'Assignments';
-  grid.rowNum = -1;
-  grid.cellsubmit = 'clientArray';
   grid.cellEdit = true;
-  grid.autoWidth = true;
+  grid.cellsubmit = 'remote';
+  grid.cellurl = '/MutateAssignment';
+  grid.datatype = 'json';
   grid.editurl = '/MutateAssignment';
+  grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
+  grid.height = '400px';
+  grid.pager = '#pager';
+  grid.rownumbers = true;
+  grid.rowNum = 5;
+  grid.sortname = 'id';
+  grid.sortorder = 'asc';
+  grid.url = '/GetAllAssignments';
+  grid.viewrecords = true;
   
   grid.colNames = [];
   grid.colModel = [];
@@ -33,7 +31,7 @@ function initDataGrid(data) {
     name: 'id', 
     index: 'id', 
     width: 300,
-    sorttype: 'string',
+    searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
   });
   
   grid.colNames.push('Description');
@@ -42,11 +40,10 @@ function initDataGrid(data) {
     index: 'description', 
     width: 300,
     editable: true,
-    cellurl: '/MutateAssignment',
     edittype: 'textarea',
     editoptions: {rows:'3', cols: '30'},
     editrules: {required: true},
-    sorttype: 'string',
+    searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
   });
   
   grid.colNames.push('Category');
@@ -57,9 +54,15 @@ function initDataGrid(data) {
     editable: true,
     cellurl: '/MutateAssignment',
     edittype: 'select',
-    editoptions: {value: window._ytCategories.join(';')},
+    editoptions: {
+      dataUrl: '/GetOptionsHTML?type=category',
+    },
     editrules: {required: true},
-    sorttype: 'string',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq', 'ne'],
+      dataUrl: '/GetOptionsHTML?type=category',
+    },
   });
   
   grid.colNames.push('Status');  
@@ -70,112 +73,45 @@ function initDataGrid(data) {
     editable: true,
     cellurl: '/MutateAssignment',
     edittype: 'select',
-    editoptions: {value: window._ytAssignmentStatuses.join(';')},
+    editoptions: {
+      dataUrl: '/GetOptionsHTML?type=status',
+    },
     editrules: {required: true},
-    sorttype: 'string',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq', 'ne'],
+      dataUrl: '/GetOptionsHTML?type=status',
+    },
   });
   
-  grid.afterSaveCell = function(rowid, cellname, value, iRow, iCol) {
-    var entry = jQuery('#datagrid').getRowData(rowid);
-    entry.oper = 'edit';
-    updateAssignment(entry);
+  grid.loadError = function(xhr, status, error) {
+    showMessage('Could not load data: ' + xhr.statusText);
   };
-
-  grid.pager = jQuery('#pager');  
+  
   var jqGrid = jQuery('#datagrid').jqGrid(grid);
   
-  for(var i = 0; i < data.length; i++) {
-    jqGrid.addRowData(data[i]['id'], data[i]);  
-  }
-
-  jqGrid.navGrid('#pager',
-		  {edit: false, add: false, del: false, search: false, refresh: false})  
-  .navButtonAdd('#pager', {
-    buttonicon: 'ui-icon-plus',
-    caption: 'Add Assignment',
-    onClickButton: function() {
-      jQuery('#datagrid').editGridRow('new', {
-        width: 400,
-        closeAfterAdd: true,
-        reloadAfterSubmit: true, // This doesn't do anything...
-      });
-    },
-  })
-  .navButtonAdd('#pager', {
-    buttonicon: 'ui-icon-refresh',
-    caption: 'Refresh', 
-    onClickButton: function() {
-      getAllAssignments(function(data) {     
-        jqGrid.clearGridData();
-
-        for(var i = 0; i < data.length; i++) {
-          jqGrid.addRowData(data[i]['id'], data[i]);  
-        }
-      });
-    },
-  });
-}
-
-function filterDescriptions() {
-  descriptionFilter = jQuery('#descriptionFilter').val().toLowerCase();
-  showMessage('Searching for "' + descriptionFilter + '" in assignment description...');
-  
-  jqGrid = jQuery('#datagrid');
-  jqGrid.clearGridData();
-  
-  count = 0;
-  for (var i = 0; i < _ytLatestData.length; i++) {
-    description = _ytLatestData[i]['description'];
-    if (description != null && description.toLowerCase().indexOf(descriptionFilter) != -1) {
-      count++;
-      jqGrid.addRowData(_ytLatestData[i]['id'], _ytLatestData[i]);
-    }
-  }
-  
-  showMessage('Found ' + count + ' article(s) whose description matches "' + descriptionFilter + '".');
+  editParams = {
+    width: 350,
+    closeAfterEdit: true,
+    closeOnEscape: true,
+  };
+  addParams = {
+    width: 350,
+    closeAfterAdd: true,
+    closeOnEscape: true,
+  };
+  deleteParams = {};
+  searchParams = {
+    closeAfterSearch: true,
+  };
+  viewParams = {};
+  jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams, viewParams);
 }
 
 function showMessage(text) {
-  // console.log(text);
-	jQuery('#message').html(text);
-}
-
-function getAllAssignments(callback) {
-  var ajaxCall = {};
-  ajaxCall.cache = false;
-  ajaxCall.type = 'GET';
-  ajaxCall.url = '/GetAllAssignments';
-  ajaxCall.dataType = 'json';
-  
-  ajaxCall.success = function(data) {
-    _ytLatestData = data;
-    showMessage('Assignments loaded successfully.');
-    callback(data);
-  };
-  
-  ajaxCall.error = function(xhr, textStatus, exception) {
-    showMessage('Could not load assignments: ' + xhr.statusText);    
+  if (typeof console != 'undefined') {
+    console.log(text);
   }
   
-  showMessage('Loading assignments...');
-  jQuery.ajax(ajaxCall);
-}
-
-function updateAssignment(entry) {
-  var ajaxCall = {};
-  ajaxCall.type = 'POST';
-  ajaxCall.url = '/MutateAssignment';
-  ajaxCall.data = jQuery.param(entry);
-  ajaxCall.cache = false;
-  ajaxCall.processData = false;
-  ajaxCall.success = function() {
-    showMessage('Assignment was updated successfully.');
-  };
-  
-  ajaxCall.error = function(xhr, textStatus, exception) {
-    showMessage('Could not update assignment: ' + xhr.statusText);    
-  }
-  
-  showMessage('Updating assignment...');
-  jQuery.ajax(ajaxCall);  
+  jQuery('#message').html(text);
 }

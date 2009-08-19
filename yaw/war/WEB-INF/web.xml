@@ -13,6 +13,15 @@
     <servlet-name>GetAllSubmissions</servlet-name>
     <url-pattern>/GetAllSubmissions</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  <servlet-name>GetOptionsHTML</servlet-name>
+  <servlet-class>com.google.yaw.admin.GetOptionsHTML</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetOptionsHTML</servlet-name>
+    <url-pattern>/GetOptionsHTML</url-pattern>
+  </servlet-mapping>
 
   <servlet>
 	<servlet-name>UpdateSubmission</servlet-name>
@@ -24,6 +33,15 @@
   </servlet-mapping>
   
     <servlet>
+	<servlet-name>DeleteSubmission</servlet-name>
+	<servlet-class>com.google.yaw.admin.DeleteSubmission</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteSubmission</servlet-name>
+    <url-pattern>/DeleteSubmission</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
 	<servlet-name>DeleteSubmission</servlet-name>
 	<servlet-class>com.google.yaw.admin.DeleteSubmission</servlet-class>
   </servlet>
