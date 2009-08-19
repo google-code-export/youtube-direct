@@ -41,20 +41,7 @@ public class UpdateSubmission extends HttpServlet {
 	    	
 	    	String id = jsonObj.getId();
 	    	
-	    	//entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);   
-	    	
-	    	
-			String filters = "id == id_";
-			Query query = pm.newQuery(VideoSubmission.class, filters);
-			query.declareParameters("String id_");
-			
-			List<VideoSubmission> list = (List<VideoSubmission>) 
-					query.executeWithArray(new Object[] { id });
-			
-			if (list.size() > 0) {
-				entry = list.get(0);
-				entry = pm.detachCopy(entry);
-			}			
+	    	entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
 			
 			entry.setVideoId(jsonObj.getVideoId());
 			entry.setStatus(jsonObj.getStatus());
@@ -63,7 +50,7 @@ public class UpdateSubmission extends HttpServlet {
 			entry.setVideoTags(jsonObj.getVideoTags());
 			entry.setUpdated(new Date());
 			
-			Util.persistJdo(entry);						
+			pm.makePersistent(entry);					
 			
             resp.setContentType("text/javascript");
             resp.getWriter().println(Util.GSON.toJson(entry));
