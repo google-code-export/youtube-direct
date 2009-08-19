@@ -102,18 +102,22 @@ public class GetAllAssignments extends HttpServlet {
             JSONArray rows = new JSONArray();
             for (Assignment assignment : assignments) {
                 String id = assignment.getId();
+                String created = assignment.getCreated().toString();
                 String description = assignment.getDescription();
                 String category = assignment.getCategory();
                 String status = assignment.getStatus().toString();
+                String submissionCount = Integer.toString(assignment.getSubmissionCount());
 
                 JSONObject row = new JSONObject();
                 row.put("id", id);
 
                 List<String> data = new ArrayList<String>();
                 data.add(id);
+                data.add(created);
                 data.add(description);
                 data.add(category);
-                data.add(status);            
+                data.add(status);
+                data.add(submissionCount);
                 row.put("cell", data);
 
                 rows.put(row);
