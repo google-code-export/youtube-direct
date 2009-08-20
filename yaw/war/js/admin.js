@@ -60,6 +60,10 @@ function initDataGrid(data) {
 		name: 'updated', 
 		index: 'updated', 
 		width: 180, 
+		formatter: function(cellvalue, options, rowObject) {
+			var date = new Date(cellvalue);
+			return date.toLocaleTimeString() + ' '+ date.toDateString();
+		},
 		sorttype: 'date'});
 
 	grid.colNames.push('Entry ID');
@@ -138,7 +142,7 @@ function initDataGrid(data) {
 		index: 'videoTags', 
 		width: 130, 
 		editable: true,
-		edittype: 'text',		
+		edittype: 'text',
 		sorttype: 'string'});		
 	
 	grid.colNames.push('Approval Status');	
@@ -269,7 +273,7 @@ function preProcessData(data) {
 	for (var i = 0; i < data.length; i++) {
 		var entry = data[i];
 		entry.status = statusToString(entry.status);		
-		entry.updated = new Date(entry.updated);
+		//entry.updated = new Date(entry.updated);
 		entry.videoTags = JSON.parse(entry.videoTags).join(',');
 	}
 	
