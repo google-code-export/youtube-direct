@@ -20,23 +20,23 @@ public class VideoSubmission implements Serializable {
 
 	// The default "version" of this model
 	private static int DEFAULT_SCHEMA_VERSION = 1;
-		 
+
 	// The version of the model - used for upgrading entities if the data model
 	// changes.
 	@Persistent
-	private int SCHEMA_VERSION;	
-	
-    @PrimaryKey
-    @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    @Expose
-    private String id;
+	private int SCHEMA_VERSION;
+
+	@PrimaryKey
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Expose
+	private String id;
 
 	@Expose
 	@Persistent
 	private String videoId = null;
 
-	// The AuthSub token used when uploading this video.	
+	// The AuthSub token used when uploading this video.
 	@Persistent
 	private String authSubToken = null;
 
@@ -60,7 +60,7 @@ public class VideoSubmission implements Serializable {
 	@Expose
 	@Persistent
 	private String videoTags = null;
-	
+
 	@Expose
 	@Persistent
 	private Date created;
@@ -76,38 +76,37 @@ public class VideoSubmission implements Serializable {
 	public enum ModerationStatus {
 		UNREVIEWED, APPROVED, REJECTED
 	}
-	
+
 	@Expose
 	@Persistent
 	private int status;
 
 	// YouTube username of the uploader
-	@Expose	
+	@Expose
 	@Persistent
 	private String uploader = null;
 
-	@Expose	
+	@Expose
 	@Persistent
 	private String articleUrl = null;
 
-	@Expose	
+	@Expose
 	@Persistent
-	private String notifyEmail = null;		
-	
+	private String notifyEmail = null;
+
 	/**
 	 * Create a new video submission entry object for the datastore.
 	 * 
 	 * @param videoId
-	 *            The YouTube video ID of the upload
+	 *          The YouTube video ID of the upload
 	 * @param assignmentId
-	 *            The news site article ID
+	 *          The news site article ID
 	 * @param uploader
-	 *            The YouTube username of the uploader
+	 *          The YouTube username of the uploader
 	 */
-	public VideoSubmission(String assignmentId,
-			String articleUrl, String videoId, String title,
-			String description, String tagList, String uploader,
-			String authSubToken) {
+	public VideoSubmission(String assignmentId, String articleUrl,
+			String videoId, String title, String description, String tagList,
+			String uploader, String authSubToken) {
 		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
 		this.articleUrl = articleUrl;
 		this.videoId = videoId;
@@ -124,7 +123,7 @@ public class VideoSubmission implements Serializable {
 		this.videoDescription = description;
 		this.videoTags = tagList;
 	}
-	
+
 	/**
 	 * Get the moderation status of the video.
 	 * 
@@ -138,7 +137,7 @@ public class VideoSubmission implements Serializable {
 	 * Set the moderation status of the video.
 	 * 
 	 * @param status
-	 *            The new status.
+	 *          The new status.
 	 */
 	public void setStatus(ModerationStatus status) {
 		this.status = status.ordinal();
@@ -182,7 +181,7 @@ public class VideoSubmission implements Serializable {
 	 * Sets the site-specific article ID the submission is tied to.
 	 * 
 	 * @param assignmentId
-	 *            The new ID.
+	 *          The new ID.
 	 */
 	public void setAssignmentId(String assignmentId) {
 		this.assignmentId = assignmentId;
@@ -192,7 +191,7 @@ public class VideoSubmission implements Serializable {
 	 * Update the schema version when the model changes.
 	 * 
 	 * @param version
-	 *            The new version.
+	 *          The new version.
 	 */
 	public void setSchemaVersion(int version) {
 		this.SCHEMA_VERSION = version;
@@ -234,7 +233,7 @@ public class VideoSubmission implements Serializable {
 	 * Set the YouTube user who uploaded this video.
 	 * 
 	 * @param uploader
-	 *            A YouTube username.
+	 *          A YouTube username.
 	 */
 	public void setUploader(String youTubeName) {
 		this.uploader = youTubeName;
@@ -319,9 +318,9 @@ public class VideoSubmission implements Serializable {
 	public void setArticleUrl(String articleUrl) {
 		this.articleUrl = articleUrl;
 	}
-	
+
 	public String getAssignmentId() {
-	    return assignmentId;
+		return assignmentId;
 	}
 
 	public void setEmail(String email) {
@@ -331,6 +330,5 @@ public class VideoSubmission implements Serializable {
 	public String getEmail() {
 		return notifyEmail;
 	}
-	
-	
+
 }

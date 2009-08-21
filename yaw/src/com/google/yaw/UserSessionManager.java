@@ -18,8 +18,7 @@ public class UserSessionManager {
 
 	private static final String USER_SESSION_ID_NAME = "YAW_SESSION_ID";
 
-	public static void sendSessionIdCookie(String sessionId,
-			HttpServletResponse response) {
+	public static void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
 		Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
 		// cookie lives for a year
 		cookie.setMaxAge(31536000);
@@ -63,7 +62,7 @@ public class UserSessionManager {
 	public static void delete(UserSession session) {
 		Util.removeJdo(session);
 	}
-	
+
 	public static UserSession getUserSession(HttpServletRequest request) {
 
 		UserSession userSession = null;
@@ -74,8 +73,7 @@ public class UserSessionManager {
 			for (Cookie cookie : cookies) {
 				if (USER_SESSION_ID_NAME.equals(cookie.getName())) {
 					String sessionId = cookie.getValue();
-					PersistenceManager pm = Util.getPersistenceManagerFactory()
-							.getPersistenceManager();
+					PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
 
 					String filters = "id == id_";
 					Query query = pm.newQuery(UserSession.class, filters);

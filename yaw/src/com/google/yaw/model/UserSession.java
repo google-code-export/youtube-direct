@@ -32,19 +32,19 @@ public class UserSession {
 
 	@Persistent
 	private String videoTitle = null;
-	
-	@Persistent
-	private String videoDescription = null;
-	
-	@Persistent
-	private String videoLocation = null;
-	
-	@Persistent
-	private String videoTagList = null;	
 
 	@Persistent
-	private String email = null;		
-	
+	private String videoDescription = null;
+
+	@Persistent
+	private String videoLocation = null;
+
+	@Persistent
+	private String videoTagList = null;
+
+	@Persistent
+	private String email = null;
+
 	public String getVideoLocation() {
 		return videoLocation;
 	}
@@ -59,8 +59,8 @@ public class UserSession {
 
 	public void setVideoTagList(String videoTagList) {
 		this.videoTagList = videoTagList;
-	}	
-	
+	}
+
 	public String getSelfUrl() {
 		return selfUrl;
 	}

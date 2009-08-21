@@ -19,12 +19,10 @@ import com.google.yaw.model.UserSession;
 @SuppressWarnings("serial")
 public class LogoutHandler extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(LogoutHandler.class
-			.getName());
+	private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		UserSession userSession = UserSessionManager.getUserSession(req);
 
@@ -34,11 +32,11 @@ public class LogoutHandler extends HttpServlet {
 			try {
 				AuthSubUtil.revokeToken(authSubToken, null);
 			} catch (AuthenticationException e) {
-                log.warning(String.format("Error while revoking AuthSub token '%s': %s",
-                                authSubToken, e.toString()));
+				log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
+						.toString()));
 			} catch (GeneralSecurityException e) {
-                log.warning(String.format("Error while revoking AuthSub token '%s': %s",
-                                authSubToken, e.toString()));
+				log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
+						.toString()));
 			}
 		}
 
