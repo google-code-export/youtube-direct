@@ -79,6 +79,7 @@ public class GetAllAssignments extends HttpServlet {
           }
 
           if (matches) {
+            // We can't modify the assignments list, so copy to a temporary list instead.
             filteredAssignments.add(assignment);
           }
         }
@@ -95,6 +96,8 @@ public class GetAllAssignments extends HttpServlet {
       }
       assignments = assignments.subList(startIndex, stopIndex);
 
+      // The JSON response matches the format expected by jqGrid, as documented at
+      // http://www.trirand.com/jqgridwiki/doku.php?id=wiki:retrieving_data#json_data
       JSONObject jsonRepsonse = new JSONObject();
       jsonRepsonse.put("total", totalPages);
       jsonRepsonse.put("page", pageNumber);

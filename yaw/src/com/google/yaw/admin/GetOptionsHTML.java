@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class GetOptionsHTML extends HttpServlet {
-  private static final Logger log = Logger.getLogger(GetAllAssignments.class
-          .getName());
+  private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
