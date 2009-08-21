@@ -1,7 +1,6 @@
 package com.google.yaw.admin;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,42 +11,37 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.yaw.Util;
 import com.google.yaw.model.VideoSubmission;
 
 public class GetAllSubmissions extends HttpServlet {
 
-    private static final Logger log = Logger.getLogger(GetAllSubmissions.class
-                    .getName());
+	private static final Logger log = Logger.getLogger(GetAllSubmissions.class
+			.getName());
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp)
-    throws IOException {
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 
-        PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-        PersistenceManager pm = pmf.getPersistenceManager();
-       
+		PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+		PersistenceManager pm = pmf.getPersistenceManager();
+
 		Query query = pm.newQuery(VideoSubmission.class);
 		query.declareImports("import java.util.Date");
 		query.setOrdering("updated desc");
-		List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
+		List<VideoSubmission> videoEntries = (List<VideoSubmission>) query
+				.execute();
 
-        try {        	
-        	String json = Util.GSON.toJson(videoEntries);
-        	
-            resp.setContentType("text/javascript");
-            resp.getWriter().println(json);
-        } catch(Exception e) {
-            log.warning(e.toString());
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } finally {
-            pm.close();
-        }
-    }
+		try {
+			String json = Util.GSON.toJson(videoEntries);
+
+			resp.setContentType("text/javascript");
+			resp.getWriter().println(json);
+		} catch (Exception e) {
+			log.warning(e.toString());
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+		} finally {
+			pm.close();
+		}
+	}
 }
