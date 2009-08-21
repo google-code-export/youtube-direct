@@ -73,14 +73,7 @@ public class GetUploadToken extends HttpServlet {
 	                            "Can't add a video to a non-ACTIVE assignment. " +
 	                            "Current status of assignment id '%s' is '%s'.",
 	                            assignmentId, status));
-	        }
-	        
-	        userSession.setEmail(email);
-	        userSession.setVideoTitle(title);
-	        userSession.setVideoDescription(description);
-	        userSession.setVideoLocation(location);
-	        userSession.setVideoTagList(tagsArray.toString());
-	        UserSessionManager.save(userSession);
+	        }	        
 
 	        // Max title length is 60 characters or 100 bytes.
 	        if (title.length() > 60) {
@@ -95,11 +88,17 @@ public class GetUploadToken extends HttpServlet {
 
 	        mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME,
 	                        assignment.getCategory()));
-
+	        
 	        mg.setKeywords(new MediaKeywords());
+	        
+	        StringBuffer tags = new StringBuffer();
 	        for (int i = 0; i < tagsArray.length(); i++) {
 	            String tag = tagsArray.getString(i).trim();
 	            mg.getKeywords().addKeyword(tag);
+	            tags.append(tag);
+	            if (i < tagsArray.length()) {
+	            	tags.append(",");	            	
+	            }
 	        }
 
 	        mg.setDescription(new MediaDescription());
@@ -112,8 +111,12 @@ public class GetUploadToken extends HttpServlet {
 	                            defaultDeveloperTag));
 	        }
 
-	        //TODO: This might be longer than the max allowed developer tag.
-	        //mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+	        userSession.setEmail(email);
+	        userSession.setVideoTitle(title);
+	        userSession.setVideoDescription(description);
+	        userSession.setVideoLocation(location);
+	        userSession.setVideoTagList(tags.toString());
+	        UserSessionManager.save(userSession);	        
 
 	        YouTubeApiManager apiManager = new YouTubeApiManager();
 	        apiManager.setToken(authSubToken);

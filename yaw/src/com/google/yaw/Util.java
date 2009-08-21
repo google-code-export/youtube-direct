@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -21,10 +23,15 @@ public class Util {
 	
 	private static final Logger log = Logger.getLogger(Util.class
 			.getName());	
-
-	public final static Gson GSON = 
-		new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();	
 	
+	private static final String DATE_TIME_PATTERN = "hh:mm:ss a MM/dd/yyyy z";
+    
+	public final static Gson GSON = 
+		new GsonBuilder().
+		excludeFieldsWithoutExposeAnnotation().
+		setDateFormat(DATE_TIME_PATTERN).
+		create();		
+			
 	private static PersistenceManagerFactory pmf = null;
 
 	public static PersistenceManagerFactory getPersistenceManagerFactory() {

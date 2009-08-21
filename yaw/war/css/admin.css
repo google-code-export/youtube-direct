@@ -20,17 +20,17 @@ body {
 	width: 1200px;
 }
 
-#assignmentsTab {
+#assignments {
 	height: 600px;
 	text-align: left;	
 }
 
-#moderateTab {
+#moderate {
 	height: 600px;
 	text-align: left;	
 }
 
-#configureTab {
+#configure {
 	height: 600px;
 	text-align: left;
 }
