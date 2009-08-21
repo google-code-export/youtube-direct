@@ -1,3 +1,5 @@
+var _yt_selectedRowId = null;
+
 jQuery(document).ready( function() {
   loadDataGrid();
 });
@@ -105,24 +107,59 @@ function loadDataGrid() {
     showMessage('Could not load data: ' + xhr.statusText);
   };
   
+  grid.beforeSelectRow = function(rowId) {
+	_yt_selectedRowId = rowId;
+	return true;
+  };
+  
   var jqGrid = jQuery('#datagrid').jqGrid(grid);
   
-  editParams = {
+  var editParams = {
     width: 350,
     closeAfterEdit: true,
     closeOnEscape: true,
   };
-  addParams = {
+  
+  var addParams = {
     width: 350,
     closeAfterAdd: true,
     closeOnEscape: true,
   };
-  deleteParams = {};
-  searchParams = {
+  
+  var deleteParams = {};
+  
+  var searchParams = {
     closeAfterSearch: true,
   };
-  viewParams = {};
-  jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams, viewParams);
+  
+  var viewParams = {};
+  
+  var codeParams = {
+	caption: 'Embed Code',
+	onClickButton: generateEmbedCode,
+	position: 'last',
+  };
+  
+  jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams,
+		  viewParams).navButtonAdd('#pager', codeParams);
+}
+
+function generateEmbedCode() {
+  if (_yt_selectedRowId == null) {
+	showMessage("Please select an assignment's row first.");
+  } else {
+	var embedCode = '<ul><li>Include a reference to <code>yaw-embed.js</code>:<br/>' +
+		'<pre>&lt;script type="text/javascript" src="path/to/yaw-embed.js"&gt;&lt;/script&gt;</pre></li>' +
+		'<li>Add a <code>window.onload</code> event to initialize a new <code>Yaw</code> object:<br/>' +
+		'<pre>&lt;script type="text/javascript"&gt;\n' +
+		'  window.onload = function() {\n' + 
+		'    var yaw = new Yaw();\n' +
+		'    yaw.setAssignmentId("' + _yt_selectedRowId + '");\n' +
+		'    yaw.embed("yawContainer", 300, 500);\n' +
+		'  };\n' +
+		'&lt;/script&gt;</pre>';
+	showMessage(embedCode);
+  }
 }
 
 function showMessage(text) {
