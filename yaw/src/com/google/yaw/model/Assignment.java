@@ -26,184 +26,184 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class Assignment implements Serializable {
 
-    // The default "version" of this model.
-    private static int DEFAULT_SCHEMA_VERSION = 1;
+  // The default "version" of this model.
+  private static int DEFAULT_SCHEMA_VERSION = 1;
 
-    // The version of the model - used for upgrading entities if the data model
-    // changes.
-    @Persistent
-    private int SCHEMA_VERSION;
+  // The version of the model - used for upgrading entities if the data model
+  // changes.
+  @Persistent
+  private int SCHEMA_VERSION;
 
-    @PrimaryKey
-    @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    @Expose
-    private String id;
+  @PrimaryKey
+  @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
+  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+  @Expose
+  private String id;
 
-    @Persistent
-    @Expose
-    private String description = null;
+  @Persistent
+  @Expose
+  private String description = null;
 
-    @Persistent
-    @Expose
-    private String category = null;
+  @Persistent
+  @Expose
+  private String category = null;
 
-    @Persistent
-    private Date created;
+  @Persistent
+  private Date created;
 
-    @Persistent
-    private Date updated;
+  @Persistent
+  private Date updated;
 
-    public enum AssignmentStatus {
-        PENDING, ACTIVE, ARCHIVED
-    }
+  public enum AssignmentStatus {
+    PENDING, ACTIVE, ARCHIVED
+  }
 
-    @Persistent
-    @Expose
-    private AssignmentStatus status;
+  @Persistent
+  @Expose
+  private AssignmentStatus status;
 
-    /**
-     * Create a new Assignment object for the datastore.
-     * 
-     * @param description
-     * @param category
-     * @param status
-     */
-    public Assignment(String description, String category,
-        AssignmentStatus status) {
-        this.description = description;
-        this.category = category;
-        this.status = status;
-        this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
-        this.created = new Date();
-        this.updated = this.created;
-    }
-    
-    public static List<String> getAssignmentStatusNames() {
-        List<String> statusNames = new ArrayList<String>();
-        for (AssignmentStatus status : AssignmentStatus.values()) {
-            statusNames.add(status.toString());
-        }
+  /**
+   * Create a new Assignment object for the datastore.
+   * 
+   * @param description
+   * @param category
+   * @param status
+   */
+  public Assignment(String description, String category, AssignmentStatus status) {
+    this.description = description;
+    this.category = category;
+    this.status = status;
+    this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
+    this.created = new Date();
+    this.updated = this.created;
+  }
 
-        return statusNames;
-    }
-    
-    /**
-     * Gets the description of this assignment.
-     * 
-     * @return The description of this assignment.
-     */
-    public String getDescription() {
-        return description;
-    }
-    
-    /**
-     * Sets the description of this assignment.
-     * 
-     * @param description
-     *            The assignment description.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-        this.updated = new Date();
-    }
-    
-    /**
-     * Gets the YouTube category used for videos uploaded for this assignment.
-     * 
-     * @return The YouTube category name.
-     */
-    public String getCategory() {
-        return category;
-    }
-    
-    /**
-     * Sets the YouTube category used for videos uploaded for this assignment.
-     * 
-     * @param category
-     *            The YouTube category name.
-     */
-    public void setCategory(String category) {
-        this.category = category;
-        this.updated = new Date();
-    }
-    
-    /**
-     * Gets the date this assignment was initially created.
-     * 
-     * @return The date this assignment was initially created.
-     */
-    public Date getCreated() {
-        return created;
-    }
-    
-    /**
-     * Gets the date this assignment was last updated.
-     * 
-     * @return The date this assignment was last updated.
-     */
-    public Date getUpdated() {
-        return updated;
+  public static List<String> getAssignmentStatusNames() {
+    List<String> statusNames = new ArrayList<String>();
+    for (AssignmentStatus status : AssignmentStatus.values()) {
+      statusNames.add(status.toString());
     }
 
-    /**
-     * Update the schema version when the model changes.
-     * 
-     * @param version
-     *            The new version.
-     */
-    public void setSchemaVersion(int version) {
-        this.SCHEMA_VERSION = version;
-    }
+    return statusNames;
+  }
 
-    /**
-     * Gets the current schema version.
-     * 
-     * @return The current schema version of this entity
-     */
-    public int getSchemaVersion() {
-        return SCHEMA_VERSION;
-    }
+  /**
+   * Gets the description of this assignment.
+   * 
+   * @return The description of this assignment.
+   */
+  public String getDescription() {
+    return description;
+  }
 
-    public static int getDEFAULT_SCHEMA_VERSION() {
-        return DEFAULT_SCHEMA_VERSION;
-    }
+  /**
+   * Sets the description of this assignment.
+   * 
+   * @param description
+   *            The assignment description.
+   */
+  public void setDescription(String description) {
+    this.description = description;
+    this.updated = new Date();
+  }
 
-    public static void setDEFAULT_SCHEMA_VERSION(int default_schema_version) {
-        DEFAULT_SCHEMA_VERSION = default_schema_version;
-    }
+  /**
+   * Gets the YouTube category used for videos uploaded for this assignment.
+   * 
+   * @return The YouTube category name.
+   */
+  public String getCategory() {
+    return category;
+  }
 
-    public int getSCHEMA_VERSION() {
-        return SCHEMA_VERSION;
-    }
+  /**
+   * Sets the YouTube category used for videos uploaded for this assignment.
+   * 
+   * @param category
+   *            The YouTube category name.
+   */
+  public void setCategory(String category) {
+    this.category = category;
+    this.updated = new Date();
+  }
 
-    public void setSCHEMA_VERSION(int schema_version) {
-        SCHEMA_VERSION = schema_version;
-    }
-    
-    public AssignmentStatus getStatus() {
-        return status;
-    }
-    
-    public void setStatus(AssignmentStatus status) {
-        this.status = status;
-    }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public int getSubmissionCount() {
-        PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-        PersistenceManager pm = pmf.getPersistenceManager();
-       
-        Query query = pm.newQuery(VideoSubmission.class, "assignmentId == assignmentIdParam");
-        query.declareParameters("String assignmentIdParam");
-        List<VideoSubmission> submissions = (List<VideoSubmission>)query.execute(id);
-        int size = submissions.size();
-        
-        pm.close();
-        
-        return size;
-    }
+  /**
+   * Gets the date this assignment was initially created.
+   * 
+   * @return The date this assignment was initially created.
+   */
+  public Date getCreated() {
+    return created;
+  }
+
+  /**
+   * Gets the date this assignment was last updated.
+   * 
+   * @return The date this assignment was last updated.
+   */
+  public Date getUpdated() {
+    return updated;
+  }
+
+  /**
+   * Update the schema version when the model changes.
+   * 
+   * @param version
+   *            The new version.
+   */
+  public void setSchemaVersion(int version) {
+    this.SCHEMA_VERSION = version;
+  }
+
+  /**
+   * Gets the current schema version.
+   * 
+   * @return The current schema version of this entity
+   */
+  public int getSchemaVersion() {
+    return SCHEMA_VERSION;
+  }
+
+  public static int getDEFAULT_SCHEMA_VERSION() {
+    return DEFAULT_SCHEMA_VERSION;
+  }
+
+  public static void setDEFAULT_SCHEMA_VERSION(int default_schema_version) {
+    DEFAULT_SCHEMA_VERSION = default_schema_version;
+  }
+
+  public int getSCHEMA_VERSION() {
+    return SCHEMA_VERSION;
+  }
+
+  public void setSCHEMA_VERSION(int schema_version) {
+    SCHEMA_VERSION = schema_version;
+  }
+
+  public AssignmentStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(AssignmentStatus status) {
+    this.status = status;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  @SuppressWarnings("unchecked")
+  public int getSubmissionCount() {
+    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+    PersistenceManager pm = pmf.getPersistenceManager();
+
+    Query query = pm.newQuery(VideoSubmission.class, "assignmentId == assignmentIdParam");
+    query.declareParameters("String assignmentIdParam");
+    List<VideoSubmission> submissions = (List<VideoSubmission>)query.execute(id);
+    int size = submissions.size();
+
+    pm.close();
+
+    return size;
+  }
 }
