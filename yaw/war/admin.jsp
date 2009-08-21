@@ -54,12 +54,11 @@ window.isLoggedIn = false;
 
 <div id="tabs">
 <ul>
+	<li><a href="#moderate">Submissions</a></li>
 	<li><a href="#assignments">Assignments</a></li>
-	<li><a href="#moderate">Video Submissions</a></li>
 	<li><a href="#configure">Configure</a></li>
 </ul>
-<div id="assignments"><iframe src="assignments.jsp" frameborder=0
-	width="1000" height="600"></iframe></div>
+
 <div id="moderate"><br>
 Filter: <input id="searchText" type="text"><br>
 <br>
@@ -68,6 +67,11 @@ Filter: <input id="searchText" type="text"><br>
 <table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 <div id="pager" class="scroll" style="text-align: center;"></div>
 </div>
+
+<div id="assignments"><iframe src="assignments.jsp" frameborder=0
+	width="1000" height="600"></iframe>
+</div>
+	
 <div id="configure">
 <p></p>
 </div>
