@@ -1,4 +1,4 @@
-window.submissionData = [];
+window.submissions = [];
 
 jQuery(document).ready( function() {
 	if (window.isLoggedIn) {		
@@ -9,8 +9,7 @@ jQuery(document).ready( function() {
 
 function init() {
 	
-	getAllSubmissions(function(entries) {
-		entries = preProcessData(entries);		
+	getAllSubmissions(function(entries) {	
 		initDataGrid(entries);
 	});
 	
@@ -28,8 +27,8 @@ function filterSubmissions(text) {
 	
 	var regex = new RegExp(text, 'i');
 	
-	for (var i = 0; i < window.submissionData.length; i++) {
-		var entry = window.submissionData[i];
+	for (var i = 0; i < window.submissions.length; i++) {
+		var entry = window.submissions[i];
 		
 		var title = entry.videoTitle;
 		var description = entry.videoDescription;
@@ -53,18 +52,7 @@ function initDataGrid(data) {
 	grid.rowList = [10,20,30]; 
 	
 	grid.colNames = [];
-	grid.colModel = [];
-	
-	grid.colNames.push('Last Updated');
-	grid.colModel.push({
-		name: 'updated', 
-		index: 'updated', 
-		width: 180, 
-		formatter: function(cellvalue, options, rowObject) {
-			var date = new Date(cellvalue);
-			return date.toLocaleTimeString() + ' '+ date.toDateString();
-		},
-		sorttype: 'date'});
+	grid.colModel = [];	
 
 	grid.colNames.push('Entry ID');
 	grid.colModel.push({
@@ -72,7 +60,19 @@ function initDataGrid(data) {
 		index: 'id', 
 		width: 100, 
 		hidden: true,
-		sorttype: 'string'});	
+		sorttype: 'string'});		
+	
+	grid.colNames.push('Last Updated');
+	grid.colModel.push({
+		name: 'updated', 
+		index: 'updated', 
+		width: 180, 
+		sortype: 'date',
+		formatter: function(cellvalue, options, rowObject) {
+			var date = new Date(cellvalue);
+			return date.toLocaleTimeString() + ' '+ date.toDateString();
+		},
+		sorttype: 'date'});
 	
 	grid.colNames.push('Video ID');
 	grid.colModel.push({
@@ -145,15 +145,19 @@ function initDataGrid(data) {
 		edittype: 'text',
 		sorttype: 'string'});		
 	
-	grid.colNames.push('Approval Status');	
+	grid.colNames.push('Status');	
 	grid.colModel.push({
 		name: 'status', 
 		index: 'status', 
-		width: 130, 
-		sorttype: 'string',			
+		width: 100, 		
 		edittype: 'select',
-		editable: true,
-		editoptions: {value: '0:unreviewed;1:approved;2:rejected'}});
+		editable: true,				
+		editoptions: {value: '0:UNREVIEWED;1:APPROVED;2:REJECTED'},
+		formatter: function(cellvalue, options, rowObject) {
+			return statusToString(cellvalue);
+		},
+		sorttype: 'string'
+		});
 
 	grid.colNames.push('Preview');	
 	grid.colModel.push({
@@ -192,10 +196,13 @@ function initDataGrid(data) {
 	grid.cellEdit = true;
 	grid.afterSaveCell  = function(rowid, cellname, value, iRow, iCol) {
 		// save entry as JDO		
-		var entry = jQuery('#datagrid').getRowData(rowid);
-		entry = postProcessEntry(entry);
-		//console.log(entry);
-		updateSubmission(entry);
+		var entryId = getEntryId(rowid);
+		var submission = getSubmission(entryId);
+		
+		if (typeof(submission[cellname]) != 'undefined') {
+			submission[cellname] = value;
+		}			
+		updateSubmission(submission);
 	};
 	
 	grid.pager = jQuery('#pager');	
@@ -218,8 +225,22 @@ function initDataGrid(data) {
 	
 }
 
+function getSubmission(id) {	
+	var ret = null;
+	
+	for (var i=0; i<submissions.length; i++) {
+		var submission = submissions[i];
+		if (submission.id == id) {			
+			ret = submission;
+			break;
+		}
+	}
+	
+	return ret;
+}
+
 function getEntryId(rowid) {
-	return jQuery("#datagrid").getCell(rowid, 1);	
+	return jQuery("#datagrid").getCell(rowid, 0);	
 }
 
 function getVideoId(rowid) {
@@ -228,7 +249,7 @@ function getVideoId(rowid) {
 
 function refreshGrid() {
     getAllSubmissions(function(entries) {
-   	 	entries = preProcessData(entries);
+   	 	//entries = preProcessData(entries);
    	 	refreshGridUI(entries);
     });		
 }
@@ -272,8 +293,7 @@ function preProcessData(data) {
 	
 	for (var i = 0; i < data.length; i++) {
 		var entry = data[i];
-		entry.status = statusToString(entry.status);		
-		//entry.updated = new Date(entry.updated);
+		//entry.status = statusToString(entry.status);	
 		entry.videoTags = JSON.parse(entry.videoTags).join(',');
 	}
 	
@@ -281,7 +301,6 @@ function preProcessData(data) {
 }
 
 function postProcessEntry(entry) {
-	entry.status = stringToStatus(entry.status);
 	entry.videoTags = JSON.stringify(entry.videoTags.split(','));	
 	delete entry.updated; // TODO gson can't parse date by default
 	delete entry.preview; // don't include the button		
@@ -290,18 +309,24 @@ function postProcessEntry(entry) {
 
 function statusToString(status) {
 	
-	var newStatus = 'unreviewed';
+	var newStatus = status;
 	
-	switch (status) {
-		case 0:
-			newStatus = 'unreviewed';
-			break;
-		case 1:
-			newStatus = 'approved';
-			break;
-		case 2:
-			newStatus = 'rejected';
-			break;
+	if (/^[0-2]$/.test(status)) {	
+		switch (status) {
+			case 0:
+				newStatus = 'UNREVIEWED';
+				break;
+			case 1:
+				newStatus = 'APPROVED';
+				break;
+			case 2:
+				newStatus = 'REJECTED';
+				break;
+		}
+	}
+	
+	if (newStatus == 'UNREVIEWED') {
+		newStatus = '<b>UNREVIEWED</b>';		
 	}
 	
 	return newStatus;	
@@ -333,8 +358,8 @@ function getAllSubmissions(callback) {
 	ajaxCall.type = 'GET';
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
-	ajaxCall.success = function(entries) {
-		window.submissionData = entries;
+	ajaxCall.success = function(entries) {		
+		window.submissions = JSON.parse(JSON.stringify(entries));
 		showLoading(false);
 		callback(entries);
 	};	

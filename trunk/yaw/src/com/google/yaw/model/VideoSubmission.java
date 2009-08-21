@@ -20,12 +20,12 @@ public class VideoSubmission implements Serializable {
 
 	// The default "version" of this model
 	private static int DEFAULT_SCHEMA_VERSION = 1;
-		
+		 
 	// The version of the model - used for upgrading entities if the data model
 	// changes.
 	@Persistent
-	private int SCHEMA_VERSION;
-
+	private int SCHEMA_VERSION;	
+	
     @PrimaryKey
     @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
