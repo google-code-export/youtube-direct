@@ -35,8 +35,7 @@ public class UpdateSubmission extends HttpServlet {
 			String id = jsonObj.getId();
 
 			entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
-
-			entry.setVideoId(jsonObj.getVideoId());
+			
 			entry.setStatus(jsonObj.getStatus());
 			entry.setVideoTitle(jsonObj.getVideoTitle());
 			entry.setVideoDescription(jsonObj.getVideoDescription());

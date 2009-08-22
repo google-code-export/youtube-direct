@@ -28,7 +28,7 @@ public class GetAllSubmissions extends HttpServlet {
 
 		Query query = pm.newQuery(VideoSubmission.class);
 		query.declareImports("import java.util.Date");
-		query.setOrdering("updated desc");
+		query.setOrdering("created desc");
 		List<VideoSubmission> videoEntries = (List<VideoSubmission>) query
 				.execute();
 

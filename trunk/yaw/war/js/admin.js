@@ -47,7 +47,7 @@ function initDataGrid(data) {
 	grid.datatype = 'local';
 	grid.height = 300;
 	grid.multiselect = false;
-	grid.caption = 'Video Submissions';
+	grid.caption = 'Submissions';
 	grid.rowNum = 10;
 	grid.rowList = [ 10, 20, 30 ];
 
@@ -63,10 +63,10 @@ function initDataGrid(data) {
 	  sorttype : 'string'
 	});
 
-	grid.colNames.push('Last Updated');
+	grid.colNames.push('Created');
 	grid.colModel.push( {
-	  name : 'updated',
-	  index : 'updated',
+	  name : 'created',
+	  index : 'created',
 	  width : 180,
 	  sortype : 'date',
 	  formatter : function(cellvalue, options, rowObject) {

@@ -69,7 +69,7 @@ Filter: <input id="searchText" type="text"><br>
 </div>
 
 <div id="assignments"><iframe src="assignments.jsp" frameborder=0
-	width="1000" height="600"></iframe>
+	width="1200" height="600"></iframe>
 </div>
 	
 <div id="configure">
