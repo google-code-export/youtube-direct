@@ -16,6 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.yaw.model.Assignment;
+import com.google.yaw.model.VideoSubmission;
+import com.google.yaw.model.VideoSubmission.ModerationStatus;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class Util {
 
@@ -50,6 +61,51 @@ public class Util {
 		pm.close();
 	}
 
+	public static void sendNotifyEmail(VideoSubmission entry, ModerationStatus newStatus, 
+			String sender, String additionalNote) {
+				
+		String subject = "";
+		StringBuffer body = new StringBuffer();					
+		
+		String notifyEmail = entry.getNotifyEmail();
+		String videoUrl = entry.getVideoUrl();
+		String articleUrl = entry.getArticleUrl();
+		
+		switch (newStatus) {
+			case APPROVED:
+				subject = "your submission is approved.";
+				body.append(String.format("your video response (%s) has been approved for this article %s.", 
+						videoUrl, articleUrl));							
+				break;
+			case REJECTED:
+				subject = "your submission is rejected.";
+				body.append(String.format("your video response (%s) has been rejected for this article %s.", 
+						videoUrl, articleUrl));
+				break;		
+		}
+
+		if (additionalNote != null && !additionalNote.equals("")) {
+			body.append(additionalNote);					
+		}		
+		
+		Properties props = new Properties();
+    Session session = Session.getDefaultInstance(props, null);
+
+    try {
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress(sender, sender));
+        msg.addRecipient(Message.RecipientType.TO,
+                         new InternetAddress(notifyEmail, notifyEmail));
+        msg.setSubject(subject);
+        msg.setText(body.toString());
+        Transport.send(msg);
+
+    } catch (Exception e) {
+        // ...
+    } 
+		
+	}
+	
 	/**
 	 * Retrieves an Assignment from the datastore given its id.
 	 * 

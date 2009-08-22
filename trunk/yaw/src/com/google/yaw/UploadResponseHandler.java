@@ -40,7 +40,7 @@ public class UploadResponseHandler extends HttpServlet {
 			VideoSubmission submission = new VideoSubmission(assignmentId, articleUrl, videoId,
 					videoTitle, videoDescription, videoTags, uploader, authSubToken);
 
-			submission.setEmail(email);
+			submission.setNotifyEmail(email);
 
 			Util.persistJdo(submission);
 			log.fine("...VideoSubmission persisted.");
