@@ -323,12 +323,16 @@ public class VideoSubmission implements Serializable {
 		return assignmentId;
 	}
 
-	public void setEmail(String email) {
+	public void setNotifyEmail(String email) {
 		this.notifyEmail = email;
 	}
 
-	public String getEmail() {
+	public String getNotifyEmail() {
 		return notifyEmail;
+	}
+	
+	public String getVideoUrl() {
+		return "http://www.youtube.com/v/" + videoId;
 	}
 
 }

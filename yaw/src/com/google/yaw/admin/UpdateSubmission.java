@@ -12,12 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.yaw.Util;
 import com.google.yaw.model.VideoSubmission;
+import com.google.yaw.model.VideoSubmission.ModerationStatus;
 
 public class UpdateSubmission extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(UpdateSubmission.class
-			.getName());
-
+			.getName());	
+	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
@@ -35,6 +36,19 @@ public class UpdateSubmission extends HttpServlet {
 			String id = jsonObj.getId();
 
 			entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
+	
+			ModerationStatus currentStatus = entry.getStatus();
+			ModerationStatus newStatus = jsonObj.getStatus();
+			
+			boolean hasEmail = (entry.getNotifyEmail() != null);
+			
+			log.warning("notifyEmail = " + entry.getNotifyEmail());
+			
+			if (hasEmail && 
+					currentStatus != ModerationStatus.APPROVED && 
+					newStatus != ModerationStatus.UNREVIEWED) {				
+				Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
+			}
 			
 			entry.setStatus(jsonObj.getStatus());
 			entry.setVideoTitle(jsonObj.getVideoTitle());
