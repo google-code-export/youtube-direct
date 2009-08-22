@@ -22,6 +22,7 @@ function init() {
 
 			if (checked) {
 				jQuery('#email').css('visibility', 'visible');
+				jQuery('#email').focus();
 			} else {
 				jQuery('#email').css('visibility', 'hidden');
 			}
