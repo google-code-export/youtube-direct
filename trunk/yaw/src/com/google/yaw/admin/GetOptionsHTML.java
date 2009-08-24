@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet that returns HTML to autopopulate jqGrid &lt;select&gt; elements.
  */
 public class GetOptionsHTML extends HttpServlet {
-  private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
+  private static final Logger log = Logger.getLogger(GetOptionsHTML.class.getName());
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

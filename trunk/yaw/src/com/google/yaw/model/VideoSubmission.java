@@ -64,6 +64,9 @@ public class VideoSubmission implements Serializable {
 	@Expose
 	@Persistent
 	private Date created;
+	
+	@Persistent
+	private Date lastSynced;
 
 	// A string index used for pagination in app engine
 	@Persistent
@@ -117,7 +120,8 @@ public class VideoSubmission implements Serializable {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		this.createdIndex = df.format(this.created) + "|" + videoId;
-		this.updated = new Date();
+		this.updated = this.created;
+		this.lastSynced = this.created;
 		setStatus(ModerationStatus.UNREVIEWED);
 		this.videoTitle = title;
 		this.videoDescription = description;
@@ -334,5 +338,12 @@ public class VideoSubmission implements Serializable {
 	public String getVideoUrl() {
 		return "http://www.youtube.com/v/" + videoId;
 	}
-
+	
+	public Date getLastSynced() {
+	  return lastSynced;
+	}
+	
+	public void setLastSynced(Date lastSynced) {
+	  this.lastSynced = lastSynced;
+	}
 }

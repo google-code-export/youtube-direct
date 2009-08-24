@@ -1,6 +1,9 @@
 package com.google.yaw;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -87,48 +90,43 @@ public class GetUploadToken extends HttpServlet {
 
 			mg.setKeywords(new MediaKeywords());
 
-			StringBuffer tags = new StringBuffer();
+			List<String> tags = new ArrayList<String>();
 			for (int i = 0; i < tagsArray.length(); i++) {
 				String tag = tagsArray.getString(i).trim();
 				mg.getKeywords().addKeyword(tag);
-				tags.append(tag);
-				if (i < tagsArray.length()) {
-					tags.append(",");
-				}
+				tags.add(tag);
 			}
+			
+			// Sort the list of tags and join with "," so that we can easily compare what's in the
+			// datastore with what we get back from the YouTube API.
+			String sortedTags = Util.sortedJoin(tags, ",");
 
 			mg.setDescription(new MediaDescription());
-			mg.getDescription().setPlainTextContent(
-					String.format("Uploaded in response to %s\n\n%s", articleUrl, description));
+			mg.getDescription().setPlainTextContent(description);
 
 			String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
 			if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
-				mg
-						.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
-								defaultDeveloperTag));
+			  mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
+			          defaultDeveloperTag));
 			}
 
 			userSession.setEmail(email);
 			userSession.setVideoTitle(title);
 			userSession.setVideoDescription(description);
 			userSession.setVideoLocation(location);
-			userSession.setVideoTagList(tags.toString());
+			userSession.setVideoTagList(sortedTags);
 			UserSessionManager.save(userSession);
 
 			YouTubeApiManager apiManager = new YouTubeApiManager();
 			apiManager.setToken(authSubToken);
 
 			FormUploadToken token = apiManager.getFormUploadToken(newEntry);
-
-			String uploadToken = null;
-			String uploadUrl = null;
-
 			if (token == null) {
-				log.warning("upload token is null!");
-			} else {
-				uploadToken = token.getToken();
-				uploadUrl = token.getUrl();
+				throw new IllegalArgumentException("Upload token returned from YouTube API is null.");
 			}
+			
+			String uploadToken = token.getToken();
+			String uploadUrl = token.getUrl();
 
 			JSONObject responseJsonObj = new JSONObject();
 			responseJsonObj.put("uploadToken", uploadToken);
