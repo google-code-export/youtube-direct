@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet that returns HTML to autopopulate jqGrid &lt;select&gt; elements.
+ */
 public class GetOptionsHTML extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
 
@@ -26,18 +29,18 @@ public class GetOptionsHTML extends HttpServlet {
       StringBuffer selectHTML = new StringBuffer("<select>");
 
       if (type.equals("category")) {
+        // This request is for valid YouTube category codes.
         for (String category : YouTubeApiManager.getCategoryCodes()) {
-          selectHTML.append(String.format("<option value='%s'>%s</option>",
-                  category, category));
+          selectHTML.append(String.format("<option value='%s'>%s</option>", category, category));
         }
       } else if (type.equals("status")) {
+        // This request is for valid Assignment status values.
         for (String status : Assignment.getAssignmentStatusNames()) {
-          selectHTML.append(String.format("<option value='%s'>%s</option>",
-                  status, status));
+          selectHTML.append(String.format("<option value='%s'>%s</option>", status, status));
         }
       } else {
-        throw new IllegalArgumentException(String.format("'%s' is not a valid value for" +
-                " parameter 'type'.", type));
+        throw new IllegalArgumentException(String.format("'%s' is not a valid value for parameter" +
+        		" 'type'.", type));
       }
 
       selectHTML.append("</select>");
