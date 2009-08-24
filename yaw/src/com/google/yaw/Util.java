@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -115,29 +116,19 @@ public class Util {
 	 *         invalid.
 	 */
 	public static Assignment getAssignmentById(String id) {
-
-		Assignment entry = null;
-
-		PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-
-		String filters = "id == id_";
-		Query query = pm.newQuery(Assignment.class, filters);
-		query.declareParameters("String id_");
-		List<Assignment> list = (List<Assignment>) query.executeWithArray(new Object[] { id });
-		if (list.size() > 0) {
-			entry = list.get(0);
-			entry = pm.detachCopy(entry);
-		}
-
-		pm.close();
-
-		return entry;
-
+	  PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+	  Assignment assignment = pm.getObjectById(Assignment.class, id);
+	  if (assignment != null) {
+	    assignment = pm.detachCopy(assignment);
+	  }
+	  
+	  pm.close();
+	  
+	  return assignment;
 	}
 
 	public static String getPostBody(HttpServletRequest req) throws IOException {
 		InputStream is = req.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
 		StringBuffer body = new StringBuffer();
 		String line = null;
@@ -173,5 +164,24 @@ public class Util {
 	public static String toJson(Object o) {
 		return GSON.toJson(o);
 	}
-
+	
+	/**
+	 * Sorts a list and then performs a join into one large string, using the delimeter specified.
+	 * @param strings The list of strings to sort and join.
+	 * @param delimeter The delimeter string to insert in between each string in the list.
+	 * @return A string consisting of a sorted list of strings, joined with delimeter.
+	 */
+	public static String sortedJoin(List<String> strings, String delimeter) {
+	  Collections.sort(strings);
+	  
+	  StringBuffer tempBuffer = new StringBuffer();
+	  for (int i = 0; i < strings.size(); i++) {
+	    tempBuffer.append(strings.get(i));
+	    if (i < strings.size() - 1) {
+	      tempBuffer.append(delimeter);
+	    }
+	  }
+	  
+	  return tempBuffer.toString();
+	}
 }

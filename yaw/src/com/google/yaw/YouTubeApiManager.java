@@ -41,6 +41,8 @@ public class YouTubeApiManager {
 
 	private YouTubeService service = null;
 	private static final String categoriesCacheKey = "categories";
+	private static final String entryUrlFormat =
+	  "http://gdata.youtube.com/feeds/api/users/default/uploads/%s";
 	private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
 	private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
 	private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
@@ -117,6 +119,30 @@ public class YouTubeApiManager {
 		}
 
 		return token;
+	}
+	
+	/**
+	 * Gets a YouTube video entry given a specific video id. Constructs the entry URL based on a
+	 * hardcoded URL prefix, which might need to be changed in the future.
+	 * @param videoId The YouTube video id of a given video.
+	 * @return A VideoEntry representing the video in question, or null.
+	 */
+	public VideoEntry getVideoEntry(String videoId) {
+	  String entryUrl = String.format(entryUrlFormat, videoId);
+	  
+	  try {
+	    return service.getEntry(new URL(entryUrl), VideoEntry.class);
+	  } catch (MalformedURLException e) {
+	    log.log(Level.WARNING, "", e);
+	  } catch (IOException e) {
+	    log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
+      // We don't need to log it at WARNING level.
+      log.log(Level.FINE, "", e);
+    }
+    
+    return null;
 	}
 
 	@SuppressWarnings("unchecked")
