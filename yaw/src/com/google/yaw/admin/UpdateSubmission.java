@@ -45,6 +45,7 @@ public class UpdateSubmission extends HttpServlet {
 			log.warning("notifyEmail = " + entry.getNotifyEmail());
 			
 			if (hasEmail && 
+					currentStatus != newStatus &&
 					currentStatus != ModerationStatus.APPROVED && 
 					newStatus != ModerationStatus.UNREVIEWED) {				
 				Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
