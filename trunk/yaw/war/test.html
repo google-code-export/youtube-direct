@@ -7,25 +7,22 @@
 <script type="text/javascript">
 window.onload = function() {
 	var yaw = new Yaw();
-	var assignmentId = 'agNkdWlyEAsSCkFzc2lnbm1lbnQYAgw';
-	yaw.setAssignmentId(assignmentId);
-	yaw.embed('yawContainer', 300, 500);
+	getAssignmentId(function(id) {
+		yaw.setAssignmentId(id);	
+		yaw.embed('yawContainer', 300, 500);
+	});	
 };
 
 function getAssignmentId(callback) {
-	var url = '/GetAllAssignments?page=1&rows=1';
+	var url = '/GetAllAssignments?page=1&rows=1&sord=desc&sidx=id';
 	var ajaxCall = {};
 	ajaxCall.cache = false;
 	ajaxCall.type = 'GET';
 	ajaxCall.url = url;
 	ajaxCall.dataType = 'json';
 	ajaxCall.success = function(entries) {
-		console.log(entries);
-		if (entries.length > 0) {
-			callback(entries[0]['id']);
-		} else {
-			callback(null);
-		}
+		var id = entries['rows'][0]['id']
+		callback(id);
 	};	
 	jQuery.ajax(ajaxCall);		
 }
