@@ -42,8 +42,6 @@ public class UpdateSubmission extends HttpServlet {
 			
 			boolean hasEmail = (entry.getNotifyEmail() != null);
 			
-			log.warning("notifyEmail = " + entry.getNotifyEmail());
-			
 			if (hasEmail && 
 					currentStatus != newStatus &&
 					currentStatus != ModerationStatus.APPROVED && 
@@ -51,6 +49,7 @@ public class UpdateSubmission extends HttpServlet {
 				Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
 			}
 			
+			entry.setVideoId(jsonObj.getVideoId());
 			entry.setStatus(jsonObj.getStatus());
 			entry.setVideoTitle(jsonObj.getVideoTitle());
 			entry.setVideoDescription(jsonObj.getVideoDescription());
@@ -58,7 +57,9 @@ public class UpdateSubmission extends HttpServlet {
 			entry.setUpdated(new Date());
 
 			pm.makePersistent(entry);
-
+			//FullTextIndexer.addIndex(entry, entry.getClass());
+			FullTextIndexer.reIndex();
+			
 			resp.setContentType("text/javascript");
 			resp.getWriter().println(Util.GSON.toJson(entry));
 

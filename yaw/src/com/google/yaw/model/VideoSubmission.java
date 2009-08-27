@@ -14,8 +14,13 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.compass.annotations.Searchable;
+import org.compass.annotations.SearchableId;
+import org.compass.annotations.SearchableProperty;
+
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
+@Searchable
 public class VideoSubmission implements Serializable {
 
 	// The default "version" of this model
@@ -30,10 +35,11 @@ public class VideoSubmission implements Serializable {
 	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	@Expose
+	@SearchableId
 	private String id;
 
 	@Expose
-	@Persistent
+	@Persistent	
 	private String videoId = null;
 
 	// The AuthSub token used when uploading this video.
@@ -51,6 +57,7 @@ public class VideoSubmission implements Serializable {
 
 	@Expose
 	@Persistent
+	@SearchableProperty
 	private String videoDescription = null;
 
 	@Expose
@@ -258,7 +265,8 @@ public class VideoSubmission implements Serializable {
 	public void setSCHEMA_VERSION(int schema_version) {
 		SCHEMA_VERSION = schema_version;
 	}
-
+	
+	@SearchableProperty
 	public String getVideoTitle() {
 		return videoTitle;
 	}
@@ -282,7 +290,7 @@ public class VideoSubmission implements Serializable {
 	public void setVideoLocation(String videoLocation) {
 		this.videoLocation = videoLocation;
 	}
-
+	
 	public String getVideoTags() {
 		return videoTags;
 	}

@@ -29,6 +29,13 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.compass.core.Compass;
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.config.CompassEnvironment;
+import org.compass.gps.CompassGps;
+import org.compass.gps.device.jdo.Jdo2GpsDevice;
+import org.compass.gps.impl.SingleCompassGps;
+
 public class Util {
 
 	private static final Logger log = Logger.getLogger(Util.class.getName());
@@ -39,11 +46,12 @@ public class Util {
 			.setDateFormat(DATE_TIME_PATTERN).create();
 
 	private static PersistenceManagerFactory pmf = null;
-
+	
+	static {
+		pmf = JDOHelper.getPersistenceManagerFactory("transactions-optional");		
+	}
+	
 	public static PersistenceManagerFactory getPersistenceManagerFactory() {
-		if (pmf == null) {
-			pmf = JDOHelper.getPersistenceManagerFactory("transactions-optional");
-		}
 		return pmf;
 	}
 
@@ -116,15 +124,17 @@ public class Util {
 	 *         invalid.
 	 */
 	public static Assignment getAssignmentById(String id) {
-	  PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-	  Assignment assignment = pm.getObjectById(Assignment.class, id);
-	  if (assignment != null) {
-	    assignment = pm.detachCopy(assignment);
-	  }
-	  
-	  pm.close();
-	  
-	  return assignment;
+		log.warning(id);
+		PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    Assignment assignment = pm.getObjectById(Assignment.class, id);
+    if (assignment != null) {
+      assignment = pm.detachCopy(assignment);
+    }
+    
+    pm.close();
+    
+    return assignment;
+
 	}
 
 	public static String getPostBody(HttpServletRequest req) throws IOException {

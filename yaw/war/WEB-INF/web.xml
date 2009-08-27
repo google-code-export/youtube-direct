@@ -6,6 +6,15 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
   <servlet>
+    <servlet-name>Test</servlet-name>
+    <servlet-class>com.google.yaw.admin.FullTextIndexer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Test</servlet-name>
+    <url-pattern>/test</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>GetAllSubmissions</servlet-name>
     <servlet-class>com.google.yaw.admin.GetAllSubmissions</servlet-class>
   </servlet>
