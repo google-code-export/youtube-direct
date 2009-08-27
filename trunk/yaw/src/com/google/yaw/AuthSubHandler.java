@@ -19,58 +19,58 @@ import com.google.yaw.model.UserSession;
  */
 @SuppressWarnings("serial")
 public class AuthSubHandler extends HttpServlet {
-	private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
+  private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
 
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
+    String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
 
-		try {
-			if (token == null) {
-				throw new IllegalArgumentException(String.format("Could not retrieve token from "
-						+ "AuthSub response. request.getQueryString() => %s", request.getQueryString()));
-			}
+    try {
+      if (token == null) {
+        throw new IllegalArgumentException(String.format("Could not retrieve token from "
+            + "AuthSub response. request.getQueryString() => %s", request.getQueryString()));
+      }
 
-			String articleUrl = request.getParameter("articleUrl");
-			if (Util.isNullOrEmpty(articleUrl)) {
-				throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
-			}
+      String articleUrl = request.getParameter("articleUrl");
+      if (Util.isNullOrEmpty(articleUrl)) {
+        throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
+      }
 
-			String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
+      String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-			UserSession userSession = UserSessionManager.getUserSession(request);
+      UserSession userSession = UserSessionManager.getUserSession(request);
 
-			if (userSession == null) {
-				// TODO: Throw a better Exception class here.
-				throw new IllegalArgumentException("No user session found.");
-			}
+      if (userSession == null) {
+        // TODO: Throw a better Exception class here.
+        throw new IllegalArgumentException("No user session found.");
+      }
 
-			userSession.setAuthSubToken(authSubToken);
+      userSession.setAuthSubToken(authSubToken);
 
-			YouTubeApiManager apiManager = new YouTubeApiManager();
-			apiManager.setToken(authSubToken);
+      YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setToken(authSubToken);
 
-			String youTubeName = apiManager.getCurrentUsername();
-			if (Util.isNullOrEmpty(youTubeName)) {
-				// TODO: Throw a better Exception class here.
-				throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
-						+ "the authenticated user.");
-			}
-			userSession.setYouTubeName(youTubeName);
-			UserSessionManager.save(userSession);
+      String youTubeName = apiManager.getCurrentUsername();
+      if (Util.isNullOrEmpty(youTubeName)) {
+        // TODO: Throw a better Exception class here.
+        throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
+            + "the authenticated user.");
+      }
+      userSession.setYouTubeName(youTubeName);
+      UserSessionManager.save(userSession);
 
-			response.sendRedirect(articleUrl);
-		} catch (ServiceException e) {
-			log.warning(e.toString());
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			log.warning(e.toString());
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (GeneralSecurityException e) {
-			log.warning(e.toString());
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Security error while retrieving session token.");
-		}
-	}
+      response.sendRedirect(articleUrl);
+    } catch (ServiceException e) {
+      log.warning(e.toString());
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (IllegalArgumentException e) {
+      log.warning(e.toString());
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } catch (GeneralSecurityException e) {
+      log.warning(e.toString());
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+          "Security error while retrieving session token.");
+    }
+  }
 }

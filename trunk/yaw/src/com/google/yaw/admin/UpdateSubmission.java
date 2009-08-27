@@ -16,58 +16,54 @@ import com.google.yaw.model.VideoSubmission.ModerationStatus;
 
 public class UpdateSubmission extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(UpdateSubmission.class
-			.getName());	
-	
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+  private static final Logger log = Logger.getLogger(UpdateSubmission.class.getName());
 
-		PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-		PersistenceManager pm = pmf.getPersistenceManager();
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		try {
-			String json = Util.getPostBody(req);
+    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-			VideoSubmission entry = null;
+    try {
+      String json = Util.getPostBody(req);
 
-			VideoSubmission jsonObj = Util.GSON.fromJson(json, VideoSubmission.class);
+      VideoSubmission entry = null;
 
-			String id = jsonObj.getId();
+      VideoSubmission jsonObj = Util.GSON.fromJson(json, VideoSubmission.class);
 
-			entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
-	
-			ModerationStatus currentStatus = entry.getStatus();
-			ModerationStatus newStatus = jsonObj.getStatus();
-			
-			boolean hasEmail = (entry.getNotifyEmail() != null);
-			
-			if (hasEmail && 
-					currentStatus != newStatus &&
-					currentStatus != ModerationStatus.APPROVED && 
-					newStatus != ModerationStatus.UNREVIEWED) {				
-				Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
-			}
-			
-			entry.setVideoId(jsonObj.getVideoId());
-			entry.setStatus(jsonObj.getStatus());
-			entry.setVideoTitle(jsonObj.getVideoTitle());
-			entry.setVideoDescription(jsonObj.getVideoDescription());
-			entry.setVideoTags(jsonObj.getVideoTags());
-			entry.setUpdated(new Date());
+      String id = jsonObj.getId();
 
-			pm.makePersistent(entry);
-			//FullTextIndexer.addIndex(entry, entry.getClass());
-			FullTextIndexer.reIndex();
-			
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(Util.GSON.toJson(entry));
+      entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
 
-		} catch (Exception e) {
-			log.warning(e.toString());
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} finally {
-			pm.close();
-		}
-	}
+      ModerationStatus currentStatus = entry.getStatus();
+      ModerationStatus newStatus = jsonObj.getStatus();
+
+      boolean hasEmail = (entry.getNotifyEmail() != null);
+
+      if (hasEmail && currentStatus != newStatus && currentStatus != ModerationStatus.APPROVED
+          && newStatus != ModerationStatus.UNREVIEWED) {
+        Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
+      }
+
+      entry.setVideoId(jsonObj.getVideoId());
+      entry.setStatus(jsonObj.getStatus());
+      entry.setVideoTitle(jsonObj.getVideoTitle());
+      entry.setVideoDescription(jsonObj.getVideoDescription());
+      entry.setVideoTags(jsonObj.getVideoTags());
+      entry.setUpdated(new Date());
+
+      pm.makePersistent(entry);
+      // FullTextIndexer.addIndex(entry, entry.getClass());
+      FullTextIndexer.reIndex();
+
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(Util.GSON.toJson(entry));
+
+    } catch (Exception e) {
+      log.warning(e.toString());
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } finally {
+      pm.close();
+    }
+  }
 }

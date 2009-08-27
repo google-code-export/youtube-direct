@@ -23,8 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet to handle requests that fetch Assignments from the datastore.
  * 
- * <p>Handles both requests to fetch all assignment, and requests for a subset of assignments
- * (i.e. filtered with search parameters or paged requests).
+ * <p>
+ * Handles both requests to fetch all assignment, and requests for a subset of
+ * assignments (i.e. filtered with search parameters or paged requests).
  */
 public class GetAllAssignments extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
@@ -54,14 +55,14 @@ public class GetAllAssignments extends HttpServlet {
       if (Util.isNullOrEmpty(pageSizeParam)) {
         throw new IllegalArgumentException("'rows' parameter is null or empty.");
       }
-      
+
       int pageNumber = Integer.parseInt(pageNumberParam);
       int pageSize = Integer.parseInt(pageSizeParam);
 
       // Query the datastore for all Assignments, with the desired sort order.
       Query query = pm.newQuery(Assignment.class);
       query.setOrdering(String.format("%s %s", sortColumn, sortOrder));
-      List<Assignment> assignments = (List<Assignment>)query.execute();
+      List<Assignment> assignments = (List<Assignment>) query.execute();
 
       if (search != null && search.equals("true")) {
         // The request is for a filtered subset of the full results.
@@ -93,8 +94,8 @@ public class GetAllAssignments extends HttpServlet {
           } else if (searchColumn.equals("status")) {
             value = assignment.getStatus().toString().toLowerCase();
           } else {
-            throw new IllegalArgumentException(String.format("'%s' is not a valid value for " +
-                    "parameter 'searchField'.", searchColumn));
+            throw new IllegalArgumentException(String.format("'%s' is not a valid value for "
+                + "parameter 'searchField'.", searchColumn));
           }
 
           Boolean matches = false;
@@ -109,7 +110,8 @@ public class GetAllAssignments extends HttpServlet {
           }
 
           if (matches) {
-            // We can't modify the assignments list, so copy to a temporary list instead.
+            // We can't modify the assignments list, so copy to a temporary list
+            // instead.
             filteredAssignments.add(assignment);
           }
         }
@@ -119,30 +121,36 @@ public class GetAllAssignments extends HttpServlet {
       }
 
       int totalResults = assignments.size();
-      
-      // If request is for 3rd page of results, and each page has 5 results, the first result to
+
+      // If request is for 3rd page of results, and each page has 5 results, the
+      // first result to
       // return would be index 10.
       int startIndex = (pageNumber - 1) * pageSize;
 
-      // 1 greater than the index of the last element to include, because the second parameter to
-      // List.subList() is interpretted as being exclusive. If request is for 3rd page of results,
+      // 1 greater than the index of the last element to include, because the
+      // second parameter to
+      // List.subList() is interpretted as being exclusive. If request is for
+      // 3rd page of results,
       // and each page has 5 results, the index value to use would be 15.
       int stopIndex = pageNumber * pageSize;
-      
-      // Total number of pages is equal to the integer greater than the total divided by page size.
+
+      // Total number of pages is equal to the integer greater than the total
+      // divided by page size.
       // If there are 34 total results and a page size of 5, total pages is 7.
-      int totalPages = (int)Math.ceil((double)totalResults / (double)pageSize);
-      
+      int totalPages = (int) Math.ceil((double) totalResults / (double) pageSize);
+
       if (stopIndex > totalResults) {
-        // If this is the last page of results than the calculated index might be bigger than the
+        // If this is the last page of results than the calculated index might
+        // be bigger than the
         // last valid index in the list.
         stopIndex = totalResults;
       }
-      
+
       // 0-based. startIndex is inclusive, stopIndex is exclusive.
       assignments = assignments.subList(startIndex, stopIndex);
 
-      // The JSON response matches the format expected by jqGrid, as documented at
+      // The JSON response matches the format expected by jqGrid, as documented
+      // at
       // http://www.trirand.com/jqgridwiki/doku.php?id=wiki:retrieving_data#json_data
       JSONObject jsonRepsonse = new JSONObject();
       jsonRepsonse.put("total", totalPages);
@@ -159,7 +167,8 @@ public class GetAllAssignments extends HttpServlet {
         String submissionCount = Integer.toString(assignment.getSubmissionCount());
 
         JSONObject row = new JSONObject();
-        // Each row needs a unique id in addition to the user-defined "id" column. Instead of using
+        // Each row needs a unique id in addition to the user-defined "id"
+        // column. Instead of using
         // some incremental number, use datastore id, which should be unique.
         row.put("id", id);
 

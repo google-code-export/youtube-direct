@@ -10,130 +10,130 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class UserSession {
 
-	@PrimaryKey
-	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private String id = null;
+  @PrimaryKey
+  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+  private String id = null;
 
-	@Persistent
-	private String youTubeName = null;
+  @Persistent
+  private String youTubeName = null;
 
-	@Persistent
-	private String authSubToken = null;
+  @Persistent
+  private String authSubToken = null;
 
-	@Persistent
-	private String assignmentId = null;
+  @Persistent
+  private String assignmentId = null;
 
-	@Persistent
-	private String articleUrl = null;
+  @Persistent
+  private String articleUrl = null;
 
-	@Persistent
-	private String selfUrl = null;
+  @Persistent
+  private String selfUrl = null;
 
-	@Persistent
-	private String videoTitle = null;
+  @Persistent
+  private String videoTitle = null;
 
-	@Persistent
-	private String videoDescription = null;
+  @Persistent
+  private String videoDescription = null;
 
-	@Persistent
-	private String videoLocation = null;
+  @Persistent
+  private String videoLocation = null;
 
-	@Persistent
-	private String videoTagList = null;
+  @Persistent
+  private String videoTagList = null;
 
-	@Persistent
-	private String email = null;
+  @Persistent
+  private String email = null;
 
-	public String getVideoLocation() {
-		return videoLocation;
-	}
+  public String getVideoLocation() {
+    return videoLocation;
+  }
 
-	public void setVideoLocation(String videoLocation) {
-		this.videoLocation = videoLocation;
-	}
+  public void setVideoLocation(String videoLocation) {
+    this.videoLocation = videoLocation;
+  }
 
-	public String getVideoTagList() {
-		return videoTagList;
-	}
+  public String getVideoTagList() {
+    return videoTagList;
+  }
 
-	public void setVideoTagList(String videoTagList) {
-		this.videoTagList = videoTagList;
-	}
+  public void setVideoTagList(String videoTagList) {
+    this.videoTagList = videoTagList;
+  }
 
-	public String getSelfUrl() {
-		return selfUrl;
-	}
+  public String getSelfUrl() {
+    return selfUrl;
+  }
 
-	public void setSelfUrl(String selfUrl) {
-		this.selfUrl = selfUrl;
-	}
+  public void setSelfUrl(String selfUrl) {
+    this.selfUrl = selfUrl;
+  }
 
-	public UserSession() {
+  public UserSession() {
 
-	}
+  }
 
-	public String getAssignmentId() {
-		return assignmentId;
-	}
+  public String getAssignmentId() {
+    return assignmentId;
+  }
 
-	public void setAssignmentId(String assignmentId) {
-		this.assignmentId = assignmentId;
-	}
+  public void setAssignmentId(String assignmentId) {
+    this.assignmentId = assignmentId;
+  }
 
-	public String getArticleUrl() {
-		return articleUrl;
-	}
+  public String getArticleUrl() {
+    return articleUrl;
+  }
 
-	public void setArticleUrl(String articleUrl) {
-		this.articleUrl = articleUrl;
-	}
+  public void setArticleUrl(String articleUrl) {
+    this.articleUrl = articleUrl;
+  }
 
-	public String getVideoTitle() {
-		return videoTitle;
-	}
+  public String getVideoTitle() {
+    return videoTitle;
+  }
 
-	public void setVideoTitle(String videoTitle) {
-		this.videoTitle = videoTitle;
-	}
+  public void setVideoTitle(String videoTitle) {
+    this.videoTitle = videoTitle;
+  }
 
-	public String getVideoDescription() {
-		return videoDescription;
-	}
+  public String getVideoDescription() {
+    return videoDescription;
+  }
 
-	public void setVideoDescription(String videoDescription) {
-		this.videoDescription = videoDescription;
-	}
+  public void setVideoDescription(String videoDescription) {
+    this.videoDescription = videoDescription;
+  }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	public String getId() {
-		return id;
-	}
+  public String getId() {
+    return id;
+  }
 
-	public String getYouTubeName() {
-		return youTubeName;
-	}
+  public String getYouTubeName() {
+    return youTubeName;
+  }
 
-	public String getAuthSubToken() {
-		return authSubToken;
-	}
+  public String getAuthSubToken() {
+    return authSubToken;
+  }
 
-	public void setYouTubeName(String name) {
-		youTubeName = name;
-	}
+  public void setYouTubeName(String name) {
+    youTubeName = name;
+  }
 
-	public void setAuthSubToken(String token) {
-		authSubToken = token;
-	}
+  public void setAuthSubToken(String token) {
+    authSubToken = token;
+  }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public String getEmail() {
-		return email;
-	}
+  public String getEmail() {
+    return email;
+  }
 }

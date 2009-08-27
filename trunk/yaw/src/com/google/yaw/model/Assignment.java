@@ -35,7 +35,7 @@ public class Assignment implements Serializable {
   private int SCHEMA_VERSION;
 
   @PrimaryKey
-  @Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
+  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   @Expose
   private String id;
@@ -100,7 +100,7 @@ public class Assignment implements Serializable {
    * Sets the description of this assignment.
    * 
    * @param description
-   *            The assignment description.
+   *          The assignment description.
    */
   public void setDescription(String description) {
     this.description = description;
@@ -120,7 +120,7 @@ public class Assignment implements Serializable {
    * Sets the YouTube category used for videos uploaded for this assignment.
    * 
    * @param category
-   *            The YouTube category name.
+   *          The YouTube category name.
    */
   public void setCategory(String category) {
     this.category = category;
@@ -149,7 +149,7 @@ public class Assignment implements Serializable {
    * Update the schema version when the model changes.
    * 
    * @param version
-   *            The new version.
+   *          The new version.
    */
   public void setSchemaVersion(int version) {
     this.SCHEMA_VERSION = version;
@@ -199,7 +199,7 @@ public class Assignment implements Serializable {
 
     Query query = pm.newQuery(VideoSubmission.class, "assignmentId == assignmentIdParam");
     query.declareParameters("String assignmentIdParam");
-    List<VideoSubmission> submissions = (List<VideoSubmission>)query.execute(id);
+    List<VideoSubmission> submissions = (List<VideoSubmission>) query.execute(id);
     int size = submissions.size();
 
     pm.close();

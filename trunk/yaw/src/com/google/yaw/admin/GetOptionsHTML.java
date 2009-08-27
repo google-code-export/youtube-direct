@@ -39,8 +39,8 @@ public class GetOptionsHTML extends HttpServlet {
           selectHTML.append(String.format("<option value='%s'>%s</option>", status, status));
         }
       } else {
-        throw new IllegalArgumentException(String.format("'%s' is not a valid value for parameter" +
-        		" 'type'.", type));
+        throw new IllegalArgumentException(String.format("'%s' is not a valid value for parameter"
+            + " 'type'.", type));
       }
 
       selectHTML.append("</select>");
