@@ -19,8 +19,7 @@ public class MutateAssignment extends HttpServlet {
   private static final Logger log = Logger.getLogger(UpdateSubmission.class.getName());
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp)
-  throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -48,14 +47,12 @@ public class MutateAssignment extends HttpServlet {
           throw new IllegalArgumentException("'status' parameter is null or empty.");
         }
 
-        log.fine(String.format("Attempting to persist Assignment with description '%s', " +
-                "category '%s', and status '%s'...", description, category,
-                status));
-        Assignment assignment = new Assignment(description, category,
-                AssignmentStatus.valueOf(status));
+        log.fine(String.format("Attempting to persist Assignment with description '%s', "
+            + "category '%s', and status '%s'...", description, category, status));
+        Assignment assignment = new Assignment(description, category, AssignmentStatus
+            .valueOf(status));
         Util.persistJdo(assignment);
-        log.fine(String.format("...Assignment with id '%s' persisted.",
-                assignment.getId()));
+        log.fine(String.format("...Assignment with id '%s' persisted.", assignment.getId()));
 
         resp.setContentType("text/javascript");
         resp.getWriter().println(Util.GSON.toJson(assignment));
@@ -88,12 +85,12 @@ public class MutateAssignment extends HttpServlet {
           resp.setContentType("text/javascript");
           resp.getWriter().println(Util.GSON.toJson(assignment));
         } else {
-          throw new IllegalArgumentException(String.format("Could not find Assignment id '%s'.",
-                  id));
+          throw new IllegalArgumentException(String
+              .format("Could not find Assignment id '%s'.", id));
         }
       } else {
         throw new IllegalArgumentException(String.format("Operation type '%s' is not supported.",
-                operation));
+            operation));
       }
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);

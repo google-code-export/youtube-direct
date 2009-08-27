@@ -29,120 +29,122 @@ import com.google.yaw.model.Assignment.AssignmentStatus;
 
 public class GetUploadToken extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(GetUploadToken.class.getName());
+  private static final Logger log = Logger.getLogger(GetUploadToken.class.getName());
 
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String json = Util.getPostBody(req);
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    String json = Util.getPostBody(req);
 
-		try {
-			JSONObject jsonObj = new JSONObject(json);
+    try {
+      JSONObject jsonObj = new JSONObject(json);
 
-			String title = jsonObj.getString("title");
-			String description = jsonObj.getString("description");
-			String location = jsonObj.getString("location");
-			String email = jsonObj.getString("email");
-			JSONArray tagsArray = jsonObj.getJSONArray("tags");
+      String title = jsonObj.getString("title");
+      String description = jsonObj.getString("description");
+      String location = jsonObj.getString("location");
+      String email = jsonObj.getString("email");
+      JSONArray tagsArray = jsonObj.getJSONArray("tags");
 
-			// Only check for required parameters 'title' and 'description'.
-			if (Util.isNullOrEmpty(title)) {
-				throw new IllegalArgumentException("'title' parameter is null or empty.");
-			}
-			if (Util.isNullOrEmpty(description)) {
-				throw new IllegalArgumentException("'description' parameter is null or empty.");
-			}
+      // Only check for required parameters 'title' and 'description'.
+      if (Util.isNullOrEmpty(title)) {
+        throw new IllegalArgumentException("'title' parameter is null or empty.");
+      }
+      if (Util.isNullOrEmpty(description)) {
+        throw new IllegalArgumentException("'description' parameter is null or empty.");
+      }
 
-			UserSession userSession = UserSessionManager.getUserSession(req);
-			if (userSession == null) {
-				// TODO: Throw a better Exception class here.
-				throw new IllegalArgumentException("No user session found.");
-			}
-			String authSubToken = userSession.getAuthSubToken();
-			String articleUrl = userSession.getArticleUrl();
-			String assignmentId = userSession.getAssignmentId();
+      UserSession userSession = UserSessionManager.getUserSession(req);
+      if (userSession == null) {
+        // TODO: Throw a better Exception class here.
+        throw new IllegalArgumentException("No user session found.");
+      }
+      String authSubToken = userSession.getAuthSubToken();
+      String articleUrl = userSession.getArticleUrl();
+      String assignmentId = userSession.getAssignmentId();
 
-			log.warning("current assignment id = " + assignmentId);
+      log.warning("current assignment id = " + assignmentId);
 
-			Assignment assignment = Util.getAssignmentById(assignmentId);
-			if (assignment == null) {
-				throw new IllegalArgumentException(String.format(
-						"Could not find an assignment with id '%s'.", assignmentId));
-			}
-			AssignmentStatus status = assignment.getStatus();
-			if (status != AssignmentStatus.ACTIVE) {
-				throw new IllegalArgumentException(String.format(
-						"Can't add a video to a non-ACTIVE assignment. "
-								+ "Current status of assignment id '%s' is '%s'.", assignmentId, status));
-			}
+      Assignment assignment = Util.getAssignmentById(assignmentId);
+      if (assignment == null) {
+        throw new IllegalArgumentException(String.format(
+            "Could not find an assignment with id '%s'.", assignmentId));
+      }
+      AssignmentStatus status = assignment.getStatus();
+      if (status != AssignmentStatus.ACTIVE) {
+        throw new IllegalArgumentException(String.format(
+            "Can't add a video to a non-ACTIVE assignment. "
+                + "Current status of assignment id '%s' is '%s'.", assignmentId, status));
+      }
 
-			// Max title length is 60 characters or 100 bytes.
-			if (title.length() > 60) {
-				title = title.substring(0, 59);
-			}
+      // Max title length is 60 characters or 100 bytes.
+      if (title.length() > 60) {
+        title = title.substring(0, 59);
+      }
 
-			VideoEntry newEntry = new VideoEntry();
-			YouTubeMediaGroup mg = newEntry.getOrCreateMediaGroup();
+      VideoEntry newEntry = new VideoEntry();
+      YouTubeMediaGroup mg = newEntry.getOrCreateMediaGroup();
 
-			mg.setTitle(new MediaTitle());
-			mg.getTitle().setPlainTextContent(title);
+      mg.setTitle(new MediaTitle());
+      mg.getTitle().setPlainTextContent(title);
 
-			mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME, assignment.getCategory()));
+      mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME, assignment.getCategory()));
 
-			mg.setKeywords(new MediaKeywords());
+      mg.setKeywords(new MediaKeywords());
 
-			List<String> tags = new ArrayList<String>();
-			for (int i = 0; i < tagsArray.length(); i++) {
-				String tag = tagsArray.getString(i).trim();
-				mg.getKeywords().addKeyword(tag);
-				tags.add(tag);
-			}
-			
-			// Sort the list of tags and join with "," so that we can easily compare what's in the
-			// datastore with what we get back from the YouTube API.
-			String sortedTags = Util.sortedJoin(tags, ",");
+      List<String> tags = new ArrayList<String>();
+      for (int i = 0; i < tagsArray.length(); i++) {
+        String tag = tagsArray.getString(i).trim();
+        mg.getKeywords().addKeyword(tag);
+        tags.add(tag);
+      }
 
-			mg.setDescription(new MediaDescription());
-			mg.getDescription().setPlainTextContent(description);
+      // Sort the list of tags and join with "," so that we can easily compare
+      // what's in the
+      // datastore with what we get back from the YouTube API.
+      String sortedTags = Util.sortedJoin(tags, ",");
 
-			String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
-			if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
-			  mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
-			          defaultDeveloperTag));
-			}
+      mg.setDescription(new MediaDescription());
+      mg.getDescription().setPlainTextContent(description);
 
-			userSession.setEmail(email);
-			userSession.setVideoTitle(title);
-			userSession.setVideoDescription(description);
-			userSession.setVideoLocation(location);
-			userSession.setVideoTagList(sortedTags);
-			UserSessionManager.save(userSession);
+      String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
+      if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
+        mg
+            .addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
+                defaultDeveloperTag));
+      }
 
-			YouTubeApiManager apiManager = new YouTubeApiManager();
-			apiManager.setToken(authSubToken);
+      userSession.setEmail(email);
+      userSession.setVideoTitle(title);
+      userSession.setVideoDescription(description);
+      userSession.setVideoLocation(location);
+      userSession.setVideoTagList(sortedTags);
+      UserSessionManager.save(userSession);
 
-			FormUploadToken token = apiManager.getFormUploadToken(newEntry);
-			if (token == null) {
-				throw new IllegalArgumentException("Upload token returned from YouTube API is null.");
-			}
-			
-			String uploadToken = token.getToken();
-			String uploadUrl = token.getUrl();
+      YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setToken(authSubToken);
 
-			JSONObject responseJsonObj = new JSONObject();
-			responseJsonObj.put("uploadToken", uploadToken);
-			responseJsonObj.put("uploadUrl", uploadUrl);
+      FormUploadToken token = apiManager.getFormUploadToken(newEntry);
+      if (token == null) {
+        throw new IllegalArgumentException("Upload token returned from YouTube API is null.");
+      }
 
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(responseJsonObj.toString());
-		} catch (IllegalArgumentException e) {
-			log.finer(e.toString());
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (JSONException e) {
-			log.warning(e.toString());
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (ServiceException e) {
-			log.warning(e.toString());
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		}
-	}
+      String uploadToken = token.getToken();
+      String uploadUrl = token.getUrl();
+
+      JSONObject responseJsonObj = new JSONObject();
+      responseJsonObj.put("uploadToken", uploadToken);
+      responseJsonObj.put("uploadUrl", uploadUrl);
+
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(responseJsonObj.toString());
+    } catch (IllegalArgumentException e) {
+      log.finer(e.toString());
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } catch (JSONException e) {
+      log.warning(e.toString());
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (ServiceException e) {
+      log.warning(e.toString());
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+  }
 }

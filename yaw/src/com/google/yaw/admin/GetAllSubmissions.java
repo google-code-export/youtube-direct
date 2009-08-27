@@ -16,32 +16,29 @@ import com.google.yaw.model.VideoSubmission;
 
 public class GetAllSubmissions extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(GetAllSubmissions.class
-			.getName());
+  private static final Logger log = Logger.getLogger(GetAllSubmissions.class.getName());
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-		PersistenceManager pm = pmf.getPersistenceManager();
+    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		Query query = pm.newQuery(VideoSubmission.class);
-		query.declareImports("import java.util.Date");
-		query.setOrdering("created desc");
-		List<VideoSubmission> videoEntries = (List<VideoSubmission>) query
-				.execute();
+    Query query = pm.newQuery(VideoSubmission.class);
+    query.declareImports("import java.util.Date");
+    query.setOrdering("created desc");
+    List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
 
-		try {
-			String json = Util.GSON.toJson(videoEntries);
+    try {
+      String json = Util.GSON.toJson(videoEntries);
 
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(json);
-		} catch (Exception e) {
-			log.warning(e.toString());
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} finally {
-			pm.close();
-		}
-	}
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(json);
+    } catch (Exception e) {
+      log.warning(e.toString());
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } finally {
+      pm.close();
+    }
+  }
 }

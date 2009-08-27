@@ -23,335 +23,334 @@ import org.compass.annotations.SearchableProperty;
 @Searchable
 public class VideoSubmission implements Serializable {
 
-	// The default "version" of this model
-	private static int DEFAULT_SCHEMA_VERSION = 1;
+  // The default "version" of this model
+  private static int DEFAULT_SCHEMA_VERSION = 1;
 
-	// The version of the model - used for upgrading entities if the data model
-	// changes.
-	@Persistent
-	private int SCHEMA_VERSION;
+  // The version of the model - used for upgrading entities if the data model
+  // changes.
+  @Persistent
+  private int SCHEMA_VERSION;
 
-	@PrimaryKey
-	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	@Expose
-	@SearchableId
-	private String id;
+  @PrimaryKey
+  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+  @Expose
+  @SearchableId
+  private String id;
 
-	@Expose
-	@Persistent	
-	private String videoId = null;
+  @Expose
+  @Persistent
+  private String videoId = null;
 
-	// The AuthSub token used when uploading this video.
-	@Persistent
-	private String authSubToken = null;
+  // The AuthSub token used when uploading this video.
+  @Persistent
+  private String authSubToken = null;
 
-	// The article on the news site that this submission belongs to.
-	@Expose
-	@Persistent
-	private String assignmentId = null;
+  // The article on the news site that this submission belongs to.
+  @Expose
+  @Persistent
+  private String assignmentId = null;
 
-	@Expose
-	@Persistent
-	private String videoTitle = null;
+  @Expose
+  @Persistent
+  private String videoTitle = null;
 
-	@Expose
-	@Persistent
-	@SearchableProperty
-	private String videoDescription = null;
+  @Expose
+  @Persistent
+  @SearchableProperty
+  private String videoDescription = null;
 
-	@Expose
-	@Persistent
-	private String videoLocation = null;
+  @Expose
+  @Persistent
+  private String videoLocation = null;
 
-	@Expose
-	@Persistent
-	private String videoTags = null;
+  @Expose
+  @Persistent
+  private String videoTags = null;
 
-	@Expose
-	@Persistent
-	private Date created;
-	
-	@Persistent
-	private Date lastSynced;
+  @Expose
+  @Persistent
+  private Date created;
 
-	// A string index used for pagination in app engine
-	@Persistent
-	private String createdIndex;
+  @Persistent
+  private Date lastSynced;
 
-	@Expose
-	@Persistent
-	private Date updated;
+  // A string index used for pagination in app engine
+  @Persistent
+  private String createdIndex;
 
-	public enum ModerationStatus {
-		UNREVIEWED, APPROVED, REJECTED
-	}
+  @Expose
+  @Persistent
+  private Date updated;
 
-	@Expose
-	@Persistent
-	private int status;
+  public enum ModerationStatus {
+    UNREVIEWED, APPROVED, REJECTED
+  }
 
-	// YouTube username of the uploader
-	@Expose
-	@Persistent
-	private String uploader = null;
+  @Expose
+  @Persistent
+  private int status;
 
-	@Expose
-	@Persistent
-	private String articleUrl = null;
+  // YouTube username of the uploader
+  @Expose
+  @Persistent
+  private String uploader = null;
 
-	@Expose
-	@Persistent
-	private String notifyEmail = null;
+  @Expose
+  @Persistent
+  private String articleUrl = null;
 
-	/**
-	 * Create a new video submission entry object for the datastore.
-	 * 
-	 * @param videoId
-	 *          The YouTube video ID of the upload
-	 * @param assignmentId
-	 *          The news site article ID
-	 * @param uploader
-	 *          The YouTube username of the uploader
-	 */
-	public VideoSubmission(String assignmentId, String articleUrl,
-			String videoId, String title, String description, String tagList,
-			String uploader, String authSubToken) {
-		this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
-		this.articleUrl = articleUrl;
-		this.videoId = videoId;
-		this.authSubToken = authSubToken;
-		this.assignmentId = assignmentId;
-		this.uploader = uploader;
-		this.created = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		this.createdIndex = df.format(this.created) + "|" + videoId;
-		this.updated = this.created;
-		this.lastSynced = this.created;
-		setStatus(ModerationStatus.UNREVIEWED);
-		this.videoTitle = title;
-		this.videoDescription = description;
-		this.videoTags = tagList;
-	}
+  @Expose
+  @Persistent
+  private String notifyEmail = null;
 
-	/**
-	 * Get the moderation status of the video.
-	 * 
-	 * @return The enumeration value representing this submission's status.
-	 */
-	public ModerationStatus getStatus() {
-		return ModerationStatus.values()[status];
-	}
+  /**
+   * Create a new video submission entry object for the datastore.
+   * 
+   * @param videoId
+   *          The YouTube video ID of the upload
+   * @param assignmentId
+   *          The news site article ID
+   * @param uploader
+   *          The YouTube username of the uploader
+   */
+  public VideoSubmission(String assignmentId, String articleUrl, String videoId, String title,
+      String description, String tagList, String uploader, String authSubToken) {
+    this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
+    this.articleUrl = articleUrl;
+    this.videoId = videoId;
+    this.authSubToken = authSubToken;
+    this.assignmentId = assignmentId;
+    this.uploader = uploader;
+    this.created = new Date();
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+    this.createdIndex = df.format(this.created) + "|" + videoId;
+    this.updated = this.created;
+    this.lastSynced = this.created;
+    setStatus(ModerationStatus.UNREVIEWED);
+    this.videoTitle = title;
+    this.videoDescription = description;
+    this.videoTags = tagList;
+  }
 
-	/**
-	 * Set the moderation status of the video.
-	 * 
-	 * @param status
-	 *          The new status.
-	 */
-	public void setStatus(ModerationStatus status) {
-		this.status = status.ordinal();
-	}
+  /**
+   * Get the moderation status of the video.
+   * 
+   * @return The enumeration value representing this submission's status.
+   */
+  public ModerationStatus getStatus() {
+    return ModerationStatus.values()[status];
+  }
 
-	/**
-	 * Get the YouTube video ID of this submission
-	 * 
-	 * @return A YouTube video ID
-	 */
-	public String getVideoId() {
-		return videoId;
-	}
+  /**
+   * Set the moderation status of the video.
+   * 
+   * @param status
+   *          The new status.
+   */
+  public void setStatus(ModerationStatus status) {
+    this.status = status.ordinal();
+  }
 
-	/**
-	 * Get the AuthSub token associated with this video upload. Unless the token
-	 * has been revoked or expired (after a year), you should be able to update
-	 * the related video using this as your credentials.
-	 * 
-	 * @return A YouTube video ID
-	 */
-	public String getAuthSubToken() {
-		return authSubToken;
-	}
+  /**
+   * Get the YouTube video ID of this submission
+   * 
+   * @return A YouTube video ID
+   */
+  public String getVideoId() {
+    return videoId;
+  }
 
-	/**
-	 * @return The date and time this submission was created.
-	 */
-	public Date getCreated() {
-		return created;
-	}
+  /**
+   * Get the AuthSub token associated with this video upload. Unless the token
+   * has been revoked or expired (after a year), you should be able to update
+   * the related video using this as your credentials.
+   * 
+   * @return A YouTube video ID
+   */
+  public String getAuthSubToken() {
+    return authSubToken;
+  }
 
-	/**
-	 * @return The last date and time this submission was modified.
-	 */
-	public Date getUpdated() {
-		return updated;
-	}
+  /**
+   * @return The date and time this submission was created.
+   */
+  public Date getCreated() {
+    return created;
+  }
 
-	/**
-	 * Sets the site-specific article ID the submission is tied to.
-	 * 
-	 * @param assignmentId
-	 *          The new ID.
-	 */
-	public void setAssignmentId(String assignmentId) {
-		this.assignmentId = assignmentId;
-	}
+  /**
+   * @return The last date and time this submission was modified.
+   */
+  public Date getUpdated() {
+    return updated;
+  }
 
-	/**
-	 * Update the schema version when the model changes.
-	 * 
-	 * @param version
-	 *          The new version.
-	 */
-	public void setSchemaVersion(int version) {
-		this.SCHEMA_VERSION = version;
-	}
+  /**
+   * Sets the site-specific article ID the submission is tied to.
+   * 
+   * @param assignmentId
+   *          The new ID.
+   */
+  public void setAssignmentId(String assignmentId) {
+    this.assignmentId = assignmentId;
+  }
 
-	/**
-	 * 
-	 * @return The current schema version of this entity
-	 */
-	public int getSchemaVersion() {
-		return SCHEMA_VERSION;
-	}
+  /**
+   * Update the schema version when the model changes.
+   * 
+   * @param version
+   *          The new version.
+   */
+  public void setSchemaVersion(int version) {
+    this.SCHEMA_VERSION = version;
+  }
 
-	/**
-	 * 
-	 * @return The ID of this entity
-	 */
-	public String getId() {
-		return this.id;
-	}
+  /**
+   * 
+   * @return The current schema version of this entity
+   */
+  public int getSchemaVersion() {
+    return SCHEMA_VERSION;
+  }
 
-	/**
-	 * 
-	 * @return The index value based upon the creation date for this entity.
-	 */
-	public String getCreatedIndex() {
-		return this.createdIndex;
-	}
+  /**
+   * 
+   * @return The ID of this entity
+   */
+  public String getId() {
+    return this.id;
+  }
 
-	/**
-	 * 
-	 * @return The YouTube user who submitted this video.
-	 */
-	public String getUploader() {
-		return uploader;
-	}
+  /**
+   * 
+   * @return The index value based upon the creation date for this entity.
+   */
+  public String getCreatedIndex() {
+    return this.createdIndex;
+  }
 
-	/**
-	 * Set the YouTube user who uploaded this video.
-	 * 
-	 * @param uploader
-	 *          A YouTube username.
-	 */
-	public void setUploader(String youTubeName) {
-		this.uploader = youTubeName;
-	}
+  /**
+   * 
+   * @return The YouTube user who submitted this video.
+   */
+  public String getUploader() {
+    return uploader;
+  }
 
-	public static int getDEFAULT_SCHEMA_VERSION() {
-		return DEFAULT_SCHEMA_VERSION;
-	}
+  /**
+   * Set the YouTube user who uploaded this video.
+   * 
+   * @param uploader
+   *          A YouTube username.
+   */
+  public void setUploader(String youTubeName) {
+    this.uploader = youTubeName;
+  }
 
-	public static void setDEFAULT_SCHEMA_VERSION(int default_schema_version) {
-		DEFAULT_SCHEMA_VERSION = default_schema_version;
-	}
+  public static int getDEFAULT_SCHEMA_VERSION() {
+    return DEFAULT_SCHEMA_VERSION;
+  }
 
-	public int getSCHEMA_VERSION() {
-		return SCHEMA_VERSION;
-	}
+  public static void setDEFAULT_SCHEMA_VERSION(int default_schema_version) {
+    DEFAULT_SCHEMA_VERSION = default_schema_version;
+  }
 
-	public void setSCHEMA_VERSION(int schema_version) {
-		SCHEMA_VERSION = schema_version;
-	}
-	
-	@SearchableProperty
-	public String getVideoTitle() {
-		return videoTitle;
-	}
+  public int getSCHEMA_VERSION() {
+    return SCHEMA_VERSION;
+  }
 
-	public void setVideoTitle(String videoTitle) {
-		this.videoTitle = videoTitle;
-	}
+  public void setSCHEMA_VERSION(int schema_version) {
+    SCHEMA_VERSION = schema_version;
+  }
 
-	public String getVideoDescription() {
-		return videoDescription;
-	}
+  @SearchableProperty
+  public String getVideoTitle() {
+    return videoTitle;
+  }
 
-	public void setVideoDescription(String videoDescription) {
-		this.videoDescription = videoDescription;
-	}
+  public void setVideoTitle(String videoTitle) {
+    this.videoTitle = videoTitle;
+  }
 
-	public String getVideoLocation() {
-		return videoLocation;
-	}
+  public String getVideoDescription() {
+    return videoDescription;
+  }
 
-	public void setVideoLocation(String videoLocation) {
-		this.videoLocation = videoLocation;
-	}
-	
-	public String getVideoTags() {
-		return videoTags;
-	}
+  public void setVideoDescription(String videoDescription) {
+    this.videoDescription = videoDescription;
+  }
 
-	public void setVideoTags(String videoTags) {
-		this.videoTags = videoTags;
-	}
+  public String getVideoLocation() {
+    return videoLocation;
+  }
 
-	public void setVideoId(String videoId) {
-		this.videoId = videoId;
-	}
+  public void setVideoLocation(String videoLocation) {
+    this.videoLocation = videoLocation;
+  }
 
-	public void setAuthSubToken(String authSubToken) {
-		this.authSubToken = authSubToken;
-	}
+  public String getVideoTags() {
+    return videoTags;
+  }
 
-	public void setCreated(Date created) {
-		this.created = created;
-	}
+  public void setVideoTags(String videoTags) {
+    this.videoTags = videoTags;
+  }
 
-	public void setCreatedIndex(String createdIndex) {
-		this.createdIndex = createdIndex;
-	}
+  public void setVideoId(String videoId) {
+    this.videoId = videoId;
+  }
 
-	public void setUpdated(Date updated) {
-		this.updated = updated;
-	}
+  public void setAuthSubToken(String authSubToken) {
+    this.authSubToken = authSubToken;
+  }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+  public void setCreated(Date created) {
+    this.created = created;
+  }
 
-	public String getArticleUrl() {
-		return articleUrl;
-	}
+  public void setCreatedIndex(String createdIndex) {
+    this.createdIndex = createdIndex;
+  }
 
-	public void setArticleUrl(String articleUrl) {
-		this.articleUrl = articleUrl;
-	}
+  public void setUpdated(Date updated) {
+    this.updated = updated;
+  }
 
-	public String getAssignmentId() {
-		return assignmentId;
-	}
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-	public void setNotifyEmail(String email) {
-		this.notifyEmail = email;
-	}
+  public String getArticleUrl() {
+    return articleUrl;
+  }
 
-	public String getNotifyEmail() {
-		return notifyEmail;
-	}
-	
-	public String getVideoUrl() {
-		return "http://www.youtube.com/v/" + videoId;
-	}
-	
-	public Date getLastSynced() {
-	  return lastSynced;
-	}
-	
-	public void setLastSynced(Date lastSynced) {
-	  this.lastSynced = lastSynced;
-	}
+  public void setArticleUrl(String articleUrl) {
+    this.articleUrl = articleUrl;
+  }
+
+  public String getAssignmentId() {
+    return assignmentId;
+  }
+
+  public void setNotifyEmail(String email) {
+    this.notifyEmail = email;
+  }
+
+  public String getNotifyEmail() {
+    return notifyEmail;
+  }
+
+  public String getVideoUrl() {
+    return "http://www.youtube.com/v/" + videoId;
+  }
+
+  public Date getLastSynced() {
+    return lastSynced;
+  }
+
+  public void setLastSynced(Date lastSynced) {
+    this.lastSynced = lastSynced;
+  }
 }

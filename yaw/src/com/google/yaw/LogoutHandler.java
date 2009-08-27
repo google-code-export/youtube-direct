@@ -19,37 +19,37 @@ import com.google.yaw.model.UserSession;
 @SuppressWarnings("serial")
 public class LogoutHandler extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
+  private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		UserSession userSession = UserSessionManager.getUserSession(req);
+    UserSession userSession = UserSessionManager.getUserSession(req);
 
-		// Revoke AuthSub token.
-		String authSubToken = userSession.getAuthSubToken();
-		if (authSubToken != null) {
-			try {
-				AuthSubUtil.revokeToken(authSubToken, null);
-			} catch (AuthenticationException e) {
-				log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
-						.toString()));
-			} catch (GeneralSecurityException e) {
-				log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
-						.toString()));
-			}
-		}
+    // Revoke AuthSub token.
+    String authSubToken = userSession.getAuthSubToken();
+    if (authSubToken != null) {
+      try {
+        AuthSubUtil.revokeToken(authSubToken, null);
+      } catch (AuthenticationException e) {
+        log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
+            .toString()));
+      } catch (GeneralSecurityException e) {
+        log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
+            .toString()));
+      }
+    }
 
-		// Remove local cookie.
-		UserSessionManager.destroySessionIdCookie(resp);
+    // Remove local cookie.
+    UserSessionManager.destroySessionIdCookie(resp);
 
-		// Get the original URL to redirect.
-		String redirectUrl = userSession.getSelfUrl();
+    // Get the original URL to redirect.
+    String redirectUrl = userSession.getSelfUrl();
 
-		// Remove the session entry.
-		UserSessionManager.delete(userSession);
+    // Remove the session entry.
+    UserSessionManager.delete(userSession);
 
-		// Send the redirect to our original URL.
-		resp.sendRedirect(redirectUrl);
-	}
+    // Send the redirect to our original URL.
+    resp.sendRedirect(redirectUrl);
+  }
 }
