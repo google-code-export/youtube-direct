@@ -107,24 +107,20 @@ var cnnSectID = "cnninline_politics";
 
 		jQuery('#videoListContainer').append(iframe);
 	}
-	
+
 	function getAssignmentId(callback) {
-		var url = '/GetAllAssignments';
+		var url = '/GetAllAssignments?page=1&rows=1&sord=desc&sidx=id';
 		var ajaxCall = {};
 		ajaxCall.cache = false;
 		ajaxCall.type = 'GET';
 		ajaxCall.url = url;
 		ajaxCall.dataType = 'json';
 		ajaxCall.success = function(entries) {
-			if (entries.length > 0) {
-				callback(entries[0]['id']);
-			} else {
-				callback(null);
-			}
+			var id = entries['rows'][0]['id']
+			callback(id);
 		};	
 		jQuery.ajax(ajaxCall);		
 	}
-
 	
 </script> 
 <script type="text/javascript">videoJsonUrls = new Array("/video/politics/2009/08/17/steinhauser.vfw.health.cnn.json","/video/politics/2009/08/17/dcl.blogger.public.option.cnn.json","/video/health/2009/08/17/cohen.coops.uninsured.cnn.json","/video/politics/2009/08/17/dcl.yellin.health.care.cnn.json");</script><!--[if gte IE 5.5]><![if lt IE 7]><style type="text/css" media="screen">@import url(http://i.cdn.turner.com/cnn/.element/css/2.0/ie_mosaic_video.css);</style><![endif]><![endif]--></head><body> <img src="http://i2.cdn.turner.com/cnn/images/1.gif" alt="" width="0" height="0" border="0" vspace="0" hspace="0" name="cookieCrumb" id="cookieCrumb" style="position:absolute;bottom:0;right:0;"><a name="top_of_page"></a><a href="#ContentArea"><img src="http://i.cdn.turner.com/cnn/images/1.gif" alt="Skip to main content" align="right" width="10" height="1" border="0" hspace="0" vspace="0" style="display:none;"></a>   <div id="cnn_POLITICS"><div id="cnnHeader"> 

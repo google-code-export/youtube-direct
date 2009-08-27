@@ -1,4 +1,13 @@
-<!-- Indices written at Mon, 24 Aug 2009 22:50:38 UTC -->
+<!-- Indices written at Wed, 26 Aug 2009 20:07:27 UTC -->
 
-<datastore-indexes/>
+<datastore-indexes>
 
+    <!-- Used 14 times in query history -->
+    <datastore-index kind="meta" ancestor="true" source="auto"/>
+
+    <!-- Used 3 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="__key__" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>

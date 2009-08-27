@@ -140,11 +140,7 @@ function initDataGrid(data) {
 	  index : 'videoDescription',
 	  width : 200,
 	  editable : true,
-	  edittype : 'textarea',
-	  editoptions : {
-	    rows : '3',
-	    cols : '30'
-	  },
+	  edittype : 'text',
 	  sorttype : 'string'
 	});
 
