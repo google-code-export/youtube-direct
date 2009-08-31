@@ -27,7 +27,7 @@
 <%
 	if (!authenticator.isLoggedIn()) {		
 %> 
-<div align="center">
+<div>
 <a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';"><img src="icon.png" border="0"></a>
 </div> 
 <script type="text/javascript">
@@ -35,14 +35,48 @@
 </script>
 <%
 	} else {
-%> <%= authenticator.getUserSession().getYouTubeName() %> [ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] 
+%> <%= authenticator.getUserSession().getMetaData("youTubeName") %> 
+[ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] 
 <script type="text/javascript">
 	window.isLoggedIn = true;
 </script>
 <br>
-<br>
 <span id="message"></span> 
 <br>
+
+<div id="submissionAsk">
+	<div>Your video response will be:</div>	
+	<ul>
+	<li><a id="newUploadLink" href="#" >A new video upload</a>
+	<li><a id="existingVideoLink" href="#">An existing video</a>
+	</ul> 	
+</div>
+
+<div id="existingVideoMain">
+<label for="videoId">Video ID:</label>
+<br>
+<input class="inputBox" type="text" name="videoId" id="videoId" />
+<br> 
+<label for="location">Location:</label>
+<br>
+<input class="inputBox" type="text" name="location" id="submitLocation" />
+<br>
+<label for="date">Date:</label>
+<br>
+<input class="inputBox" type="text" name="date" id="submitDate" />
+<br>
+Email me on approval: <input id="submitEmailAsk" type="checkbox" />
+<input id="submitEmail" type="text" value="" style="visibility: hidden"/>
+<br>
+<div align="center">
+	<br>
+	<input id="submitButton" class="actionButton" type="button" value="Submit" />&nbsp;
+	<input id="cancelSubmitButton" class="actionButton" type="button" value="Cancel" />
+	<div id="uploading"></div>
+</div>
+<br>	
+</div>
+
 <div id="uploaderMain">
 
 <label for="title">Video Title:</label>
@@ -53,20 +87,20 @@
 <br>
 <textarea class="inputBox" name="description" id="description"></textarea>
 <br>
-<label for="location">Location:</label>
-<br>
-<input class="inputBox" type="text" name="location" id="location" />
-<br>
-<label for="date">Date:</label>
-<br>
-<input class="inputBox" type="text" name="date" id="date" />
-<br>
 <label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
 <br>
 <input class="inputBox" type="text" name="tags" id="tags" />
 <br> 
-Email me on approval: <input id="emailCheckbox" type="checkbox" />
-<input id="email" type="text" value="" style="visibility: hidden"/>
+<label for="location">Location:</label>
+<br>
+<input class="inputBox" type="text" name="location" id="uploadLocation" />
+<br>
+<label for="date">Date:</label>
+<br>
+<input class="inputBox" type="text" name="date" id="uploadDate" />
+<br>
+Email me on approval: <input id="uploadEmailAsk" type="checkbox" />
+<input id="uploadEmail" type="text" value="" style="visibility: hidden"/>
 <br>
 <br> 
 <form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
@@ -76,7 +110,8 @@ Select file: <input id="file" type="file" name="file" />
 <div align="center">
 	<br>
 	<input id="token" type="hidden" name="token" value="">
-	<input id="uploadButton" type="submit" value="Upload" />
+	<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
+	<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
 	<div id="uploading"></div>
 </div>
 </form>

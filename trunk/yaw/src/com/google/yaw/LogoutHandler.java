@@ -27,7 +27,7 @@ public class LogoutHandler extends HttpServlet {
     UserSession userSession = UserSessionManager.getUserSession(req);
 
     // Revoke AuthSub token.
-    String authSubToken = userSession.getAuthSubToken();
+    String authSubToken = userSession.getMetaData("authSubToken");
     if (authSubToken != null) {
       try {
         AuthSubUtil.revokeToken(authSubToken, null);
@@ -44,7 +44,7 @@ public class LogoutHandler extends HttpServlet {
     UserSessionManager.destroySessionIdCookie(resp);
 
     // Get the original URL to redirect.
-    String redirectUrl = userSession.getSelfUrl();
+    String redirectUrl = userSession.getMetaData("selfUrl");
 
     // Remove the session entry.
     UserSessionManager.delete(userSession);

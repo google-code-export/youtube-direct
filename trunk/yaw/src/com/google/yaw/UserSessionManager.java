@@ -35,7 +35,7 @@ public class UserSessionManager {
 
     boolean valid = true;
 
-    String authSubToken = session.getAuthSubToken();
+    String authSubToken = session.getMetaData("authSubToken");
 
     if (authSubToken != null) {
 

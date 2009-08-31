@@ -107,7 +107,7 @@ function initDataGrid(data) {
 	  sorttype : 'string'
 	});
 
-	grid.colNames.push('Uploader');
+	grid.colNames.push('Username');
 	grid.colModel.push( {
 	  name : 'uploader',
 	  index : 'uploader',

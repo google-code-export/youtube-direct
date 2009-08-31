@@ -1,5 +1,8 @@
 package com.google.yaw.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -45,95 +48,33 @@ public class UserSession {
   @Persistent
   private String email = null;
 
-  public String getVideoLocation() {
-    return videoLocation;
-  }
-
-  public void setVideoLocation(String videoLocation) {
-    this.videoLocation = videoLocation;
-  }
-
-  public String getVideoTagList() {
-    return videoTagList;
-  }
-
-  public void setVideoTagList(String videoTagList) {
-    this.videoTagList = videoTagList;
-  }
-
-  public String getSelfUrl() {
-    return selfUrl;
-  }
-
-  public void setSelfUrl(String selfUrl) {
-    this.selfUrl = selfUrl;
-  }
-
+  @Persistent(serialized = "true")
+  private Map<String, String> metaDataMap = null;  
+  
   public UserSession() {
-
-  }
-
-  public String getAssignmentId() {
-    return assignmentId;
-  }
-
-  public void setAssignmentId(String assignmentId) {
-    this.assignmentId = assignmentId;
-  }
-
-  public String getArticleUrl() {
-    return articleUrl;
-  }
-
-  public void setArticleUrl(String articleUrl) {
-    this.articleUrl = articleUrl;
-  }
-
-  public String getVideoTitle() {
-    return videoTitle;
-  }
-
-  public void setVideoTitle(String videoTitle) {
-    this.videoTitle = videoTitle;
-  }
-
-  public String getVideoDescription() {
-    return videoDescription;
-  }
-
-  public void setVideoDescription(String videoDescription) {
-    this.videoDescription = videoDescription;
-  }
-
+    this.metaDataMap = new HashMap<String, String>();
+  }  
+  
   public void setId(String id) {
     this.id = id;
   }
 
   public String getId() {
     return id;
+  }  
+  
+  public Map<String, String> getMetaDataMap() {
+    if (this.metaDataMap == null) {      
+      this.metaDataMap = new HashMap<String, String>();
+    }
+    return metaDataMap;
   }
-
-  public String getYouTubeName() {
-    return youTubeName;
+  
+  public void addMetaData(String key, String value) {
+    getMetaDataMap().put(key, value);
   }
-
-  public String getAuthSubToken() {
-    return authSubToken;
-  }
-
-  public void setYouTubeName(String name) {
-    youTubeName = name;
-  }
-
-  public void setAuthSubToken(String token) {
-    authSubToken = token;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getEmail() {
-    return email;
+  
+  public String getMetaData(String key) {
+    return getMetaDataMap().get(key);
   }
 }
