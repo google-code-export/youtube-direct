@@ -40,13 +40,14 @@ public class Authenticator {
       // stick the session id as cookie
       UserSessionManager.sendSessionIdCookie(userSession.getId(), response);
     }
-
-    userSession.setAssignmentId(assignmentId);
-    userSession.setArticleUrl(articleUrl);
-    userSession.setSelfUrl(selfUrl);
+    
+    userSession.addMetaData("assignmentId", assignmentId);
+    userSession.addMetaData("articleUrl", articleUrl);
+    userSession.addMetaData("selfUrl", selfUrl);
+    
     userSession = UserSessionManager.save(userSession);
 
-    String authSubToken = userSession.getAuthSubToken();
+    String authSubToken = userSession.getMetaData("authSubToken");
 
     if (authSubToken != null) {
       // check for bad token
@@ -61,9 +62,9 @@ public class Authenticator {
         // replace with new session
 
         userSession = new UserSession();
-        userSession.setAssignmentId(assignmentId);
-        userSession.setArticleUrl(articleUrl);
-        userSession.setSelfUrl(selfUrl);
+        userSession.addMetaData("assignmentId", assignmentId);
+        userSession.addMetaData("articleUrl", articleUrl);
+        userSession.addMetaData("selfUrl", selfUrl);
         userSession = UserSessionManager.save(userSession);
 
         // stick the session id as cookie
@@ -91,7 +92,8 @@ public class Authenticator {
   public boolean isLoggedIn() {
     boolean isLoggedIn = false;
 
-    String authSubToken = userSession.getAuthSubToken();
+    //String authSubToken = userSession.getAuthSubToken();
+    String authSubToken = userSession.getMetaData("authSubToken");
 
     if (authSubToken != null && isTokenValid(authSubToken)) {
       isLoggedIn = true;
@@ -105,7 +107,8 @@ public class Authenticator {
   }
 
   public String getLogInUrl() {
-    String articleUrl = userSession.getArticleUrl();
+    //String articleUrl = userSession.getArticleUrl();
+    String articleUrl = userSession.getMetaData("articleUrl");
 
     StringBuffer nextUrl = new StringBuffer();
     nextUrl.append(request.getScheme());

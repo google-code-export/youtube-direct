@@ -46,7 +46,8 @@ public class AuthSubHandler extends HttpServlet {
         throw new IllegalArgumentException("No user session found.");
       }
 
-      userSession.setAuthSubToken(authSubToken);
+      //userSession.setAuthSubToken(authSubToken);
+      userSession.addMetaData("authSubToken", authSubToken);
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
@@ -57,7 +58,7 @@ public class AuthSubHandler extends HttpServlet {
         throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
             + "the authenticated user.");
       }
-      userSession.setYouTubeName(youTubeName);
+      userSession.addMetaData("youTubeName", youTubeName);
       UserSessionManager.save(userSession);
 
       response.sendRedirect(articleUrl);

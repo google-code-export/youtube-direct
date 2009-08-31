@@ -23,14 +23,6 @@ import org.compass.annotations.SearchableProperty;
 @Searchable
 public class VideoSubmission implements Serializable {
 
-  // The default "version" of this model
-  private static int DEFAULT_SCHEMA_VERSION = 1;
-
-  // The version of the model - used for upgrading entities if the data model
-  // changes.
-  @Persistent
-  private int SCHEMA_VERSION;
-
   @PrimaryKey
   @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -66,8 +58,24 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
+  private String videoDate = null;  
+  
+  @Expose
+  @Persistent
   private String videoTags = null;
 
+  @Expose
+  @Persistent
+  private String youtubeName = null;
+
+  @Expose
+  @Persistent
+  private String articleUrl = null;
+
+  @Expose
+  @Persistent
+  private String notifyEmail = null;
+  
   @Expose
   @Persistent
   private Date created;
@@ -86,23 +94,19 @@ public class VideoSubmission implements Serializable {
   public enum ModerationStatus {
     UNREVIEWED, APPROVED, REJECTED
   }
-
+  
   @Expose
   @Persistent
   private int status;
 
-  // YouTube username of the uploader
-  @Expose
-  @Persistent
-  private String uploader = null;
+  public enum VideoSource {
+    NEW_UPLOAD, EXISTING_VIDEO
+  }    
 
   @Expose
   @Persistent
-  private String articleUrl = null;
-
-  @Expose
-  @Persistent
-  private String notifyEmail = null;
+  private int videoSource;  
+  
 
   /**
    * Create a new video submission entry object for the datastore.
@@ -115,25 +119,31 @@ public class VideoSubmission implements Serializable {
    *          The YouTube username of the uploader
    */
   public VideoSubmission(String assignmentId, String articleUrl, String videoId, String title,
-      String description, String tagList, String uploader, String authSubToken) {
-    this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
+      String description, String tagList, String uploader, String authSubToken, 
+      VideoSource videoSource) {
     this.articleUrl = articleUrl;
     this.videoId = videoId;
     this.authSubToken = authSubToken;
     this.assignmentId = assignmentId;
-    this.uploader = uploader;
-    this.created = new Date();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    df.setTimeZone(TimeZone.getTimeZone("GMT"));
-    this.createdIndex = df.format(this.created) + "|" + videoId;
-    this.updated = this.created;
-    this.lastSynced = this.created;
-    setStatus(ModerationStatus.UNREVIEWED);
+    this.youtubeName = youtubeName;    
     this.videoTitle = title;
     this.videoDescription = description;
     this.videoTags = tagList;
+    
+    this.created = new Date();
+    this.updated = this.created;
+    this.lastSynced = this.created;    
+    setStatus(ModerationStatus.UNREVIEWED);
+    setVideoSource(videoSource);
   }
 
+  public VideoSubmission(String assignmentId) {
+    this.created = new Date();
+    this.updated = this.created;
+    this.lastSynced = this.created;
+    setStatus(ModerationStatus.UNREVIEWED);
+  }  
+  
   /**
    * Get the moderation status of the video.
    * 
@@ -153,6 +163,14 @@ public class VideoSubmission implements Serializable {
     this.status = status.ordinal();
   }
 
+  public VideoSource getVideoSource() {
+    return VideoSource.values()[videoSource];
+  }
+  
+  public void setVideoSource(VideoSource videoSource) {
+    this.videoSource = videoSource.ordinal();
+  }  
+  
   /**
    * Get the YouTube video ID of this submission
    * 
@@ -198,24 +216,6 @@ public class VideoSubmission implements Serializable {
   }
 
   /**
-   * Update the schema version when the model changes.
-   * 
-   * @param version
-   *          The new version.
-   */
-  public void setSchemaVersion(int version) {
-    this.SCHEMA_VERSION = version;
-  }
-
-  /**
-   * 
-   * @return The current schema version of this entity
-   */
-  public int getSchemaVersion() {
-    return SCHEMA_VERSION;
-  }
-
-  /**
    * 
    * @return The ID of this entity
    */
@@ -235,8 +235,8 @@ public class VideoSubmission implements Serializable {
    * 
    * @return The YouTube user who submitted this video.
    */
-  public String getUploader() {
-    return uploader;
+  public String getYouTubeName() {
+    return youtubeName;
   }
 
   /**
@@ -245,24 +245,8 @@ public class VideoSubmission implements Serializable {
    * @param uploader
    *          A YouTube username.
    */
-  public void setUploader(String youTubeName) {
-    this.uploader = youTubeName;
-  }
-
-  public static int getDEFAULT_SCHEMA_VERSION() {
-    return DEFAULT_SCHEMA_VERSION;
-  }
-
-  public static void setDEFAULT_SCHEMA_VERSION(int default_schema_version) {
-    DEFAULT_SCHEMA_VERSION = default_schema_version;
-  }
-
-  public int getSCHEMA_VERSION() {
-    return SCHEMA_VERSION;
-  }
-
-  public void setSCHEMA_VERSION(int schema_version) {
-    SCHEMA_VERSION = schema_version;
+  public void setYouTubeName(String youTubeName) {
+    this.youtubeName = youTubeName;
   }
 
   @SearchableProperty
@@ -309,11 +293,6 @@ public class VideoSubmission implements Serializable {
   public void setCreated(Date created) {
     this.created = created;
   }
-
-  public void setCreatedIndex(String createdIndex) {
-    this.createdIndex = createdIndex;
-  }
-
   public void setUpdated(Date updated) {
     this.updated = updated;
   }
@@ -352,5 +331,13 @@ public class VideoSubmission implements Serializable {
 
   public void setLastSynced(Date lastSynced) {
     this.lastSynced = lastSynced;
+  }
+
+  public void setVideoDate(String videoDate) {
+    this.videoDate = videoDate;
+  }
+
+  public String getVideoDate() {
+    return videoDate;
   }
 }

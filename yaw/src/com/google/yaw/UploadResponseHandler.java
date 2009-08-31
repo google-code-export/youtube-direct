@@ -14,7 +14,7 @@ import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
 
 public class UploadResponseHandler extends HttpServlet {
-
+  
   private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
 
   @Override
@@ -26,20 +26,33 @@ public class UploadResponseHandler extends HttpServlet {
     UserSession userSession = UserSessionManager.getUserSession(req);
 
     if (status.equals("200")) {
-      String authSubToken = userSession.getAuthSubToken();
-      String articleUrl = userSession.getArticleUrl();
-      String assignmentId = userSession.getAssignmentId();
-      String videoTitle = userSession.getVideoTitle();
-      String videoDescription = userSession.getVideoDescription();
-      String uploader = userSession.getYouTubeName();
-      String email = userSession.getEmail();
-      String videoTags = userSession.getVideoTagList();
+      
+      String authSubToken = userSession.getMetaData("authSubToken");
+      String articleUrl = userSession.getMetaData("articleUrl");
+      String assignmentId = userSession.getMetaData("assignmentId");
+      String videoTitle = userSession.getMetaData("videoTitle");
+      String videoDescription = userSession.getMetaData("videoDescription");
+      String youTubeName = userSession.getMetaData("youTubeName");
+      String email = userSession.getMetaData("email");
+      String videoTags = userSession.getMetaData("videoTags");      
+      String videoLocation = userSession.getMetaData("videoLocation");
+      String videoDate = userSession.getMetaData("videoDate");
 
       log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
           + "for assignment id '%s'...", videoId, assignmentId));
-      VideoSubmission submission = new VideoSubmission(assignmentId, articleUrl, videoId,
-          videoTitle, videoDescription, videoTags, uploader, authSubToken);
-
+      
+      VideoSubmission submission = new VideoSubmission(assignmentId);
+      
+      submission.setArticleUrl(articleUrl);
+      submission.setVideoId(videoId);
+      submission.setVideoTitle(videoTitle);
+      submission.setVideoDescription(videoDescription);
+      submission.setVideoTags(videoTags);
+      submission.setVideoLocation(videoLocation);      
+      submission.setVideoDate(videoDate);      
+      submission.setYouTubeName(youTubeName);
+      submission.setAuthSubToken(authSubToken);
+      submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);      
       submission.setNotifyEmail(email);
 
       Util.persistJdo(submission);

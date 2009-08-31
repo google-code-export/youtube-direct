@@ -20,19 +20,30 @@ input {
 	font-style: italic;
 }
 
+#uploaderMain {
+	display: none;	
+}
+
+#existingVideoMain {
+	display: none;	
+}
+
+#submissionAsk {
+	display: block;	
+}
+
 .inputBox {
 	width: 100%;
 }
 
-#uploadButton {
+.actionButton {
 	border: 0px solid black;
 	background: gray;
 	color: white;
-	font-size: 15px;
-	padding: 3px;
+	font-size: 13px;
+	padding: 2px;
 	padding-left: 20px;
-	padding-right: 20px;
-	
+	padding-right: 20px;	
 }
 
 .small {

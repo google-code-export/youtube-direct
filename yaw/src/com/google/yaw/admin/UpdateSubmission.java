@@ -44,13 +44,13 @@ public class UpdateSubmission extends HttpServlet {
       ModerationStatus newStatus = jsonObj.getStatus();
 
       boolean hasEmail = (entry.getNotifyEmail() != null);
+      boolean isRejectedOrApproved = (currentStatus !=  newStatus) && 
+          (newStatus != ModerationStatus.UNREVIEWED);
 
-      if (hasEmail && currentStatus != newStatus && currentStatus != ModerationStatus.APPROVED
-          && newStatus != ModerationStatus.UNREVIEWED) {
+      if (hasEmail && isRejectedOrApproved) {
         Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
       }
-
-      entry.setVideoId(jsonObj.getVideoId());
+      
       entry.setStatus(jsonObj.getStatus());
       entry.setVideoTitle(jsonObj.getVideoTitle());
       entry.setVideoDescription(jsonObj.getVideoDescription());
@@ -69,7 +69,7 @@ public class UpdateSubmission extends HttpServlet {
 
       pm.makePersistent(entry);
       // FullTextIndexer.addIndex(entry, entry.getClass());
-      FullTextIndexer.reIndex();
+      // FullTextIndexer.reIndex();
 
       resp.setContentType("text/javascript");
       resp.getWriter().println(Util.GSON.toJson(entry));
@@ -107,7 +107,7 @@ public class UpdateSubmission extends HttpServlet {
     if (videoEntry == null) {
       log.warning(String.format("Couldn't get video with id '%s' in the uploads feed of user " +
       		"'%s'. Perhaps the AuthSub token has been revoked?", videoId,
-      		videoSubmission.getUploader()));
+      		videoSubmission.getYouTubeName()));
     } else {
       String currentText = videoSubmission.getVideoDescription();
       String newText = String.format("%s\n\n%s", prependText, currentText);

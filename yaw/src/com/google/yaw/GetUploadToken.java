@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -34,13 +35,16 @@ public class GetUploadToken extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String json = Util.getPostBody(req);
-
+    
+    log.warning(json);
+    
     try {
       JSONObject jsonObj = new JSONObject(json);
 
       String title = jsonObj.getString("title");
       String description = jsonObj.getString("description");
       String location = jsonObj.getString("location");
+      String date = jsonObj.getString("date");
       String email = jsonObj.getString("email");
       JSONArray tagsArray = jsonObj.getJSONArray("tags");
 
@@ -57,10 +61,10 @@ public class GetUploadToken extends HttpServlet {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("No user session found.");
       }
-      String authSubToken = userSession.getAuthSubToken();
-      String articleUrl = userSession.getArticleUrl();
-      String assignmentId = userSession.getAssignmentId();
-
+      String authSubToken = userSession.getMetaData("authSubToken");
+      String articleUrl = userSession.getMetaData("articleUrl");
+      String assignmentId = userSession.getMetaData("assignmentId");            
+      
       log.warning("current assignment id = " + assignmentId);
 
       Assignment assignment = Util.getAssignmentById(assignmentId);
@@ -110,13 +114,14 @@ public class GetUploadToken extends HttpServlet {
         mg
             .addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
                 defaultDeveloperTag));
-      }
+      }      
 
-      userSession.setEmail(email);
-      userSession.setVideoTitle(title);
-      userSession.setVideoDescription(description);
-      userSession.setVideoLocation(location);
-      userSession.setVideoTagList(sortedTags);
+      userSession.addMetaData("videoTitle", title);      
+      userSession.addMetaData("videoDescription", description);
+      userSession.addMetaData("videoLocation", location);
+      userSession.addMetaData("videoDate", date);         
+      userSession.addMetaData("videoTags", sortedTags);
+      userSession.addMetaData("email", email);
       UserSessionManager.save(userSession);
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
