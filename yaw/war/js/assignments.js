@@ -143,19 +143,6 @@ function loadDataGrid() {
   jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams,
 		  viewParams).navButtonAdd('#pager', codeParams);
 }
-
-function displayEmbedCode(assignmentId) {
-  jQuery.ui.dialog.defaults.bgiframe = true;
-  var div = jQuery('<div/>');
-  
-  var html = [];
-  html.push(assignmentId);
-  
-  div.html(html.join(''));
-  
-  div.dialog();    
-}
-
 function getSelfUrl() {
   var protocol = document.location.protocol;
   var host = document.location.host;
