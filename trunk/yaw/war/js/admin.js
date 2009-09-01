@@ -191,11 +191,11 @@ function initDataGrid(data) {
 	});
 
 	grid.afterInsertRow = function(rowid, rowdata, rowelem) {
-		var videoId = getVideoId(rowid);
-		var previewButton = '<input type="button" onclick=previewVideo("' + videoId + '") value="preview" />';
-		jQuery('#datagrid').setCell(rowid, 'preview', previewButton);
-
 		var entryId = getEntryId(rowid);
+		
+		var previewButton = '<input type="button" onclick=previewVideo("' + entryId + '") value="preview" />';
+		jQuery('#datagrid').setCell(rowid, 'preview', previewButton);
+		
 		var deleteButton = '<input type="button" onclick=deleteEntry("' + entryId + '") value="delete" />';
 		jQuery('#datagrid').setCell(rowid, 'delete', deleteButton);
 	};
@@ -291,15 +291,24 @@ function deleteEntry(entryId) {
 	}
 }
 
-function previewVideo(videoId) {
+function previewVideo(entryId) {
+  
+  var submission = window.getSubmission(entryId);
+  var videoId = submission.videoId;
+  var title = submission.videoTitle;
 
-	var width = 275;
-	var height = 250;
+	var videoWidth = 275;
+	var videoHeight = 250;
 
+  var dialogOptions = {};
+  dialogOptions.title = title;
+  dialogOptions.width = 400;
+  dialogOptions.height = 300;
+	
 	jQuery.ui.dialog.defaults.bgiframe = true;
 	var div = jQuery('<div/>');
-	div.html(getVideoHTML(videoId, width, height));
-	div.dialog();
+	div.html(getVideoHTML(videoId, videoWidth, videoHeight));
+	div.dialog(dialogOptions);
 }
 
 function preProcessData(data) {
