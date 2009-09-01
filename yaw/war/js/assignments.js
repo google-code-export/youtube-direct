@@ -195,14 +195,14 @@ function generateEmbedCode() {
   textarea.css('font-size', '11px');
   textarea.css('color', 'black');
   textarea.css('width', '100%');
-  textarea.css('height', '80%');
+  textarea.css('height', '100%');
   textarea.css('border', '0px');
   textarea.html(code);
   
   var dialogOptions = {};
   dialogOptions.title = 'embed code';
   dialogOptions.width = 400;
-  dialogOptions.height = 350;  
+  dialogOptions.height = 330;  
   
   var div = jQuery('<div/>');
   div.html(textarea);
