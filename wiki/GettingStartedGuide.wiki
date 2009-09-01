@@ -25,4 +25,4 @@ The YAW platform is designed to run on Google App Engine. App Engine allows you 
   # Go to the "Assignments" tab and create a new assignment.
   # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YAW uploader on your page. 
     * Make sure that you modify the yaw-embed.js URL to point to the actual path to the file. 
-    * If your page has an existing `_window.onload handler_`, add the `_yaw.embed()_` `JavaScript` code to that instead of creating a new `_window.onload_`.
+    * If your page has an existing `window.onload handler`, add the `yaw.embed()` `JavaScript` code to that instead of creating a new `window.onload`.
