@@ -11,18 +11,18 @@ The YAW platform is designed to run on Google App Engine. App Engine allows you 
     * [http://code.google.com/appengine/docs/java/overview.html Read the App Engine Java Overview]
     * (OPTIONAL) Install Eclipse plugin for GAE [http://code.google.com/eclipse/ http://code.google.com/eclipse/]
   # Check out most recent tagged release of YAW project source code. 
-    * List of tagged releases at [http://code.google.com/p/yaw-project/source/browse/#svn/tags http://code.google.com/p/yaw-project/source/browse/#svn/tags]
+    * List of tagged releases at http://code.google.com/p/yaw-project/source/browse/#svn/tags
     * SVN readonly checkout URL: http://yaw-project.googlecode.com/svn/tags/YYYYMMDD    
-    * Subclipse ([http://subclipse.tigris.org/ http://subclipse.tigris.org/]) makes checking out SVN code into Eclipse straight forward, but any SVN client can be used.  
+    * Subclipse (http://subclipse.tigris.org/) makes checking out SVN code into Eclipse straight forward, but any SVN client can be used.  
   # Edit the war/WEB-INF/appengine-web.xml file: 
     * Replace <application> with your registered App Engine instance name. 
     * Replace <version> with 1, and increment it as you see fit. 
-    * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at  http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
+    * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at  http://code.google.com/apis/youtube/dashboard/)
     * Replace com.google.yaw.YTClientID the unique identifier string of your choice.
     * Deploy YAW using the local development webserver environment that comes with the App Engine SDK. If using Eclipse with the GAE plugin, the default "Run" Eclipse action will do this. The webserver runs at *http://localhost:8080/ *.
   # Build and deploy YAW to your application instance on GAE. Be sure that you have completed step 3 and have the correct App Engine instance name in appengine-web.xml!
   # Go to the admin panel for YAW by visiting http://APP_ID.appspot.com/admin, where *APP_ID* is your registered App Engine instance name.
   # Go to the "Assignments" tab and create a new assignment.
-  # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the JavaScript code to embed the YAW uploader on your page. 
+  # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YAW uploader on your page. 
     * Make sure that you modify the yaw-embed.js URL to point to the actual path to the file. 
-    * If your page has an existing _window.onload handler_, add the _yaw.embed()_ JavaScript code to that instead of creating a new _window.onload_.
+    * If your page has an existing `_window.onload handler_`, add the `_yaw.embed()_` `JavaScript` code to that instead of creating a new `_window.onload_`.
