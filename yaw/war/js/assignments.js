@@ -15,7 +15,7 @@ function loadDataGrid() {
   grid.cellurl = '/MutateAssignment';
   grid.datatype = 'json';
   grid.editurl = '/MutateAssignment';
-  grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
+  //grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
   grid.height = '400px';
   grid.pager = '#pager';
   grid.rownumbers = true;
@@ -144,22 +144,72 @@ function loadDataGrid() {
 		  viewParams).navButtonAdd('#pager', codeParams);
 }
 
+function displayEmbedCode(assignmentId) {
+  jQuery.ui.dialog.defaults.bgiframe = true;
+  var div = jQuery('<div/>');
+  
+  var html = [];
+  html.push(assignmentId);
+  
+  div.html(html.join(''));
+  
+  div.dialog();    
+}
+
+function getSelfUrl() {
+  var protocol = document.location.protocol;
+  var host = document.location.host;
+  return protocol + '//' + host;
+}
+
 function generateEmbedCode() {
+  
   if (_yt_selectedRowId == null) {
-	showMessage("Please select an assignment's row first.");
-  } else {
-	var embedCode = '<ul><li>Include a reference to <code>yaw-embed.js</code>:<br/>' +
-		'<pre>&lt;script type="text/javascript" src="path/to/yaw-embed.js"&gt;&lt;/script&gt;</pre></li>' +
-		'<li>Add a <code>window.onload</code> event to initialize a new <code>Yaw</code> object:<br/>' +
-		'<pre>&lt;script type="text/javascript"&gt;\n' +
-		'  window.onload = function() {\n' + 
-		'    var yaw = new Yaw();\n' +
-		'    yaw.setAssignmentId("' + _yt_selectedRowId + '");\n' +
-		'    yaw.embed("yawContainer", 300, 500);\n' +
-		'  };\n' +
-		'&lt;/script&gt;</pre>';
-	showMessage(embedCode);
-  }
+    showMessage("Please select an assignment's row first.");
+    return;
+  } 
+  
+  var selfUrl = getSelfUrl();
+  
+  jQuery.ui.dialog.defaults.bgiframe = true;
+  
+  var code = [];
+  code.push('<script type="text/javascript" src="' + selfUrl + '/js/yaw-embed.js"></script>\n');
+  code.push('<script type="text/javascript">\n');
+  code.push('window.onload = function() {\n');   
+  code.push('  var yaw = new Yaw();\n');
+  code.push('  yaw.setAssignmentId("' + _yt_selectedRowId + '");\n');
+  code.push('  var containerWidth = 300;\n');
+  code.push('  var containerHeight = 300;\n');
+  code.push('  var yaw = new Yaw();\n');
+  code.push('  yaw.embed("yawContainer", containerWidth, containerHeight);\n');
+  code.push('};\n');  
+  code.push('</script>\n');
+  code.push('<div id="yawContainer" />');  
+  
+  code = code.join('');
+  code = code.replace(/\</g,'&lt;');
+  code = code.replace(/\>/g,'&gt;');
+  
+  var textarea = jQuery('<textarea/>');
+  textarea.css('font-size', '11px');
+  textarea.css('color', 'black');
+  textarea.css('width', '100%');
+  textarea.css('height', '80%');
+  textarea.css('border', '0px');
+  textarea.html(code);
+  
+  var dialogOptions = {};
+  dialogOptions.title = 'embed code';
+  dialogOptions.width = 400;
+  dialogOptions.height = 350;  
+  
+  var div = jQuery('<div/>');
+  div.html(textarea);
+  
+  div.dialog(dialogOptions);   
+  
+  textarea.select();
 }
 
 function showMessage(text) {
