@@ -2,6 +2,7 @@ package com.google.yaw.admin;
 
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.data.youtube.YtStatistics;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.VideoSubmission;
@@ -100,6 +101,13 @@ public class SyncMetadata extends HttpServlet {
                 .getVideoTags(), sortedTags));
             videoSubmission.setVideoTags(sortedTags);
             videoSubmission.setUpdated(now);
+          }
+          
+          // Unconditionally update view count info, but don't call setUpdated() since this is an
+          // auto-update.
+          YtStatistics stats = videoEntry.getStatistics();
+          if (stats != null) {
+            videoSubmission.setViewCount(stats.getViewCount());
           }
 
           log.info(String.format("Finished syncing video id '%s'", videoId));

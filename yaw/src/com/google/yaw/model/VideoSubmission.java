@@ -82,6 +82,10 @@ public class VideoSubmission implements Serializable {
 
   @Persistent
   private Date lastSynced;
+  
+  @Expose
+  @Persistent
+  private long viewCount;
 
   // A string index used for pagination in app engine
   @Persistent
@@ -132,7 +136,8 @@ public class VideoSubmission implements Serializable {
     
     this.created = new Date();
     this.updated = this.created;
-    this.lastSynced = this.created;    
+    this.lastSynced = this.created;
+    this.viewCount = -1;
     setStatus(ModerationStatus.UNREVIEWED);
     setVideoSource(videoSource);
   }
@@ -141,6 +146,7 @@ public class VideoSubmission implements Serializable {
     this.created = new Date();
     this.updated = this.created;
     this.lastSynced = this.created;
+    this.viewCount = -1;
     setStatus(ModerationStatus.UNREVIEWED);
   }  
   
@@ -339,5 +345,13 @@ public class VideoSubmission implements Serializable {
 
   public String getVideoDate() {
     return videoDate;
+  }
+  
+  public long getViewCount() {
+    return viewCount;
+  }
+  
+  public void setViewCount(long viewCount) {
+    this.viewCount = viewCount;
   }
 }
