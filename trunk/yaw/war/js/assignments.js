@@ -15,7 +15,7 @@ function loadDataGrid() {
   grid.cellurl = '/MutateAssignment';
   grid.datatype = 'json';
   grid.editurl = '/MutateAssignment';
-  //grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
+  grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
   grid.height = '400px';
   grid.pager = '#pager';
   grid.rownumbers = true;
@@ -135,9 +135,9 @@ function loadDataGrid() {
   var viewParams = {};
   
   var codeParams = {
-	caption: 'Embed Code',
-	onClickButton: generateEmbedCode,
-	position: 'last',
+    caption: 'Embed Code',
+    onClickButton: generateEmbedCode,
+    position: 'last',
   };
   
   jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams,
