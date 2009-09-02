@@ -113,21 +113,18 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    console.log(text);    
+    jQuery('#uploading').empty();
+    showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
     console.log(res);
     var uploadToken = res.uploadToken;
     var uploadUrl = res.uploadUrl;
 
-    // console.log(uploadToken);
-    // console.log(uploadUrl);
-
     if (uploadToken == 'null' || uploadUrl == 'null') {
       // handle upload error
       jQuery('#uploading').empty();
-      jQuery('#message').html(res.error);
-
+      showMessage('Unexpected response from YouTube API: ' + res.error);
     } else {
       jQuery('#token').val(uploadToken);
       jQuery('#uploadForm').get(0).action = uploadUrl + '?nexturl='
@@ -154,8 +151,7 @@ function initiateUpload() {
   jQuery('#uploadForm').get(0).target = iframeName;
 
   var callback = function() {
-
-    jQuery('#message').html('Upload completed!');
+    showMessage('Upload completed!');
     jQuery('#uploaderMain').empty();
 
     // if I care about the iframe content
@@ -219,4 +215,12 @@ function getSelfUrl() {
   var protocol = document.location.protocol;
   var host = document.location.host;
   return protocol + '//' + host;
+}
+
+function showMessage(text) {
+  if (typeof console != 'undefined') {
+    console.log(text);
+  }
+  
+  jQuery('#message').html(text);
 }

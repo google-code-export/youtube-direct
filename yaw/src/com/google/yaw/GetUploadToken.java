@@ -68,7 +68,7 @@ public class GetUploadToken extends HttpServlet {
       AssignmentStatus status = assignment.getStatus();
       if (status != AssignmentStatus.ACTIVE) {
         throw new IllegalArgumentException(String.format(
-            "Can't add a video to a non-ACTIVE assignment. "
+            "Could not add a video to a non ACTIVE assignment. "
                 + "Current status of assignment id '%s' is '%s'.", assignmentId, status));
       }
 
