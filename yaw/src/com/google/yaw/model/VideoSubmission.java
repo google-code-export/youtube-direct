@@ -129,7 +129,7 @@ public class VideoSubmission implements Serializable {
     this.videoId = videoId;
     this.authSubToken = authSubToken;
     this.assignmentId = assignmentId;
-    this.youtubeName = youtubeName;    
+    this.youtubeName = uploader;    
     this.videoTitle = title;
     this.videoDescription = description;
     this.videoTags = tagList;
@@ -248,7 +248,7 @@ public class VideoSubmission implements Serializable {
   /**
    * Set the YouTube user who uploaded this video.
    * 
-   * @param uploader
+   * @param youTubeName
    *          A YouTube username.
    */
   public void setYouTubeName(String youTubeName) {

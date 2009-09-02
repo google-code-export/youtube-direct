@@ -46,14 +46,10 @@ public class SyncMetadata extends HttpServlet {
     try {
       log.info("Starting sync operation...");
 
-      // Get a list of all videos in the datastore, with the ones with the
-      // oldest sync date listed
-      // first. There is a timetout of 30 seconds per HTTP request in App
-      // Engine, so it is possible
-      // that not all these videos will be synced before a
-      // DeadlineExceededException. This shouldn't
-      // matter, as the ones that do get processed should have their lastSynced
-      // updated, and
+      // Get a list of all videos in the datastore, with the ones with the oldest sync date listed
+      // first. There is a timetout of 30 seconds per HTTP request in App Engine, so it is possible
+      // that not all these videos will be synced before a DeadlineExceededException. This shouldn't
+      // matter, as the ones that do get processed should have their lastSynced updated, and
       // move to the end of the list the next time this is invoked.
       Query query = pm.newQuery(VideoSubmission.class);
       query.setOrdering("lastSynced asc");

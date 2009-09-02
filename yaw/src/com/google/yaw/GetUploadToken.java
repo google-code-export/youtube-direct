@@ -2,9 +2,8 @@ package com.google.yaw;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -23,7 +22,6 @@ import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
-import com.google.gdata.util.ServiceException;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.Assignment.AssignmentStatus;
@@ -35,8 +33,6 @@ public class GetUploadToken extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String json = Util.getPostBody(req);
-    
-    log.warning(json);
     
     try {
       JSONObject jsonObj = new JSONObject(json);
@@ -62,10 +58,7 @@ public class GetUploadToken extends HttpServlet {
         throw new IllegalArgumentException("No user session found.");
       }
       String authSubToken = userSession.getMetaData("authSubToken");
-      String articleUrl = userSession.getMetaData("articleUrl");
       String assignmentId = userSession.getMetaData("assignmentId");            
-      
-      log.warning("current assignment id = " + assignmentId);
 
       Assignment assignment = Util.getAssignmentById(assignmentId);
       if (assignment == null) {
@@ -111,8 +104,7 @@ public class GetUploadToken extends HttpServlet {
 
       String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
       if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
-        mg
-            .addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
+        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
                 defaultDeveloperTag));
       }      
 
@@ -142,13 +134,10 @@ public class GetUploadToken extends HttpServlet {
       resp.setContentType("text/javascript");
       resp.getWriter().println(responseJsonObj.toString());
     } catch (IllegalArgumentException e) {
-      log.finer(e.toString());
+      log.log(Level.FINE, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (JSONException e) {
-      log.warning(e.toString());
-      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (ServiceException e) {
-      log.warning(e.toString());
+      log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }

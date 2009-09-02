@@ -20,7 +20,6 @@ public class MutateAssignment extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
@@ -48,9 +47,9 @@ public class MutateAssignment extends HttpServlet {
         }
 
         log.fine(String.format("Attempting to persist Assignment with description '%s', "
-            + "category '%s', and status '%s'...", description, category, status));
+                + "category '%s', and status '%s'...", description, category, status));
         Assignment assignment = new Assignment(description, category, AssignmentStatus
-            .valueOf(status));
+                .valueOf(status));
         Util.persistJdo(assignment);
         log.fine(String.format("...Assignment with id '%s' persisted.", assignment.getId()));
 
@@ -63,34 +62,29 @@ public class MutateAssignment extends HttpServlet {
         }
 
         Assignment assignment = pm.getObjectById(Assignment.class, id);
-        if (assignment != null) {
-          assignment = pm.detachCopy(assignment);
+        assignment = pm.detachCopy(assignment);
 
-          if (!Util.isNullOrEmpty(description)) {
-            assignment.setDescription(description);
-          }
-
-          if (!Util.isNullOrEmpty(category)) {
-            assignment.setCategory(category);
-          }
-
-          if (!Util.isNullOrEmpty(status)) {
-            assignment.setStatus(Assignment.AssignmentStatus.valueOf(status));
-          }
-
-          log.fine(String.format("Attempting to update Assignment id '%s'...", id));
-          Util.persistJdo(assignment);
-          log.fine(String.format("...Assignment with id '%s' updated.", id));
-
-          resp.setContentType("text/javascript");
-          resp.getWriter().println(Util.GSON.toJson(assignment));
-        } else {
-          throw new IllegalArgumentException(String
-              .format("Could not find Assignment id '%s'.", id));
+        if (!Util.isNullOrEmpty(description)) {
+          assignment.setDescription(description);
         }
+
+        if (!Util.isNullOrEmpty(category)) {
+          assignment.setCategory(category);
+        }
+
+        if (!Util.isNullOrEmpty(status)) {
+          assignment.setStatus(Assignment.AssignmentStatus.valueOf(status));
+        }
+
+        log.fine(String.format("Attempting to update Assignment id '%s'...", id));
+        Util.persistJdo(assignment);
+        log.fine(String.format("...Assignment with id '%s' updated.", id));
+
+        resp.setContentType("text/javascript");
+        resp.getWriter().println(Util.GSON.toJson(assignment));
       } else {
         throw new IllegalArgumentException(String.format("Operation type '%s' is not supported.",
-            operation));
+                operation));
       }
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);

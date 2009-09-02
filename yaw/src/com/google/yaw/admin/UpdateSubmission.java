@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.DatastoreFailureException;
+import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
+import com.google.gson.JsonParseException;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.VideoSubmission;
@@ -25,7 +28,6 @@ public class UpdateSubmission extends HttpServlet {
   @SuppressWarnings("cast")
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
@@ -73,10 +75,6 @@ public class UpdateSubmission extends HttpServlet {
 
       resp.setContentType("text/javascript");
       resp.getWriter().println(Util.GSON.toJson(entry));
-
-    } catch (Exception e) {
-      log.warning(e.toString());
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
       pm.close();
     }
