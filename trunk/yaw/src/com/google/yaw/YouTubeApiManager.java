@@ -100,24 +100,20 @@ public class YouTubeApiManager {
    * @param newEntry
    *          The VideoEntry containing all video metadata for the upload
    * @return A FormUploadToken used when uploading a video to YouTube.
-   * @throws ServiceException
-   *           Error with the API
-   * @throws IOException
-   *           Error talking to the API
    */
-  public FormUploadToken getFormUploadToken(VideoEntry newEntry) throws ServiceException,
-      IOException {
-
-    FormUploadToken token = null;
-
+  public FormUploadToken getFormUploadToken(VideoEntry newEntry) {
     try {
       URL uploadUrl = new URL(uploadToken);
-      token = service.getFormUploadToken(uploadUrl, newEntry);
-    } catch (Exception e) {
-      log.warning("upload token error: " + e.toString());
+      return  service.getFormUploadToken(uploadUrl, newEntry);
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
     }
 
-    return token;
+    return null;
   }
 
   /**

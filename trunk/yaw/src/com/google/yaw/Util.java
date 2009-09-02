@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
@@ -57,61 +60,81 @@ public class Util {
 
   public static Object persistJdo(Object entry) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    entry = pm.makePersistent(entry);
-    entry = pm.detachCopy(entry);
-    pm.close();
+    
+    try {
+      entry = pm.makePersistent(entry);
+      entry = pm.detachCopy(entry);
+    } finally {
+      pm.close();
+    }
 
     return entry;
   }
 
   public static void removeJdo(Object entry) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    pm.deletePersistent(entry);
-    pm.close();
+    
+    try {
+      pm.deletePersistent(entry);
+    } finally {
+      pm.close();
+    }
   }
 
   public static void sendNotifyEmail(VideoSubmission entry, ModerationStatus newStatus,
-      String sender, String additionalNote) {
-
-    String subject = "";
-    StringBuffer body = new StringBuffer();
-
-    String notifyEmail = entry.getNotifyEmail();
-    String videoUrl = entry.getVideoUrl();
-    String articleUrl = entry.getArticleUrl();
-
-    switch (newStatus) {
-    case APPROVED:
-      subject = "your submission is approved.";
-      body.append(String.format("your video response (%s) has been approved for this article %s.",
-          videoUrl, articleUrl));
-      break;
-    case REJECTED:
-      subject = "your submission is rejected.";
-      body.append(String.format("your video response (%s) has been rejected for this article %s.",
-          videoUrl, articleUrl));
-      break;
-    }
-
-    if (additionalNote != null && !additionalNote.equals("")) {
-      body.append(additionalNote);
-    }
-
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, null);
-
+          String sender, String additionalNote) {
     try {
+      String subject;
+      StringBuffer body = new StringBuffer();
+
+      String notifyEmail = entry.getNotifyEmail();
+      if (Util.isNullOrEmpty(notifyEmail)) {
+        throw new IllegalArgumentException(String.format("No notifyEmail found for " +
+        		"VideoSubmission id '%s'.", entry.getId()));
+      }
+      
+      String videoUrl = entry.getVideoUrl();
+      String articleUrl = entry.getArticleUrl();
+
+      switch (newStatus) {
+        //TODO: Make these strings configuration options.
+        case APPROVED:
+          subject = "your submission is approved.";
+          body.append(String.format("your video response (%s) has been approved for this article %s.",
+                  videoUrl, articleUrl));
+          break;
+
+        case REJECTED:
+          subject = "your submission is rejected.";
+          body.append(String.format("your video response (%s) has been rejected for this article %s.",
+                  videoUrl, articleUrl));
+          break;
+
+        default:
+          throw new IllegalArgumentException(String.format("Unexpected ModerationStatus: %s.",
+                  newStatus.toString()));
+      }
+
+      if (!Util.isNullOrEmpty(additionalNote)) {
+        body.append(additionalNote);
+      }
+
+      Properties props = new Properties();
+      Session session = Session.getDefaultInstance(props, null);
+
       Message msg = new MimeMessage(session);
       msg.setFrom(new InternetAddress(sender, sender));
       msg.addRecipient(Message.RecipientType.TO, new InternetAddress(notifyEmail, notifyEmail));
       msg.setSubject(subject);
       msg.setText(body.toString());
       Transport.send(msg);
-
-    } catch (Exception e) {
-      // ...
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (MessagingException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
     }
-
   }
 
   /**
@@ -123,17 +146,17 @@ public class Util {
    *         invalid.
    */
   public static Assignment getAssignmentById(String id) {
-    log.warning(id);
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    Assignment assignment = pm.getObjectById(Assignment.class, id);
-    if (assignment != null) {
-      assignment = pm.detachCopy(assignment);
+    
+    try {
+      Assignment assignment = pm.getObjectById(Assignment.class, id);
+      return pm.detachCopy(assignment);
+    } catch (JDOObjectNotFoundException e) {
+      log.log(Level.WARNING, "", e);
+      return null;
+    } finally {
+      pm.close();
     }
-
-    pm.close();
-
-    return assignment;
-
   }
 
   public static String getPostBody(HttpServletRequest req) throws IOException {

@@ -18,25 +18,22 @@ public class GetAllSubmissions extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(GetAllSubmissions.class.getName());
 
+  @SuppressWarnings("unchecked")
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
-    Query query = pm.newQuery(VideoSubmission.class);
-    query.declareImports("import java.util.Date");
-    query.setOrdering("created desc");
-    List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
-
     try {
+      Query query = pm.newQuery(VideoSubmission.class);
+      query.declareImports("import java.util.Date");
+      query.setOrdering("created desc");
+      List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
+
       String json = Util.GSON.toJson(videoEntries);
 
       resp.setContentType("text/javascript");
       resp.getWriter().println(json);
-    } catch (Exception e) {
-      log.warning(e.toString());
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
       pm.close();
     }
