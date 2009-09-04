@@ -106,7 +106,17 @@ public class GetUploadToken extends HttpServlet {
       if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
         mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
                 defaultDeveloperTag));
-      }      
+      }
+      
+      // Maximum size of a developer tag is 25 characters.
+      if (assignmentId.length() <= 25) {
+        // Use the assignmentId as a developer tag to make it easy for developers to query for all
+        // videos uploaded for a given assignment.
+        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+      } else {
+        log.warning(String.format("Assignment id '%s' is longer than 25 characters, and can't be " +
+                "used as a developer tag.", assignmentId));
+      }
 
       userSession.addMetaData("videoTitle", title);      
       userSession.addMetaData("videoDescription", description);

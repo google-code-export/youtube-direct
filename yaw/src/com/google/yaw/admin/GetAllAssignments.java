@@ -62,7 +62,7 @@ public class GetAllAssignments extends HttpServlet {
     for (Assignment assignment : assignments) {
       String value;
       if (searchColumn.equals("id")) {
-        value = assignment.getId().toLowerCase();
+        value = assignment.getId().toString();
       } else if (searchColumn.equals("description")) {
         value = assignment.getDescription().toLowerCase();
       } else if (searchColumn.equals("category")) {
@@ -208,7 +208,7 @@ public class GetAllAssignments extends HttpServlet {
 
     JSONArray rows = new JSONArray();
     for (Assignment assignment : assignments) {
-      String id = assignment.getId();
+      Long id = assignment.getId();
       String created = assignment.getCreated().toString();
       String description = assignment.getDescription();
       String category = assignment.getCategory();
@@ -222,7 +222,7 @@ public class GetAllAssignments extends HttpServlet {
       row.put("id", id);
 
       List<String> data = new ArrayList<String>();
-      data.add(id);
+      data.add(id.toString());
       data.add(created);
       data.add(description);
       data.add(category);

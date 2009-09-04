@@ -41,7 +41,7 @@ public class UploadResponseHandler extends HttpServlet {
       log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
           + "for assignment id '%s'...", videoId, assignmentId));
       
-      VideoSubmission submission = new VideoSubmission(assignmentId);
+      VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
       
       submission.setArticleUrl(articleUrl);
       submission.setVideoId(videoId);

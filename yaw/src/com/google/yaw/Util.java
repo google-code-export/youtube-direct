@@ -149,12 +149,15 @@ public class Util {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
     
     try {
-      Assignment assignment = pm.getObjectById(Assignment.class, id);
+      Assignment assignment = pm.getObjectById(Assignment.class, Long.parseLong(id));
       return pm.detachCopy(assignment);
     } catch (JDOObjectNotFoundException e) {
       log.log(Level.WARNING, "", e);
       return null;
-    } finally {
+    } catch (NumberFormatException e) {
+      log.log(Level.WARNING, "", e);
+      return null;
+    }finally {
       pm.close();
     }
   }

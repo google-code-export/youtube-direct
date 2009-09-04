@@ -35,10 +35,9 @@ public class Assignment implements Serializable {
   private int SCHEMA_VERSION;
 
   @PrimaryKey
-  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   @Expose
-  private String id;
+  private Long id;
 
   @Persistent
   @Expose
@@ -188,7 +187,7 @@ public class Assignment implements Serializable {
     this.status = status;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 

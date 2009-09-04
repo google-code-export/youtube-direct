@@ -151,6 +151,7 @@
 
   <security-constraint>
     <web-resource-collection>
+    <!-- TODO: Move all the servlets that expose admin interfaces to live under /admin/ -->
       <url-pattern>/admin</url-pattern>
     </web-resource-collection>
     <auth-constraint>
