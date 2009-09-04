@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.DatastoreFailureException;
-import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.yaw.Util;
 import com.google.yaw.model.VideoSubmission;
 
+/**
+ * Servlet that deletes VideoSubmission objects from the datastore.
+ * 
+ * The underlying YouTube video is not modified.
+ */
 public class DeleteSubmission extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(DeleteSubmission.class.getName());
@@ -35,6 +38,7 @@ public class DeleteSubmission extends HttpServlet {
       VideoSubmission entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
       pm.deletePersistent(entry);
 
+      // Response content is effectively ignored. Anything with a 200 OK should be fine.
       resp.setContentType("text/plain");
       resp.getWriter().print(String.format("Deleted VideoSubmission with id '%s'", id));
     } catch (IllegalArgumentException e) {
