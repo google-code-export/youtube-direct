@@ -48,7 +48,7 @@ public class UserSession {
   @Persistent
   private String email = null;
 
-  @Persistent(serialized = "true")
+  @Persistent(serialized = "true", defaultFetchGroup="true")
   private Map<String, String> metaDataMap = null;  
   
   public UserSession() {

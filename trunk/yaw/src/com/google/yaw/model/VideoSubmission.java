@@ -41,7 +41,7 @@ public class VideoSubmission implements Serializable {
   // The article on the news site that this submission belongs to.
   @Expose
   @Persistent
-  private String assignmentId = null;
+  private Long assignmentId = null;
 
   @Expose
   @Persistent
@@ -122,7 +122,7 @@ public class VideoSubmission implements Serializable {
    * @param uploader
    *          The YouTube username of the uploader
    */
-  public VideoSubmission(String assignmentId, String articleUrl, String videoId, String title,
+  public VideoSubmission(Long assignmentId, String articleUrl, String videoId, String title,
       String description, String tagList, String uploader, String authSubToken, 
       VideoSource videoSource) {
     this.articleUrl = articleUrl;
@@ -142,7 +142,8 @@ public class VideoSubmission implements Serializable {
     setVideoSource(videoSource);
   }
 
-  public VideoSubmission(String assignmentId) {
+  public VideoSubmission(Long assignmentId) {
+    this.assignmentId = assignmentId;
     this.created = new Date();
     this.updated = this.created;
     this.lastSynced = this.created;
@@ -217,7 +218,7 @@ public class VideoSubmission implements Serializable {
    * @param assignmentId
    *          The new ID.
    */
-  public void setAssignmentId(String assignmentId) {
+  public void setAssignmentId(Long assignmentId) {
     this.assignmentId = assignmentId;
   }
 
@@ -315,7 +316,7 @@ public class VideoSubmission implements Serializable {
     this.articleUrl = articleUrl;
   }
 
-  public String getAssignmentId() {
+  public Long getAssignmentId() {
     return assignmentId;
   }
 
