@@ -35,6 +35,7 @@ public class VideoSubmission implements Serializable {
   private String videoId = null;
 
   // The AuthSub token used when uploading this video.
+  @Expose
   @Persistent
   private String authSubToken = null;
 

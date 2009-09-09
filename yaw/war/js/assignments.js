@@ -32,7 +32,7 @@ function loadDataGrid() {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 275,
+    width: 70,
     searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
   });
   
@@ -40,7 +40,7 @@ function loadDataGrid() {
   grid.colModel.push({
     name: 'created', 
     index: 'created', 
-    width: 200,
+    width: 150,
     search: false,
   });
   
