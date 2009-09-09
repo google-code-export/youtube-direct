@@ -74,7 +74,7 @@ public class GetAllAssignments extends HttpServlet {
                 + "parameter 'searchField'.", searchColumn));
       }
 
-      Boolean matches = false;
+      boolean matches = false;
       if (searchType.equals("cn") && value.indexOf(searchString) != -1) {
         matches = true;
       } else if (searchType.equals("nc") && value.indexOf(searchString) == -1) {

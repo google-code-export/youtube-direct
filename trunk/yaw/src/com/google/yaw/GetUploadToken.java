@@ -108,11 +108,14 @@ public class GetUploadToken extends HttpServlet {
                 defaultDeveloperTag));
       }
       
-      // Maximum size of a developer tag is 25 characters.
-      if (assignmentId.length() <= 25) {
-        // Use the assignmentId as a developer tag to make it easy for developers to query for all
-        // videos uploaded for a given assignment.
-        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentId));
+      // Maximum size of a developer tag is 25 characters, and we prepend 2 characters.
+      if (assignmentId.length() <= 23) {
+        // Minimum size of a developer tag is 3 characters, so always append 2 characters.
+        String assignmentIdTag = String.format("A-%s", assignmentId);
+        
+        // Use a developer tag to make it easy for developers to query for all videos uploaded for
+        // a given assignment.
+        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentIdTag));
       } else {
         log.warning(String.format("Assignment id '%s' is longer than 25 characters, and can't be " +
                 "used as a developer tag.", assignmentId));
@@ -131,7 +134,8 @@ public class GetUploadToken extends HttpServlet {
 
       FormUploadToken token = apiManager.getFormUploadToken(newEntry);
       if (token == null) {
-        throw new IllegalArgumentException("Upload token returned from YouTube API is null.");
+        throw new IllegalArgumentException("Upload token returned from YouTube API is null. " +
+        		"Please make sure that all request parameters are valid.");
       }
 
       String uploadToken = token.getToken();
