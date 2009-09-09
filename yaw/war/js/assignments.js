@@ -143,6 +143,7 @@ function loadDataGrid() {
   jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams,
 		  viewParams).navButtonAdd('#pager', codeParams);
 }
+
 function getSelfUrl() {
   var protocol = document.location.protocol;
   var host = document.location.host;

@@ -22,6 +22,15 @@
     <servlet-name>GetAllSubmissions</servlet-name>
     <url-pattern>/GetAllSubmissions</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>InsightDownloadRedirect</servlet-name>
+    <servlet-class>com.google.yaw.admin.InsightDownloadRedirect</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InsightDownloadRedirect</servlet-name>
+    <url-pattern>/InsightDownloadRedirect</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>SyncMetadata</servlet-name>
