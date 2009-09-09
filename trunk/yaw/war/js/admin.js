@@ -67,11 +67,11 @@ function initDataGrid(data) {
 	grid.colModel.push( {
 	  name : 'created',
 	  index : 'created',
-	  width : 180,
+	  width : 150,
 	  sortype : 'date',
 	  formatter : function(cellvalue, options, rowObject) {
 		  var date = new Date(cellvalue);
-		  return date.toLocaleTimeString() + ' ' + date.toDateString();
+		  return formatDate(date);
 	  },
 	  sorttype : 'date'
 	});
@@ -81,17 +81,17 @@ function initDataGrid(data) {
 	  name : 'videoId',
 	  index : 'videoId',
 	  width : 100,
-	  editable : true,
-	  hidden : true,
+	  editable : false,
+	  hidden : false,
 	  sorttype : 'string'
 	});
 
-	grid.colNames.push('Assignment ID');
+	grid.colNames.push('Asgmt. ID');
 	grid.colModel.push( {
 	  name : 'assignmentId',
 	  index : 'assignmentId',
-	  width : 100,
-	  hidden : true,
+	  width : 70,
+	  hidden : false,
 	  sorttype : 'string'
 	});
 
@@ -112,7 +112,7 @@ function initDataGrid(data) {
 	  name : 'uploader',
 	  index : 'uploader',
 	  width : 100,
-	  hidden : true,
+	  hidden : false,
 	  sorttype : 'string'
 	});
 
@@ -130,7 +130,6 @@ function initDataGrid(data) {
 	  index : 'videoTitle',
 	  width : 100,
 	  sorttype : 'string',
-	  editable : true,
 	  edittype : 'text'
 	});
 
@@ -139,7 +138,6 @@ function initDataGrid(data) {
 	  name : 'videoDescription',
 	  index : 'videoDescription',
 	  width : 200,
-	  editable : true,
 	  edittype : 'text',
 	  sorttype : 'string'
 	});
@@ -149,9 +147,16 @@ function initDataGrid(data) {
 	  name : 'videoTags',
 	  index : 'videoTags',
 	  width : 130,
-	  editable : true,
 	  edittype : 'text',
 	  sorttype : 'string'
+	});
+	
+	grid.colNames.push('View Count');
+	grid.colModel.push( {
+	  name : 'viewCount',
+	  index : 'viewCount',
+	  width : 80,
+	  sorttype : 'int'
 	});
 
 	grid.colNames.push('Status');
@@ -198,6 +203,12 @@ function initDataGrid(data) {
 		
 		var deleteButton = '<input type="button" onclick=deleteEntry("' + entryId + '") value="delete" />';
 		jQuery('#datagrid').setCell(rowid, 'delete', deleteButton);
+		
+		if (rowdata['viewCount'] > 0) {
+		  var viewCountLink = '<a title="Click to download YouTube Insight data." href="/InsightDownloadRedirect?id=' + rowdata['videoId'] + '&token=' +
+		    rowdata['authSubToken'] + '">' + rowdata['viewCount'] + '</a>';
+		  jQuery('#datagrid').setCell(rowid, 'viewCount', viewCountLink);
+		}
 	};
 
 	grid.cellsubmit = 'clientArray';
@@ -238,6 +249,26 @@ function initDataGrid(data) {
 	  position : "last"
 	});
 
+}
+
+function formatDate(date) {
+  var year = padZero(date.getFullYear());
+  var month = padZero(date.getMonth());
+  var day = padZero(date.getDate());
+  var hours = padZero(date.getHours());
+  var minutes = padZero(date.getMinutes());
+  var seconds = padZero(date.getSeconds());
+  
+  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+}
+
+function padZero(value) {
+  value = value + '';
+  if (value.length < 2) {
+    return '0' + value;
+  } else {
+    return value;
+  }
 }
 
 function getSubmission(id) {

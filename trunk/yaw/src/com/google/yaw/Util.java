@@ -14,7 +14,6 @@ import javax.jdo.JDOHelper;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
@@ -28,22 +27,14 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.compass.core.Compass;
-import org.compass.core.config.CompassConfiguration;
-import org.compass.core.config.CompassEnvironment;
-import org.compass.gps.CompassGps;
-import org.compass.gps.device.jdo.Jdo2GpsDevice;
-import org.compass.gps.impl.SingleCompassGps;
 
 public class Util {
 
   private static final Logger log = Logger.getLogger(Util.class.getName());
 
-  private static final String DATE_TIME_PATTERN = "hh:mm:ss a MM/dd/yyyy z";
+  private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
   public final static Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
       .setDateFormat(DATE_TIME_PATTERN).create();
