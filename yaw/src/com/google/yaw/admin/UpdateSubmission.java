@@ -45,7 +45,8 @@ public class UpdateSubmission extends HttpServlet {
       ModerationStatus currentStatus = entry.getStatus();
       ModerationStatus newStatus = jsonObj.getStatus();
 
-      boolean hasEmail = (entry.getNotifyEmail() != null);
+      boolean hasEmail = !Util.isNullOrEmpty(entry.getNotifyEmail());
+      
       boolean isRejectedOrApproved = (currentStatus !=  newStatus) && 
           (newStatus != ModerationStatus.UNREVIEWED);
 

@@ -41,7 +41,7 @@
 	window.isLoggedIn = true;
 </script>
 <br>
-<span id="message"></span> 
+<div id="message">&nbsp;</div> 
 <br>
 
 <div id="submissionAsk">
@@ -112,7 +112,7 @@ Select file: <input id="file" type="file" name="file" />
 	<input id="token" type="hidden" name="token" value="">
 	<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
 	<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
-	<div id="uploading"></div>
+	<div id="running"></div>
 </div>
 </form>
 
