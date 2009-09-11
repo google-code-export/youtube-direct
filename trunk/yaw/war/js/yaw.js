@@ -28,10 +28,44 @@ function existingVideoMainInit() {
   jQuery('#existingVideoMain').css('display', 'block');
   
   jQuery('#submitButton').click( function() {
-    // TODO
+    var videoId = jQuery('#videoId').val();   
+    var location = jQuery('#submitLocation').val();  
+    var date = jQuery('#submitDate').val();
+    var email = jQuery('#submitEmail').val();
+
+    var jsonObj = {};
+    jsonObj.videoId = videoId;
+    jsonObj.location = location;
+    jsonObj.date = date;
+    jsonObj.email = email;  
+    
+    var ajaxCall = {};
+    ajaxCall.type = 'POST';
+    ajaxCall.url = '/SubmitExistingVideo';
+    ajaxCall.data = JSON.stringify(jsonObj);
+    ajaxCall.dataType = 'json'; // expecting back
+    ajaxCall.processData = false;
+    ajaxCall.error = function(xhr, text, error) {
+      clearRunningImage();
+      showMessage('Submit existing video incurred an error: ' + xhr.statusText);
+    };
+    ajaxCall.success = function(res) {
+      clearRunningImage();
+      if (res.success) {
+        jQuery('#existingVideoMain').css('display', 'none');
+        showMessage("thank you!");        
+      } else {        
+        showMessage('Submit existing video server error');
+      }
+
+    };
+    showRunningImage();
+    jQuery.ajax(ajaxCall);    
+    
   });
 
   jQuery('#cancelSubmitButton').click( function(event) {
+    clearMessage();
     jQuery('#submissionAsk').css('display', 'block');
     jQuery('#existingVideoMain').css('display', 'none');
     jQuery('#uploaderMain').css('display', 'none');
@@ -55,14 +89,13 @@ function uploaderMainInit() {
   jQuery('#uploaderMain').css('display', 'block');
 
   jQuery('#uploadButton').click( function() {
-    var img = jQuery('<img/>');
-    img.attr('src', 'loading.gif');
-    jQuery('#uploading').append(img);
+    showRunningImage();
     getUploadToken();
     return false;
   });
 
   jQuery('#cancelUploadButton').click( function(event) {
+    clearMessage();
     jQuery('#submissionAsk').css('display', 'block');
     jQuery('#existingVideoMain').css('display', 'none');
     jQuery('#uploaderMain').css('display', 'none');
@@ -113,7 +146,7 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    jQuery('#uploading').empty();
+    clearRunningImage();    
     showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
@@ -152,7 +185,8 @@ function initiateUpload() {
 
   var callback = function() {
     showMessage('Upload completed!');
-    jQuery('#uploaderMain').empty();
+    clearRunningImage();
+    jQuery('#uploaderMain').css('display', 'none');
 
     // if I care about the iframe content
     /*
@@ -220,7 +254,20 @@ function getSelfUrl() {
 function showMessage(text) {
   if (typeof console != 'undefined') {
     console.log(text);
-  }
-  
+  }  
   jQuery('#message').html(text);
+}
+
+function clearMessage(text) {
+  jQuery('#message').empty();
+}
+
+function showRunningImage() {
+  var img = jQuery('<img/>');
+  img.attr('src', 'loading.gif');
+  jQuery('#running').append(img);    
+}
+
+function clearRunningImage() {
+  jQuery('#running').empty();  
 }

@@ -114,6 +114,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>SubmitExistingVideo</servlet-name>
+    <servlet-class>com.google.yaw.SubmitExistingVideo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitExistingVideo</servlet-name>
+    <url-pattern>/SubmitExistingVideo</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>UploadResponseHandler</servlet-name>
     <servlet-class>com.google.yaw.UploadResponseHandler</servlet-class>
   </servlet>
