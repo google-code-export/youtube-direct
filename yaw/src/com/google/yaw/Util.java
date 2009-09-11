@@ -164,11 +164,19 @@ public class Util {
       List<Settings> settings = (List<Settings>) query.execute();
       
       if (settings.size() > 0) {
-        log.fine("Retrieved saved settings from datastore.");
+        log.info("Retrieved saved settings from datastore.");
         return pm.detachCopy(settings.get(0));
       } else {
-        log.warning("No settings currently found in datastore.");
-        return new Settings();
+        
+        log.info("No settings found in datastore.  Create a one by loading default system props.");
+        Settings newSettings = new Settings();
+        newSettings.setClientId(System.getProperty("com.google.yaw.YTClientID"));
+        newSettings.setDeveloperKey(System.getProperty("com.google.yaw.YTDeveloperKey"));
+        
+        pm.makePersistent(newSettings);
+        pm.detachCopy(newSettings);                
+        
+        return newSettings;
       }
     } catch (JDOObjectNotFoundException e) {
       log.log(Level.WARNING, "No settings currently found in datastore.", e);
