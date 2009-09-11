@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--  override this file with your own GAE app instance name and youtube config properties -->
+
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+	<application></application>
+	<version>3</version>
+	
+	<ssl-enabled>true</ssl-enabled>
+	<sessions-enabled>true</sessions-enabled>	
+	
+	<!-- Configure java.util.logging -->
+	<system-properties>
+		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+		<!-- The DisableCookieHandler property needs to be set to true when using
+         the GData Java client. -->
+    <property name="com.google.gdata.DisableCookieHandler" value="true"/>
+    
+    <!-- Configure memcache delays in seconds -->
+    <property name="com.google.yaw.ArticleSubmissionCacheTime" value="60"/>    
+
+		<!-- Default YouTube account information -->
+    <property name="com.google.yaw.YTDeveloperKey" value=""/>
+    <property name="com.google.yaw.YTClientID" value=""/>
+    
+	</system-properties>
+	
+</appengine-web-app>
