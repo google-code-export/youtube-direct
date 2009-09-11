@@ -14,11 +14,13 @@ import javax.jdo.JDOHelper;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.yaw.model.Assignment;
+import com.google.yaw.model.Settings;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import java.util.Properties;
@@ -148,7 +150,30 @@ public class Util {
     } catch (NumberFormatException e) {
       log.log(Level.WARNING, "", e);
       return null;
-    }finally {
+    } finally {
+      pm.close();
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static Settings getSettings() {
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    
+    try {
+      Query query = pm.newQuery(Settings.class);
+      List<Settings> settings = (List<Settings>) query.execute();
+      
+      if (settings.size() > 0) {
+        log.fine("Retrieved saved settings from datastore.");
+        return pm.detachCopy(settings.get(0));
+      } else {
+        log.warning("No settings currently found in datastore.");
+        return new Settings();
+      }
+    } catch (JDOObjectNotFoundException e) {
+      log.log(Level.WARNING, "No settings currently found in datastore.", e);
+      return new Settings();
+    } finally {
       pm.close();
     }
   }

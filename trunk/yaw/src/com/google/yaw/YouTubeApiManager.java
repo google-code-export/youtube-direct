@@ -24,6 +24,7 @@ import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
+import com.google.yaw.model.Settings;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -49,18 +50,28 @@ public class YouTubeApiManager {
    * with parameters specified in appengine-web.xml
    */
   public YouTubeApiManager() {
-    String clientId = System.getProperty("com.google.yaw.YTClientID");
-    String developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
+    Settings settings = Util.getSettings();
+    
+    String clientId = settings.getClientId();
+    String developerKey = settings.getDeveloperKey();
 
     if (Util.isNullOrEmpty(clientId)) {
-      log.warning("com.google.yaw.YTClientID property is not set.");
+      log.warning("clientId settings property is null or empty.");
     }
 
     if (Util.isNullOrEmpty(developerKey)) {
-      log.warning("com.google.yaw.YTDeveloperKey property is not set.");
+      log.warning("developerKey settings property is null or empty.");
     }
 
     service = new YouTubeService(clientId, developerKey);
+  }
+  
+  public YouTubeApiManager(String clientId) {
+    if (Util.isNullOrEmpty(clientId)) {
+      log.warning("clientId parameter is null or empty.");
+    }
+
+    service = new YouTubeService(clientId);
   }
 
   /**
@@ -71,6 +82,16 @@ public class YouTubeApiManager {
    */
   public void setToken(String token) {
     service.setAuthSubToken(token);
+  }
+  
+  /**
+   * Sets an arbitrary header for all outgoing requests using this service instance.
+   * 
+   * @param header The name of the header.
+   * @param value The header's value.
+   */
+  public void setHeader(String header, String value) {
+    service.getRequestFactory().setHeader(header, value);
   }
 
   /**
@@ -113,6 +134,10 @@ public class YouTubeApiManager {
 
     return null;
   }
+  
+  public String generateVideoEntryUrl(String videoId) {
+    return String.format(entryUrlFormat, videoId);
+  }
 
   /**
    * Gets a YouTube video entry given a specific video id. Constructs the entry
@@ -124,7 +149,7 @@ public class YouTubeApiManager {
    * @return A VideoEntry representing the video in question, or null.
    */
   public VideoEntry getVideoEntry(String videoId) {
-    String entryUrl = String.format(entryUrlFormat, videoId);
+    String entryUrl = generateVideoEntryUrl(videoId);
 
     try {
       return service.getEntry(new URL(entryUrl), VideoEntry.class);

@@ -13,10 +13,6 @@
          the GData Java client. -->
     <property name="com.google.gdata.DisableCookieHandler" value="true"/>
     
-    <!-- Set up with Developer Key and Client ID -->
-    <property name="com.google.yaw.YTDeveloperKey" value="AI39si6bwM9PDh2mnMvHmxgKSyS532xo3GkM1sSgPBR8COQqFax1ruJPPDvl4xppnhkxHW2LzCCX-qE38jKS8d9Gg6DlG4Aqhg"/>
-    <property name="com.google.yaw.YTClientID" value="yui-dev"/>
-    
     <!-- Configure memcache delays in seconds -->
     <property name="com.google.yaw.ArticleSubmissionCacheTime" value="60"/>    
     

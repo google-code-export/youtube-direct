@@ -31,6 +31,24 @@
     <servlet-name>InsightDownloadRedirect</servlet-name>
     <url-pattern>/InsightDownloadRedirect</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>VideoDownloadRedirect</servlet-name>
+    <servlet-class>com.google.yaw.admin.VideoDownloadRedirect</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VideoDownloadRedirect</servlet-name>
+    <url-pattern>/VideoDownloadRedirect</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>SaveSettings</servlet-name>
+    <servlet-class>com.google.yaw.admin.SaveSettings</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveSettings</servlet-name>
+    <url-pattern>/SaveSettings</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>SyncMetadata</servlet-name>

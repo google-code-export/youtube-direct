@@ -2,6 +2,7 @@ package com.google.yaw;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
-import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.yaw.model.UserSession;
 
@@ -17,13 +17,11 @@ import com.google.yaw.model.UserSession;
  * Super simple class to handle doing the AuthSub token exchange to upgrade a
  * one-time token into a session token.
  */
-@SuppressWarnings("serial")
 public class AuthSubHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
 
     try {
@@ -63,15 +61,15 @@ public class AuthSubHandler extends HttpServlet {
 
       response.sendRedirect(articleUrl);
     } catch (ServiceException e) {
-      log.warning(e.toString());
+      log.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     } catch (IllegalArgumentException e) {
-      log.warning(e.toString());
+      log.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (GeneralSecurityException e) {
-      log.warning(e.toString());
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-          "Security error while retrieving session token.");
+      log.log(Level.WARNING, "", e);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Security error while " +
+      		"retrieving session token.");
     }
   }
 }

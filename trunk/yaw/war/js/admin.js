@@ -209,6 +209,9 @@ function initDataGrid(data) {
 		    rowdata['authSubToken'] + '">' + rowdata['viewCount'] + '</a>';
 		  jQuery('#datagrid').setCell(rowid, 'viewCount', viewCountLink);
 		}
+		
+		var downloadLink = '<a title="Click to download video." href="/VideoDownloadRedirect?id=' + rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + rowdata['videoId'] + '</a>';
+		jQuery('#datagrid').setCell(rowid, 'videoId', downloadLink);
 	};
 
 	grid.cellsubmit = 'clientArray';
@@ -253,7 +256,7 @@ function initDataGrid(data) {
 
 function formatDate(date) {
   var year = padZero(date.getFullYear());
-  var month = padZero(date.getMonth());
+  var month = padZero(date.getMonth() + 1);
   var day = padZero(date.getDate());
   var hours = padZero(date.getHours());
   var minutes = padZero(date.getMinutes());

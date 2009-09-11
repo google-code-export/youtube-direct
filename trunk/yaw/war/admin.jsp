@@ -2,6 +2,8 @@
 <%@ page import="com.google.appengine.api.users.User"%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
+<%@ page import="com.google.yaw.Util"%>
+<%@ page import="com.google.yaw.model.Settings"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -73,7 +75,26 @@ Filter: <input id="searchText" type="text"><br>
 </div>
 	
 <div id="configure">
-<p></p>
+<%
+  Settings settings = Util.getSettings();
+  if (settings == null) {
+    settings = new Settings();
+  }
+%>
+  <form action="/SaveSettings" method="POST">
+    <fieldset>
+      <legend>YouTube Account Settings</legend>
+      <div>
+        <label for="developerKey">Developer Key</label>
+        <input type="text" size="40" id="developerKey" name="developerKey" value="<%=settings.getDeveloperKey()%>"/>
+      </div>
+      <div>
+        <label for="clientId">Client ID</label>
+        <input type="text" size="40" id="clientId" name="clientId" value="<%=settings.getClientId()%>"/>
+      </div>
+      <input type="submit"/>
+    </fieldset>
+  </form>
 </div>
 </div>
 
