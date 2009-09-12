@@ -8,23 +8,32 @@ function init() {
     jQuery(document.body).css('background', '#E3E4FA');
 
     window.URL_PARAMS = getUrlParams();
-
+    
+    highlightRequired();
+    
     jQuery('#uploadVideoButton').click( function(event) {
       event.preventDefault();
-      jQuery('#submissionAsk').css('display', 'none');
+      jQuery('#submissionAsk').css('display', 'none');      
       uploaderMainInit();
     });
 
     jQuery('#existingVideoButton').click( function(event) {
       event.preventDefault();
-      jQuery('#submissionAsk').css('display', 'none');
+      jQuery('#submissionAsk').css('display', 'none'); 
       existingVideoMainInit();
     });
     
   }
 }
 
+function highlightRequired() {
+  jQuery.each(jQuery('.required'), function(index, value) {
+    jQuery(value).before('<span class="smallRed">*</span>&nbsp;')
+  });  
+}
+
 function existingVideoMainInit() {
+  
   jQuery('#existingVideoMain').css('display', 'block');
   
   jQuery('#submitButton').click( function() {
