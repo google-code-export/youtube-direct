@@ -6,7 +6,6 @@ body {
 
 #main {
 	text-align: left;
-	width: 280px;
 }
 
 input {
@@ -16,7 +15,7 @@ input {
 
 #message {
 	color: red;
-	fonts-size: 12px;
+	fonts-size: 11px;
 	font-style: italic;
 }
 
@@ -37,13 +36,24 @@ input {
 }
 
 .actionButton {
-	border: 0px solid black;
+	border: 1px solid white;
 	background: gray;
 	color: white;
-	font-size: 13px;
+	font-size: 12px;
 	padding: 2px;
 	padding-left: 20px;
 	padding-right: 20px;
+}
+
+.askButton {
+	border: 1px solid white;
+	background: gray;
+	color: white;
+	font-size: 12px;
+	padding: 2px;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 200px;
 }
 
 .small {
@@ -51,8 +61,20 @@ input {
 	font-style: italic;
 }
 
-.medium {
+.tip {
 	font-size: 11px;
 	font-style: italic;
 	color: green;
 }
+
+#processing {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	padding-left: 3px;
+	padding-right: 3px;
+	color: white;
+	background: red;
+	font-size: 11px;	
+}
+

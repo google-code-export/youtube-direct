@@ -9,13 +9,13 @@ function init() {
 
     window.URL_PARAMS = getUrlParams();
 
-    jQuery('#newUploadLink').click( function(event) {
+    jQuery('#uploadVideoButton').click( function(event) {
       event.preventDefault();
       jQuery('#submissionAsk').css('display', 'none');
       uploaderMainInit();
     });
 
-    jQuery('#existingVideoLink').click( function(event) {
+    jQuery('#existingVideoButton').click( function(event) {
       event.preventDefault();
       jQuery('#submissionAsk').css('display', 'none');
       existingVideoMainInit();
@@ -46,11 +46,11 @@ function existingVideoMainInit() {
     ajaxCall.dataType = 'json'; // expecting back
     ajaxCall.processData = false;
     ajaxCall.error = function(xhr, text, error) {
-      clearSubmitRunning();
+      clearProcessing();
       showMessage('Submit existing video incurred an error: ' + xhr.statusText);
     };
     ajaxCall.success = function(res) {
-      clearSubmitRunning();
+      clearProcessing();
       
       switch(res.success) {
         case 'true':
@@ -65,7 +65,7 @@ function existingVideoMainInit() {
           }      
       }
     };
-    showSubmitRunning();
+    showProcessing('Submitting ...');
     jQuery.ajax(ajaxCall);    
     
   });
@@ -149,11 +149,10 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    clearUploadRunning();    
+    clearProcessing();    
     showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
-    //console.log(res);
     var uploadToken = res.uploadToken;
     var uploadUrl = res.uploadUrl;
 
@@ -170,7 +169,7 @@ function getUploadToken() {
     }
 
   };
-  showUploadRunning();
+  showProcessing('Uploading ...');
   jQuery.ajax(ajaxCall);
 }
 
@@ -189,7 +188,7 @@ function initiateUpload() {
 
   var callback = function() {
     showMessage('Upload completed!');
-    clearSubmitRunning();
+    clearProcessing();
     jQuery('#uploaderMain').css('display', 'none');
 
     // if I care about the iframe content
@@ -263,22 +262,14 @@ function clearMessage(text) {
   jQuery('#message').empty();
 }
 
-function showUploadRunning() {
-  var img = jQuery('<img/>');
-  img.attr('src', 'loading.gif');
-  jQuery('#uploadRunning').append(img);    
+function showProcessing(text) {
+  var e = jQuery('#processing');
+  e.html(text);
+  e.css('display', 'block');
 }
 
-function clearUploadRunning() {
-  jQuery('#uploadRunning').empty();  
-}
-
-function showSubmitRunning() {
-  var img = jQuery('<img/>');
-  img.attr('src', 'loading.gif');
-  jQuery('#submitRunning').append(img);    
-}
-
-function clearSubmitRunning() {
-  jQuery('#submitRunning').empty();  
+function clearProcessing() {
+  var e = jQuery('#processing');
+  e.empty();
+  e.css('display', 'none');  
 }

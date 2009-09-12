@@ -40,87 +40,88 @@
 <script type="text/javascript">
 	window.isLoggedIn = true;
 </script>
+
 <br>
 <div id="message">&nbsp;</div> 
 <br>
 
 <div id="submissionAsk">
-	<div>Your video response will be:</div>	
-	<ul>
-	<li><a id="newUploadLink" href="#" >A new video upload</a>
-	<li><a id="existingVideoLink" href="#">An existing video</a>
-	</ul> 	
+	<div align="center">
+	<br><br><br><br><br>
+	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
+	<br><br>
+	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />
+	</div>
 </div>
 
+<span id="processing"></span>
+
 <div id="existingVideoMain">
-<label for="videoId">Video ID:</label><br>
-<span class="medium">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span>
-<br>
-<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
-<br> 
-<label for="location">Location:</label>
-<br>
-<div><input class="inputBox" type="text" name="location" id="submitLocation" /></div>
-<br>
-<label for="date">Date:</label>
-<br>
-<input class="inputBox" type="text" name="date" id="submitDate" />
-<br>
-Email me on approval: <input id="submitEmailAsk" type="checkbox" />
-<input id="submitEmail" type="text" value="" style="visibility: hidden"/>
-<br>
-<div align="center">
+	<label for="videoId">Video ID:</label><br>
+	<span class="tip">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span>
 	<br>
-	<input id="submitButton" class="actionButton" type="button" value="Submit" />&nbsp;
-	<input id="cancelSubmitButton" class="actionButton" type="button" value="Cancel" />
-	<div id="submitRunning"></div>
-</div>
-<br>	
+	<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
+	<br> 
+	<label for="date">Date:</label>
+	<br>
+	<div><input class="inputBox" type="text" name="date" id="submitDate" /></div>
+	<br>	
+	<label for="location">Location:</label>
+	<br>
+	<div><input class="inputBox" type="text" name="location" id="submitLocation" /></div>
+	<br>
+	Email me on approval: <input id="submitEmailAsk" type="checkbox" />
+	<input id="submitEmail" type="text" value="" style="visibility: hidden"/>
+	<br>
+	<div align="center">
+		<br>
+		<input id="submitButton" class="actionButton" type="button" value="Submit" />&nbsp;
+		<input id="cancelSubmitButton" class="actionButton" type="button" value="Cancel" />
+	</div>
 </div>
 
 <div id="uploaderMain">
-
-<label for="title">Video Title:</label>
-<br>
-<input class="inputBox" type="text" name="title" id="title" />
-<br>
-<label for="description">Video Description:</label>
-<br>
-<textarea class="inputBox" name="description" id="description"></textarea>
-<br>
-<label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
-<br>
-<input class="inputBox" type="text" name="tags" id="tags" />
-<br> 
-<label for="location">Location:</label>
-<br>
-<input class="inputBox" type="text" name="location" id="uploadLocation" />
-<br>
-<label for="date">Date:</label>
-<br>
-<input class="inputBox" type="text" name="date" id="uploadDate" />
-<br>
-Email me on approval: <input id="uploadEmailAsk" type="checkbox" />
-<input id="uploadEmail" type="text" value="" style="visibility: hidden"/>
-<br>
-<br> 
-<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
-Select file: <input id="file" type="file" name="file" />
-<br>
-<br>
-<div align="center">
+	<label for="title">Video Title:</label>
 	<br>
-	<input id="token" type="hidden" name="token" value="">
-	<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
-	<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
-	<div id="uploadRunning"></div>
+	<div><input class="inputBox" type="text" name="title" id="title" /></div>
+	<br>
+	<label for="description">Video Description:</label>
+	<br>
+	<div><textarea class="inputBox" name="description" id="description"></textarea></div>
+	<br>
+	<label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
+	<br>
+	<div><input class="inputBox" type="text" name="tags" id="tags" /></div>
+	<br>
+	<label for="date">Date:</label>
+	<br>
+	<div><input class="inputBox" type="text" name="date" id="uploadDate" /></div>
+	<br> 
+	<label for="location">Location:</label>
+	<br>
+	<div><input class="inputBox" type="text" name="location" id="uploadLocation" /></div>
+	<br>
+	Email me on approval: <input id="uploadEmailAsk" type="checkbox" />
+	<input id="uploadEmail" type="text" value="" style="visibility: hidden"/>
+	<br>
+	<br> 
+	<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
+	Select file: <input id="file" type="file" name="file" />
+	<br>
+	<br>
+	<div align="center">
+		<br>
+		<input id="token" type="hidden" name="token" value="">
+		<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
+		<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
+	</div>
+	</form>
+	
+	<%
+		}
+	%>
 </div>
-</form>
 
-<%
-	}
-%>
-</div>
 </div>
 </div>
 </body>
