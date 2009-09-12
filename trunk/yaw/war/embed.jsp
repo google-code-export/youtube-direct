@@ -12,13 +12,13 @@
 
 <link type="text/css" href="/css/ext/themes/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 
-<link type="text/css" href="/css/yaw.css" rel="stylesheet" />
+<link type="text/css" href="/css/embed.css" rel="stylesheet" />
 
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
 <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
 
-<script type="text/javascript" src="/js/yaw.js"></script>
+<script type="text/javascript" src="/js/embed.js"></script>
 </head>
 
 <body>
@@ -56,11 +56,11 @@
 <label for="videoId">Video ID:</label><br>
 <span class="medium">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span>
 <br>
-<input class="inputBox" type="text" name="videoId" id="videoId" />
+<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
 <br> 
 <label for="location">Location:</label>
 <br>
-<input class="inputBox" type="text" name="location" id="submitLocation" />
+<div><input class="inputBox" type="text" name="location" id="submitLocation" /></div>
 <br>
 <label for="date">Date:</label>
 <br>
