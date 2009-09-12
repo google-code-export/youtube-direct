@@ -62,7 +62,8 @@ function initDataGrid(data) {
 	  hidden : true,
 	  sorttype : 'string'
 	});
-
+	
+	// TODO: Need to write unformatter so jqgrid can sort it, now it's unsortable.
 	grid.colNames.push('Created');
 	grid.colModel.push( {
 	  name : 'created',

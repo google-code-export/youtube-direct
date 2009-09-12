@@ -46,11 +46,11 @@ function existingVideoMainInit() {
     ajaxCall.dataType = 'json'; // expecting back
     ajaxCall.processData = false;
     ajaxCall.error = function(xhr, text, error) {
-      clearRunningImage();
+      clearSubmitRunning();
       showMessage('Submit existing video incurred an error: ' + xhr.statusText);
     };
     ajaxCall.success = function(res) {
-      clearRunningImage();
+      clearSubmitRunning();
       
       switch(res.success) {
         case 'true':
@@ -65,7 +65,7 @@ function existingVideoMainInit() {
           }      
       }
     };
-    showRunningImage();
+    showSubmitRunning();
     jQuery.ajax(ajaxCall);    
     
   });
@@ -95,7 +95,6 @@ function uploaderMainInit() {
   jQuery('#uploaderMain').css('display', 'block');
 
   jQuery('#uploadButton').click( function() {
-    showRunningImage();
     getUploadToken();
     return false;
   });
@@ -143,8 +142,6 @@ function getUploadToken() {
   jsonObj.email = email;
   jsonObj.tags = tags;
 
-  console.log(jsonObj);
-
   var ajaxCall = {};
   ajaxCall.type = 'POST';
   ajaxCall.url = '/GetUploadToken';
@@ -152,11 +149,11 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    clearRunningImage();    
+    clearUploadRunning();    
     showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
-    console.log(res);
+    //console.log(res);
     var uploadToken = res.uploadToken;
     var uploadUrl = res.uploadUrl;
 
@@ -173,6 +170,7 @@ function getUploadToken() {
     }
 
   };
+  showUploadRunning();
   jQuery.ajax(ajaxCall);
 }
 
@@ -191,7 +189,7 @@ function initiateUpload() {
 
   var callback = function() {
     showMessage('Upload completed!');
-    clearRunningImage();
+    clearSubmitRunning();
     jQuery('#uploaderMain').css('display', 'none');
 
     // if I care about the iframe content
@@ -227,7 +225,7 @@ function initiateUpload() {
 
   jQuery(document.body).append(hiddenIframe);
 
-  // submit the upload form!
+  // submit the upload form!  
   jQuery('#uploadForm').get(0).submit();
 }
 
@@ -258,9 +256,6 @@ function getSelfUrl() {
 }
 
 function showMessage(text) {
-  if (typeof console != 'undefined') {
-    console.log(text);
-  }  
   jQuery('#message').html(text);
 }
 
@@ -268,12 +263,22 @@ function clearMessage(text) {
   jQuery('#message').empty();
 }
 
-function showRunningImage() {
+function showUploadRunning() {
   var img = jQuery('<img/>');
   img.attr('src', 'loading.gif');
-  jQuery('#running').append(img);    
+  jQuery('#uploadRunning').append(img);    
 }
 
-function clearRunningImage() {
-  jQuery('#running').empty();  
+function clearUploadRunning() {
+  jQuery('#uploadRunning').empty();  
+}
+
+function showSubmitRunning() {
+  var img = jQuery('<img/>');
+  img.attr('src', 'loading.gif');
+  jQuery('#submitRunning').append(img);    
+}
+
+function clearSubmitRunning() {
+  jQuery('#submitRunning').empty();  
 }
