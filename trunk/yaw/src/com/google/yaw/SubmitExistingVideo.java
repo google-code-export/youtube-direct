@@ -61,40 +61,51 @@ public class SubmitExistingVideo extends HttpServlet {
       
       VideoEntry videoEntry = apiManager.getVideoEntry(videoId);      
       
-      String title = videoEntry.getTitle().getPlainText();
-      String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
-      
-      List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-      String sortedTags = Util.sortedJoin(tags, ",");
-      
-      long viewCount = -1;
-      
-      YtStatistics stats = videoEntry.getStatistics();
-      if (stats != null) {
-        viewCount = stats.getViewCount();
-      }      
-      
-      VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
-      
-      submission.setArticleUrl(articleUrl);
-      submission.setVideoId(videoId);
-      submission.setVideoTitle(title);
-      submission.setVideoDescription(description);
-      submission.setVideoTags(sortedTags);
-      submission.setVideoLocation(location);      
-      submission.setVideoDate(date);      
-      submission.setYouTubeName(youTubeName);
-      submission.setAuthSubToken(authSubToken);
-      submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
-      submission.setNotifyEmail(email);      
-      
-      Util.persistJdo(submission);
-      
-      JSONObject responseJsonObj = new JSONObject();
-      responseJsonObj.put("success", "true");
+      if (videoEntry == null) {        
+        log.info("videoEntry is null");
+        JSONObject responseJsonObj = new JSONObject();
+        responseJsonObj.put("success", "false");
+        responseJsonObj.put("message", "cannot find video with id " + videoId);  
 
-      resp.setContentType("text/javascript");
-      resp.getWriter().println(responseJsonObj.toString());
+        resp.setContentType("text/javascript");
+        resp.getWriter().println(responseJsonObj.toString());
+      } else {      
+        log.info("videoEntry is NOT null");
+        String title = videoEntry.getTitle().getPlainText();
+        String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
+        
+        List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
+        String sortedTags = Util.sortedJoin(tags, ",");
+        
+        long viewCount = -1;
+        
+        YtStatistics stats = videoEntry.getStatistics();
+        if (stats != null) {
+          viewCount = stats.getViewCount();
+        }      
+        
+        VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
+        
+        submission.setArticleUrl(articleUrl);
+        submission.setVideoId(videoId);
+        submission.setVideoTitle(title);
+        submission.setVideoDescription(description);
+        submission.setVideoTags(sortedTags);
+        submission.setVideoLocation(location);      
+        submission.setVideoDate(date);      
+        submission.setYouTubeName(youTubeName);
+        submission.setAuthSubToken(authSubToken);
+        submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
+        submission.setNotifyEmail(email);      
+        
+        Util.persistJdo(submission);
+        
+        JSONObject responseJsonObj = new JSONObject();
+        responseJsonObj.put("success", "true");
+ 
+        resp.setContentType("text/javascript");
+        resp.getWriter().println(responseJsonObj.toString());
+      }
     } catch (IllegalArgumentException e) {
       log.log(Level.FINE, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
