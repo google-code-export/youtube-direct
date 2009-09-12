@@ -73,7 +73,7 @@ Email me on approval: <input id="submitEmailAsk" type="checkbox" />
 	<br>
 	<input id="submitButton" class="actionButton" type="button" value="Submit" />&nbsp;
 	<input id="cancelSubmitButton" class="actionButton" type="button" value="Cancel" />
-	<div id="uploading"></div>
+	<div id="submitRunning"></div>
 </div>
 <br>	
 </div>
@@ -113,7 +113,7 @@ Select file: <input id="file" type="file" name="file" />
 	<input id="token" type="hidden" name="token" value="">
 	<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
 	<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
-	<div id="running"></div>
+	<div id="uploadRunning"></div>
 </div>
 </form>
 
