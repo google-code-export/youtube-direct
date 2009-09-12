@@ -21,15 +21,15 @@ input {
 }
 
 #uploaderMain {
-	display: none;	
+	display: none;
 }
 
 #existingVideoMain {
-	display: none;	
+	display: none;
 }
 
 #submissionAsk {
-	display: block;	
+	display: block;
 }
 
 .inputBox {
@@ -43,10 +43,16 @@ input {
 	font-size: 13px;
 	padding: 2px;
 	padding-left: 20px;
-	padding-right: 20px;	
+	padding-right: 20px;
 }
 
 .small {
-	font-size: 9px; 
-	font-style: italic;"
+	font-size: 9px;
+	font-style: italic;
+}
+
+.medium {
+	font-size: 11px;
+	font-style: italic;
+	color: green;
 }

@@ -120,7 +120,7 @@ function initDataGrid(data) {
 	grid.colModel.push( {
 	  name : 'notifyEmail',
 	  index : 'notifyEmail',
-	  width : 100,
+	  width : 70,
 	  sorttype : 'string'
 	});
 
@@ -167,6 +167,27 @@ function initDataGrid(data) {
     }
 	});
 
+  grid.colNames.push('Video Source');
+  grid.colModel.push( {
+    name : 'videoSource',
+    index : 'videoSource',
+    width : 100,
+    edittype : 'text',
+    formatter : function(cellvalue, options, rowObject) {
+      var ret = null;
+      switch (cellvalue) {
+      case 0:
+        ret = 'New Upload';
+        break;
+      case 1:
+        ret = 'Existing Video';
+        break;
+      }      
+      return ret;
+    },
+    sorttype : 'string'
+  });
+	
 	grid.colNames.push('Status');
 	grid.colModel.push( {
 	  name : 'status',
@@ -193,6 +214,16 @@ function initDataGrid(data) {
 	  sorttype : 'string'
 	});
 
+  grid.colNames.push('Download');
+  grid.colModel.push( {
+    name : 'download',
+    index : 'download',
+    width : 75,
+    align : 'center',
+    sortable : false,
+    sorttype : 'string'
+  });	
+	
 	grid.colNames.push('Delete');
 	grid.colModel.push( {
 	  name : 'delete',
@@ -211,15 +242,18 @@ function initDataGrid(data) {
 		
 		var deleteButton = '<input type="button" onclick=deleteEntry("' + entryId + '") value="delete" />';
 		jQuery('#datagrid').setCell(rowid, 'delete', deleteButton);
+
+    var downloadButton = '<input type="button" onclick=downloadVideo("' + entryId + '") value="download" />';
+    jQuery('#datagrid').setCell(rowid, 'download', downloadButton);		
 		
 		if (rowdata['viewCount'] > 0) {
-		  var viewCountLink = '<a title="Click to download YouTube Insight data." href="/InsightDownloadRedirect?id=' + rowdata['videoId'] + '&token=' +
-		    rowdata['authSubToken'] + '">' + rowdata['viewCount'] + '</a>';
+		  var viewCountLink = 
+		      '<a title="Click to download YouTube Insight data." href="/InsightDownloadRedirect?id=' + 
+		      rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + 
+		      rowdata['viewCount'] + '</a>';
 		  jQuery('#datagrid').setCell(rowid, 'viewCount', viewCountLink);
-		}
-		
-		var downloadLink = '<a title="Click to download video." href="/VideoDownloadRedirect?id=' + rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + rowdata['videoId'] + '</a>';
-		jQuery('#datagrid').setCell(rowid, 'videoId', downloadLink);
+		}		
+
 	};
 
 	grid.cellsubmit = 'clientArray';
@@ -316,6 +350,13 @@ function refreshGridUI(entries) {
 	for ( var i = 0; i <= entries.length; i++) {
 		jqGrid.addRowData(i + 1, entries[i]);
 	}
+}
+
+function downloadVideo(entryId) {
+  var submission = window.getSubmission(entryId);
+  var videoId = submission.videoId;
+  var token = submission.authSubToken;
+  document.location.href = '/VideoDownloadRedirect?id=' + videoId + '&token=' + token;   
 }
 
 function deleteEntry(entryId) {

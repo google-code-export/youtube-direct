@@ -53,7 +53,8 @@
 </div>
 
 <div id="existingVideoMain">
-<label for="videoId">Video ID:</label>
+<label for="videoId">Video ID:</label><br>
+<span class="medium">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span>
 <br>
 <input class="inputBox" type="text" name="videoId" id="videoId" />
 <br> 

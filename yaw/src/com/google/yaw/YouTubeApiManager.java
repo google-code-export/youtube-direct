@@ -53,9 +53,9 @@ public class YouTubeApiManager {
     Settings settings = Util.getSettings();
     
     String clientId = settings.getClientId();
-    String developerKey = settings.getDeveloperKey();
-
-    if (Util.isNullOrEmpty(clientId)) {
+    String developerKey = settings.getDeveloperKey();        
+    
+    if (Util.isNullOrEmpty(clientId)) {    
       log.warning("clientId settings property is null or empty.");
     }
 
