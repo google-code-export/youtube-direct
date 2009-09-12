@@ -57,7 +57,9 @@
 <span id="processing"></span>
 
 <div id="existingVideoMain">
-	<label for="videoId">Video ID:</label>	
+	<div class="smallRed">* required</div>
+	<br>
+	<label class="required" for="videoId">Video ID:</label>	
 	<br>
 	<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
 	<span class="tip">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span><br>
@@ -70,26 +72,28 @@
 	<br>
 	<div><input class="inputBox" type="text" name="location" id="submitLocation" /></div>
 	<br>
-	Email me on approval: <input id="submitEmailAsk" type="checkbox" />
-	<input id="submitEmail" type="text" value="" style="visibility: hidden"/>
+	<label>Email me on approval: </label><input id="submitEmailAsk" type="checkbox" />
+	<input class="emailInputBox" id="submitEmail" type="text" value=""/>
+	<br>
 	<br>
 	<div align="center">
-		<br>
 		<input id="submitButton" class="actionButton" type="button" value="Submit" />&nbsp;
 		<input id="cancelSubmitButton" class="actionButton" type="button" value="Cancel" />
 	</div>
 </div>
 
 <div id="uploaderMain">
-	<label for="title">Video Title:</label>
+	<div class="smallRed">* required</div>
+	<br>	
+	<label class="required" for="title">Video Title:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="title" id="title" /></div>
 	<br>
-	<label for="description">Video Description:</label>
+	<label class="required" for="description">Video Description:</label>
 	<br>
 	<div><textarea class="inputBox" name="description" id="description"></textarea></div>
 	<br>
-	<label for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
+	<label class="required" for="tags">Tags:</label>&nbsp;<span class="small">(use "," to separate)</span>
 	<br>
 	<div><input class="inputBox" type="text" name="tags" id="tags" /></div>
 	<br>
@@ -101,16 +105,14 @@
 	<br>
 	<div><input class="inputBox" type="text" name="location" id="uploadLocation" /></div>
 	<br>
-	Email me on approval: <input id="uploadEmailAsk" type="checkbox" />
-	<input id="uploadEmail" type="text" value="" style="visibility: hidden"/>
-	<br>
-	<br> 
+	<label>Email me on approval: </label><input id="uploadEmailAsk" type="checkbox" />
+	<input class="emailInputBox" id="uploadEmail" type="text" value=""/>
+	<br><br> 
 	<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
-	Select file: <input id="file" type="file" name="file" />
+	<label>Select file: </label><input id="file" type="file" name="file" />
 	<br>
 	<br>
-	<div align="center">
-		<br>
+	<div align="center">		
 		<input id="token" type="hidden" name="token" value="">
 		<input id="uploadButton" class="actionButton" type="submit" value="Upload" />&nbsp;
 		<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
@@ -121,7 +123,6 @@
 		}
 	%>
 </div>
-
 </div>
 </div>
 </body>
