@@ -4,8 +4,8 @@ jQuery(document).ready( function() {
 
 function init() {
   if (window.isLoggedIn) {
-
-    jQuery(document.body).css('background', 'lightGray');
+    
+    jQuery(document.body).css('background', '#E3E4FA');
 
     window.URL_PARAMS = getUrlParams();
 

@@ -57,10 +57,10 @@
 <span id="processing"></span>
 
 <div id="existingVideoMain">
-	<label for="videoId">Video ID:</label><br>
-	<span class="tip">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span>
+	<label for="videoId">Video ID:</label>	
 	<br>
 	<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
+	<span class="tip">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span><br>
 	<br> 
 	<label for="date">Date:</label>
 	<br>
