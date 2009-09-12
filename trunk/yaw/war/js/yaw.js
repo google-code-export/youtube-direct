@@ -51,13 +51,19 @@ function existingVideoMainInit() {
     };
     ajaxCall.success = function(res) {
       clearRunningImage();
-      if (res.success) {
-        jQuery('#existingVideoMain').css('display', 'none');
-        showMessage("thank you!");        
-      } else {        
-        showMessage('Submit existing video server error');
+      
+      switch(res.success) {
+        case 'true':
+          jQuery('#existingVideoMain').css('display', 'none');
+          showMessage("thank you!");   
+          break;
+        case 'false':
+          if (res.message) {
+            showMessage(res.message);
+          } else {          
+            showMessage("Submit error incurred on server.")
+          }      
       }
-
     };
     showRunningImage();
     jQuery.ajax(ajaxCall);    

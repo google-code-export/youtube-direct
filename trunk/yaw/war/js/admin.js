@@ -67,7 +67,7 @@ function initDataGrid(data) {
 	grid.colModel.push( {
 	  name : 'created',
 	  index : 'created',
-	  width : 150,
+	  width : 120,
 	  sortype : 'date',
 	  formatter : function(cellvalue, options, rowObject) {
 		  var date = new Date(cellvalue);
@@ -86,20 +86,20 @@ function initDataGrid(data) {
 	  sorttype : 'string'
 	});
 
-	grid.colNames.push('Asgmt. ID');
+	grid.colNames.push('Assignment');
 	grid.colModel.push( {
 	  name : 'assignmentId',
 	  index : 'assignmentId',
-	  width : 70,
+	  width : 80,
 	  hidden : false,
 	  sorttype : 'string'
 	});
 
-	grid.colNames.push('Article URL');
+	grid.colNames.push('Article');
 	grid.colModel.push( {
 	  name : 'articleUrl',
 	  index : 'articleUrl',
-	  width : 80,
+	  width : 50,
 	  formatter : function(cellvalue, options, rowObject) {
 		  return '<a href="' + cellvalue + '" target="_blank">link</a>';
 	  },
@@ -112,7 +112,7 @@ function initDataGrid(data) {
 	  name : 'uploader',
 	  index : 'uploader',
 	  width : 100,
-	  hidden : false,
+	  hidden : true,
 	  sorttype : 'string'
 	});
 
@@ -137,7 +137,8 @@ function initDataGrid(data) {
 	grid.colModel.push( {
 	  name : 'videoDescription',
 	  index : 'videoDescription',
-	  width : 200,
+	  width : 150,
+	  hidden: true,
 	  edittype : 'text',
 	  sorttype : 'string'
 	});
@@ -146,7 +147,7 @@ function initDataGrid(data) {
 	grid.colModel.push( {
 	  name : 'videoTags',
 	  index : 'videoTags',
-	  width : 130,
+	  width : 100,
 	  edittype : 'text',
 	  sorttype : 'string'
 	});
@@ -156,7 +157,14 @@ function initDataGrid(data) {
 	  name : 'viewCount',
 	  index : 'viewCount',
 	  width : 80,
-	  sorttype : 'int'
+	  sorttype : 'int',
+	  formatter : function(cellvalue, options, rowObject) {
+	    if (cellvalue < 0) {
+	      return 'no data';
+	    } else {	      
+	      return cellvalue;
+	    }
+    }
 	});
 
 	grid.colNames.push('Status');
