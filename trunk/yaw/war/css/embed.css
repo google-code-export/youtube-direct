@@ -33,7 +33,8 @@ input {
 
 .inputBox {
 	width: 100%;
-	border: 1px solid white;
+	border: 1px solid lightGray;
+	color: gray;
 }
 
 .actionButton {
