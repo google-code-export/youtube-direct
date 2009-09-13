@@ -22,7 +22,7 @@ input {
 }
 
 #message {
-	color: red;
+	color: green;
 	fonts-size: 9px;
 	font-style: italic;
 }

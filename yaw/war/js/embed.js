@@ -6,20 +6,18 @@ function init() {
   
   window.URL_PARAMS = getUrlParams();   
   
-  if (window.isLoggedIn) {                
+  if (window.isLoggedIn) {                     
     
     highlightRequired();
     
     jQuery(document.body).css('background', '#E3E4FA');  
     
     jQuery('#uploadVideoButton').click( function(event) {
-      event.preventDefault();
       jQuery('#submissionAsk').css('display', 'none');      
       uploaderMainInit();
     });
 
     jQuery('#existingVideoButton').click( function(event) {
-      event.preventDefault();
       jQuery('#submissionAsk').css('display', 'none'); 
       existingVideoMainInit();
     });
@@ -56,11 +54,37 @@ function highlightRequired() {
   });  
 }
 
+function isRequiredFilled(sectionId) {    
+  var ret = true;
+  
+  var elements = jQuery('#' + sectionId + ' .required');
+  for (var i=0; i<elements.length; i++) {
+    var e = jQuery(elements.get(i));
+    var inputId = e.attr('for');    
+    var input = jQuery('#' + inputId);
+    var value = input.val();
+    
+    if (jQuery.trim(value) == '') {      
+      ret = false;
+      break;
+    }
+  }
+  
+  return ret;
+}
+
 function existingVideoMainInit() {
   
   jQuery('#existingVideoMain').css('display', 'block');
   
-  jQuery('#submitButton').click( function() {
+  jQuery('#submitButton').click( function(event) {
+
+    if (!isRequiredFilled('existingVideoMain')) {
+      event.preventDefault();
+      showMessage('Please fill in all required field(s).');
+      return;
+    }        
+    
     var videoId = jQuery('#videoId').val();   
     var location = jQuery('#submitLocation').val();  
     var date = jQuery('#submitDate').val();
@@ -127,9 +151,14 @@ function existingVideoMainInit() {
 function uploaderMainInit() {
   jQuery('#uploaderMain').css('display', 'block');
 
-  jQuery('#uploadButton').click( function() {
-    getUploadToken();
-    return false;
+  jQuery('#uploadButton').click( function(event) {        
+    if (!isRequiredFilled('uploaderMain')) {
+      event.preventDefault();
+      showMessage('Please fill in all required field(s).');
+    } else {
+      getUploadToken();
+      return false;
+    }
   });
 
   jQuery('#cancelUploadButton').click( function(event) {
