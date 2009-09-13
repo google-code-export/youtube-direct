@@ -60,8 +60,6 @@
 	</div>
 </div>
 
-
-
 <div id="existingVideoMain">
 	<div class="smallRed">* required</div>
 	<br>
@@ -115,7 +113,7 @@
 	<input class="emailInputBox" id="uploadEmail" type="text" value=""/>
 	<br><br> 
 	<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
-	<label class="required">Select file: </label><input id="file" type="file" name="file" />
+	<label class="required" for="file">Select file: </label><input id="file" type="file" name="file" />
 	<br>
 	<br>
 	<div align="center">		
