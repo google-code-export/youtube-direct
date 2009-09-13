@@ -8,6 +8,9 @@ body {
 	text-align: left;
 }
 
+#callToAction {
+}
+
 #main label {
 	color: black;
 	font-size: 10px;
@@ -20,7 +23,7 @@ input {
 
 #message {
 	color: red;
-	fonts-size: 11px;
+	fonts-size: 9px;
 	font-style: italic;
 }
 

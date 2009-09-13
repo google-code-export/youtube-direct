@@ -3,13 +3,14 @@ jQuery(document).ready( function() {
 });
 
 function init() {
-  if (window.isLoggedIn) {
-    
-    jQuery(document.body).css('background', '#E3E4FA');
-
-    window.URL_PARAMS = getUrlParams();
+  
+  window.URL_PARAMS = getUrlParams();   
+  
+  if (window.isLoggedIn) {                
     
     highlightRequired();
+    
+    jQuery(document.body).css('background', '#E3E4FA');  
     
     jQuery('#uploadVideoButton').click( function(event) {
       event.preventDefault();
@@ -22,6 +23,29 @@ function init() {
       jQuery('#submissionAsk').css('display', 'none'); 
       existingVideoMainInit();
     });
+    
+  } else {
+    // user not logged in yet
+    /*
+    var width = window.URL_PARAMS.width * .8;
+    var height = window.URL_PARAMS.height * .8;
+    
+    var div = jQuery('<div/>');
+    div.css('width', width + 'px');
+    div.css('height', height + 'px');
+    div.css('border', '1px solid black');
+    div.css('text-align', 'left');
+    div.css('background', 'black');
+    div.css('color', 'white');
+    div.html('submit a video!');
+    
+    div.click(function() {
+      top.location = jQuery('#loginUrl').attr('href');
+    });
+    
+    jQuery('#callToAction').append(div);
+    */
+    
     
   }
 }

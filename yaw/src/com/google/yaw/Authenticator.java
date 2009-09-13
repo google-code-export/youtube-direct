@@ -1,6 +1,7 @@
 package com.google.yaw;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.util.logging.Logger;
 
@@ -31,7 +32,14 @@ public class Authenticator {
 
     String assignmentId = request.getParameter("assignmentId");
     String articleUrl = request.getParameter("articleUrl");
-
+    
+    try {
+      // this URL string was encoded on JavaScript side with escape()
+      articleUrl = URLDecoder.decode(articleUrl, "UTF-8");
+      log.info(articleUrl);
+    } catch (Exception e) {      
+      e.printStackTrace();
+    }
     String selfUrl = Util.getSelfUrl(request);
 
     if (userSession == null) {
