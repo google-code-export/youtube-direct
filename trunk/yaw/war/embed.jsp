@@ -33,6 +33,10 @@
 <script type="text/javascript">
 	window.isLoggedIn = false;
 </script>
+
+<div id="callToAction" align="center">
+</div>
+
 <%
 	} else {
 %> <%= authenticator.getUserSession().getMetaData("youTubeName") %> 
@@ -45,6 +49,8 @@
 <div id="message">&nbsp;</div> 
 <br>
 
+<span id="processing"></span>
+
 <div id="submissionAsk">
 	<div align="center">
 	<br><br><br><br><br>
@@ -54,7 +60,7 @@
 	</div>
 </div>
 
-<span id="processing"></span>
+
 
 <div id="existingVideoMain">
 	<div class="smallRed">* required</div>
@@ -109,7 +115,7 @@
 	<input class="emailInputBox" id="uploadEmail" type="text" value=""/>
 	<br><br> 
 	<form id="uploadForm" action="" method="post" enctype="multipart/form-data"> 
-	<label>Select file: </label><input id="file" type="file" name="file" />
+	<label class="required">Select file: </label><input id="file" type="file" name="file" />
 	<br>
 	<br>
 	<div align="center">		

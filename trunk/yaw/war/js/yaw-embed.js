@@ -16,8 +16,8 @@ Yaw.prototype.embed = function(containerId, width, height) {
 
 	this.articleUrl = this.articleUrl || document.location.href;
 
-	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + this.articleUrl
-	    + '&assignmentId=' + this.assignmentId;
+	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
+	    + '&assignmentId=' + this.assignmentId + '&width=' + width + '&height=' + height;
 
 	iframeElement.src = iframeUrl;
 	//console.log(iframeUrl);
