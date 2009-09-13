@@ -18,36 +18,6 @@ public class UserSession {
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   private String id = null;
 
-  @Persistent
-  private String youTubeName = null;
-
-  @Persistent
-  private String authSubToken = null;
-
-  @Persistent
-  private String assignmentId = null;
-
-  @Persistent
-  private String articleUrl = null;
-
-  @Persistent
-  private String selfUrl = null;
-
-  @Persistent
-  private String videoTitle = null;
-
-  @Persistent
-  private String videoDescription = null;
-
-  @Persistent
-  private String videoLocation = null;
-
-  @Persistent
-  private String videoTagList = null;
-
-  @Persistent
-  private String email = null;
-
   @Persistent(serialized = "true", defaultFetchGroup="true")
   private Map<String, String> metaDataMap = null;  
   

@@ -88,10 +88,6 @@ public class VideoSubmission implements Serializable {
   @Persistent
   private long viewCount;
 
-  // A string index used for pagination in app engine
-  @Persistent
-  private String createdIndex;
-
   @Expose
   @Persistent
   private Date updated;
@@ -229,14 +225,6 @@ public class VideoSubmission implements Serializable {
    */
   public String getId() {
     return this.id;
-  }
-
-  /**
-   * 
-   * @return The index value based upon the creation date for this entity.
-   */
-  public String getCreatedIndex() {
-    return this.createdIndex;
   }
 
   /**
