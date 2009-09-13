@@ -182,8 +182,7 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    clearProcessing();    
-    console.log(xhr);
+    clearProcessing(); 
     showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
