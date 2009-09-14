@@ -5,7 +5,8 @@
 <script type="text/javascript" src="js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="js/yaw-embed.js"></script>
 <script type="text/javascript">
-window.onload = function() {
+
+jQuery(document).ready(function() {
 
 	var assignmentId = getUrlParams().id;
 	if (!assignmentId) {
@@ -14,9 +15,12 @@ window.onload = function() {
 	}
   
 	var yaw = new Yaw();
-	yaw.setAssignmentId(assignmentId);	
-	yaw.embed('yawContainer', 300, 470);
-};
+	yaw.setAssignmentId(assignmentId);
+	yaw.setCallToAction('callToAction');
+	yaw.setYawContainer('yaw', '300', '500');
+	yaw.ready();  
+    	
+});
 
 function getUrlParams() {
   var args = new Object();
@@ -40,6 +44,10 @@ function getUrlParams() {
 
 </script>
 </head>
+<style>
+#callToAction {
+}
+</style>
 <body>
 <div align="center">
 <div align="center" style="width: 900px;">
@@ -64,7 +72,8 @@ function getUrlParams() {
 		</td>
 		<td>
 		<br><br>
-		<div id="yawContainer" />
+		<a id="callToAction" href="javascript:void(0);"><img src="icon.png" border="0"/></a>
+		<div id="yaw" />
 		</td>
 	</tr>
 </table>

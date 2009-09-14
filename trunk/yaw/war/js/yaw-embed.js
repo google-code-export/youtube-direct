@@ -1,4 +1,10 @@
-function Yaw() {}
+function Yaw() {
+    
+}
+
+Yaw.prototype.isAuthReturn = function() {
+  return /#return$/i.test(document.location.href);
+};
 
 Yaw.prototype.setAssignmentId = function(id) {
 	this.assignmentId = id;
@@ -8,21 +14,48 @@ Yaw.prototype.setArticleUrl = function(url) {
 	this.articleUrl = url;
 };
 
-Yaw.prototype.embed = function(containerId, width, height) {
+Yaw.prototype.setYawContainer = function(id, width, height) {
+  this.yawContainer = id;
+  this.width = width;
+  this.height = height;
+};
+
+Yaw.prototype.setCallToAction = function(id) {
+  this.callToAction = id;
+  
+  var callToAction = document.getElementById(this.callToAction);
+  
+  self = this;
+  
+  callToAction.onclick = function() {
+    callToAction.style.display = 'none';
+    self.embed();   
+  };  
+};
+
+Yaw.prototype.ready = function() {
+  if (/#return$/i.test(document.location.href)) {
+    var callToAction = document.getElementById(this.callToAction);
+    callToAction.style.display = 'none';
+    this.embed();
+  }  
+};
+
+Yaw.prototype.embed = function() {
 	var iframeElement = document.createElement('iframe');
-	iframeElement.width = width + 'px';
-	iframeElement.height = height + 'px';
+	iframeElement.width = this.width + 'px';
+	iframeElement.height = this.height + 'px';
 	iframeElement.style.border = '0px solid gray';
 
 	this.articleUrl = this.articleUrl || document.location.href;
-
-	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
-	    + '&assignmentId=' + this.assignmentId + '&width=' + width + '&height=' + height;
-
-	iframeElement.src = iframeUrl;
-	//console.log(iframeUrl);
+	// remove hash link
+	this.articleUrl = this.articleUrl.replace(/#.+$/, '');	
 	
-	var iframeContainer = document.getElementById(containerId);
+	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
+	    + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height;
+	iframeElement.src = iframeUrl;
+	
+	var iframeContainer = document.getElementById(this.yawContainer);
 	iframeContainer.innerHTML = '';
 	iframeContainer.appendChild(iframeElement);
 };
@@ -79,5 +112,25 @@ function isRelativePath(url) {
     isRelative = true;
   }
   return isRelative;
+}
+
+function getUrlParams() {
+  var args = new Object();
+  var params = window.location.href.split('?');
+
+  if (params.length > 1) {
+    params = params[1];
+    var pairs = params.split("&");
+    for ( var i = 0; i < pairs.length; i++) {
+      var pos = pairs[i].indexOf('=');
+      if (pos == -1)
+        continue;
+      var argname = pairs[i].substring(0, pos);
+      var value = pairs[i].substring(pos + 1);
+      value = value.replace(/\+/g, " ");
+      args[argname] = value;
+    }
+  }
+  return args;
 }
 

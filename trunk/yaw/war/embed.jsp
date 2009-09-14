@@ -31,15 +31,11 @@
 	if (!authenticator.isLoggedIn()) {		
 %> 
 <div>
-<a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';"><img src="icon.png" border="0"></a>
+[ <a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';">login</a> ] 
 </div> 
 <script type="text/javascript">
 	window.isLoggedIn = false;
 </script>
-
-<div id="callToAction" align="center">
-</div>
-
 <%
 	} else {
 %> <%= authenticator.getUserSession().getMetaData("youTubeName") %> 
@@ -47,12 +43,29 @@
 <script type="text/javascript">
 	window.isLoggedIn = true;
 </script>
-
+	
+<%
+	}
+%>
 <br>
 <div id="message">&nbsp;</div> 
 <br>
 
 <span id="processing"></span>
+
+<span id="youTubeLogo"><img src="youtube.gif"</span>
+
+<div align="center">
+<div id="yawInstruction" >
+<p align="left">
+This website is using YouTube AnyWhere to receive video response submission.<br>  
+<br>
+Please login to your YouTube account to proceed. <br>
+<br>
+YouTube API ToS [ <a target="_blank" href="http://code.google.com/apis/youtube/terms.html">read</a> ]
+</p> 
+</div>
+</div>
 
 <div id="submissionAsk">
 	<div align="center">
@@ -133,10 +146,7 @@
 		<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
 	</div>
 	</form>
-	
-	<%
-		}
-	%>
+
 </div>
 </div>
 </div>
