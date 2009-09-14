@@ -103,8 +103,8 @@ Filter: <input id="searchText" type="text"><br>
   
   <label class="configureLabel">Submission mode: </label>  
   <select class="configureInput" id="submissionMode">
-  	<option value="0" selected>NEW UPLOAD OR EXISTING</option>
-  	<option value="1">NEW UPLOAD ONLY</option>
+  	<option value="0" selected>NEW OR EXISTING</option>
+  	<option value="1">NEW ONLY</option>
   </select>
   <div class="clear" />
   
