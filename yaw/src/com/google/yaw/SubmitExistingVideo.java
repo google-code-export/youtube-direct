@@ -66,7 +66,7 @@ public class SubmitExistingVideo extends HttpServlet {
         log.info("videoEntry is null");
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "false");
-        responseJsonObj.put("message", "cannot find video with id " + videoId);  
+        responseJsonObj.put("message", "Cannot find this video in your account.");  
 
         resp.setContentType("text/javascript");
         resp.getWriter().println(responseJsonObj.toString());
