@@ -7,7 +7,7 @@ The YAW platform is designed to run on Google App Engine. App Engine allows you 
 ==YAW Getting Started Guide==
 
   # Register an application instance from Google App Engine (GAE)
-    * [http://appengine.google.com/ Sign up for an App Engine]
+    * [http://appengine.google.com/ Sign up for an App Engine account]
     * [http://code.google.com/appengine/docs/java/overview.html Read the App Engine Java Overview]
     * (OPTIONAL) Install Eclipse plugin for GAE [http://code.google.com/eclipse/ http://code.google.com/eclipse/]
   # Check out most recent tagged release of YAW project source code. 
