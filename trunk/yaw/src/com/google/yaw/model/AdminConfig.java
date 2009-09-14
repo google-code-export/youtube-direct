@@ -58,8 +58,13 @@ public class AdminConfig implements Serializable {
   private int submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();     
   
   public AdminConfig() {
-    developerKey = "";
-    clientId = "";
+    // fetch default clientId and developerKey from appengine-web.xml system props
+    clientId = System.getProperty("com.google.yaw.YTClientID");
+    developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
+    
+    moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
+    brandingMode = BrandingModeType.ON.ordinal();
+    submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
   }
   
   public Long getId() {

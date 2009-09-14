@@ -163,23 +163,21 @@ public class Util {
     
     try {
       Query query = pm.newQuery(AdminConfig.class);
-      List<AdminConfig> settings = (List<AdminConfig>) query.execute();
+      List<AdminConfig> adminConfigs = (List<AdminConfig>) query.execute();
       
-      if (settings.size() > 0) {
-        log.info("Retrieved saved settings from datastore.");
-        adminConfig = pm.detachCopy(settings.get(0));
-      } else {
-        
-        log.info("No settings found in datastore.  Create a one by loading default system props.");
-        adminConfig = new AdminConfig();
-        adminConfig.setClientId(System.getProperty("com.google.yaw.YTClientID"));
-        adminConfig.setDeveloperKey(System.getProperty("com.google.yaw.YTDeveloperKey"));
-        
+      if (adminConfigs.size() > 0) {
+        log.info("Retrieved saved admin config from datastore.");
+        adminConfig = pm.detachCopy(adminConfigs.get(0));
+      } else {        
+        log.info("No admin config found in datastore.  Creating a new one.");
+        adminConfig = new AdminConfig();        
         pm.makePersistent(adminConfig);
         adminConfig = pm.detachCopy(adminConfig);
       }
     } catch (JDOObjectNotFoundException e) {
-      log.log(Level.WARNING, "No settings currently found in datastore.", e);
+      // this path can only occur when there is model class errors (model binary mistmatch in store)
+      log.log(Level.WARNING, "Query cannot be executed against AdminConfig model class.  " + 
+          "Has model class been changed?", e);
     } finally {
       pm.close();
     }

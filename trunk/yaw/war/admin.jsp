@@ -81,35 +81,37 @@ Filter: <input id="searchText" type="text"><br>
 	
   <label class="configureLabel">YouTube developer key: </label>
   <input class="configureInput" id="developerKey" type="text">
-  <br><br>
+  <div class="clear" />
   
-  <div class="configureLabel">YouTube client ID </div>
+  <label class="configureLabel">YouTube client ID: </label>
   <input class="configureInput" id="clientId" type="text">
-  <br><br>
+  <div class="clear" />
   
   <label class="configureLabel">Moderation mode: </label>  
   <select class="configureInput" id="moderationMode">
   	<option value="0" selected>ON</option>
   	<option value="1">OFF</option>
   </select>
-  <br><br>
+  <div class="clear" />
   
   <label class="configureLabel">Branding mode: </label>  
   <select class="configureInput" id="brandingMode">
   	<option value="0" selected>ON</option>
   	<option value="1">OFF</option>
   </select>
-  <br><br>
+  <div class="clear" />
   
   <label class="configureLabel">Submission mode: </label>  
   <select class="configureInput" id="submissionMode">
   	<option value="0" selected>NEW UPLOAD OR EXISTING</option>
   	<option value="1">NEW UPLOAD ONLY</option>
   </select>
-  <br><br>
+  <div class="clear" />
   
-  <input id="saveButton" type="button" value="save"/>
-  
+  <label class="configureLabel">&nbsp;</label>
+  <input "configureInput" id="saveButton" type="button" value="save"/>
+	<div class="clear" />
+	
 </div>
 </div>
 
