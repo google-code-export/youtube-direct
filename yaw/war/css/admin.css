@@ -35,10 +35,19 @@ body {
 	text-align: left;
 }
 
-.configureLabel {
-	width: 600px;
-	display: inline;
-}
-.configureInput {
+.configureLabel,.configureInput {
+	display: block;
 	width: 200px;
+	float: left;
+	margin-bottom: 10px;
+}
+
+.configureLabel {
+	text-align: right;
+	width: 150px;
+	padding-right: 20px;
+}
+
+div.clear {
+	clear: left;
 }
