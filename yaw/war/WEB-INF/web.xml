@@ -40,14 +40,23 @@
     <servlet-name>VideoDownloadRedirect</servlet-name>
     <url-pattern>/VideoDownloadRedirect</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
-    <servlet-name>SaveSettings</servlet-name>
-    <servlet-class>com.google.yaw.admin.SaveSettings</servlet-class>
+    <servlet-name>GetAdminConfig</servlet-name>
+    <servlet-class>com.google.yaw.admin.GetAdminConfig</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SaveSettings</servlet-name>
-    <url-pattern>/SaveSettings</url-pattern>
+    <servlet-name>GetAdminConfig</servlet-name>
+    <url-pattern>/GetAdminConfig</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>PersistAdminConfig</servlet-name>
+    <servlet-class>com.google.yaw.admin.PersistAdminConfig</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PersistAdminConfig</servlet-name>
+    <url-pattern>/PersistAdminConfig</url-pattern>
   </servlet-mapping>
 
   <servlet>

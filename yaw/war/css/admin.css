@@ -34,3 +34,11 @@ body {
 	height: 600px;
 	text-align: left;
 }
+
+.configureLabel {
+	width: 600px;
+	display: inline;
+}
+.configureInput {
+	width: 200px;
+}
