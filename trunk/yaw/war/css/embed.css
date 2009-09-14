@@ -62,10 +62,31 @@ input {
 	padding-right: 20px;
 }
 
+.actionButton:hover {
+	border: 1px solid black;
+	background: #98AFC7;
+	color: black;
+	font-size: 12px;
+	padding: 2px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
 .askButton {
 	border: 1px solid white;
 	background: #98AFC7;
 	color: white;
+	font-size: 12px;
+	padding: 2px;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 200px;
+}
+
+.askButton:hover {
+	border: 1px solid black;
+	background: #98AFC7;
+	color: black;
 	font-size: 12px;
 	padding: 2px;
 	padding-left: 20px;

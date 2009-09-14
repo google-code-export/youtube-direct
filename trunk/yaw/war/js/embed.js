@@ -22,29 +22,6 @@ function init() {
       existingVideoMainInit();
     });
     
-  } else {
-    // user not logged in yet
-    /*
-    var width = window.URL_PARAMS.width * .8;
-    var height = window.URL_PARAMS.height * .8;
-    
-    var div = jQuery('<div/>');
-    div.css('width', width + 'px');
-    div.css('height', height + 'px');
-    div.css('border', '1px solid black');
-    div.css('text-align', 'left');
-    div.css('background', 'black');
-    div.css('color', 'white');
-    div.html('submit a video!');
-    
-    div.click(function() {
-      top.location = jQuery('#loginUrl').attr('href');
-    });
-    
-    jQuery('#callToAction').append(div);
-    */
-    
-    
   }
 }
 
@@ -85,13 +62,13 @@ function existingVideoMainInit() {
       return;
     }        
     
-    var videoId = jQuery('#videoId').val();   
+    var url = jQuery('#videoUrl').val();   
     var location = jQuery('#submitLocation').val();  
     var date = jQuery('#submitDate').val();
     var email = jQuery('#submitEmail').val();
 
     var jsonObj = {};
-    jsonObj.videoId = videoId;
+    jsonObj.videoId = getVideoId(url);
     jsonObj.location = location;
     jsonObj.date = date;
     jsonObj.email = email;  
@@ -308,6 +285,10 @@ function getUrlParams() {
     }
   }
   return args;
+}
+
+function getVideoId(url) {
+  return url.replace('http://www.youtube.com/watch?v=', '');
 }
 
 function getSelfUrl() {

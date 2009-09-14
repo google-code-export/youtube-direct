@@ -63,10 +63,10 @@
 <div id="existingVideoMain">
 	<div class="smallRed">* required</div>
 	<br>
-	<label class="required" for="videoId">Video ID:</label>	
+	<label class="required" for="videoUrl">Video URL:</label>	
 	<br>
-	<div><input class="inputBox" type="text" name="videoId" id="videoId" /></div>
-	<span class="tip">Tip: http://www.youtube.com/watch?v=<b>VIDEO_ID</b></span><br>
+	<div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
+	<span class="tip">Example: http://www.youtube.com/watch?v=A7y7NafWXeM</span><br>
 	<br> 
 	<label for="date">Date:</label>
 	<br>
