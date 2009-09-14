@@ -6,11 +6,14 @@ function init() {
   
   window.URL_PARAMS = getUrlParams();   
   
-  if (window.isLoggedIn) {                     
+  if (window.isLoggedIn) {                         
+    highlightRequired();        
     
-    highlightRequired();
+    // hide YouTube instruction
+    jQuery('#yawInstruction').css('display', 'none');    
     
-    jQuery(document.body).css('background', '#E3E4FA');  
+    // show submissionAsk
+    jQuery('#submissionAsk').css('display', 'block');
     
     jQuery('#uploadVideoButton').click( function(event) {
       jQuery('#submissionAsk').css('display', 'none');      
@@ -22,6 +25,9 @@ function init() {
       existingVideoMainInit();
     });
     
+  } else {
+    // show YouTube instruction
+    jQuery('#yawInstruction').css('display', 'block');
   }
 }
 
@@ -99,6 +105,7 @@ function existingVideoMainInit() {
           }      
       }
     };
+    clearMessage();
     showProcessing('Submitting ...');
     jQuery.ajax(ajaxCall);    
     
@@ -208,6 +215,7 @@ function getUploadToken() {
     }
 
   };
+  clearMessage();
   showProcessing('Uploading ...');
   jQuery.ajax(ajaxCall);
 }
