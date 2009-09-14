@@ -185,6 +185,15 @@ public class Util {
     return adminConfig;
   }
 
+  public static boolean isUploadOnly() {
+    boolean uploadOnly = false;
+    AdminConfig adminConfig = Util.getAdminConfig();
+    if (adminConfig.getSubmissionMode() == AdminConfig.SubmissionModeType.NEW_ONLY.ordinal()) {
+      uploadOnly = true;
+    }
+    return uploadOnly;
+  }
+  
   public static String getPostBody(HttpServletRequest req) throws IOException {
     InputStream is = req.getInputStream();
 
