@@ -413,7 +413,7 @@ function refreshGrid() {
 
 function refreshGridUI(entries) {
 	var jqGrid = jQuery('#datagrid').clearGridData();
-	for ( var i = 0; i <= entries.length; i++) {
+	for ( var i = 0; i < entries.length; i++) {
 		jqGrid.addRowData(i + 1, entries[i]);
 	}
 }
@@ -534,7 +534,7 @@ function getAllSubmissions(callback) {
 	ajaxCall.success = function(entries) {
 		window.submissions = JSON.parse(JSON.stringify(entries));
 		showLoading(false);
-		callback(entries);
+		callback(entries);				
 	};
 	showLoading(true);
 	jQuery.ajax(ajaxCall);
