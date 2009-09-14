@@ -24,7 +24,7 @@ import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
-import com.google.yaw.model.Settings;
+import com.google.yaw.model.AdminConfig;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -50,10 +50,10 @@ public class YouTubeApiManager {
    * with parameters specified in appengine-web.xml
    */
   public YouTubeApiManager() {
-    Settings settings = Util.getSettings();
+    AdminConfig admingConfig = Util.getAdminConfig();
     
-    String clientId = settings.getClientId();
-    String developerKey = settings.getDeveloperKey();        
+    String clientId = admingConfig.getClientId();
+    String developerKey = admingConfig.getDeveloperKey();        
     
     if (Util.isNullOrEmpty(clientId)) {    
       log.warning("clientId settings property is null or empty.");

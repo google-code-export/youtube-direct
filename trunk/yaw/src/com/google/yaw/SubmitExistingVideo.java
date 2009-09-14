@@ -23,6 +23,7 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
 import com.google.gdata.data.youtube.YtStatistics;
+import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
@@ -97,6 +98,12 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setAuthSubToken(authSubToken);
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
         submission.setNotifyEmail(email);      
+
+        AdminConfig adminConfig = Util.getAdminConfig();      
+        if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
+          // NO_MOD is set, auto approve all submission
+          submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
+        }        
         
         Util.persistJdo(submission);
         

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.yaw.model.Assignment;
-import com.google.yaw.model.Settings;
+import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import java.util.Properties;
@@ -156,34 +156,35 @@ public class Util {
   }
   
   @SuppressWarnings("unchecked")
-  public static Settings getSettings() {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+  public static AdminConfig getAdminConfig() {
+    AdminConfig adminConfig = null;
+    
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();      
     
     try {
-      Query query = pm.newQuery(Settings.class);
-      List<Settings> settings = (List<Settings>) query.execute();
+      Query query = pm.newQuery(AdminConfig.class);
+      List<AdminConfig> settings = (List<AdminConfig>) query.execute();
       
       if (settings.size() > 0) {
         log.info("Retrieved saved settings from datastore.");
-        return pm.detachCopy(settings.get(0));
+        adminConfig = pm.detachCopy(settings.get(0));
       } else {
         
         log.info("No settings found in datastore.  Create a one by loading default system props.");
-        Settings newSettings = new Settings();
-        newSettings.setClientId(System.getProperty("com.google.yaw.YTClientID"));
-        newSettings.setDeveloperKey(System.getProperty("com.google.yaw.YTDeveloperKey"));
+        adminConfig = new AdminConfig();
+        adminConfig.setClientId(System.getProperty("com.google.yaw.YTClientID"));
+        adminConfig.setDeveloperKey(System.getProperty("com.google.yaw.YTDeveloperKey"));
         
-        pm.makePersistent(newSettings);
-        pm.detachCopy(newSettings);                
-        
-        return newSettings;
+        pm.makePersistent(adminConfig);
+        adminConfig = pm.detachCopy(adminConfig);
       }
     } catch (JDOObjectNotFoundException e) {
       log.log(Level.WARNING, "No settings currently found in datastore.", e);
-      return new Settings();
     } finally {
       pm.close();
     }
+    
+    return adminConfig;
   }
 
   public static String getPostBody(HttpServletRequest req) throws IOException {

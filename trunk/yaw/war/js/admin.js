@@ -18,7 +18,72 @@ function init() {
 		var matches = filterSubmissions(text);
 		refreshGridUI(matches);
 	});
+	
+	initConfigureTab();
+}
 
+function getAdminConfig(callback) {
+  var ajaxCall = {};
+  ajaxCall.type = 'GET';
+  ajaxCall.url = '/GetAdminConfig';
+  ajaxCall.dataType = 'json'; // expecting back
+  ajaxCall.processData = false;
+  ajaxCall.error = function(xhr, text, error) {
+    console.log('Get admin config incurred an error: ' + xhr.statusText);
+  };
+  ajaxCall.success = function(res) {
+    clearConfigureStatus();
+    callback(res);
+  };
+  showConfigureStatus("loading ...");
+  jQuery.ajax(ajaxCall);     
+  
+}
+
+function persistAdminConfig() {
+  var developerKey = jQuery('#developerKey').val();   
+  var clientId = jQuery('#clientId').val();  
+  var moderationMode = jQuery('#moderationMode').val();
+  var brandingMode = jQuery('#brandingMode').val();
+  var submissionMode = jQuery('#submissionMode').val();
+  
+  var jsonObj = {};
+  jsonObj.developerKey = developerKey;
+  jsonObj.clientId = clientId;
+  jsonObj.moderationMode = moderationMode;
+  jsonObj.brandingMode = brandingMode;  
+  jsonObj.submissionMode = submissionMode;  
+  
+  var ajaxCall = {};
+  ajaxCall.type = 'POST';
+  ajaxCall.url = '/PersistAdminConfig';
+  ajaxCall.data = JSON.stringify(jsonObj);
+  ajaxCall.dataType = 'json'; // expecting back
+  ajaxCall.processData = false;
+  ajaxCall.error = function(xhr, text, error) {
+    showConfigureStatus('Persist admin config incurred an error: ' + xhr.statusText);
+  };
+  ajaxCall.success = function(res) {
+    showConfigureStatus('saved!');
+  };
+  showConfigureStatus('saving ...');
+  jQuery.ajax(ajaxCall);    
+}
+
+function initConfigureTab() {
+  var saveButton = jQuery('#saveButton');     
+  
+  getAdminConfig(function(adminConfig) {
+    jQuery('#developerKey').val(adminConfig.developerKey);
+    jQuery('#clientId').val(adminConfig.clientId);
+    jQuery('#moderationMode').val(adminConfig.moderationMode);
+    jQuery('#brandingMode').val(adminConfig.brandingMode);
+    jQuery('#brandingMode').val(adminConfig.brandingMode);    
+  });
+  
+  saveButton.click(function() {
+    persistAdminConfig();
+  });
 }
 
 function filterSubmissions(text) {
@@ -523,4 +588,13 @@ function getVideoHTML(videoId, width, height) {
 	html.push('</embed></object>');
 
 	return html.join('');
+}
+
+function showConfigureStatus(text) {
+  var status = jQuery('#configureStatus');
+  status.html(text);
+}
+
+function clearConfigureStatus() {
+  jQuery('#configureStatus').empty();
 }

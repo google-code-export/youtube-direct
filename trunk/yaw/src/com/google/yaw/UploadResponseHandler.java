@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
 
@@ -55,6 +56,12 @@ public class UploadResponseHandler extends HttpServlet {
       submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);      
       submission.setNotifyEmail(email);
 
+      AdminConfig adminConfig = Util.getAdminConfig();      
+      if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
+        // NO_MOD is set, auto approve all submission
+        submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
+      }
+      
       Util.persistJdo(submission);
       log.fine("...VideoSubmission persisted.");
 

@@ -3,7 +3,7 @@
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 <%@ page import="com.google.yaw.Util"%>
-<%@ page import="com.google.yaw.model.Settings"%>
+<%@ page import="com.google.yaw.model.AdminConfig"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -32,7 +32,7 @@
 <body>
 <div id="authSection">
 <%
-	UserService userService = UserServiceFactory.getUserService();
+  UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
 	if (user != null) {
 %>
@@ -42,7 +42,7 @@
 <script type="text/javascript">
 window.isLoggedIn = true;
 </script> <%
- 	} else {
+   } else {
  %>
 <p>[ <a
 	href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
@@ -50,7 +50,7 @@ window.isLoggedIn = true;
 <script type="text/javascript">
 window.isLoggedIn = false;
 </script> <%
- 	}
+   }
  %>
 </div>
 
@@ -75,26 +75,41 @@ Filter: <input id="searchText" type="text"><br>
 </div>
 	
 <div id="configure">
-<%
-  Settings settings = Util.getSettings();
-  if (settings == null) {
-    settings = new Settings();
-  }
-%>
-  <form action="/SaveSettings" method="POST">
-    <fieldset>
-      <legend>YouTube Account Settings</legend>
-      <div>
-        <label for="developerKey">Developer Key</label>
-        <input type="text" size="40" id="developerKey" name="developerKey" value="<%=settings.getDeveloperKey()%>"/>
-      </div>
-      <div>
-        <label for="clientId">Client ID</label>
-        <input type="text" size="40" id="clientId" name="clientId" value="<%=settings.getClientId()%>"/>
-      </div>
-      <input type="submit"/>
-    </fieldset>
-  </form>
+	
+	<div id="configureStatus" style="font-size: 11px; color: red;">&nbsp;</div>
+	<br><br>
+	
+  <label class="configureLabel">YouTube developer key: </label>
+  <input class="configureInput" id="developerKey" type="text">
+  <br><br>
+  
+  <div class="configureLabel">YouTube client ID </div>
+  <input class="configureInput" id="clientId" type="text">
+  <br><br>
+  
+  <label class="configureLabel">Moderation mode: </label>  
+  <select class="configureInput" id="moderationMode">
+  	<option value="0" selected>ON</option>
+  	<option value="1">OFF</option>
+  </select>
+  <br><br>
+  
+  <label class="configureLabel">Branding mode: </label>  
+  <select class="configureInput" id="brandingMode">
+  	<option value="0" selected>ON</option>
+  	<option value="1">OFF</option>
+  </select>
+  <br><br>
+  
+  <label class="configureLabel">Submission mode: </label>  
+  <select class="configureInput" id="submissionMode">
+  	<option value="0" selected>NEW UPLOAD OR EXISTING</option>
+  	<option value="1">NEW UPLOAD ONLY</option>
+  </select>
+  <br><br>
+  
+  <input id="saveButton" type="button" value="save"/>
+  
 </div>
 </div>
 
