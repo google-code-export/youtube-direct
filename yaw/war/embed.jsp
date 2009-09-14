@@ -1,7 +1,10 @@
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.google.yaw.Authenticator"%>
+<%@ page import="com.google.yaw.Util"%>
 
-<% Authenticator authenticator = new Authenticator(request, response); %>
+<% 
+	Authenticator authenticator = new Authenticator(request, response); 
+%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -55,8 +58,16 @@
 	<div align="center">
 	<br><br><br><br><br>
 	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
+
+	<%		
+		if (!Util.isUploadOnly()) {		
+	%> 	
 	<br><br>
-	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />
+	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />	
+	<%
+		}
+	%> 	
+	
 	</div>
 </div>
 
