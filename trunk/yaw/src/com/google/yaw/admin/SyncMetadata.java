@@ -56,53 +56,66 @@ public class SyncMetadata extends HttpServlet {
       List<VideoSubmission> videoSubmissions = (List<VideoSubmission>) query.execute();
       total = videoSubmissions.size();
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
-
       for (VideoSubmission videoSubmission : videoSubmissions) {
+        Date now = new Date();
+        
+        // Create a new instance each time through the loop, since changing AuthSub tokens for an
+        // existing instance doesn't seem to work.
+        YouTubeApiManager apiManager = new YouTubeApiManager();
+        apiManager.setToken(videoSubmission.getAuthSubToken() + "1");
+        
         String videoId = videoSubmission.getVideoId();
         log.info(String.format("Syncing video id '%s'", videoId));
 
-        Date now = new Date();
-
-        apiManager.setToken(videoSubmission.getAuthSubToken());
         // This will retrieve video info from the Uploads feed of the user who owns the video.
         // This should always be the freshest data, but it relies on the AuthSub token being valid.
         VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
         if (videoEntry == null) {
-          // Fall back on using the video info from the public feed.
-          apiManager.setToken(null);
-          videoEntry = apiManager.getVideoEntry(videoId);
+          // Try an unauthenticated request to the specific user's uploads feed next.
+          apiManager = new YouTubeApiManager();
+          videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
           
           if (videoEntry == null) {
-            // The video must have been deleted...
-            log.warning(String.format("Unable to find YouTube video id '%s'.", videoId));
+            // Fall back on looking for the video in the public feed.
+            apiManager = new YouTubeApiManager();
+            videoEntry = apiManager.getVideoEntry(videoId);
+            
+            if (videoEntry == null) {
+              // The video must have been deleted...
+              log.info(String.format("Unable to find YouTube video id '%s'.", videoId));
+            }
           }
         }
         
         if (videoEntry != null) {
-          String title = videoEntry.getTitle().getPlainText();
-          if (!title.equals(videoSubmission.getVideoTitle())) {
-            log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).", videoSubmission
-                .getVideoTitle(), title));
-            videoSubmission.setVideoTitle(title);
-            videoSubmission.setUpdated(now);
-          }
+          try {
+            String title = videoEntry.getTitle().getPlainText();
+            if (!title.equals(videoSubmission.getVideoTitle())) {
+              log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).", videoSubmission
+                      .getVideoTitle(), title));
+              videoSubmission.setVideoTitle(title);
+              videoSubmission.setUpdated(now);
+            }
 
-          String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
-          if (!description.equals(videoSubmission.getVideoDescription())) {
-            log.info(String.format("Description differs: '%s' (local) vs. '%s' (YT).",
-                videoSubmission.getVideoDescription(), description));
-            videoSubmission.setVideoDescription(description);
-            videoSubmission.setUpdated(now);
-          }
+            String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
+            if (!description.equals(videoSubmission.getVideoDescription())) {
+              log.info(String.format("Description differs: '%s' (local) vs. '%s' (YT).",
+                      videoSubmission.getVideoDescription(), description));
+              videoSubmission.setVideoDescription(description);
+              videoSubmission.setUpdated(now);
+            }
 
-          List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-          String sortedTags = Util.sortedJoin(tags, ",");
-          if (!sortedTags.equals(videoSubmission.getVideoTags())) {
-            log.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).", videoSubmission
-                .getVideoTags(), sortedTags));
-            videoSubmission.setVideoTags(sortedTags);
-            videoSubmission.setUpdated(now);
+            List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
+            String sortedTags = Util.sortedJoin(tags, ",");
+            if (!sortedTags.equals(videoSubmission.getVideoTags())) {
+              log.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).", videoSubmission
+                      .getVideoTags(), sortedTags));
+              videoSubmission.setVideoTags(sortedTags);
+              videoSubmission.setUpdated(now);
+            }
+          } catch (NullPointerException e) {
+            log.info(String.format("Couldn't get metadata for video id '%s'. It may not have been" +
+            		" accepted by YouTube.", videoId));
           }
           
           // Unconditionally update view count info, but don't call setUpdated() since this is an
