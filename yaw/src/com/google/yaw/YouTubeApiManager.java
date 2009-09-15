@@ -40,9 +40,11 @@ import org.xml.sax.SAXException;
 public class YouTubeApiManager {
 
   private YouTubeService service = null;
+  //TODO: These should be CAPS.
   private static final String categoriesCacheKey = "categories";
   private static final String entryUrlFormat = "http://gdata.youtube.com/feeds/api/videos/%s";
-  private static final String uploadsEntryUrlFormat = "http://gdata.youtube.com/feeds/api/users/default/uploads/%s";
+  private static final String uploadsEntryUrlFormat = "http://gdata.youtube.com/feeds/api/" +
+  		"users/%s/uploads/%s";
   private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
   private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
@@ -152,11 +154,21 @@ public class YouTubeApiManager {
   }
   
   public String generateUploadsVideoEntryUrl(String videoId) {
-    return String.format(uploadsEntryUrlFormat, videoId);
+    return generateUploadsVideoEntryUrl("default", videoId);
+  }
+  
+  public String generateUploadsVideoEntryUrl(String username, String videoId) {
+    return String.format(uploadsEntryUrlFormat, username, videoId);
   }
   
   public VideoEntry getUploadsVideoEntry(String videoId) {
     String entryUrl = generateUploadsVideoEntryUrl(videoId);
+    
+    return makeVideoEntryRequest(entryUrl);
+  }
+  
+  public VideoEntry getUploadsVideoEntry(String username, String videoId) {
+    String entryUrl = generateUploadsVideoEntryUrl(username, videoId);
     
     return makeVideoEntryRequest(entryUrl);
   }
@@ -183,10 +195,10 @@ public class YouTubeApiManager {
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
     } catch (ServiceException e) {
-      // This may be thrown if the video is not found, i.e. because it is not
-      // done processing.
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
       // We don't need to log it at WARNING level.
-      log.log(Level.FINE, "", e);
+      //TODO: Propogate AuthenticationExceptions so that the calling code can invalidate the token.
+      log.log(Level.INFO, "", e);
     }
 
     return null;
