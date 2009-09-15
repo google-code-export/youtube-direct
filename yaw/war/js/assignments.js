@@ -167,12 +167,14 @@ function generateEmbedCode() {
   code.push('window.onload = function() {\n');   
   code.push('  var yaw = new Yaw();\n');
   code.push('  yaw.setAssignmentId("' + _yt_selectedRowId + '");\n');
+  code.push('  yaw.setCallToAction("callToActionId");\n');  
   code.push('  var containerWidth = 300;\n');
   code.push('  var containerHeight = 300;\n');
-  code.push('  var yaw = new Yaw();\n');
-  code.push('  yaw.embed("yawContainer", containerWidth, containerHeight);\n');
+  code.push('  yaw.setYawContainer("yawContainer", containerWidth, containerHeight);\n');   
+  code.push('  yaw.ready();\n');
   code.push('};\n');  
   code.push('</script>\n');
+  code.push('<img src"callToActionImage.jpg" id="callToActionId" />\n');  
   code.push('<div id="yawContainer" />');  
   
   code = code.join('');
@@ -183,7 +185,7 @@ function generateEmbedCode() {
   textarea.css('font-size', '11px');
   textarea.css('color', 'black');
   textarea.css('width', '100%');
-  textarea.css('height', '200px');
+  textarea.css('height', '300px');
   textarea.css('border', '0px');
   textarea.css('overflow', 'auto');
   textarea.html(code);
@@ -191,7 +193,7 @@ function generateEmbedCode() {
   var dialogOptions = {};
   dialogOptions.title = 'embed code';
   dialogOptions.width = 430;
-  dialogOptions.height = 250;  
+  dialogOptions.height = 350;  
   
   var div = jQuery('<div/>');
   div.html(textarea);
