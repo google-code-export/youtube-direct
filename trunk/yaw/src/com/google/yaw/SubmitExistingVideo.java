@@ -60,7 +60,7 @@ public class SubmitExistingVideo extends HttpServlet {
       YouTubeApiManager apiManager = new YouTubeApiManager();      
       apiManager.setToken(authSubToken);
       
-      VideoEntry videoEntry = apiManager.getVideoEntry(videoId);      
+      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);      
       
       if (videoEntry == null) {        
         log.info("videoEntry is null");

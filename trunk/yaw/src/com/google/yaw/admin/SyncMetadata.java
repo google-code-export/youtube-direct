@@ -65,15 +65,21 @@ public class SyncMetadata extends HttpServlet {
         Date now = new Date();
 
         apiManager.setToken(videoSubmission.getAuthSubToken());
-        // This will retrieve video info from the Uploads feed of the user who
-        // owns the video.
-        // This should always be the freshest data, but it relies on the AuthSub
-        // token being valid.
-        VideoEntry videoEntry = apiManager.getVideoEntry(videoId);
+        // This will retrieve video info from the Uploads feed of the user who owns the video.
+        // This should always be the freshest data, but it relies on the AuthSub token being valid.
+        VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
         if (videoEntry == null) {
-          // Either the AuthSub token is invalid or the video was deleted.
-          log.warning(String.format("Unable to find YouTube video id '%s'.", videoId));
-        } else {
+          // Fall back on using the video info from the public feed.
+          apiManager.setToken(null);
+          videoEntry = apiManager.getVideoEntry(videoId);
+          
+          if (videoEntry == null) {
+            // The video must have been deleted...
+            log.warning(String.format("Unable to find YouTube video id '%s'.", videoId));
+          }
+        }
+        
+        if (videoEntry != null) {
           String title = videoEntry.getTitle().getPlainText();
           if (!title.equals(videoSubmission.getVideoTitle())) {
             log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).", videoSubmission
