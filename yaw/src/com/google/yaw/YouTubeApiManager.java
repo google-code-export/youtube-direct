@@ -23,6 +23,7 @@ import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.yaw.model.AdminConfig;
 
@@ -40,7 +41,8 @@ public class YouTubeApiManager {
 
   private YouTubeService service = null;
   private static final String categoriesCacheKey = "categories";
-  private static final String entryUrlFormat = "http://gdata.youtube.com/feeds/api/users/default/uploads/%s";
+  private static final String entryUrlFormat = "http://gdata.youtube.com/feeds/api/videos/%s";
+  private static final String uploadsEntryUrlFormat = "http://gdata.youtube.com/feeds/api/users/default/uploads/%s";
   private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
   private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
@@ -82,6 +84,16 @@ public class YouTubeApiManager {
    */
   public void setToken(String token) {
     service.setAuthSubToken(token);
+  }
+  
+  /**
+   * Set the username and password ClientLogin credentials.
+   * @param username A valid YouTube username.
+   * @param password The password associated with that username.
+   * @throws AuthenticationException 
+   */
+  public void setLoginInfo(String username, String password) throws AuthenticationException {
+    service.setUserCredentials(username, password);
   }
   
   /**
@@ -138,19 +150,32 @@ public class YouTubeApiManager {
   public String generateVideoEntryUrl(String videoId) {
     return String.format(entryUrlFormat, videoId);
   }
+  
+  public String generateUploadsVideoEntryUrl(String videoId) {
+    return String.format(uploadsEntryUrlFormat, videoId);
+  }
+  
+  public VideoEntry getUploadsVideoEntry(String videoId) {
+    String entryUrl = generateUploadsVideoEntryUrl(videoId);
+    
+    return makeVideoEntryRequest(entryUrl);
+  }
+  
+  public VideoEntry getVideoEntry(String videoId) {
+    String entryUrl = generateVideoEntryUrl(videoId);
+    
+    return makeVideoEntryRequest(entryUrl);
+  }
 
   /**
    * Gets a YouTube video entry given a specific video id. Constructs the entry
    * URL based on a hardcoded URL prefix, which might need to be changed in the
    * future.
    * 
-   * @param videoId
-   *          The YouTube video id of a given video.
+   * @param entryUrl A URL string representing a GData video entity.
    * @return A VideoEntry representing the video in question, or null.
    */
-  public VideoEntry getVideoEntry(String videoId) {
-    String entryUrl = generateVideoEntryUrl(videoId);
-
+  public VideoEntry makeVideoEntryRequest(String entryUrl) {
     try {
       return service.getEntry(new URL(entryUrl), VideoEntry.class);
     } catch (MalformedURLException e) {

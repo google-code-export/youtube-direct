@@ -231,7 +231,8 @@ function initDataGrid(data) {
 	    if (cellvalue < 0) {
 	      return 'no data';
 	    } else {	      
-	      return cellvalue;
+	      //TODO: Figure out why this needs to be a string value.
+	      return '' + cellvalue;
 	    }
     }
 	});
@@ -424,8 +425,7 @@ function refreshGridUI(entries) {
 function downloadVideo(entryId) {
   var submission = window.getSubmission(entryId);
   var videoId = submission.videoId;
-  var token = submission.authSubToken;
-  document.location.href = '/VideoDownloadRedirect?id=' + videoId + '&token=' + token;   
+  document.location.href = '/VideoDownloadRedirect?id=' + videoId;   
 }
 
 function deleteEntry(entryId) {

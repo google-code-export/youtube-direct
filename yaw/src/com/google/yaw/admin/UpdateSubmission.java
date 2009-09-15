@@ -102,7 +102,7 @@ public class UpdateSubmission extends HttpServlet {
     YouTubeApiManager apiManager = new YouTubeApiManager();
     apiManager.setToken(videoSubmission.getAuthSubToken());
     
-    VideoEntry videoEntry = apiManager.getVideoEntry(videoId);
+    VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
     if (videoEntry == null) {
       log.warning(String.format("Couldn't get video with id '%s' in the uploads feed of user " +
       		"'%s'. Perhaps the AuthSub token has been revoked?", videoId,
