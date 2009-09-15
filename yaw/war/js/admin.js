@@ -46,6 +46,7 @@ function persistAdminConfig() {
   var moderationMode = jQuery('#moderationMode').val();
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
+  var loginInstruction = escape(jQuery('#loginInstruction').val());
   
   var jsonObj = {};
   jsonObj.developerKey = developerKey;
@@ -53,6 +54,7 @@ function persistAdminConfig() {
   jsonObj.moderationMode = moderationMode;
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
+  jsonObj.loginInstruction = loginInstruction;
   
   var ajaxCall = {};
   ajaxCall.type = 'POST';
@@ -78,7 +80,8 @@ function initConfigureTab() {
     jQuery('#clientId').val(adminConfig.clientId);
     jQuery('#moderationMode').val(adminConfig.moderationMode);
     jQuery('#brandingMode').val(adminConfig.brandingMode);
-    jQuery('#brandingMode').val(adminConfig.brandingMode);    
+    jQuery('#brandingMode').val(adminConfig.brandingMode);
+    jQuery('#loginInstruction').val(unescape(adminConfig.loginInstruction));  
   });
   
   saveButton.click(function() {

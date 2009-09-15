@@ -107,10 +107,24 @@ Filter: <input id="searchText" type="text"><br>
   	<option value="1">NEW ONLY</option>
   </select>
   <div class="clear" />
+
+  <label class="configureLabel">Login instruction: </label>
+  
+  <textarea cols="50" rows="10" "configureInput" id="loginInstruction">
+This website is using YouTube AnyWhere to receive video response submission.<br>  
+<br>
+Please login to your YouTube account to proceed. <br>
+<br>
+YouTube API ToS [ <a target="_blank" href="http://code.google.com/apis/youtube/terms.html">read</a> ]    
+  </textarea>  
+	
+	<div class="clear" />	
   
   <label class="configureLabel">&nbsp;</label>
   <input "configureInput" id="saveButton" type="button" value="save"/>
 	<div class="clear" />
+	
+
 	
 </div>
 </div>

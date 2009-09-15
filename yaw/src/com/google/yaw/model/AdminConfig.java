@@ -57,6 +57,10 @@ public class AdminConfig implements Serializable {
   @Persistent
   private int submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();     
   
+  @Expose
+  @Persistent
+  private String loginInstruction;
+  
   public AdminConfig() {
     // fetch default clientId and developerKey from appengine-web.xml system props
     clientId = System.getProperty("com.google.yaw.YTClientID");
@@ -109,6 +113,14 @@ public class AdminConfig implements Serializable {
 
   public int getSubmissionMode() {
     return submissionMode;
+  }
+
+  public void setLoginInstruction(String loginInstruction) {
+    this.loginInstruction = loginInstruction;
+  }
+
+  public String getLoginInstruction() {
+    return loginInstruction;
   }
 
 }

@@ -41,8 +41,8 @@ input {
 	display: none;
 }
 
-#yawInstruction {
-	display: none;
+#loginInstruction {
+	text-align: left;
 	background: white;
 	color; gray;
 	border: 1px solid gray;

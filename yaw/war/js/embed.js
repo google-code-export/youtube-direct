@@ -10,7 +10,7 @@ function init() {
     highlightRequired();        
     
     // hide YouTube instruction
-    jQuery('#yawInstruction').css('display', 'none');    
+    jQuery('#loginInstruction').css('display', 'none');    
     
     // show submissionAsk
     jQuery('#submissionAsk').css('display', 'block');
@@ -27,7 +27,8 @@ function init() {
     
   } else {
     // show YouTube instruction
-    jQuery('#yawInstruction').css('display', 'block');
+    jQuery('#loginInstruction').css('display', 'block');
+    
   }
 }
 

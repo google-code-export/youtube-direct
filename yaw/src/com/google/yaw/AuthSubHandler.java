@@ -59,7 +59,7 @@ public class AuthSubHandler extends HttpServlet {
       userSession.addMetaData("youTubeName", youTubeName);
       UserSessionManager.save(userSession);
 
-      response.sendRedirect(articleUrl);
+      response.sendRedirect(articleUrl + "#return");
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

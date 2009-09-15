@@ -5,6 +5,7 @@ import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.VideoSubmission;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -34,7 +35,11 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());    
     adminConfig.setModerationMode(jsonObj.getModerationMode());
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
-    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());
+    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());            
+    adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
+    
+    log.warning(adminConfig.getLoginInstruction());
+    log.warning(jsonObj.getLoginInstruction());
     
     pm.makePersistent(adminConfig);
     pm.close();
