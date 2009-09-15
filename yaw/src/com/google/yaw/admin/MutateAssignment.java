@@ -48,8 +48,8 @@ public class MutateAssignment extends HttpServlet {
 
         log.fine(String.format("Attempting to persist Assignment with description '%s', "
                 + "category '%s', and status '%s'...", description, category, status));
-        Assignment assignment = new Assignment(description, category, AssignmentStatus
-                .valueOf(status));
+        Assignment assignment = new Assignment(description, category,
+                AssignmentStatus.valueOf(status));
         Util.persistJdo(assignment);
         log.fine(String.format("...Assignment with id '%s' persisted.", assignment.getId()));
 
@@ -61,7 +61,7 @@ public class MutateAssignment extends HttpServlet {
           throw new IllegalArgumentException("'id' parameter is null or empty.");
         }
 
-        Assignment assignment = pm.getObjectById(Assignment.class, id);
+        Assignment assignment = pm.getObjectById(Assignment.class, Long.parseLong(id));
         assignment = pm.detachCopy(assignment);
 
         if (!Util.isNullOrEmpty(description)) {

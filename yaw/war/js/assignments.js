@@ -19,9 +19,9 @@ function loadDataGrid() {
   grid.height = '400px';
   grid.pager = '#pager';
   grid.rownumbers = true;
-  grid.rowNum = 5;
+  grid.rowNum = 20;
   grid.sortname = 'id';
-  grid.sortorder = 'asc';
+  grid.sortorder = 'desc';
   grid.url = '/GetAllAssignments';
   grid.viewrecords = true;
   
@@ -114,6 +114,18 @@ function loadDataGrid() {
   
   var jqGrid = jQuery('#datagrid').jqGrid(grid);
   
+  var pagerParams = {
+    addtext: 'Add',
+    addtitle: 'Add a new assignment.',
+    del: false,
+    edittext: 'Edit',
+    edittitle: 'Edit the currently selected assignment.',
+    refreshtext: 'Refresh',
+    refreshtitle: 'Refresh assignment list.',
+    searchtext: 'Search',
+    searchtitle: 'Search for a specific set of assignments.',
+  };
+  
   var editParams = {
     width: 350,
     closeAfterEdit: true,
@@ -138,9 +150,10 @@ function loadDataGrid() {
     caption: 'Embed Code',
     onClickButton: generateEmbedCode,
     position: 'last',
+    title: 'Generate the embed code for the currently selected assignment.',
   };
   
-  jqGrid.navGrid('#pager', {del: false}, editParams, addParams, deleteParams, searchParams,
+  jqGrid.navGrid('#pager', pagerParams, editParams, addParams, deleteParams, searchParams,
 		  viewParams).navButtonAdd('#pager', codeParams);
 }
 

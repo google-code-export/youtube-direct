@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class GetOptionsHTML extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetOptionsHTML.class.getName());
+  private static final String DEFAULT_CATEGORY = "News";
+  private static final String DEFAULT_STATUS = "ACTIVE";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -31,12 +33,22 @@ public class GetOptionsHTML extends HttpServlet {
       if (type.equals("category")) {
         // This request is for valid YouTube category codes.
         for (String category : YouTubeApiManager.getCategoryCodes()) {
-          selectHTML.append(String.format("<option value='%s'>%s</option>", category, category));
+          if (category.equals(DEFAULT_CATEGORY)) {
+            selectHTML.append(String.format("<option value='%s' selected='selected'>%s</option>",
+                    category, category));
+          } else {
+            selectHTML.append(String.format("<option value='%s'>%s</option>", category, category));
+          }
         }
       } else if (type.equals("status")) {
         // This request is for valid Assignment status values.
         for (String status : Assignment.getAssignmentStatusNames()) {
-          selectHTML.append(String.format("<option value='%s'>%s</option>", status, status));
+          if (status.equals(DEFAULT_STATUS)) {
+            selectHTML.append(String.format("<option value='%s' selected='selected'>%s</option>",
+                    status, status));
+          } else {
+            selectHTML.append(String.format("<option value='%s'>%s</option>", status, status));
+          }
         }
       } else {
         throw new IllegalArgumentException(String.format("'%s' is not a valid value for parameter"
