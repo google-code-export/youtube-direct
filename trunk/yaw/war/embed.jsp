@@ -1,9 +1,11 @@
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.google.yaw.Authenticator"%>
 <%@ page import="com.google.yaw.Util"%>
-
+<%@ page import="com.google.yaw.model.AdminConfig"%>
+<%@ page import="java.net.URLDecoder"%>
 <% 
 	Authenticator authenticator = new Authenticator(request, response); 
+	AdminConfig adminConfig = Util.getAdminConfig();			
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -22,6 +24,7 @@
 <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
 
 <script type="text/javascript" src="/js/embed.js"></script>
+
 </head>
 
 <body>
@@ -34,7 +37,7 @@
 [ <a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';">login</a> ] 
 </div> 
 <script type="text/javascript">
-	window.isLoggedIn = false;
+	window.isLoggedIn = false;	
 </script>
 <%
 	} else {
@@ -56,14 +59,8 @@
 <span id="youTubeLogo"><img src="youtube.gif"</span>
 
 <div align="center">
-<div id="yawInstruction" >
-<p align="left">
-This website is using YouTube AnyWhere to receive video response submission.<br>  
-<br>
-Please login to your YouTube account to proceed. <br>
-<br>
-YouTube API ToS [ <a target="_blank" href="http://code.google.com/apis/youtube/terms.html">read</a> ]
-</p> 
+<div id="loginInstruction" >
+<%=URLDecoder.decode(adminConfig.getLoginInstruction(), "UTF-8") %>
 </div>
 </div>
 
