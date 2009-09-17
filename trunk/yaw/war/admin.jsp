@@ -87,6 +87,14 @@ Filter: <input id="searchText" type="text"><br>
   <input class="configureInput" id="clientId" type="text">
   <div class="clear" />
   
+  <label class="configureLabel">YouTube account name: </label>
+  <input class="configureInput" id="youTubeUsername" type="text">
+  <div class="clear" />
+  
+  <label class="configureLabel">YouTube password: </label>
+  <input class="configureInput" id="youTubePassword" type="password">
+  <div class="clear" />
+  
   <label class="configureLabel">Moderation mode: </label>  
   <select class="configureInput" id="moderationMode">
   	<option value="0" selected>ON</option>

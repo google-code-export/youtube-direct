@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,8 +39,7 @@ public class SyncMetadata extends HttpServlet {
     // The total number of videos in the datastore.
     int total = 0;
 
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-    PersistenceManager pm = pmf.getPersistenceManager();
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
 
     try {
       log.info("Starting sync operation...");

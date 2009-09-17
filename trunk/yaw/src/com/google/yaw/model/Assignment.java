@@ -46,6 +46,10 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private String category = null;
+  
+  @Persistent
+  @Expose
+  private String playlistId = "";
 
   @Persistent
   private Date created;
@@ -190,8 +194,17 @@ public class Assignment implements Serializable {
   public Long getId() {
     return id;
   }
+  
+  public String getPlaylistId() {
+    return playlistId;
+  }
+  
+  public void setPlaylistId(String playlistId) {
+    this.playlistId = playlistId;
+  }
 
   @SuppressWarnings("unchecked")
+  //TODO: This should probably be calculated periodically and persisted instead of dynamically.
   public int getSubmissionCount() {
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();

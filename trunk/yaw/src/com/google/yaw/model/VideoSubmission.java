@@ -87,6 +87,10 @@ public class VideoSubmission implements Serializable {
   @Expose
   @Persistent
   private long viewCount;
+  
+  @Expose
+  @Persistent
+  private boolean isInPlaylist = false;
 
   @Expose
   @Persistent
@@ -343,5 +347,13 @@ public class VideoSubmission implements Serializable {
   
   public void setViewCount(long viewCount) {
     this.viewCount = viewCount;
+  }
+  
+  public boolean getIsInPlaylist() {
+    return isInPlaylist;
+  }
+  
+  public void setIsInPlaylist(boolean isInPlaylist) {
+    this.isInPlaylist = isInPlaylist;
   }
 }

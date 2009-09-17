@@ -28,6 +28,14 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String clientId;
+  
+  @Expose
+  @Persistent
+  private String youTubeUsername;
+  
+  @Expose
+  @Persistent
+  private String youTubePassword;
 
   @Expose
   @Persistent
@@ -62,9 +70,11 @@ public class AdminConfig implements Serializable {
   private String loginInstruction;
   
   public AdminConfig() {
-    // fetch default clientId and developerKey from appengine-web.xml system props
+    // Fetch default values from appengine-web.xml system props
     clientId = System.getProperty("com.google.yaw.YTClientID");
     developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
+    youTubeUsername = System.getProperty("com.google.yaw.YTUsername");
+    youTubePassword = System.getProperty("com.google.yaw.YTPassword");
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
@@ -96,6 +106,22 @@ public class AdminConfig implements Serializable {
 
   public void setClientId(String clientId) {
     this.clientId = clientId;
+  }
+  
+  public String getYouTubeUsername() {
+    return youTubeUsername;
+  }
+  
+  public void setYouTubeUsername(String youTubeUsername) {
+    this.youTubeUsername = youTubeUsername;
+  }
+  
+  public String getYouTubePassword() {
+    return youTubePassword;
+  }
+  
+  public void setYouTubePassword(String youTubePassword) {
+    this.youTubePassword = youTubePassword;
   }
 
   public void setModerationMode(int moderationMode) {

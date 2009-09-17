@@ -69,6 +69,8 @@ public class GetAllAssignments extends HttpServlet {
         value = assignment.getCategory().toLowerCase();
       } else if (searchColumn.equals("status")) {
         value = assignment.getStatus().toString().toLowerCase();
+      } else if (searchColumn.equals("playlistId")) {
+        value = assignment.getPlaylistId().toString().toLowerCase();
       } else {
         throw new IllegalArgumentException(String.format("'%s' is not a valid value for "
                 + "parameter 'searchField'.", searchColumn));
@@ -214,6 +216,7 @@ public class GetAllAssignments extends HttpServlet {
       String category = assignment.getCategory();
       String status = assignment.getStatus().toString();
       String submissionCount = Integer.toString(assignment.getSubmissionCount());
+      String playlistId = assignment.getPlaylistId();
 
       JSONObject row = new JSONObject();
       // Each row needs a unique id in addition to the user-defined "id"
@@ -228,6 +231,7 @@ public class GetAllAssignments extends HttpServlet {
       data.add(category);
       data.add(status);
       data.add(submissionCount);
+      data.add(playlistId);
       row.put("cell", data);
 
       rows.put(row);

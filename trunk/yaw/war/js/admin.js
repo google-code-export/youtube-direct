@@ -42,7 +42,9 @@ function getAdminConfig(callback) {
 
 function persistAdminConfig() {
   var developerKey = jQuery('#developerKey').val();   
-  var clientId = jQuery('#clientId').val();  
+  var clientId = jQuery('#clientId').val();
+  var youTubeUsername = jQuery('#youTubeUsername').val();
+  var youTubePassword = jQuery('#youTubePassword').val();
   var moderationMode = jQuery('#moderationMode').val();
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
@@ -51,6 +53,8 @@ function persistAdminConfig() {
   var jsonObj = {};
   jsonObj.developerKey = developerKey;
   jsonObj.clientId = clientId;
+  jsonObj.youTubeUsername = youTubeUsername;
+  jsonObj.youTubePassword = youTubePassword;
   jsonObj.moderationMode = moderationMode;
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
@@ -78,6 +82,8 @@ function initConfigureTab() {
   getAdminConfig(function(adminConfig) {
     jQuery('#developerKey').val(adminConfig.developerKey);
     jQuery('#clientId').val(adminConfig.clientId);
+    jQuery('#youTubeUsername').val(adminConfig.youTubeUsername);
+    jQuery('#youTubePassword').val(adminConfig.youTubePassword);
     jQuery('#moderationMode').val(adminConfig.moderationMode);
     jQuery('#brandingMode').val(adminConfig.brandingMode);
     jQuery('#brandingMode').val(adminConfig.brandingMode);
