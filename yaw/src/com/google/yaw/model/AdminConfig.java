@@ -36,6 +36,10 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String youTubePassword;
+  
+  @Expose
+  @Persistent
+  private String defaultTag;
 
   @Expose
   @Persistent
@@ -75,6 +79,8 @@ public class AdminConfig implements Serializable {
     developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
     youTubeUsername = System.getProperty("com.google.yaw.YTUsername");
     youTubePassword = System.getProperty("com.google.yaw.YTPassword");
+    
+    defaultTag = "";
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
@@ -122,6 +128,14 @@ public class AdminConfig implements Serializable {
   
   public void setYouTubePassword(String youTubePassword) {
     this.youTubePassword = youTubePassword;
+  }
+  
+  public String getDefaultTag() {
+    return defaultTag;
+  }
+  
+  public void setDefaultTag(String defaultTag) {
+    this.defaultTag = defaultTag;
   }
 
   public void setModerationMode(int moderationMode) {
