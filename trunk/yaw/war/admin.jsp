@@ -95,6 +95,10 @@ Filter: <input id="searchText" type="text"><br>
   <input class="configureInput" id="youTubePassword" type="password">
   <div class="clear" />
   
+  <label class="configureLabel">Default YouTube Tag: </label>
+  <input class="configureInput" id="defaultTag" type="text">
+  <div class="clear" />
+  
   <label class="configureLabel">Moderation mode: </label>  
   <select class="configureInput" id="moderationMode">
   	<option value="0" selected>ON</option>
