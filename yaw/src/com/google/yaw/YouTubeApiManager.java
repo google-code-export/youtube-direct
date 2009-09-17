@@ -20,7 +20,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.appengine.api.memcache.stdimpl.GCacheFactory;
 import com.google.gdata.client.youtube.YouTubeService;
+import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.youtube.FormUploadToken;
+import com.google.gdata.data.youtube.PlaylistEntry;
+import com.google.gdata.data.youtube.PlaylistFeed;
+import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.AuthenticationException;
@@ -45,6 +49,10 @@ public class YouTubeApiManager {
   private static final String entryUrlFormat = "http://gdata.youtube.com/feeds/api/videos/%s";
   private static final String uploadsEntryUrlFormat = "http://gdata.youtube.com/feeds/api/" +
   		"users/%s/uploads/%s";
+  private static final String playlistEntryUrlFormat = "http://gdata.youtube.com/feeds/api/" +
+  		"playlists/%s";
+  private static final String playlistFeed = "http://gdata.youtube.com/feeds/api/users/default/" +
+  		"playlists";
   private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
   private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
@@ -197,10 +205,70 @@ public class YouTubeApiManager {
     } catch (ServiceException e) {
       // This may be thrown if the video is not found, i.e. because it is not done processing.
       // We don't need to log it at WARNING level.
-      //TODO: Propogate AuthenticationExceptions so that the calling code can invalidate the token.
+      //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
       log.log(Level.INFO, "", e);
     }
 
+    log.info(String.format("Couldn't get video entry from %s.", entryUrl));
+    return null;
+  }
+  
+  public boolean insertVideoIntoPlaylist(String playlistId, String videoId) {
+    VideoEntry videoEntry = getVideoEntry(videoId);
+    
+    if (videoEntry != null) {
+      PlaylistEntry playlistEntry = new PlaylistEntry(videoEntry);
+      
+      //TODO: Check to make sure video isn't already in playlist?
+      
+      try {
+        service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
+        
+        log.info(String.format("Inserted video id '%s' into playlist id '%s'.", videoId,
+                playlistId));
+        
+        return true;
+      } catch (MalformedURLException e) {
+        log.log(Level.WARNING, "", e);
+      } catch (IOException e) {
+        log.log(Level.WARNING, "", e);
+      } catch (ServiceException e) {
+        // This may be thrown if the video is not found, i.e. because it is not done processing.
+        // We don't need to log it at WARNING level.
+        //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
+        log.log(Level.WARNING, "", e);
+      }
+    }
+    
+    return false;
+  }
+  
+  public String getPlaylistFeedUrl(String playlistId) {
+    return String.format(playlistEntryUrlFormat, playlistId);
+  }
+  
+  public String createPlaylist(String title, String description) {
+    PlaylistLinkEntry newEntry = new PlaylistLinkEntry();
+    newEntry.setTitle(new PlainTextConstruct(title));
+    newEntry.setSummary(new PlainTextConstruct(description));
+
+    try {
+      PlaylistLinkEntry createdEntry = service.insert(new URL(playlistFeed), newEntry);
+      String id = createdEntry.getPlaylistId();
+
+      log.info(String.format("Created new playlist with id '%s'.", id));      
+      return id;
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
+      // We don't need to log it at WARNING level.
+      //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
+      log.log(Level.WARNING, "", e);
+    }
+    
     return null;
   }
 

@@ -31,6 +31,15 @@
     <servlet-name>InsightDownloadRedirect</servlet-name>
     <url-pattern>/InsightDownloadRedirect</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UpdatePlaylists</servlet-name>
+    <servlet-class>com.google.yaw.admin.UpdatePlaylists</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePlaylists</servlet-name>
+    <url-pattern>/UpdatePlaylists</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>VideoDownloadRedirect</servlet-name>

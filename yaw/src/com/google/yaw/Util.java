@@ -129,6 +129,20 @@ public class Util {
       log.log(Level.WARNING, "", e);
     }
   }
+  
+  public static Assignment getAssignmentById(long id) {
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    
+    try {
+      Assignment assignment = pm.getObjectById(Assignment.class, id);
+      return pm.detachCopy(assignment);
+    } catch (JDOObjectNotFoundException e) {
+      log.log(Level.WARNING, "", e);
+      return null;
+    } finally {
+      pm.close();
+    }
+  }
 
   /**
    * Retrieves an Assignment from the datastore given its id.
@@ -139,19 +153,11 @@ public class Util {
    *         invalid.
    */
   public static Assignment getAssignmentById(String id) {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    
     try {
-      Assignment assignment = pm.getObjectById(Assignment.class, Long.parseLong(id));
-      return pm.detachCopy(assignment);
-    } catch (JDOObjectNotFoundException e) {
-      log.log(Level.WARNING, "", e);
-      return null;
+      return getAssignmentById(Long.parseLong(id));
     } catch (NumberFormatException e) {
       log.log(Level.WARNING, "", e);
       return null;
-    } finally {
-      pm.close();
     }
   }
   

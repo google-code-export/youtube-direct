@@ -98,9 +98,17 @@ function loadDataGrid() {
   grid.colModel.push({
     name: 'submissionCount',
     index: 'submissionCount',
-    width: 100,
+    width: 60,
     search: false,
     sortable: false,
+  });
+  
+  grid.colNames.push('Playlist ID');
+  grid.colModel.push({
+    name: 'playlistId', 
+    index: 'playlistId', 
+    width: 70,
+    searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
   });
   
   grid.loadError = function(xhr, status, error) {
@@ -108,8 +116,8 @@ function loadDataGrid() {
   };
   
   grid.beforeSelectRow = function(rowId) {
-	_yt_selectedRowId = rowId;
-	return true;
+    _yt_selectedRowId = rowId;
+    return true;
   };
   
   var jqGrid = jQuery('#datagrid').jqGrid(grid);
