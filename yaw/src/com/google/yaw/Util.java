@@ -172,7 +172,6 @@ public class Util {
       List<AdminConfig> adminConfigs = (List<AdminConfig>) query.execute();
       
       if (adminConfigs.size() > 0) {
-        log.info("Retrieved saved admin config from datastore.");
         adminConfig = pm.detachCopy(adminConfigs.get(0));
       } else {        
         log.info("No admin config found in datastore.  Creating a new one.");
