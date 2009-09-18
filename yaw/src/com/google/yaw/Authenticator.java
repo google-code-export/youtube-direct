@@ -2,6 +2,7 @@ package com.google.yaw;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.util.logging.Logger;
 
@@ -99,8 +100,6 @@ public class Authenticator {
 
   public boolean isLoggedIn() {
     boolean isLoggedIn = false;
-
-    //String authSubToken = userSession.getAuthSubToken();
     String authSubToken = userSession.getMetaData("authSubToken");
 
     if (authSubToken != null && isTokenValid(authSubToken)) {
@@ -115,9 +114,16 @@ public class Authenticator {
   }
 
   public String getLogInUrl() {
-    //String articleUrl = userSession.getArticleUrl();
+    String loginUrl = null;
     String articleUrl = userSession.getMetaData("articleUrl");
-
+    
+    try {
+      articleUrl = URLEncoder.encode(articleUrl, "UTF-8");
+      log.info(articleUrl);
+    } catch (Exception e) {      
+      e.printStackTrace();
+    }    
+    
     StringBuffer nextUrl = new StringBuffer();
     nextUrl.append(request.getScheme());
     nextUrl.append("://");
@@ -128,8 +134,10 @@ public class Authenticator {
     nextUrl.append(AUTHSUB_HANDLER);
     nextUrl.append("?articleUrl=");
     nextUrl.append(articleUrl);
-
-    return AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
+    
+    loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
+    
+    return loginUrl;
   }
 
   public String getLogOutUrl() {
