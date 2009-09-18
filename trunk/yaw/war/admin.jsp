@@ -122,13 +122,7 @@ Filter: <input id="searchText" type="text"><br>
 
   <label class="configureLabel">Login instruction: </label>
   
-  <textarea cols="50" rows="10" "configureInput" id="loginInstruction">
-This website is using YouTube AnyWhere to receive video response submission.<br>  
-<br>
-Please login to your YouTube account to proceed. <br>
-<br>
-YouTube API ToS [ <a target="_blank" href="http://code.google.com/apis/youtube/terms.html">read</a> ]    
-  </textarea>  
+  <textarea cols="50" rows="10" "configureInput" id="loginInstruction"></textarea>  
 	
 	<div class="clear" />	
   

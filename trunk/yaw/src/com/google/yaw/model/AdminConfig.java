@@ -78,9 +78,8 @@ public class AdminConfig implements Serializable {
     clientId = System.getProperty("com.google.yaw.YTClientID");
     developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
     youTubeUsername = System.getProperty("com.google.yaw.YTUsername");
-    youTubePassword = System.getProperty("com.google.yaw.YTPassword");
-    
-    defaultTag = "";
+    youTubePassword = System.getProperty("com.google.yaw.YTPassword");    
+    defaultTag = System.getProperty("com.google.yaw.BrandingTag");
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
@@ -92,6 +91,8 @@ public class AdminConfig implements Serializable {
       "to%20proceed.%20%3Cbr%3E%0A%3Cbr%3E%0AYouTube%20API%20ToS%20%5B%20%3Ca%20target%3D%" + 
       "22_blank%22%20href%3D%22http%3A//code.google.com/apis/youtube/terms.html%22%3E" +
       "read%3C/a%3E%20%5D%20%20";
+    
+    setUpdated(new Date());
   }
   
   public Long getId() {
@@ -168,6 +169,14 @@ public class AdminConfig implements Serializable {
 
   public String getLoginInstruction() {
     return loginInstruction;
+  }
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
+  }
+
+  public Date getUpdated() {
+    return updated;
   }
 
 }

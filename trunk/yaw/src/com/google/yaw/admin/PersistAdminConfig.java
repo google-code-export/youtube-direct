@@ -6,6 +6,7 @@ import com.google.yaw.model.VideoSubmission;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -40,6 +41,7 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
     adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());            
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
+    adminConfig.setUpdated(new Date());
     
     log.warning(adminConfig.getLoginInstruction());
     log.warning(jsonObj.getLoginInstruction());
