@@ -22,6 +22,9 @@
 		<!-- Default YouTube account information -->
     <property name="com.google.yaw.YTDeveloperKey" value=""/>
     <property name="com.google.yaw.YTClientID" value=""/>
+    <property name="com.google.yaw.YTUsername" value=""/>
+    <property name="com.google.yaw.YTPassword" value=""/>
+    <property name="com.google.yaw.BrandingTag" value=""/>
     
 	</system-properties>
 	
