@@ -11,7 +11,6 @@
 <head>
 <title>Admin</title>
 
-
 <link type="text/css"
 	href="/css/ext/themes/redmond/jquery-ui-1.7.2.custom.css"
 	rel="stylesheet" />
@@ -24,8 +23,10 @@
 	src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
-<script type="text/javascript" src="/js/admin.js"></script>
 
+<script type="text/javascript" src="/js/admin.js"></script>
+<script type="text/javascript" src="/js/submission.js"></script>
+<script type="text/javascript" src="/js/configuration.js"></script>
 
 </head>
 
@@ -55,84 +56,23 @@ window.isLoggedIn = false;
 </div>
 
 <div id="tabs">
-<ul>
-	<li><a href="#moderate">Submissions</a></li>
-	<li><a href="#assignments">Assignments</a></li>
-	<li><a href="#configure">Configure</a></li>
-</ul>
-
-<div id="moderate"><br>
-Filter: <input id="searchText" type="text"><br>
-<br>
-<div id="status" style="font-size: 11px; color: red;">&nbsp;</div>
-<br>
-<table id="datagrid" class="scroll" cellpadding="0" cellspacing="0"></table>
-<div id="pager" class="scroll" style="text-align: center;"></div>
-</div>
-
-<div id="assignments"><iframe src="assignments.jsp" frameborder=0
-	width="1200" height="600"></iframe>
-</div>
+	<ul>
+		<li><a href="#submissions">Submissions</a></li>
+		<li><a href="#assignments">Assignments</a></li>
+		<li><a href="#configuration">Configuration</a></li>
+	</ul>
 	
-<div id="configure">
+	<div id="submissions">
+		<%@include file="/submission.jsp" %> 
+	</div>
 	
-	<div id="configureStatus" style="font-size: 11px; color: red;">&nbsp;</div>
-	<br><br>
-	
-  <label class="configureLabel">YouTube developer key: </label>
-  <input class="configureInput" id="developerKey" type="text">
-  <div class="clear" />
-  
-  <label class="configureLabel">YouTube client ID: </label>
-  <input class="configureInput" id="clientId" type="text">
-  <div class="clear" />
-  
-  <label class="configureLabel">YouTube account name: </label>
-  <input class="configureInput" id="youTubeUsername" type="text">
-  <div class="clear" />
-  
-  <label class="configureLabel">YouTube password: </label>
-  <input class="configureInput" id="youTubePassword" type="password">
-  <div class="clear" />
-  
-  <label class="configureLabel">Default YouTube Tag: </label>
-  <input class="configureInput" id="defaultTag" type="text">
-  <div class="clear" />
-  
-  <label class="configureLabel">Moderation mode: </label>  
-  <select class="configureInput" id="moderationMode">
-  	<option value="0" selected>ON</option>
-  	<option value="1">OFF</option>
-  </select>
-  <div class="clear" />
-  
-  <label class="configureLabel">Branding mode: </label>  
-  <select class="configureInput" id="brandingMode">
-  	<option value="0" selected>ON</option>
-  	<option value="1">OFF</option>
-  </select>
-  <div class="clear" />
-  
-  <label class="configureLabel">Submission mode: </label>  
-  <select class="configureInput" id="submissionMode">
-  	<option value="0" selected>NEW OR EXISTING</option>
-  	<option value="1">NEW ONLY</option>
-  </select>
-  <div class="clear" />
-
-  <label class="configureLabel">Login instruction: </label>
-  
-  <textarea cols="50" rows="10" "configureInput" id="loginInstruction"></textarea>  
-	
-	<div class="clear" />	
-  
-  <label class="configureLabel">&nbsp;</label>
-  <input "configureInput" id="saveButton" type="button" value="save"/>
-	<div class="clear" />
-	
-
-	
-</div>
+	<div id="assignments"><iframe src="assignments.jsp" frameborder=0
+		width="1200" height="600"></iframe>
+	</div>
+		
+	<div id="configuration">
+		<%@include file="/configuration.jsp" %> 
+	</div>
 </div>
 
 </body>
