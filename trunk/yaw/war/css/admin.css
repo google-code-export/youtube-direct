@@ -17,7 +17,11 @@ body {
 }
 
 #tabs {
-	width: 1200px;
+	width: 100%;
+}
+
+#controlPanel {
+	text-align: center;	
 }
 
 #assignments {
@@ -25,14 +29,19 @@ body {
 	text-align: left;
 }
 
-#moderate {
+#submissions {
+	height: 700px;
+	text-align: left;
+}
+
+#configuration {
 	height: 600px;
 	text-align: left;
 }
 
-#configure {
-	height: 600px;
-	text-align: left;
+.controlButton {
+	border: 1px solid lightGray;
+	color: gray;
 }
 
 .configureLabel,.configureInput {
@@ -50,4 +59,12 @@ body {
 
 div.clear {
 	clear: left;
+}
+
+#filters a {
+	font-size: 16px;
+	color: black;	
+	width: 80px;
+	text-decoration: none;
+	padding: 3px;
 }
