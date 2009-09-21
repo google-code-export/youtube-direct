@@ -20,4 +20,4 @@
 			<input id="nextPage" value="next >>" type="button"/>
 		</div>
 	</div>
-	<table id="submissionsGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
+	<table id="submissionGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
