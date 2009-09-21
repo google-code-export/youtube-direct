@@ -7,14 +7,18 @@
 		<a id="unreviewedLabel" href="javascript:void(0);" class="filter">UNREVIEWED</a>&nbsp;&nbsp;
 		<a id="approvedLabel" href="javascript:void(0);" class="filter">APPROVED</a>&nbsp;&nbsp;
 		<a id="rejectedLabel" href="javascript:void(0);" class="filter">REJECTED</a>&nbsp;&nbsp;
+		<br>
+		<br>
+		<br>
+		Filter: <input id="searchText" type="text">
+		<br>
+		<br>		
 	</div>
 	
 	<br>
-	Filter: <input id="searchText" type="text">
-	<br>
 	<div id="controlPanel">
 		<div id="navPanel">
-			<input id="refreshGrid" value="refresh" type="button"/>	
+			<input id="refreshGrid" value="refresh" type="button"/>				
 			<input id="prevPage" value="<< prev" type="button"/>
 			<span id="pageIndex"></span>	
 			<input id="nextPage" value="next >>" type="button"/>

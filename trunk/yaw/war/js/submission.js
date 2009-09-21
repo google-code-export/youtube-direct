@@ -17,9 +17,7 @@ admin.sub.init = function() {
   admin.sub.initSubmissionFilters();  
   
   jQuery('#searchText').keyup( function() {
-    var text = jQuery(this).val();
-    var matches = admin.sub.filterSubmissions(text);
-    admin.sub.refreshGridUI(matches);
+    admin.sub.filterByText();
   });   
 };
 
@@ -107,10 +105,12 @@ admin.sub.hasPrevPage = function() {
   }
 };
 
-admin.sub.filterSubmissions = function(text) {
+admin.sub.filterByText = function() {
 
-  var ret = [];
+  var matches = [];
 
+  var text = jQuery('#searchText').val();   
+  
   var regex = new RegExp(text, 'i');
 
   for ( var i = 0; i < admin.sub.submissions.length; i++) {
@@ -121,11 +121,11 @@ admin.sub.filterSubmissions = function(text) {
     var tags = entry.videoTags;
 
     if (regex.test(title) || regex.test(description) || regex.test(tags)) {
-      ret.push(entry);
+      matches.push(entry);
     }
   }
-
-  return ret;
+  
+  admin.sub.refreshGridUI(matches); 
 }
 
 admin.sub.initSubmissionGrid = function() {
@@ -422,13 +422,22 @@ admin.sub.getVideoId = function(rowid) {
   return jQuery("#submissionGrid").getCell(rowid, 2);
 };
 
+admin.sub.getTotalPage = function() {
+  return Math.ceil(admin.sub.total / admin.sub.pageSize);
+};
+
 admin.sub.refreshGrid = function() {
   admin.sub.getAllSubmissions( function(entries) {
     
     admin.sub.refreshGridUI(entries);
-    jQuery('#submissionGrid').setCaption('Submissions (' + admin.sub.total + ')');    
-        
-    jQuery('#pageIndex').html('page ' + admin.sub.pageIndex);
+    jQuery('#submissionGrid').setCaption('Submissions (' + admin.sub.total + ')');      
+    
+    var totalPage = admin.sub.getTotalPage();
+    if (totalPage > 0) {
+      jQuery('#pageIndex').html('Page ' + admin.sub.pageIndex + ' of ' + totalPage);
+    } else {
+      jQuery('#pageIndex').html('0 result');
+    }
     
     if (admin.sub.hasNextPage()) {
       jQuery('#nextPage').get(0).disabled = false;
