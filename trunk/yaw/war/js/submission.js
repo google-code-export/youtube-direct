@@ -60,9 +60,12 @@ admin.sub.setupLabelFilter = function(label) {
         admin.sub.filterType = 3;
         break;        
     }    
-    
+          
     // reset the page index to first page
+    admin.sub.pageIndex = 1;
+    
     admin.sub.refreshGrid();                    
+    
   });     
   
   if (label.html() == "ALL") {
