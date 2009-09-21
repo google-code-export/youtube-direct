@@ -63,8 +63,21 @@ div.clear {
 
 #filters a {
 	font-size: 16px;
+	font-weight: bold;
 	color: black;	
 	width: 80px;
 	text-decoration: none;
+	padding: 3px;
+}
+
+#submissionStatus {
+	background: red;
+	color: white;	
+	padding: 3px;
+}
+
+#configurationStatus {
+	background: red;
+	color: white;	
 	padding: 3px;
 }

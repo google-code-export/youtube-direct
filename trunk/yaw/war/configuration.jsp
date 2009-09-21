@@ -1,4 +1,4 @@
-	<div id="configureStatus" style="font-size: 11px; color: red;">&nbsp;</div>
+	<span id="configurationStatus"></span>
 	<br><br>
 	
   <label class="configureLabel">YouTube developer key: </label>

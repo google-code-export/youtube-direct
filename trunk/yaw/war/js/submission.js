@@ -569,9 +569,9 @@ admin.sub.updateSubmission = function(entry) {
 admin.sub.showLoading = function(status, text) {
   if (status) {
     text = text || 'loading ...';
-    jQuery('#status').html(text);
+    jQuery('#submissionStatus').html(text).show();
   } else {
-    jQuery('#status').html('&nbsp;');
+    jQuery('#submissionStatus').html('').hide();
   }
 };
 
