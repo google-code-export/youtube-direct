@@ -43,9 +43,6 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
     adminConfig.setUpdated(new Date());
     
-    log.warning(adminConfig.getLoginInstruction());
-    log.warning(jsonObj.getLoginInstruction());
-    
     pm.makePersistent(adminConfig);
     pm.close();
     

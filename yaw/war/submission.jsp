@@ -1,5 +1,5 @@
+	<span id="submissionStatus"></span>
 	<br>
-	<div id="status" style="font-size: 11px; color: red;">&nbsp;</div>
 	<br>
 	
 	<div id="filters">

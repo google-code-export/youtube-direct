@@ -1,10 +1,14 @@
-var _yt_selectedRowId = null;
+// namespace protection against collision
+var admin = admin || {};
+admin.assign = admin.assign || {};
 
-jQuery(document).ready( function() {
-  loadDataGrid();
-});
+admin.assign._yt_selectedRowId = null;
 
-function loadDataGrid() {
+admin.assign.init = function() {
+  admin.assign.loadDataGrid();
+};
+
+admin.assign.loadDataGrid = function() {
   var grid = {};
   
   grid.autoencode = true;
@@ -112,11 +116,11 @@ function loadDataGrid() {
   });
   
   grid.loadError = function(xhr, status, error) {
-    showMessage('Could not load data: ' + xhr.statusText);
+    admin.assign.showMessage('Could not load data: ' + xhr.statusText);
   };
   
   grid.beforeSelectRow = function(rowId) {
-    _yt_selectedRowId = rowId;
+    admin.assign._yt_selectedRowId = rowId;
     return true;
   };
   
@@ -156,29 +160,29 @@ function loadDataGrid() {
   
   var codeParams = {
     caption: 'Embed Code',
-    onClickButton: generateEmbedCode,
+    onClickButton: admin.assign.generateEmbedCode,
     position: 'last',
     title: 'Generate the embed code for the currently selected assignment.',
   };
   
   jqGrid.navGrid('#pager', pagerParams, editParams, addParams, deleteParams, searchParams,
 		  viewParams).navButtonAdd('#pager', codeParams);
-}
+};
 
-function getSelfUrl() {
+admin.assign.getSelfUrl = function() {
   var protocol = document.location.protocol;
   var host = document.location.host;
   return protocol + '//' + host;
-}
+};
 
-function generateEmbedCode() {
+admin.assign.generateEmbedCode = function() {
   
-  if (_yt_selectedRowId == null) {
-    showMessage("Please select an assignment's row first.");
+  if (admin.assign._yt_selectedRowId == null) {
+    admin.assign.showMessage("Please select an assignment's row first.");
     return;
   } 
   
-  var selfUrl = getSelfUrl();
+  var selfUrl = admin.assign.getSelfUrl();
   
   jQuery.ui.dialog.defaults.bgiframe = true;
   
@@ -187,7 +191,7 @@ function generateEmbedCode() {
   code.push('<script type="text/javascript">\n');
   code.push('window.onload = function() {\n');   
   code.push('  var yaw = new Yaw();\n');
-  code.push('  yaw.setAssignmentId("' + _yt_selectedRowId + '");\n');
+  code.push('  yaw.setAssignmentId("' + admin.assign._yt_selectedRowId + '");\n');
   code.push('  yaw.setCallToAction("callToActionId");\n');  
   code.push('  var containerWidth = 300;\n');
   code.push('  var containerHeight = 300;\n');
@@ -222,12 +226,12 @@ function generateEmbedCode() {
   div.dialog(dialogOptions);   
   
   textarea.select();
-}
+};
 
-function showMessage(text) {
+admin.assign.showMessage = function(text) {
   if (typeof console != 'undefined') {
     console.log(text);
   }
   
   jQuery('#message').html(text);
-}
+};

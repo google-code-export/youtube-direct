@@ -26,6 +26,7 @@
 
 <script type="text/javascript" src="/js/admin.js"></script>
 <script type="text/javascript" src="/js/submission.js"></script>
+<script type="text/javascript" src="/js/assignments.js"></script>
 <script type="text/javascript" src="/js/configuration.js"></script>
 
 </head>
@@ -66,8 +67,8 @@ window.isLoggedIn = false;
 		<%@include file="/submission.jsp" %> 
 	</div>
 	
-	<div id="assignments"><iframe src="assignments.jsp" frameborder=0
-		width="1200" height="600"></iframe>
+	<div id="assignments">
+		<%@include file="/assignments.jsp" %> 
 	</div>
 		
 	<div id="configuration">

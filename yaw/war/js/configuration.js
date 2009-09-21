@@ -32,10 +32,10 @@ admin.config.getAdminConfig = function(callback) {
     console.log('Get admin config incurred an error: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
-    admin.config.clearConfigureStatus();
+    admin.config.showLoading(false);
     callback(res);
   };
-  admin.config.showConfigureStatus("loading ...");
+  admin.config.showLoading(true, "loading ...");
   jQuery.ajax(ajaxCall);     
 };
 
@@ -68,20 +68,20 @@ admin.config.persistAdminConfig = function() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    admin.config.showConfigureStatus('Persist admin config incurred an error: ' + xhr.statusText);
+    admin.config.showLoading(true, 'Persist admin config incurred an error: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
-    admin.config.showConfigureStatus('saved!');
+    admin.config.showLoading(false);
   };
-  admin.config.showConfigureStatus('saving ...');
+  admin.config.showLoading(true, 'saving ...');
   jQuery.ajax(ajaxCall);    
 };
 
-admin.config.showConfigureStatus = function(text) {
-  var status = jQuery('#configureStatus');
-  status.html(text);
-};
-
-admin.config.clearConfigureStatus = function() {
-  jQuery('#configureStatus').empty();
+admin.config.showLoading = function(status, text) {
+  if (status) {
+    text = text || 'loading ...';
+    jQuery('#configurationStatus').html(text).show();
+  } else {
+    jQuery('#configurationStatus').html('').hide();
+  }
 };
