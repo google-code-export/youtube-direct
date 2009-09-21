@@ -3,11 +3,12 @@ var admin = admin || {};
 admin.sub = admin.sub || {};
 
 // user current setting
-admin.sub.submissions = [];
+admin.sub.total = 0; // size of current working set
+admin.sub.submissions = []; // current working set
 admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
-admin.sub.pageIndex = 1;
-admin.sub.pageSize = 3;
+admin.sub.pageIndex = 1; 
+admin.sub.pageSize = 3; 
 admin.sub.filterType = 3; // ALL
 
 admin.sub.init = function() {
@@ -143,22 +144,22 @@ admin.sub.initSubmissionGrid = function() {
     
     var previewButton = '<input type="button" onclick=admin.sub.previewVideo("' + 
         entryId + '") value="preview" />';
-    jQuery('#submissionsGrid').setCell(rowid, 'preview', previewButton);
+    jQuery('#submissionGrid').setCell(rowid, 'preview', previewButton);
     
     var deleteButton = '<input type="button" onclick=admin.sub.deleteEntry("' + 
         entryId + '") value="delete" />';
-    jQuery('#submissionsGrid').setCell(rowid, 'delete', deleteButton);
+    jQuery('#submissionGrid').setCell(rowid, 'delete', deleteButton);
 
     var downloadButton = '<input type="button" onclick=admin.sub.downloadVideo("' + 
         entryId + '") value="download" />';
-    jQuery('#submissionsGrid').setCell(rowid, 'download', downloadButton);    
+    jQuery('#submissionGrid').setCell(rowid, 'download', downloadButton);    
     
     if (rowdata['viewCount'] > 0) {
       var viewCountLink = 
           '<a title="Click to download YouTube Insight data." href="/InsightDownloadRedirect?id=' + 
           rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + 
           rowdata['viewCount'] + '</a>';
-      jQuery('#submissionsGrid').setCell(rowid, 'viewCount', viewCountLink);
+      jQuery('#submissionGrid').setCell(rowid, 'viewCount', viewCountLink);
     }   
 
   };
@@ -181,7 +182,7 @@ admin.sub.initSubmissionGrid = function() {
     admin.sub.refreshGrid();
   };
   
-  jQuery('#submissionsGrid').jqGrid(grid);
+  jQuery('#submissionGrid').jqGrid(grid);
   
   // populate data;
   admin.sub.refreshGrid();
@@ -411,17 +412,19 @@ admin.sub.getSubmission = function(id) {
 };
 
 admin.sub.getEntryId = function(rowid) {
-  return jQuery("#submissionsGrid").getCell(rowid, 0);
+  return jQuery("#submissionGrid").getCell(rowid, 0);
 };
 
 admin.sub.getVideoId = function(rowid) {
-  return jQuery("#submissionsGrid").getCell(rowid, 2);
+  return jQuery("#submissionGrid").getCell(rowid, 2);
 };
 
 admin.sub.refreshGrid = function() {
   admin.sub.getAllSubmissions( function(entries) {
-    admin.sub.refreshGridUI(entries);
     
+    admin.sub.refreshGridUI(entries);
+    jQuery('#submissionGrid').setCaption('Submissions (' + admin.sub.total + ')');    
+        
     jQuery('#pageIndex').html('page ' + admin.sub.pageIndex);
     
     if (admin.sub.hasNextPage()) {
@@ -441,7 +444,7 @@ admin.sub.refreshGrid = function() {
 };
 
 admin.sub.refreshGridUI = function(entries) {
-  var jqGrid = jQuery('#submissionsGrid').clearGridData();
+  var jqGrid = jQuery('#submissionGrid').clearGridData();
   for ( var i = 0; i < entries.length; i++) {
     jqGrid.addRowData(i + 1, entries[i]);
   }
