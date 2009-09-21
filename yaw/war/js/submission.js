@@ -176,6 +176,8 @@ admin.sub.initSubmissionGrid = function() {
   grid.onSortCol = function(colType, columnIndex, sortOrder) {    
     admin.sub.sortBy = colType;
     admin.sub.sortOrder = sortOrder;
+    admin.sub.pageIndex = 1;
+    admin.sub.refreshGrid();
   };
   
   jQuery('#submissionsGrid').jqGrid(grid);
