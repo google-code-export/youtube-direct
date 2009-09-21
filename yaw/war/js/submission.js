@@ -2,6 +2,7 @@
 var admin = admin || {};
 admin.sub = admin.sub || {};
 
+// user current setting
 admin.sub.submissions = [];
 admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
@@ -238,7 +239,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'articleUrl',
     width : 50,
     formatter : function(cellvalue, options, rowObject) {
-      return '<a alt="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
+      return '<a title="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
     },
     align : 'center',
     sorttype : 'string'
@@ -369,6 +370,7 @@ admin.sub.initGridModels = function(grid) {
     width : 75,
     align : 'center',
     sortable : false,
+    hidden: true,
     sorttype : 'string'
   });  
   

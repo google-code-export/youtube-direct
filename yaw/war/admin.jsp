@@ -32,28 +32,29 @@
 </head>
 
 <body>
+<div align="center">
 <div id="authSection">
-<%
-  UserService userService = UserServiceFactory.getUserService();
-	User user = userService.getCurrentUser();
-	if (user != null) {
-%>
-<p><b><%=user.getNickname()%></b> [ <a
-	href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a>
-]</p>
-<script type="text/javascript">
-window.isLoggedIn = true;
-</script> <%
-   } else {
- %>
-<p>[ <a
-	href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
-]</p>
-<script type="text/javascript">
-window.isLoggedIn = false;
-</script> <%
-   }
- %>
+	<%
+	  UserService userService = UserServiceFactory.getUserService();
+		User user = userService.getCurrentUser();
+		if (user != null) {
+	%>
+	<p><b><%=user.getNickname()%></b> [ <a
+		href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a>
+	]</p>
+	<script type="text/javascript">
+	window.isLoggedIn = true;
+	</script> <%
+	   } else {
+	 %>
+	<p>[ <a
+		href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
+	]</p>
+	<script type="text/javascript">
+	window.isLoggedIn = false;
+	</script> <%
+	   }
+	 %>
 </div>
 
 <div id="tabs">
@@ -75,6 +76,6 @@ window.isLoggedIn = false;
 		<%@include file="/configuration.jsp" %> 
 	</div>
 </div>
-
+</div>
 </body>
 </html>
