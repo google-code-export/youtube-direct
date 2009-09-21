@@ -2,7 +2,6 @@ body {
 	margin: 10px;
 	font-size: 11px;
 	font-family: arial;
-	text-align: center;
 }
 
 #videoDisplay {
@@ -20,12 +19,8 @@ body {
 	width: 100%;
 }
 
-#controlPanel {
-	text-align: center;	
-}
-
 #assignments {
-	height: 600px;
+	height: 700px;
 	text-align: left;
 }
 
@@ -35,8 +30,13 @@ body {
 }
 
 #configuration {
-	height: 600px;
+	height: 700px;
 	text-align: left;
+}
+
+
+#controlPanel {
+	text-align: center;	
 }
 
 .controlButton {
@@ -64,7 +64,8 @@ div.clear {
 #filters a {
 	font-size: 16px;
 	font-weight: bold;
-	color: black;	
+	color: black;
+	background: white;	
 	width: 80px;
 	text-decoration: none;
 	padding: 3px;
