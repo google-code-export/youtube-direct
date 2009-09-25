@@ -159,7 +159,7 @@ admin.sub.initSubmissionGrid = function() {
     
     if (rowdata['viewCount'] > 0) {
       var viewCountLink = 
-          '<a title="Click to download YouTube Insight data." href="/InsightDownloadRedirect?id=' + 
+          '<a title="Click to download YouTube Insight data." href="/admin/InsightDownloadRedirect?id=' + 
           rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + 
           rowdata['viewCount'] + '</a>';
       jQuery('#submissionGrid').setCell(rowid, 'viewCount', viewCountLink);
@@ -465,12 +465,12 @@ admin.sub.refreshGridUI = function(entries) {
 admin.sub.downloadVideo = function(entryId) {
   var submission = admin.sub.getSubmission(entryId);
   var videoId = submission.videoId;
-  document.location.href = '/VideoDownloadRedirect?id=' + videoId;   
+  document.location.href = '/admin/VideoDownloadRedirect?id=' + videoId;   
 };
 
 admin.sub.deleteEntry = function(entryId) {
   if (confirm("Delete this entry?")) {
-    var url = '/DeleteSubmission?id=' + entryId;
+    var url = '/admin/DeleteSubmission?id=' + entryId;
     var ajaxCall = {};
     ajaxCall.cache = false;
     ajaxCall.type = 'GET';
@@ -548,7 +548,7 @@ admin.sub.stringToStatus = function(str) {
 };
 
 admin.sub.getAllSubmissions =function(callback) {
-  var url = '/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
+  var url = '/admin/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
       '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize + 
       '&filtertype=' + admin.sub.filterType;
   console.log(url);
@@ -569,7 +569,7 @@ admin.sub.getAllSubmissions =function(callback) {
 };
 
 admin.sub.updateSubmission = function(entry) {
-  var url = '/UpdateSubmission';
+  var url = '/admin/UpdateSubmission';
   var ajaxCall = {};
   ajaxCall.type = 'POST';
   ajaxCall.url = url;

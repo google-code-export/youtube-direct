@@ -16,9 +16,9 @@ admin.assign.loadDataGrid = function() {
   grid.caption = 'Assignments';
   grid.cellEdit = true;
   grid.cellsubmit = 'remote';
-  grid.cellurl = '/MutateAssignment';
+  grid.cellurl = '/admin/MutateAssignment';
   grid.datatype = 'json';
-  grid.editurl = '/MutateAssignment';
+  grid.editurl = '/admin/MutateAssignment';
   grid.gridview = true; // This prevents us from using the afterInsertRow event callback.
   grid.height = '400px';
   grid.pager = '#pager';
@@ -26,7 +26,7 @@ admin.assign.loadDataGrid = function() {
   grid.rowNum = 20;
   grid.sortname = 'id';
   grid.sortorder = 'desc';
-  grid.url = '/GetAllAssignments';
+  grid.url = '/admin/GetAllAssignments';
   grid.viewrecords = true;
   
   grid.colNames = [];
@@ -66,16 +66,16 @@ admin.assign.loadDataGrid = function() {
     index: 'category', 
     width: 100,
     editable: true,
-    cellurl: '/MutateAssignment',
+    cellurl: '/admin/MutateAssignment',
     edittype: 'select',
     editoptions: {
-      dataUrl: '/GetOptionsHTML?type=category',
+      dataUrl: '/admin/GetOptionsHTML?type=category',
     },
     editrules: {required: true},
     stype: 'select',
     searchoptions: {
       sopt: ['eq', 'ne'],
-      dataUrl: '/GetOptionsHTML?type=category',
+      dataUrl: '/admin/GetOptionsHTML?type=category',
     },
   });
   
@@ -85,16 +85,16 @@ admin.assign.loadDataGrid = function() {
     index: 'status', 
     width: 80,      
     editable: true,
-    cellurl: '/MutateAssignment',
+    cellurl: '/admin/MutateAssignment',
     edittype: 'select',
     editoptions: {
-      dataUrl: '/GetOptionsHTML?type=status',
+      dataUrl: '/admin/GetOptionsHTML?type=status',
     },
     editrules: {required: true},
     stype: 'select',
     searchoptions: {
       sopt: ['eq', 'ne'],
-      dataUrl: '/GetOptionsHTML?type=status',
+      dataUrl: '/admin/GetOptionsHTML?type=status',
     },
   });
   
