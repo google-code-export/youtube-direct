@@ -28,6 +28,7 @@
 </head>
 
 <body>
+<span id="youTubeLogo"><img src="youtube.gif"/></span>
 <div align="center">
 <div id="main">
 <%
@@ -55,8 +56,6 @@
 <br>
 
 <span id="processing"></span>
-
-<span id="youTubeLogo"><img src="youtube.gif"</span>
 
 <div align="center">
 <div id="loginInstruction" >
@@ -143,7 +142,12 @@
 		<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
 	</div>
 	</form>
-
+  <div id="youTubeTOS">
+    By clicking 'Upload,' you certify that you own all rights to the content or that you are
+    authorized by the owner to make the content publicly available on YouTube, and that it otherwise
+    complies with the YouTube Terms of Service located at
+    <a href="http://www.youtube.com/t/terms">http://www.youtube.com/t/terms</a>.
+  </div>
 </div>
 </div>
 </div>
