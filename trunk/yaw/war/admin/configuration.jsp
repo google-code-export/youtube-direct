@@ -52,9 +52,30 @@
   <div class="clear" />
 
   <label class="configureLabel">Login instruction: </label>
-  <textarea cols="50" rows="10" "configureInput" id="loginInstruction"></textarea>
+  <textarea cols="50" rows="10" id="loginInstruction"></textarea>
 	<div class="clear" />	
+	
+	<label class="configureLabel">Moderation Email: </label>
+  <input type="checkbox" id="moderationEmail">Email User Upon Moderation</input>
+  <div class="clear" />
+  
+  <div class="clear" id="moderationEmailTextDiv">
+    <div class="clear">
+      <label class="configureLabel">'From' Email Address: </label>
+      <input class="configureInput" id="fromAddress" type="text">
+      <span class="tip">Will appear as sender in moderation emails. Address must be an AppEngine admin.</span>
+    </div>
+      
+    <div class="clear">
+      <label class="configureLabel">Approval Email Text: </label>
+      <textarea cols="50" rows="10" id="approvalEmailText"></textarea>
+    </div>
+    
+    <div class="clear">
+      <label class="configureLabel">Rejection Email Text: </label>
+      <textarea cols="50" rows="10" id="rejectionEmailText"></textarea>
+    </div>
+  </div>
   
   <label class="configureLabel">&nbsp;</label>
   <input "configureInput" id="saveButton" type="button" value="save"/>
-	<div class="clear" />

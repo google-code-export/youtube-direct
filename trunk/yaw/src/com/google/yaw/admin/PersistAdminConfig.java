@@ -40,6 +40,10 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
     adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());            
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
+    adminConfig.setModerationEmail(jsonObj.isModerationEmail());
+    adminConfig.setFromAddress(jsonObj.getFromAddress());
+    adminConfig.setApprovalEmailText(jsonObj.getApprovalEmailText());
+    adminConfig.setRejectionEmailText(jsonObj.getRejectionEmailText());
     adminConfig.setUpdated(new Date());
     
     pm.makePersistent(adminConfig);

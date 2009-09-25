@@ -14,13 +14,38 @@ admin.config.init = function() {
     jQuery('#linkBackText').val(data.linkBackText);
     jQuery('#moderationMode').val(data.moderationMode);
     jQuery('#brandingMode').val(data.brandingMode);
-    jQuery('#loginInstruction').val(unescape(data.loginInstruction));  
+    jQuery('#loginInstruction').val(unescape(data.loginInstruction));
+    jQuery('#fromAddress').val(data.fromAddress);
+    jQuery('#approvalEmailText').val(unescape(data.approvalEmailText));
+    jQuery('#rejectionEmailText').val(unescape(data.rejectionEmailText));
+    
+    if (data.moderationEmail) {
+      jQuery('#moderationEmail').attr('checked', true);
+      admin.config.toggleModerationEmailTextDiv(true);
+    } else {
+      jQuery('#moderationEmail').attr('checked', false);
+      admin.config.toggleModerationEmailTextDiv(false);
+    }
   });
   
   saveButton.click(function() {
     admin.config.persistAdminConfig();
   });
+  
+  jQuery('#moderationEmail').click(function() {
+    admin.config.toggleModerationEmailTextDiv();
+  });
 };
+
+admin.config.toggleModerationEmailTextDiv = function(isVisible) {
+  if (isVisible == null) {
+    isVisible = jQuery('#moderationEmailTextDiv').css("display") == "none" ? true : false;
+  }
+  
+  var displayStyle = isVisible ? 'inline' : 'none';
+  
+  jQuery('#moderationEmailTextDiv').css("display", displayStyle);
+}
 
 admin.config.getAdminConfig = function(callback) {
   var ajaxCall = {};
@@ -50,6 +75,10 @@ admin.config.persistAdminConfig = function() {
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
   var loginInstruction = escape(jQuery('#loginInstruction').val());
+  var moderationEmail = jQuery('#moderationEmail').attr('checked');
+  var fromAddress = jQuery('#fromAddress').val();
+  var approvalEmailText = escape(jQuery('#approvalEmailText').val());
+  var rejectionEmailText = escape(jQuery('#rejectionEmailText').val());
   
   var jsonObj = {};
   jsonObj.developerKey = developerKey;
@@ -62,6 +91,10 @@ admin.config.persistAdminConfig = function() {
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
   jsonObj.loginInstruction = loginInstruction;
+  jsonObj.moderationEmail = moderationEmail;
+  jsonObj.fromAddress = fromAddress;
+  jsonObj.approvalEmailText = approvalEmailText;
+  jsonObj.rejectionEmailText = rejectionEmailText;
   
   var ajaxCall = {};
   ajaxCall.type = 'POST';

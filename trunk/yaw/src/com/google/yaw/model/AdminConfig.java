@@ -74,15 +74,36 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String linkBackText;
+
+  @Expose
+  @Persistent
+  private boolean moderationEmail;
+  
+  @Expose
+  @Persistent
+  private String approvalEmailText;
+
+  @Expose
+  @Persistent
+  private String rejectionEmailText;
+
+  @Expose
+  @Persistent
+  private String fromAddress;
   
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
-    clientId = System.getProperty("com.google.yaw.YTClientID");
-    developerKey = System.getProperty("com.google.yaw.YTDeveloperKey");
-    youTubeUsername = System.getProperty("com.google.yaw.YTUsername");
-    youTubePassword = System.getProperty("com.google.yaw.YTPassword");    
-    defaultTag = System.getProperty("com.google.yaw.BrandingTag");
-    linkBackText = System.getProperty("com.google.yaw.LinkBackText");
+    clientId = System.getProperty("com.google.yaw.YTClientID", "");
+    developerKey = System.getProperty("com.google.yaw.YTDeveloperKey", "");
+    youTubeUsername = System.getProperty("com.google.yaw.YTUsername", "");
+    youTubePassword = System.getProperty("com.google.yaw.YTPassword", "");    
+    defaultTag = System.getProperty("com.google.yaw.BrandingTag", "");
+    linkBackText = System.getProperty("com.google.yaw.LinkBackText", "");
+    
+    moderationEmail = false;
+    approvalEmailText = System.getProperty("com.google.yaw.ApprovalEmailText", "");
+    rejectionEmailText = System.getProperty("com.google.yaw.RejectionEmailText", "");
+    fromAddress = System.getProperty("com.google.yaw.FromAddress", "");
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
@@ -93,6 +114,38 @@ public class AdminConfig implements Serializable {
     		"<a href='terms.html' target='_blank'>terms of service</a>.";
     
     setUpdated(new Date());
+  }
+  
+  public String getFromAddress() {
+    return fromAddress;
+  }
+
+  public void setFromAddress(String fromAddress) {
+    this.fromAddress = fromAddress;
+  }
+  
+  public String getRejectionEmailText() {
+    return rejectionEmailText;
+  }
+
+  public void setRejectionEmailText(String rejectionEmailText) {
+    this.rejectionEmailText = rejectionEmailText;
+  }
+  
+  public boolean isModerationEmail() {
+    return moderationEmail;
+  }
+
+  public void setModerationEmail(boolean moderationEmail) {
+    this.moderationEmail = moderationEmail;
+  }
+
+  public String getApprovalEmailText() {
+    return approvalEmailText;
+  }
+
+  public void setApprovalEmailText(String moderationEmailText) {
+    this.approvalEmailText = moderationEmailText;
   }
   
   public String getLinkBackText() {

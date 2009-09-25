@@ -73,59 +73,58 @@ public class Util {
       pm.close();
     }
   }
-
-  public static void sendNotifyEmail(VideoSubmission entry, ModerationStatus newStatus,
-          String sender, String additionalNote) {
+  
+  public static void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
     try {
-      String subject;
-      StringBuffer body = new StringBuffer();
-
-      String notifyEmail = entry.getNotifyEmail();
-      if (Util.isNullOrEmpty(notifyEmail)) {
-        throw new IllegalArgumentException(String.format("No notifyEmail found for " +
-        		"VideoSubmission id '%s'.", entry.getId()));
+      String toAddress = entry.getNotifyEmail();
+      if (Util.isNullOrEmpty(toAddress)) {
+        throw new IllegalArgumentException("No destination email address in VideoSubmission.");
       }
       
-      String videoUrl = entry.getVideoUrl();
-      String articleUrl = entry.getArticleUrl();
-
-      switch (newStatus) {
-        //TODO: Make these strings configuration options.
+      AdminConfig adminConfig = Util.getAdminConfig();
+      
+      String body;
+      switch (status) {
         case APPROVED:
-          subject = "your submission is approved.";
-          body.append(String.format("your video response (%s) has been approved for this article %s.",
-                  videoUrl, articleUrl));
-          break;
-
+          body = adminConfig.getApprovalEmailText();
+        break;
+        
         case REJECTED:
-          subject = "your submission is rejected.";
-          body.append(String.format("your video response (%s) has been rejected for this article %s.",
-                  videoUrl, articleUrl));
-          break;
-
+          body = adminConfig.getRejectionEmailText();
+        break;
+        
         default:
-          throw new IllegalArgumentException(String.format("Unexpected ModerationStatus: %s.",
-                  newStatus.toString()));
+          throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
+                status.toString()));
       }
-
-      if (!Util.isNullOrEmpty(additionalNote)) {
-        body.append(additionalNote);
+      if (Util.isNullOrEmpty(body)) {
+        throw new IllegalArgumentException("No email body found in configuration.");
       }
-
+      
+      String fromAddress = adminConfig.getFromAddress();
+      if (Util.isNullOrEmpty(fromAddress)) {
+        throw new IllegalArgumentException("No from address found in configuration.");
+      }
+      
+      body = body.replace("ARTICLE_URL", entry.getArticleUrl());
+      body = body.replace("YOUTUBE_URL", entry.getVideoUrl());
+      
       Properties props = new Properties();
       Session session = Session.getDefaultInstance(props, null);
-
       Message msg = new MimeMessage(session);
-      msg.setFrom(new InternetAddress(sender, sender));
-      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(notifyEmail, notifyEmail));
-      msg.setSubject(subject);
-      msg.setText(body.toString());
+      msg.setFrom(new InternetAddress(fromAddress, fromAddress));
+      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
+      msg.setSubject("Your Recent Video Submission");
+      msg.setText(body);
       Transport.send(msg);
-    } catch (IllegalArgumentException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (MessagingException e) {
+      
+      log.info(String.format("Sent %s notification email for status %s", toAddress,
+              status.toString()));
+    } catch(IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
     } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (MessagingException e) {
       log.log(Level.WARNING, "", e);
     }
   }
