@@ -11,8 +11,8 @@ admin.config.init = function() {
     jQuery('#youTubeUsername').val(data.youTubeUsername);
     jQuery('#youTubePassword').val(data.youTubePassword);
     jQuery('#defaultTag').val(data.defaultTag);
+    jQuery('#linkBackText').val(data.linkBackText);
     jQuery('#moderationMode').val(data.moderationMode);
-    jQuery('#brandingMode').val(data.brandingMode);
     jQuery('#brandingMode').val(data.brandingMode);
     jQuery('#loginInstruction').val(unescape(data.loginInstruction));  
   });
@@ -45,6 +45,7 @@ admin.config.persistAdminConfig = function() {
   var youTubeUsername = jQuery('#youTubeUsername').val();
   var youTubePassword = jQuery('#youTubePassword').val();
   var defaultTag = jQuery('#defaultTag').val();
+  var linkBackText = jQuery('#linkBackText').val();
   var moderationMode = jQuery('#moderationMode').val();
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
@@ -56,6 +57,7 @@ admin.config.persistAdminConfig = function() {
   jsonObj.youTubeUsername = youTubeUsername;
   jsonObj.youTubePassword = youTubePassword;
   jsonObj.defaultTag = defaultTag;
+  jsonObj.linkBackText = linkBackText;
   jsonObj.moderationMode = moderationMode;
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
