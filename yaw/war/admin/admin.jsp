@@ -65,15 +65,15 @@
 	</ul>
 	
 	<div id="submissions">
-		<%@include file="/submission.jsp" %> 
+		<%@include file="submission.jsp" %> 
 	</div>
 	
 	<div id="assignments">
-		<%@include file="/assignments.jsp" %> 
+		<%@include file="assignments.jsp" %> 
 	</div>
 		
 	<div id="configuration">
-		<%@include file="/configuration.jsp" %> 
+		<%@include file="configuration.jsp" %> 
 	</div>
 </div>
 </div>

@@ -25,7 +25,7 @@ admin.config.init = function() {
 admin.config.getAdminConfig = function(callback) {
   var ajaxCall = {};
   ajaxCall.type = 'GET';
-  ajaxCall.url = '/GetAdminConfig';
+  ajaxCall.url = '/admin/GetAdminConfig';
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
@@ -65,7 +65,7 @@ admin.config.persistAdminConfig = function() {
   
   var ajaxCall = {};
   ajaxCall.type = 'POST';
-  ajaxCall.url = '/PersistAdminConfig';
+  ajaxCall.url = '/admin/PersistAdminConfig';
   ajaxCall.data = JSON.stringify(jsonObj);
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
