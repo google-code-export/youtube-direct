@@ -2,10 +2,8 @@ package com.google.yaw.admin;
 
 import com.google.yaw.Util;
 import com.google.yaw.model.AdminConfig;
-import com.google.yaw.model.VideoSubmission;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -37,6 +35,7 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setYouTubeUsername(jsonObj.getYouTubeUsername());
     adminConfig.setYouTubePassword(jsonObj.getYouTubePassword());
     adminConfig.setDefaultTag(jsonObj.getDefaultTag());
+    adminConfig.setLinkBackText(jsonObj.getLinkBackText());
     adminConfig.setModerationMode(jsonObj.getModerationMode());
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
     adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());            

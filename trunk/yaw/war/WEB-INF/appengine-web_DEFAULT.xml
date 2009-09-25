@@ -4,7 +4,7 @@
 
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
 	<application></application>
-	<version>3</version>
+	<version>1</version>
 	
 	<ssl-enabled>true</ssl-enabled>
 	<sessions-enabled>true</sessions-enabled>	
@@ -25,6 +25,7 @@
     <property name="com.google.yaw.YTUsername" value=""/>
     <property name="com.google.yaw.YTPassword" value=""/>
     <property name="com.google.yaw.BrandingTag" value=""/>
+    <property name="com.google.yaw.LinkBackText" value=""/>
     
 	</system-properties>
 	

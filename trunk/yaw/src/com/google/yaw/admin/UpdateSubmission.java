@@ -21,11 +21,14 @@ import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.VideoSubmission;
+import com.google.yaw.model.AdminConfig.BrandingModeType;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import com.google.yaw.model.VideoSubmission.VideoSource;
 
+/**
+ * Servlet responsible for updating submissions, both in the AppEngine datastore and on YouTube.
+ */
 public class UpdateSubmission extends HttpServlet {
-
   private static final Logger log = Logger.getLogger(UpdateSubmission.class.getName());
 
   @SuppressWarnings("cast")
@@ -64,10 +67,12 @@ public class UpdateSubmission extends HttpServlet {
       entry.setUpdated(new Date());
       
       AdminConfig adminConfig = Util.getAdminConfig();
-      if (adminConfig.getBrandingMode() == AdminConfig.BrandingModeType.ON.ordinal() &&
+      //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
+      if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal() &&
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
-        //TODO: Move this to a properties file setting.
-        String prependText = String.format("Uploaded in response to %s", entry.getArticleUrl());
+
+        String prependText = adminConfig.getLinkBackText().replace(
+                "ARTICLE_URL", entry.getArticleUrl());
         
         if (!entry.getVideoDescription().contains(prependText)) {
           // We only want to update the video if the text isn't already there.
@@ -76,7 +81,8 @@ public class UpdateSubmission extends HttpServlet {
       }
       
       // We can only update moderation for videos that were uploaded with our developer key.
-      if (entry.getVideoSource() == VideoSource.NEW_UPLOAD) {
+      if (entry.getVideoSource() == VideoSource.NEW_UPLOAD &&
+              adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
         // Create a new API manager in this step because swapping out credentials in the same
         // instance doesn't work, and we need to use the credentials of the account that owns the
         // developer token used to upload the video.
@@ -106,7 +112,7 @@ public class UpdateSubmission extends HttpServlet {
   
   /**
    * Updates the description of a video, both in the datastore and on YouTube, to prepend the
-   * "branding" text and optionally 
+   * "branding" text and apply a tag.
    * This should be called when a video submission is marked for approval.
    * Note that the VideoSubmission is updated in-memory, but a call to
    * PersistenceManager.makePersistent(VideoSubmission) must be made by the calling code to save
@@ -135,20 +141,28 @@ public class UpdateSubmission extends HttpServlet {
       String currentDescription = videoSubmission.getVideoDescription();
       String newDescription = String.format("%s\n\n%s", prependText, currentDescription);
       
-      String currentTags = videoSubmission.getVideoTags();
-      String[] tagsArray = currentTags.split(",\\s?");
-      ArrayList<String> tagsArrayList = new ArrayList<String>(Arrays.asList(tagsArray));
-      tagsArrayList.add(newTag);
-      String newTags = Util.sortedJoin(tagsArrayList, ",");
+      // If we have a new tag to add, add to the datastore and YouTube entries.
+      if (!Util.isNullOrEmpty(newTag)) {
+        String currentTags = videoSubmission.getVideoTags();
+        String[] tagsArray = currentTags.split(",\\s?");
+        ArrayList<String> tagsArrayList = new ArrayList<String>(Arrays.asList(tagsArray));
+        if (!tagsArrayList.contains(newTag)) {
+          tagsArrayList.add(newTag);
+          String newTags = Util.sortedJoin(tagsArrayList, ",");
+          videoSubmission.setVideoTags(newTags);
+        }
+        
+        YouTubeMediaGroup mg = videoEntry.getOrCreateMediaGroup();
+        // This should work as expected even if the tag already exists; No duplicates will be added.
+        mg.getKeywords().addKeyword(newTag);
+      }
       
-      // Update the datastore entry.
+      // Update the datastore entry's description.
       videoSubmission.setVideoDescription(newDescription);
-      videoSubmission.setVideoTags(newTags);
       
+      // Update the YouTube entry's description.
       videoEntry.getMediaGroup().getDescription().setPlainTextContent(newDescription);
-      YouTubeMediaGroup mg = videoEntry.getOrCreateMediaGroup();
-      // This should work as expected even if the tag already exists; i.e. no duplicates.
-      mg.getKeywords().addKeyword(newTag);
+      
       try {
         // And update the YouTube.com video as well.
         videoEntry.update();

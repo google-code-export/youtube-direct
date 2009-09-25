@@ -3,9 +3,7 @@ package com.google.yaw.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -72,6 +70,10 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String loginInstruction;
+
+  @Expose
+  @Persistent
+  private String linkBackText;
   
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
@@ -80,14 +82,25 @@ public class AdminConfig implements Serializable {
     youTubeUsername = System.getProperty("com.google.yaw.YTUsername");
     youTubePassword = System.getProperty("com.google.yaw.YTPassword");    
     defaultTag = System.getProperty("com.google.yaw.BrandingTag");
+    linkBackText = System.getProperty("com.google.yaw.LinkBackText");
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
     submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
     
-    loginInstruction = "Please login to your YouTube account to submit a video.";
+    loginInstruction = "Please login to your YouTube account to submit a video.<br/><br/>" +
+    		"Use of this tool is governed by the " +
+    		"<a href='terms.html' target='_blank'>terms of service</a>.";
     
     setUpdated(new Date());
+  }
+  
+  public String getLinkBackText() {
+    return linkBackText;
+  }
+
+  public void setLinkBackText(String linkBackText) {
+    this.linkBackText = linkBackText;
   }
   
   public Long getId() {
