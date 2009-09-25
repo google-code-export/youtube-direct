@@ -53,11 +53,14 @@ public class UpdateSubmission extends HttpServlet {
 
       boolean hasEmail = !Util.isNullOrEmpty(entry.getNotifyEmail());
       
+      AdminConfig adminConfig = Util.getAdminConfig();
+      
       boolean isRejectedOrApproved = (currentStatus !=  newStatus) && 
           (newStatus != ModerationStatus.UNREVIEWED);
 
-      if (hasEmail && isRejectedOrApproved) {
-        Util.sendNotifyEmail(entry, newStatus, entry.getNotifyEmail(), null);
+      if (adminConfig.isModerationEmail() && hasEmail && isRejectedOrApproved
+              && currentStatus != newStatus) {
+        Util.sendNotificationEmail(entry, newStatus);
       }
       
       entry.setStatus(jsonObj.getStatus());
@@ -66,7 +69,6 @@ public class UpdateSubmission extends HttpServlet {
       entry.setVideoTags(jsonObj.getVideoTags());
       entry.setUpdated(new Date());
       
-      AdminConfig adminConfig = Util.getAdminConfig();
       //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
       if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal() &&
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
