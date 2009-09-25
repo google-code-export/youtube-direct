@@ -13,6 +13,7 @@ admin.config.init = function() {
     jQuery('#defaultTag').val(data.defaultTag);
     jQuery('#linkBackText').val(data.linkBackText);
     jQuery('#moderationMode').val(data.moderationMode);
+    jQuery('#newSubmissionAddress').val(data.newSubmissionAddress);
     jQuery('#brandingMode').val(data.brandingMode);
     jQuery('#loginInstruction').val(unescape(data.loginInstruction));
     jQuery('#fromAddress').val(data.fromAddress);
@@ -72,6 +73,7 @@ admin.config.persistAdminConfig = function() {
   var defaultTag = jQuery('#defaultTag').val();
   var linkBackText = jQuery('#linkBackText').val();
   var moderationMode = jQuery('#moderationMode').val();
+  var newSubmissionAddress = jQuery('#newSubmissionAddress').val();
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
   var loginInstruction = escape(jQuery('#loginInstruction').val());
@@ -88,6 +90,7 @@ admin.config.persistAdminConfig = function() {
   jsonObj.defaultTag = defaultTag;
   jsonObj.linkBackText = linkBackText;
   jsonObj.moderationMode = moderationMode;
+  jsonObj.newSubmissionAddress = newSubmissionAddress;
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
   jsonObj.loginInstruction = loginInstruction;
