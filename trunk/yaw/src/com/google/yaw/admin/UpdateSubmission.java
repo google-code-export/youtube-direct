@@ -15,12 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
+import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
+import com.google.yaw.model.VideoSubmission.VideoSource;
 
 public class UpdateSubmission extends HttpServlet {
 
@@ -69,7 +71,25 @@ public class UpdateSubmission extends HttpServlet {
         
         if (!entry.getVideoDescription().contains(prependText)) {
           // We only want to update the video if the text isn't already there.
-          UpdateVideoDescription(entry, prependText, adminConfig.getDefaultTag());
+          updateVideoDescription(entry, prependText, adminConfig.getDefaultTag());
+        }
+      }
+      
+      // We can only update moderation for videos that were uploaded with our developer key.
+      if (entry.getVideoSource() == VideoSource.NEW_UPLOAD) {
+        // Create a new API manager in this step because swapping out credentials in the same
+        // instance doesn't work, and we need to use the credentials of the account that owns the
+        // developer token used to upload the video.
+        YouTubeApiManager apiManager = new YouTubeApiManager();
+        // Modifying moderation also requires a ClientLogin token retrieved from a different,
+        // non-YouTube specific, ClientLogin endpoint. This call overrides that default.
+        apiManager.useGoogleAccountAuthService();
+        try {
+          apiManager.setLoginInfo(adminConfig.getYouTubeUsername(),
+                  adminConfig.getYouTubePassword());
+          apiManager.updateModeration(entry.getVideoId(), newStatus == ModerationStatus.APPROVED);
+        } catch (AuthenticationException e) {
+          log.log(Level.WARNING, "", e);
         }
       }
 
@@ -97,7 +117,7 @@ public class UpdateSubmission extends HttpServlet {
    * @return A YouTube API VideoEntry object with the updated description, or null if the video
    * could not be updated.
    */
-  private VideoEntry UpdateVideoDescription(VideoSubmission videoSubmission, String prependText,
+  private VideoEntry updateVideoDescription(VideoSubmission videoSubmission, String prependText,
           String newTag) {
     String videoId = videoSubmission.getVideoId();
     log.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",

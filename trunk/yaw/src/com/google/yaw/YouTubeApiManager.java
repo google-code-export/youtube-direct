@@ -19,11 +19,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.appengine.api.memcache.stdimpl.GCacheFactory;
+import com.google.gdata.client.Service.GDataRequest;
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.PlaylistEntry;
-import com.google.gdata.data.youtube.PlaylistFeed;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
@@ -42,20 +42,40 @@ import org.xml.sax.SAXException;
  * YouTube support.
  */
 public class YouTubeApiManager {
-
   private YouTubeService service = null;
-  //TODO: These should be CAPS.
-  private static final String categoriesCacheKey = "categories";
-  private static final String entryUrlFormat = "http://gdata.youtube.com/feeds/api/videos/%s";
-  private static final String uploadsEntryUrlFormat = "http://gdata.youtube.com/feeds/api/" +
-  		"users/%s/uploads/%s";
-  private static final String playlistEntryUrlFormat = "http://gdata.youtube.com/feeds/api/" +
-  		"playlists/%s";
-  private static final String playlistFeed = "http://gdata.youtube.com/feeds/api/users/default/" +
-  		"playlists";
-  private static final String userEntry = "http://gdata.youtube.com/feeds/api/users/default";
-  private static final String uploadToken = "http://gdata.youtube.com/action/GetUploadToken";
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
+  
+  // CONSTANTS
+  private static final String CATEGORIES_CACHE_KEY = "categories";
+  private static final String ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/videos/%s";
+  private static final String UPLOADS_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
+  		"users/%s/uploads/%s";
+  private static final String PLAYLIST_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
+  		"playlists/%s";
+  private static final String PLAYLIST_FEED_URL = "http://gdata.youtube.com/feeds/api/users/" +
+  		"default/playlists";
+  private static final String USER_ENTRY_URL = "http://gdata.youtube.com/feeds/api/users/default";
+  private static final String UPLOAD_TOKEN_URL = "http://gdata.youtube.com/action/GetUploadToken";
+  private static final String MODERATION_FEED_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/" +
+  		"api/products/default/videos/%s";
+  private static final String UPDATED_ENTRY_ATOM_FORMAT = "<entry xmlns='http://www.w3.org/2005/" +
+  		"Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007'><yt:moderationStatus>%s" +
+  		"</yt:moderationStatus></entry>";
+  private static final String CLIENT_LOGIN_URL_PREFIX = "https://www.google.com";
+  private static final String MODERATION_ACCEPTED = "accetped";
+  private static final String MODERATION_REJECTED = "rejected";
+  
+  /**
+   * YouTubeService has a protected constructor that takes in a URL used for obtaining
+   * authentication tokens. In order to access the moderation feed, we need to use an auth token
+   * requested from the Google Account namespace (instead of the default YouTube namespace), so we
+   * need to use this class to specify a different authentication namespace.
+   */
+  private class YouTubeServiceCustomAuth extends YouTubeService {
+    public YouTubeServiceCustomAuth(String applicationName, String developerId, URL authBaseUrl) {
+      super(applicationName, developerId, authBaseUrl);
+    }
+  }
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -84,6 +104,28 @@ public class YouTubeApiManager {
     }
 
     service = new YouTubeService(clientId);
+  }
+  
+  public void useGoogleAccountAuthService() {
+    AdminConfig admingConfig = Util.getAdminConfig();
+    
+    String clientId = admingConfig.getClientId();
+    String developerKey = admingConfig.getDeveloperKey();        
+    
+    if (Util.isNullOrEmpty(clientId)) {    
+      log.warning("clientId settings property is null or empty.");
+    }
+
+    if (Util.isNullOrEmpty(developerKey)) {
+      log.warning("developerKey settings property is null or empty.");
+    }
+    
+    try {
+      service = new YouTubeServiceCustomAuth(clientId, developerKey,
+              new URL(CLIENT_LOGIN_URL_PREFIX));
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    }
   }
 
   /**
@@ -126,13 +168,46 @@ public class YouTubeApiManager {
    */
   public String getCurrentUsername() throws IOException, ServiceException {
     try {
-      UserProfileEntry profile = service.getEntry(new URL(userEntry), UserProfileEntry.class);
+      UserProfileEntry profile = service.getEntry(new URL(USER_ENTRY_URL), UserProfileEntry.class);
       return profile.getUsername();
     } catch (MalformedURLException e) {
-      log.warning(e.toString());
+      log.log(Level.WARNING, "", e);
     }
 
     return null;
+  }
+  
+  /**
+   * Sets the value for video moderation, which controls whether partner branding shows up on the
+   * video's YouTube.com watch page.
+   * 
+   * This request needs to be made with the authorization of the account that owns the developr
+   * token used to originally upload the video. Also, the video must have at least one developer
+   * tag set at the time it was uploaded.
+   * 
+   * @param videoId The YouTube id of the video to moderate.
+   * @param isApproved true if this video is approved, and false if not.
+   */
+  public void updateModeration(String videoId, boolean isApproved) {
+    String entryUrl = String.format(MODERATION_FEED_ENTRY_URL_FORMAT, videoId);
+    String updatedEntry;
+    if (isApproved) {
+      updatedEntry = String.format(UPDATED_ENTRY_ATOM_FORMAT, MODERATION_ACCEPTED);
+    } else {
+      updatedEntry = String.format(UPDATED_ENTRY_ATOM_FORMAT, MODERATION_REJECTED);
+    }
+    
+    try {
+      GDataRequest request = service.createUpdateRequest(new URL(entryUrl));
+      request.getRequestStream().write(updatedEntry.getBytes());
+      request.execute();
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
   }
 
   /**
@@ -144,7 +219,7 @@ public class YouTubeApiManager {
    */
   public FormUploadToken getFormUploadToken(VideoEntry newEntry) {
     try {
-      URL uploadUrl = new URL(uploadToken);
+      URL uploadUrl = new URL(UPLOAD_TOKEN_URL);
       return  service.getFormUploadToken(uploadUrl, newEntry);
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
@@ -158,7 +233,7 @@ public class YouTubeApiManager {
   }
   
   public String generateVideoEntryUrl(String videoId) {
-    return String.format(entryUrlFormat, videoId);
+    return String.format(ENTRY_URL_FORMAT, videoId);
   }
   
   public String generateUploadsVideoEntryUrl(String videoId) {
@@ -166,7 +241,7 @@ public class YouTubeApiManager {
   }
   
   public String generateUploadsVideoEntryUrl(String username, String videoId) {
-    return String.format(uploadsEntryUrlFormat, username, videoId);
+    return String.format(UPLOADS_URL_FORMAT, username, videoId);
   }
   
   public VideoEntry getUploadsVideoEntry(String videoId) {
@@ -244,7 +319,7 @@ public class YouTubeApiManager {
   }
   
   public String getPlaylistFeedUrl(String playlistId) {
-    return String.format(playlistEntryUrlFormat, playlistId);
+    return String.format(PLAYLIST_ENTRY_URL_FORMAT, playlistId);
   }
   
   public String createPlaylist(String title, String description) {
@@ -253,7 +328,7 @@ public class YouTubeApiManager {
     newEntry.setSummary(new PlainTextConstruct(description));
 
     try {
-      PlaylistLinkEntry createdEntry = service.insert(new URL(playlistFeed), newEntry);
+      PlaylistLinkEntry createdEntry = service.insert(new URL(PLAYLIST_FEED_URL), newEntry);
       String id = createdEntry.getPlaylistId();
 
       log.info(String.format("Created new playlist with id '%s'.", id));      
@@ -281,7 +356,7 @@ public class YouTubeApiManager {
       Map cachedProperties = new HashMap();
       cachedProperties.put(GCacheFactory.EXPIRATION_DELTA, 60 * 60 * 24);
       cache = CacheManager.getInstance().getCacheFactory().createCache(cachedProperties);
-      List<String> cachedCategories = (List<String>) cache.get(categoriesCacheKey);
+      List<String> cachedCategories = (List<String>) cache.get(CATEGORIES_CACHE_KEY);
 
       if (cachedCategories != null) {
         return cachedCategories;
@@ -324,7 +399,7 @@ public class YouTubeApiManager {
       Collections.sort(categories);
 
       if (cache != null) {
-        cache.put(categoriesCacheKey, categories);
+        cache.put(CATEGORIES_CACHE_KEY, categories);
       }
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
