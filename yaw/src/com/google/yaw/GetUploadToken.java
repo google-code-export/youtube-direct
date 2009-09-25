@@ -102,11 +102,8 @@ public class GetUploadToken extends HttpServlet {
       mg.setDescription(new MediaDescription());
       mg.getDescription().setPlainTextContent(description);
 
-      String defaultDeveloperTag = System.getProperty("com.google.yaw.DefaultDeveloperTag");
-      if (!Util.isNullOrEmpty(defaultDeveloperTag)) {
-        mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
-                defaultDeveloperTag));
-      }
+      // TODO: Move this to a config or constant.
+      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, "yaw"));
       
       // Maximum size of a developer tag is 25 characters, and we prepend 2 characters.
       if (assignmentId.length() <= 23) {
