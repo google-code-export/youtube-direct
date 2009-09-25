@@ -85,12 +85,7 @@ public class AdminConfig implements Serializable {
     brandingMode = BrandingModeType.ON.ordinal();
     submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
     
-    loginInstruction = 
-      "This%20website%20is%20using%20YouTube%20AnyWhere%20to%20receive%20video%20response%20" + 
-      "submission.%3Cbr%3E%20%20%0A%3Cbr%3E%0APlease%20login%20to%20your%20YouTube%20account%20" +
-      "to%20proceed.%20%3Cbr%3E%0A%3Cbr%3E%0AYouTube%20API%20ToS%20%5B%20%3Ca%20target%3D%" + 
-      "22_blank%22%20href%3D%22http%3A//code.google.com/apis/youtube/terms.html%22%3E" +
-      "read%3C/a%3E%20%5D%20%20";
+    loginInstruction = "Please login to your YouTube account to submit a video.";
     
     setUpdated(new Date());
   }

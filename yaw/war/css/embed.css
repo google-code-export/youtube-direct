@@ -24,31 +24,41 @@ input {
 }
 
 #youTubeLogo {
-	position: absolute;
-	bottom: 0px;
-	right: 0px;	
+	float: right;
 }
 
 #uploaderMain {
 	display: none;
+	clear: right;
 }
 
 #existingVideoMain {
 	display: none;
+	clear: right;
 }
 
 #submissionAsk {
 	display: none;
+	clear: right;
 }
 
 #loginInstruction {
 	text-align: left;
 	background: white;
-	color; gray;
+	color: gray;
 	border: 1px solid gray;
 	width: 80%;
-	padding: 5px;	
+	padding: 5px;
+	clear: right;
+	margin-top: 25px;
 }
+
+#youTubeTOS {
+  padding-top: 5px;
+  font-size: 9px;
+  color: gray;
+}
+
 
 .inputBox {
 	width: 100%;
