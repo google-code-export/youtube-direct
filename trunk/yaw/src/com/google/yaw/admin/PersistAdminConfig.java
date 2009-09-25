@@ -38,7 +38,8 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setLinkBackText(jsonObj.getLinkBackText());
     adminConfig.setModerationMode(jsonObj.getModerationMode());
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
-    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());            
+    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());        
+    adminConfig.setNewSubmissionAddress(jsonObj.getNewSubmissionAddress());
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
     adminConfig.setModerationEmail(jsonObj.isModerationEmail());
     adminConfig.setFromAddress(jsonObj.getFromAddress());

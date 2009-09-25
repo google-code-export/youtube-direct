@@ -92,20 +92,24 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setVideoTitle(title);
         submission.setVideoDescription(description);
         submission.setVideoTags(sortedTags);
-        submission.setVideoLocation(location);      
-        submission.setVideoDate(date);      
+        submission.setVideoLocation(location);
+        submission.setVideoDate(date);
         submission.setYouTubeName(youTubeName);
         submission.setAuthSubToken(authSubToken);
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
-        submission.setNotifyEmail(email);      
+        submission.setNotifyEmail(email);
 
         AdminConfig adminConfig = Util.getAdminConfig();      
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
+          //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
+          // etc.) isn't taking place.
           submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
-        }        
+        }
         
         Util.persistJdo(submission);
+        
+        Util.sendNewSubmissionEmail(submission);
         
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "true");

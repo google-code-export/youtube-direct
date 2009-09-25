@@ -74,6 +74,35 @@ public class Util {
     }
   }
   
+  public static void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
+    AdminConfig adminConfig = Util.getAdminConfig();
+    
+    String address = adminConfig.getNewSubmissionAddress();
+    if (!Util.isNullOrEmpty(address)) {
+      try {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+        Message msg = new MimeMessage(session);
+
+        msg.setFrom(new InternetAddress(address, address));
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
+
+        msg.setSubject(String.format("New submission for assignment id %d",
+                videoSubmission.getAssignmentId()));
+
+        msg.setText(String.format("Video %s was submitted by YouTube user %s in response to " +
+                "assignment id %d.", videoSubmission.getVideoUrl(),
+                videoSubmission.getYouTubeName(), videoSubmission.getAssignmentId()));
+
+        Transport.send(msg);
+      } catch (UnsupportedEncodingException e) {
+        log.log(Level.WARNING, "", e);
+      } catch (MessagingException e) {
+        log.log(Level.WARNING, "", e);
+      }
+    }
+  }
+  
   public static void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
     try {
       String toAddress = entry.getNotifyEmail();
@@ -112,10 +141,14 @@ public class Util {
       Properties props = new Properties();
       Session session = Session.getDefaultInstance(props, null);
       Message msg = new MimeMessage(session);
+      
       msg.setFrom(new InternetAddress(fromAddress, fromAddress));
       msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
+      
       msg.setSubject("Your Recent Video Submission");
+      
       msg.setText(body);
+      
       Transport.send(msg);
       
       log.info(String.format("Sent %s notification email for status %s", toAddress,

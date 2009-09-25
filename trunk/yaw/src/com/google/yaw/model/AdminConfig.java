@@ -90,6 +90,10 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String fromAddress;
+
+  @Expose
+  @Persistent
+  private String newSubmissionAddress;
   
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
@@ -104,6 +108,7 @@ public class AdminConfig implements Serializable {
     approvalEmailText = System.getProperty("com.google.yaw.ApprovalEmailText", "");
     rejectionEmailText = System.getProperty("com.google.yaw.RejectionEmailText", "");
     fromAddress = System.getProperty("com.google.yaw.FromAddress", "");
+    newSubmissionAddress = System.getProperty("com.google.yaw.NewSubmissionAddress", "");
     
     moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
     brandingMode = BrandingModeType.ON.ordinal();
@@ -114,6 +119,14 @@ public class AdminConfig implements Serializable {
     		"<a href='terms.html' target='_blank'>terms of service</a>.";
     
     setUpdated(new Date());
+  }
+  
+  public String getNewSubmissionAddress() {
+    return newSubmissionAddress;
+  }
+
+  public void setNewSubmissionAddress(String newSubmissionAddress) {
+    this.newSubmissionAddress = newSubmissionAddress;
   }
   
   public String getFromAddress() {

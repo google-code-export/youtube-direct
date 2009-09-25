@@ -59,12 +59,16 @@ public class UploadResponseHandler extends HttpServlet {
       AdminConfig adminConfig = Util.getAdminConfig();      
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
         // NO_MOD is set, auto approve all submission
+        //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
+        // etc.) isn't taking place.
         submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
       }
       
       Util.persistJdo(submission);
       log.fine("...VideoSubmission persisted.");
 
+      Util.sendNewSubmissionEmail(submission);
+      
       try {
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("videoId", videoId);

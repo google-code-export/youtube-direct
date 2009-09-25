@@ -32,7 +32,7 @@
   	<option value="0" selected>ON</option>
   	<option value="1">OFF</option>
   </select>
-  <span class="tip">ON: Submissions must be moderated. OFF: Submissions are auto-approved.</span>
+  <span class="tip">ON: Submissions will be moderated. OFF: Submissions are auto-approved.</span>
   <div class="clear" />
   
   <label class="configureLabel">Branding mode: </label>  
@@ -49,6 +49,11 @@
   	<option value="1">NEW ONLY</option>
   </select>
   <span class="tip">NEW OR EXISTING: Accept new and existing videos. NEW ONLY: Only accept new uploads.</span>
+  <div class="clear" />
+  
+  <label class="configureLabel">Notification Email: </label>
+  <input class="configureInput" id="newSubmissionAddress" type="text">
+  <span class="tip">Address to receieve emails when videos are submitted. Address must be an AppEngine admin.</span>
   <div class="clear" />
 
   <label class="configureLabel">Login instruction: </label>
