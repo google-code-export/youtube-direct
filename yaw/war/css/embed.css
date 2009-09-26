@@ -54,11 +54,13 @@ input {
 }
 
 #youTubeTOS {
-  padding-top: 5px;
   font-size: 9px;
   color: gray;
 }
 
+#logInLink {
+	font-size: 28px;	
+}
 
 .inputBox {
 	width: 100%;

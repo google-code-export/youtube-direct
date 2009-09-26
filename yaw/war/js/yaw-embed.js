@@ -15,9 +15,13 @@ Yaw.prototype.setArticleUrl = function(url) {
 };
 
 Yaw.prototype.setYawContainer = function(id, width, height) {
+  
+  var defaultHeight = 530;
+  var defaultWidth = 350;
+  
   this.yawContainer = id;
-  this.width = width;
-  this.height = height;
+  this.width = width || defaultWidth;
+  this.height = height || defaultHeight;
 };
 
 Yaw.prototype.setCallToAction = function(id) {

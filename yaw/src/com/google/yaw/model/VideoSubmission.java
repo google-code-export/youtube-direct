@@ -97,7 +97,7 @@ public class VideoSubmission implements Serializable {
   private Date updated;
 
   public enum ModerationStatus {
-    UNREVIEWED, APPROVED, REJECTED
+    UNREVIEWED, APPROVED, REJECTED, SPAM
   }
   
   @Expose

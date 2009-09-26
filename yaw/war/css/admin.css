@@ -16,7 +16,6 @@ body {
 }
 
 #tabs {
-	width: 100%;
 }
 
 #assignments {
@@ -36,7 +35,11 @@ body {
 
 
 #controlPanel {
-	text-align: center;	
+	text-align: left;	
+}
+
+#assignmentControlPanel {
+	text-align: left;	
 }
 
 .controlButton {
@@ -71,13 +74,7 @@ div.clear {
 	padding: 5px;
 }
 
-#submissionStatus {
-	background: red;
-	color: white;	
-	padding: 3px;
-}
-
-#configurationStatus {
+.status {
 	background: red;
 	color: white;	
 	padding: 3px;
@@ -87,4 +84,5 @@ div.clear {
   color: gray;
   margin-left: 10px;
   padding-top: 50px;
+  font-size: 10px;
 }

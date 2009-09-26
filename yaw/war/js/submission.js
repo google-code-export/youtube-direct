@@ -8,8 +8,8 @@ admin.sub.submissions = []; // current working set
 admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
 admin.sub.pageIndex = 1; 
-admin.sub.pageSize = 3; 
-admin.sub.filterType = 3; // ALL
+admin.sub.pageSize = 20; 
+admin.sub.filterType = -1; // ALL
 
 admin.sub.init = function() {
   admin.sub.initSubmissionGrid();  
@@ -45,6 +45,9 @@ admin.sub.setupLabelFilter = function(label) {
     label.css('color', 'white');     
     
     switch (label.html()) {
+      case 'ALL':
+        admin.sub.filterType = -1;   
+        break; 
       case 'UNREVIEWED':
         admin.sub.filterType = 0;
         break;
@@ -53,9 +56,9 @@ admin.sub.setupLabelFilter = function(label) {
         break;
       case 'REJECTED':
         admin.sub.filterType = 2;
-        break;        
-      case 'ALL':
-        admin.sub.filterType = 3;
+        break;          
+      case 'SPAM':
+        admin.sub.filterType = 3;   
         break;        
     }    
           
@@ -131,13 +134,13 @@ admin.sub.filterByText = function() {
 admin.sub.initSubmissionGrid = function() {
   var grid = {};
   grid.datatype = 'local';
-  grid.height = 100;
+  grid.height = 460;
   grid.multiselect = false;
   grid.pgbuttons = false;  
   grid.caption = 'Submissions';
 
   grid.cellsubmit = 'clientArray';  
-  grid.autowidth = true;  
+  //grid.autowidth = true;  
   grid.cellEdit = true;   
   
   admin.sub.initGridModels(grid);
@@ -205,7 +208,7 @@ admin.sub.initGridModels = function(grid) {
   });
   
   // TODO: Need to write unformatter so jqgrid can sort it, now it's unsortable.
-  grid.colNames.push('Created');
+  grid.colNames.push('Created on');
   grid.colModel.push( {
     name : 'created',
     index : 'created',
@@ -214,8 +217,7 @@ admin.sub.initGridModels = function(grid) {
     formatter : function(cellvalue, options, rowObject) {
       var date = new Date(cellvalue);
       return admin.sub.formatDate(date);
-    },
-    sorttype : 'date'
+    }
   });
 
   grid.colNames.push('Video ID');
@@ -339,7 +341,7 @@ admin.sub.initGridModels = function(grid) {
     edittype : 'select',
     editable : true,
     editoptions : {
-      value : '0:UNREVIEWED;1:APPROVED;2:REJECTED'
+      value : '0:UNREVIEWED;1:APPROVED;2:REJECTED;3:SPAM'
     },
     formatter : function(cellvalue, options, rowObject) {
       return admin.sub.statusToString(cellvalue);
@@ -415,11 +417,11 @@ admin.sub.getSubmission = function(id) {
 };
 
 admin.sub.getEntryId = function(rowid) {
-  return jQuery("#submissionGrid").getCell(rowid, 0);
+  return jQuery('#submissionGrid').getCell(rowid, 0);
 };
 
 admin.sub.getVideoId = function(rowid) {
-  return jQuery("#submissionGrid").getCell(rowid, 2);
+  return jQuery('#submissionGrid').getCell(rowid, 2);
 };
 
 admin.sub.getTotalPage = function() {
@@ -430,7 +432,28 @@ admin.sub.refreshGrid = function() {
   admin.sub.getAllSubmissions( function(entries) {
     
     admin.sub.refreshGridUI(entries);
-    jQuery('#submissionGrid').setCaption('Submissions (' + admin.sub.total + ')');      
+    
+    var captionTitle = null;
+    
+    switch(admin.sub.filterType) {
+      case -1:
+        captionTitle = 'All Submissions';   
+        break;
+      case 0:
+        captionTitle = 'Unreview Submissions';
+        break;
+      case 1:
+        captionTitle = 'Approved Submissions';
+        break;
+      case 2:
+        captionTitle = 'Rejected Submissions';
+        break;
+      case 3:
+        captionTitle = 'Spam Submissions';
+        break;        
+    }
+    
+    jQuery('#submissionGrid').setCaption(captionTitle + ' (' + admin.sub.total + ')');      
     
     var totalPage = admin.sub.getTotalPage();
     if (totalPage > 0) {
@@ -494,11 +517,11 @@ admin.sub.previewVideo = function(entryId) {
 
   var dialogOptions = {};
   dialogOptions.title = title;
-  dialogOptions.width = 400;
+  dialogOptions.width = 330;
   dialogOptions.height = 300;
   
   jQuery.ui.dialog.defaults.bgiframe = true;
-  var div = jQuery('<div/>');
+  var div = jQuery('<div align="center"/>');
   div.html(admin.sub.getVideoHTML(videoId, videoWidth, videoHeight));
   div.dialog(dialogOptions);
 };
@@ -507,7 +530,7 @@ admin.sub.statusToString = function(status) {
 
   var newStatus = status;
 
-  if (/^[0-2]$/.test(status)) {
+  if (/^\d$/.test(status)) {
     switch (status) {
     case 0:
       newStatus = 'UNREVIEWED';
@@ -518,6 +541,9 @@ admin.sub.statusToString = function(status) {
     case 2:
       newStatus = 'REJECTED';
       break;
+    case 3:
+      newStatus = 'SPAM';
+      break;      
     }
   }
 
@@ -542,6 +568,9 @@ admin.sub.stringToStatus = function(str) {
   case 'rejected':
     status = 2;
     break;
+  case 'spam':
+    status = 3;
+    break;    
   }
 
   return status;
@@ -549,8 +578,12 @@ admin.sub.stringToStatus = function(str) {
 
 admin.sub.getAllSubmissions =function(callback) {
   var url = '/admin/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
-      '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize + 
-      '&filtertype=' + admin.sub.filterType;
+      '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize;
+  
+  if (admin.sub.filterType > -1) {
+    url += '&filtertype=' + admin.sub.filterType;
+  }    
+  
   console.log(url);
   var ajaxCall = {};
   ajaxCall.cache = false;

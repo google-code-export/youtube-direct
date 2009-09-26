@@ -106,6 +106,24 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>NewAssignment</servlet-name>
+    <servlet-class>com.google.yaw.admin.NewAssignment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewAssignment</servlet-name>
+    <url-pattern>/admin/NewAssignment</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UpdateAssignment</servlet-name>
+    <servlet-class>com.google.yaw.admin.UpdateAssignment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateAssignment</servlet-name>
+    <url-pattern>/admin/UpdateAssignment</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>MutateAssignment</servlet-name>
     <servlet-class>com.google.yaw.admin.MutateAssignment</servlet-class>
   </servlet>
@@ -198,8 +216,8 @@
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
   
-  <!-- END admin JSPs -->
-
+  <!-- END admin JSPs -->	
+	
   <security-constraint>
     <web-resource-collection>
       <url-pattern>/admin/*</url-pattern>

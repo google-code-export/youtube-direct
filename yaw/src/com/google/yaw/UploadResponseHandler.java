@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.yaw.model.AdminConfig;
+import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
 
@@ -65,6 +66,7 @@ public class UploadResponseHandler extends HttpServlet {
       }
       
       Util.persistJdo(submission);
+      
       log.fine("...VideoSubmission persisted.");
 
       Util.sendNewSubmissionEmail(submission);

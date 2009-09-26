@@ -28,20 +28,13 @@
 </head>
 
 <body>
-<span id="youTubeLogo"><img src="youtube.gif"/></span>
+
+<span id="youTubeLogo"><img src="icon.png"/></span>
+
 <div align="center">
 <div id="main">
 <%
-	if (!authenticator.isLoggedIn()) {		
-%> 
-<div>
-[ <a href="javascript:top.location='<%=authenticator.getLogInUrl()%>';">login</a> ] 
-</div> 
-<script type="text/javascript">
-	window.isLoggedIn = false;	
-</script>
-<%
-	} else {
+	if (authenticator.isLoggedIn()) {		
 %> <%= authenticator.getUserSession().getMetaData("youTubeName") %> 
 [ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] 
 <script type="text/javascript">
@@ -58,14 +51,24 @@
 <span id="processing"></span>
 
 <div align="center">
-<div id="loginInstruction" >
-<%=URLDecoder.decode(adminConfig.getLoginInstruction(), "UTF-8") %>
-</div>
+	<div id="loginInstruction" >			
+		<%=URLDecoder.decode(adminConfig.getLoginInstruction(), "UTF-8") %>		
+  </div>		
+	<br>
+		<%
+			if (!authenticator.isLoggedIn()) {		
+		%> 		
+				
+		<input onclick="javascript:top.location='<%=authenticator.getLogInUrl()%>';" 
+					class="askButton" type="button" value="Login" />
+		<%
+			}	
+		%> 	
 </div>
 
 <div id="submissionAsk">
 	<div align="center">
-	<br><br><br><br><br>
+	<br><br><br><br><br><br><br>
 	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
 
 	<%		
@@ -142,6 +145,7 @@
 		<input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
 	</div>
 	</form>
+	<br>
   <div id="youTubeTOS">
     By clicking 'Upload,' you certify that you own all rights to the content or that you are
     authorized by the owner to make the content publicly available on YouTube, and that it otherwise
