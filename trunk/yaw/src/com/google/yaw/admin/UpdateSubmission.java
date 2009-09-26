@@ -56,7 +56,7 @@ public class UpdateSubmission extends HttpServlet {
       AdminConfig adminConfig = Util.getAdminConfig();
       
       boolean isRejectedOrApproved = (currentStatus !=  newStatus) && 
-          (newStatus != ModerationStatus.UNREVIEWED);
+          (newStatus != ModerationStatus.UNREVIEWED || newStatus != ModerationStatus.SPAM);
 
       if (adminConfig.isModerationEmail() && hasEmail && isRejectedOrApproved
               && currentStatus != newStatus) {

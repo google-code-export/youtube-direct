@@ -1,4 +1,4 @@
-	<span id="configurationStatus"></span>
+	<span class="status" id="configurationStatus"></span>
 	<br><br>
 	
   <label class="configureLabel">YouTube developer key: </label>

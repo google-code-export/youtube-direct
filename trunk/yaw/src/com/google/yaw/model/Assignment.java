@@ -52,15 +52,17 @@ public class Assignment implements Serializable {
   private String playlistId = "";
 
   @Persistent
+  @Expose
   private Date created;
 
   @Persistent
+  @Expose
   private Date updated;
-
+  
   public enum AssignmentStatus {
     PENDING, ACTIVE, ARCHIVED
   }
-
+  
   @Persistent
   @Expose
   private AssignmentStatus status;
@@ -72,6 +74,13 @@ public class Assignment implements Serializable {
    * @param category
    * @param status
    */
+  
+  public Assignment() {
+    this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
+    this.created = new Date();
+    this.updated = this.created;
+  }  
+  
   public Assignment(String description, String category, AssignmentStatus status) {
     this.description = description;
     this.category = category;
@@ -147,7 +156,7 @@ public class Assignment implements Serializable {
   public Date getUpdated() {
     return updated;
   }
-
+  
   /**
    * Update the schema version when the model changes.
    * 
@@ -202,7 +211,7 @@ public class Assignment implements Serializable {
   public void setPlaylistId(String playlistId) {
     this.playlistId = playlistId;
   }
-
+  
   @SuppressWarnings("unchecked")
   //TODO: This should probably be calculated periodically and persisted instead of dynamically.
   public int getSubmissionCount() {
@@ -218,4 +227,5 @@ public class Assignment implements Serializable {
 
     return size;
   }
+  
 }

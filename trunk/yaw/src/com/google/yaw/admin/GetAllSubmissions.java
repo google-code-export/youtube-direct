@@ -26,7 +26,7 @@ public class GetAllSubmissions extends HttpServlet {
     String sortOrder = "desc";
     int pageIndex = 1;
     int pageSize = 10;    
-    int filterType = 3; // all
+    int filterType = -1; // all
     
     if (req.getParameter("sortby") != null) {      
       sortBy = req.getParameter("sortby");
@@ -57,7 +57,7 @@ public class GetAllSubmissions extends HttpServlet {
       query.declareImports("import java.util.Date");      
       query.setOrdering(sortBy + " " + sortOrder);
       
-      if (filterType < 3) {
+      if (filterType > -1) {
         String filters = "status == " + filterType; 
         query.setFilter(filters);
       }
