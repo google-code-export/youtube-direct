@@ -7,14 +7,14 @@
 <script type="text/javascript">
 
 jQuery(document).ready(function() {
-
-  addVideoList('approvedVideos'); 
-	
+  	
 	var assignmentId = getUrlParams().id;
 	if (!assignmentId) {
 		alert('missing assignment id, please append to end of the URL ?id=assignmentId');
 		return;
 	}
+
+	addVideoList(assignmentId); 
   
 	var yaw = new Yaw();
 	yaw.setAssignmentId(assignmentId);
@@ -25,16 +25,56 @@ jQuery(document).ready(function() {
 	 	
 });
 
-function addVideoList(id) {
-  console.log('hi');
-	var iframe = jQuery('<iframe/>');
-	iframe.attr('src', '/list.html');
-	iframe.attr('width', '240');
-	iframe.attr('height', '400');
-	iframe.css('border', 'solid black 0px');
-
-	jQuery('#' + id).append(iframe);
+function addVideoList(id) {  
+  getAllApprovedVideos(id, function(entries) {
+		for (var i=0; i<entries.length; i++) {
+			var entry = entries[i];
+			var id = entry.videoId;
+			var title = entry.videoTitle;
+			var status = entry.status;
+			jQuery('#approvedVideos').append('<b>' + title + '</b><br><br>');
+			jQuery('#approvedVideos').append(getVideoHTML(id, 200, 175));
+			jQuery('#approvedVideos').append('<br><br>');
+		}
+	});
 }
+
+function getAllApprovedVideos(id, callback) {
+  console.log(id);
+	var url = '/ApprovedVideoFeed?id=' + id;
+	var ajaxCall = {};
+	ajaxCall.cache = false;
+	ajaxCall.type = 'GET';
+	ajaxCall.url = url;
+	ajaxCall.dataType = 'json';
+	ajaxCall.success = function(data) {		
+		callback(data.entries);
+	};	
+	jQuery.ajax(ajaxCall);	
+}
+
+function getVideoHTML(videoId, width, height) {
+	
+	width = width || 250;
+	height = height || 250;
+	
+	var youtubeUrl = 'http://www.youtube.com/v/' + videoId;
+	
+	var html = [];
+	html.push('<object width="' + width + '" height="' + height + '">');
+	html.push('<param name="movie" value="');
+	html.push(youtubeUrl);
+	html.push('&hl=en&fs=1&"></param>');
+	html.push('<param name="allowFullScreen" value="true"></param>');
+	html.push('<param name="allowscriptaccess" value="always"></param>');
+	html.push('<embed src="');
+	html.push(youtubeUrl);
+	html.push('&hl=en&fs=1&" type="application/x-shockwave-flash"');
+	html.push(' allowscriptaccess="always" allowfullscreen="true" width="' + width + '" height="' + height + '">');
+	html.push('</embed></object>');	
+	
+	return html.join('');
+}  
 
 function getUrlParams() {
   var args = new Object();
@@ -56,10 +96,16 @@ function getUrlParams() {
   return args;
 }
 
+
 </script>
 </head>
 <style>
 #callToAction {
+}
+#approvedVideos {
+	height: 450px;
+	overflow: auto;
+	border: 1px solid black;
 }
 </style>
 <body>
