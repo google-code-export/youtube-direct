@@ -359,7 +359,24 @@ admin.assign.refreshGrid = function() {
     
     admin.assign.refreshGridUI(entries);
     
-    jQuery('#assignmentGrid').setCaption('Assignments (' + admin.assign.total + ')');      
+    var captionTitle = null;
+    
+    switch(admin.assign.filterType) {
+      case -1:
+        captionTitle = 'All Assigmments';   
+        break;
+      case 0:
+        captionTitle = 'Pending Assigmments';
+        break;
+      case 1:
+        captionTitle = 'Active Assigmments';
+        break;
+      case 2:
+        captionTitle = 'Archived Assigmments';
+        break;  
+    }
+    
+    jQuery('#assignmentGrid').setCaption(captionTitle + ' (' + admin.assign.total + ')');    
     
     var totalPage = admin.assign.getTotalPage();
     if (totalPage > 0) {
