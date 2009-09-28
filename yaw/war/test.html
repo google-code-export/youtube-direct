@@ -8,6 +8,8 @@
 
 jQuery(document).ready(function() {
 
+  addVideoList('approvedVideos'); 
+	
 	var assignmentId = getUrlParams().id;
 	if (!assignmentId) {
 		alert('missing assignment id, please append to end of the URL ?id=assignmentId');
@@ -19,8 +21,20 @@ jQuery(document).ready(function() {
 	yaw.setCallToAction('callToAction');
 	yaw.setYawContainer('yaw');
 	yaw.ready();  
-    	
+
+	 	
 });
+
+function addVideoList(id) {
+  console.log('hi');
+	var iframe = jQuery('<iframe/>');
+	iframe.attr('src', '/list.html');
+	iframe.attr('width', '240');
+	iframe.attr('height', '400');
+	iframe.css('border', 'solid black 0px');
+
+	jQuery('#' + id).append(iframe);
+}
 
 function getUrlParams() {
   var args = new Object();
@@ -56,7 +70,7 @@ function getUrlParams() {
 	<tr valign="top">
 		<td>
 		<h3>Hubble image shows debris from Jupiter collision</h3>
-		<p style="font-size: 12px; font-family: arial;">
+		<p style="font-size: 12px; font-family: arial;"><img src="jupiter.jpg"/>
 		BALTIMORE - NASA's
 		Hubble Space Telescope is offering a glimpse of atmospheric debris
 		from an object that plunged into Jupiter in a rare collision with the
@@ -70,10 +84,13 @@ function getUrlParams() {
 		came from a comet or asteroid that hit Jupiter. NASA also says the new
 		images prove repairs done on the Hubble in May were successful.</p>
 		</td>
-		<td>
+		<td align="center">
 		<br><br>
+		
 		<a id="callToAction" href="javascript:void(0);"><img src="calltoaction.png" border="0"/></a>
-		<div id="yaw" />
+		<div id="yaw"></div>
+		<div id="approvedVideos"></div>
+		
 		</td>
 	</tr>
 </table>
