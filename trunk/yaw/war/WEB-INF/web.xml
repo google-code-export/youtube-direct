@@ -146,6 +146,15 @@
   <!-- BEGIN user-facing servlets -->
 
   <servlet>
+    <servlet-name>ApprovedVideoFeed</servlet-name>
+    <servlet-class>com.google.yaw.ApprovedVideoFeed</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ApprovedVideoFeed</servlet-name>
+    <url-pattern>/ApprovedVideoFeed</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>SubmitExistingVideo</servlet-name>
     <servlet-class>com.google.yaw.SubmitExistingVideo</servlet-class>
   </servlet>
