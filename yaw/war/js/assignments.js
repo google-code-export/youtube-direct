@@ -363,16 +363,16 @@ admin.assign.refreshGrid = function() {
     
     switch(admin.assign.filterType) {
       case -1:
-        captionTitle = 'All Assigmments';   
+        captionTitle = 'All Assignments';   
         break;
       case 0:
-        captionTitle = 'Pending Assigmments';
+        captionTitle = 'Pending Assignments';
         break;
       case 1:
-        captionTitle = 'Active Assigmments';
+        captionTitle = 'Active Assignments';
         break;
       case 2:
-        captionTitle = 'Archived Assigmments';
+        captionTitle = 'Archived Assignments';
         break;  
     }
     
