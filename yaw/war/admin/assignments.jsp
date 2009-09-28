@@ -1,6 +1,16 @@
 	<span class="status" id="assignmentStatus"></span>
 	<br>	
 	<br>
+	
+	<div id="assignmentFilters">
+		<a href="javascript:void(0);" class="filter">ALL</a>&nbsp;&nbsp;
+		<a href="javascript:void(0);" class="filter">PENDING</a>&nbsp;&nbsp;
+		<a href="javascript:void(0);" class="filter">ACTIVE</a>&nbsp;&nbsp;
+		<a href="javascript:void(0);" class="filter">ARCHIVED</a>&nbsp;&nbsp;	
+		<br>
+		<br>		
+	</div>	
+	
 	<div id="assignmentControlPanel">
 		<div id="assignmentNavPanel">
 			<input id="assignmentCreateButton" value="New Assignment" type="button"/>	
@@ -32,6 +42,7 @@
 		<textarea cols="40" rows="5" id="assignmentDescription"></textarea>		
 		<br><br>		
 		
-		<input id="createButton" type="button" value="create"/>
+		<input id="createButton" type="button" value="Create"/>
+		<input id="createCancelButton" type="button" value="Cancel"/>
 		
 	</div>

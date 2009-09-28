@@ -16,7 +16,7 @@ Yaw.prototype.setArticleUrl = function(url) {
 
 Yaw.prototype.setYawContainer = function(id, width, height) {
   
-  var defaultHeight = 530;
+  var defaultHeight = 550;
   var defaultWidth = 350;
   
   this.yawContainer = id;
@@ -29,11 +29,12 @@ Yaw.prototype.setCallToAction = function(id) {
   
   var callToAction = document.getElementById(this.callToAction);
   
-  self = this;
+  var self = this;
   
-  callToAction.onclick = function() {
+  callToAction.onclick = function() {    
     callToAction.style.display = 'none';
-    self.embed();   
+    self.embed();       
+    return false;
   };  
 };
 
@@ -50,6 +51,7 @@ Yaw.prototype.embed = function() {
 	iframeElement.width = this.width + 'px';
 	iframeElement.height = this.height + 'px';
 	iframeElement.style.border = '0px solid gray';
+	iframeElement.scrolling = 'no';
 
 	this.articleUrl = this.articleUrl || document.location.href;
 	// remove hash link

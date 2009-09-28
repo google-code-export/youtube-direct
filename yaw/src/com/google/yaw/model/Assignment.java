@@ -65,8 +65,8 @@ public class Assignment implements Serializable {
   
   @Persistent
   @Expose
-  private AssignmentStatus status;
-
+  private AssignmentStatus status;  
+  
   /**
    * Create a new Assignment object for the datastore.
    * 

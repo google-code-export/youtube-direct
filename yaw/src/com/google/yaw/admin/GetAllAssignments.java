@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.yaw.Util;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.VideoSubmission;
+import com.google.yaw.model.Assignment.AssignmentStatus;
 
 public class GetAllAssignments extends HttpServlet {
 
@@ -26,6 +27,7 @@ public class GetAllAssignments extends HttpServlet {
     String sortOrder = "desc";
     int pageIndex = 1;
     int pageSize = 10;    
+    int filterType = -1; // all
     
     if (req.getParameter("sortby") != null) {      
       sortBy = req.getParameter("sortby");
@@ -42,6 +44,10 @@ public class GetAllAssignments extends HttpServlet {
     if (req.getParameter("pagesize") != null) {      
       pageSize = Integer.parseInt(req.getParameter("pagesize"));
     }    
+
+    if (req.getParameter("filtertype") != null) {      
+      filterType = Integer.parseInt(req.getParameter("filtertype"));
+    }       
     
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -49,10 +55,31 @@ public class GetAllAssignments extends HttpServlet {
     try {
       Query query = pm.newQuery(Assignment.class);
       
-      query.declareImports("import java.util.Date");      
+      query.declareImports("import java.util.Date");
+      query.declareParameters("String filterLabel");
       query.setOrdering(sortBy + " " + sortOrder);
       
-      List<Assignment> assignments = (List<Assignment>) query.execute();
+      String filterLabel = null;
+      
+      if (filterType > -1) {        
+        
+        switch(filterType) {
+          case 0:
+            filterLabel = "PENDING";
+            break;
+          case 1:
+            filterLabel = "ACTIVE";
+            break;
+          case 2:
+            filterLabel = "ARCHIVED";
+            break;            
+        }        
+        
+        String filters = "status == filterLabel"; 
+        query.setFilter(filters);
+      }
+      
+      List<Assignment> assignments = (List<Assignment>) query.execute(filterLabel);
                   
       int totalSize = assignments.size();
       int totalPages = (int) Math.ceil(((double)totalSize/(double)pageSize));

@@ -6,6 +6,42 @@
         <property name="__key__" direction="desc"/>
     </datastore-index>
 
+    <!-- Used 58 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="created" direction="asc"/>
+    </datastore-index>
+
+    <!-- Used 74 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+
+    <!-- Used 4 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="category" direction="asc"/>
+    </datastore-index>
+
+    <!-- Used 6 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="category" direction="desc"/>
+    </datastore-index>
+
+    <!-- Used 4 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="description" direction="asc"/>
+    </datastore-index>
+
+    <!-- Used 3 times in query history -->
+    <datastore-index kind="Assignment" ancestor="false" source="auto">
+        <property name="status" direction="asc"/>
+        <property name="description" direction="desc"/>
+    </datastore-index>
+
     <!-- Used 2 times in query history -->
     <datastore-index kind="VideoSubmission" ancestor="false" source="auto">
         <property name="status" direction="asc"/>

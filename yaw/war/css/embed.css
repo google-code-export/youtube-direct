@@ -24,7 +24,9 @@ input {
 }
 
 #youTubeLogo {
-	float: right;
+	position: absolute;
+	top: 15px;
+	right: 0px;
 }
 
 #uploaderMain {
@@ -135,11 +137,10 @@ input {
 }
 
 #processing {
+	display: none;
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	padding-left: 3px;
-	padding-right: 3px;
 	color: white;
 	background: red;
 	font-size: 11px;	
