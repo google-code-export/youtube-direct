@@ -8,7 +8,7 @@ admin.sub.submissions = []; // current working set
 admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
 admin.sub.pageIndex = 1; 
-admin.sub.pageSize = 3; 
+admin.sub.pageSize = 20; 
 admin.sub.filterType = -1; // ALL
 
 admin.sub.init = function() {
@@ -40,9 +40,9 @@ admin.sub.setupLabelFilter = function(label) {
       label_.css('color', 'black');
     }     
     
-    // set the selected label to be black
-    label.css('background', 'black');
-    label.css('color', 'white');     
+    // set the selected label to be highlighted
+    label.css('background', '#a6c9e2');
+    label.css('color', 'black');     
     
     switch (label.html()) {
       case 'ALL':
@@ -70,8 +70,8 @@ admin.sub.setupLabelFilter = function(label) {
   });     
   
   if (label.html() == "ALL") {
-    label.css('background', 'black');
-    label.css('color', 'white');      
+    label.css('background', '#a6c9e2');
+    label.css('color', 'black');      
   }
 };
 

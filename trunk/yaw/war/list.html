@@ -29,15 +29,14 @@
   });
 
   function getAllSubmissions(callback) {
-		var url = '/GetAllSubmissions';
+		var url = '/admin/GetAllSubmissions?filtertype=1';
 		var ajaxCall = {};
 		ajaxCall.cache = false;
 		ajaxCall.type = 'GET';
 		ajaxCall.url = url;
 		ajaxCall.dataType = 'json';
-		ajaxCall.success = function(entries) {
-			window.submissionData = entries;
-			callback(entries);
+		ajaxCall.success = function(data) {		
+			callback(data.entries);
 		};	
 		jQuery.ajax(ajaxCall);	
   }

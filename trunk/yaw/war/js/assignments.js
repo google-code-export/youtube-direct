@@ -19,9 +19,14 @@ admin.assign.init = function() {
   admin.assign.initControlPanel();  
   admin.assign.initAssignmentFilters();
   
+  jQuery('#assignmentSearchText').keyup( function() {
+    admin.assign.filterByText();
+  });    
+  
   jQuery('#assignmentCreateButton').click(function() {
     admin.assign.showAssignmentCreate();
   });
+  
 };
 
 admin.assign.initAssignmentFilters = function() {
@@ -40,12 +45,12 @@ admin.assign.setupLabelFilter = function(label) {
     for(var i=0; i<labels.length; i++) {    
       var label_ = jQuery(labels[i]);     
       label_.css('background', 'white');
-      label_.css('color', 'black');
+      label_.css('color', '#black');
     }     
     
-    // set the selected label to be black
-    label.css('background', 'black');
-    label.css('color', 'white');     
+    // set the selected label to be highlighted
+    label.css('background', '#a6c9e2');
+    label.css('color', 'black');     
     
     switch (label.html()) {
       case 'ALL':
@@ -70,8 +75,8 @@ admin.assign.setupLabelFilter = function(label) {
   });     
   
   if (label.html() == "ALL") {
-    label.css('background', 'black');
-    label.css('color', 'white');      
+    label.css('background', '#a6c9e2');
+    label.css('color', 'black');      
   }
 };
 
@@ -107,6 +112,27 @@ admin.assign.hasPrevPage = function() {
     return false;
   }
 };
+
+admin.assign.filterByText = function() {
+
+  var matches = [];
+
+  var text = jQuery('#assignmentSearchText').val();   
+  
+  var regex = new RegExp(text, 'i');
+
+  for ( var i = 0; i < admin.assign.assignments.length; i++) {
+    var entry = admin.assign.assignments[i];
+
+    var description = entry.description;
+
+    if (regex.test(description)) {
+      matches.push(entry);
+    }
+  }
+  
+  admin.assign.refreshGridUI(matches); 
+}
 
 admin.assign.initAssignmentGrid = function() {
   var grid = {};

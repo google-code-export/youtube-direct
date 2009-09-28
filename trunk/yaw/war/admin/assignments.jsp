@@ -4,22 +4,22 @@
 	
 	<div id="assignmentFilters">
 		<a href="javascript:void(0);" class="filter">ALL</a>&nbsp;&nbsp;
-		<a href="javascript:void(0);" class="filter">PENDING</a>&nbsp;&nbsp;
 		<a href="javascript:void(0);" class="filter">ACTIVE</a>&nbsp;&nbsp;
+		<a href="javascript:void(0);" class="filter">PENDING</a>&nbsp;&nbsp;		
 		<a href="javascript:void(0);" class="filter">ARCHIVED</a>&nbsp;&nbsp;	
 		<br>
 		<br>		
 	</div>	
 	
 	<div id="assignmentControlPanel">
-		<div id="assignmentNavPanel">
-			<input id="assignmentCreateButton" value="New Assignment" type="button"/>	
+			Filter: <input id="assignmentSearchText" type="text">
 			&nbsp;&nbsp;&nbsp;
 			<input id="assignmentRefreshGrid" value="Refresh" type="button"/>				
 			<input id="assignmentPrevPage" value="<< Prev" type="button"/>
 			<span id="assignmentPageIndex"></span>	
 			<input id="assignmentNextPage" value="Next >>" type="button"/>
-		</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input id="assignmentCreateButton" value="New Assignment" type="button"/>	
 	</div>
 	<table id="assignmentGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	

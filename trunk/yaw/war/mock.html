@@ -98,14 +98,14 @@ var cnnSectID = "cnninline_politics";
 		});	
 	});
 
-	function addVideoList() {
+	function addVideoList(id) {
 		var iframe = jQuery('<iframe/>');
 		iframe.attr('src', '/list.html');
 		iframe.attr('width', '240');
 		iframe.attr('height', '400');
 		iframe.css('border', 'solid black 0px');
 
-		jQuery('#videoListContainer').append(iframe);
+		jQuery('#' + id).append(iframe);
 	}
 
 	function getAssignmentId(callback) {

@@ -34,7 +34,7 @@ body {
 }
 
 
-#controlPanel {
+#submissionControlPanel {
 	text-align: left;	
 }
 
@@ -65,8 +65,8 @@ div.clear {
 }
 
 .filter {
-	font-size: 14px;
-	font-weight: normal;
+	font-size: 13px;
+	font-weight: bold;
 	color: black;
 	background: white;	
 	width: 80px;
