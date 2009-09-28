@@ -8,7 +8,7 @@ admin.sub.submissions = []; // current working set
 admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
 admin.sub.pageIndex = 1; 
-admin.sub.pageSize = 20; 
+admin.sub.pageSize = 3; 
 admin.sub.filterType = -1; // ALL
 
 admin.sub.init = function() {
@@ -16,13 +16,13 @@ admin.sub.init = function() {
   admin.sub.initControlPanel();  
   admin.sub.initSubmissionFilters();  
   
-  jQuery('#searchText').keyup( function() {
+  jQuery('#submissionSearchText').keyup( function() {
     admin.sub.filterByText();
   });   
 };
 
 admin.sub.initSubmissionFilters = function() {
-  var labels = jQuery('#filters a');
+  var labels = jQuery('#submissionFilters a.filter');
   for(var i=0; i<labels.length; i++) {    
     var label = jQuery(labels[i]);     
     admin.sub.setupLabelFilter(label);
@@ -33,7 +33,7 @@ admin.sub.setupLabelFilter = function(label) {
   label.click(function() {    
     
     // reset all label colors
-    var labels = jQuery('#filters a');
+    var labels = jQuery('#submissionFilters a.filter');
     for(var i=0; i<labels.length; i++) {    
       var label_ = jQuery(labels[i]);     
       label_.css('background', 'white');
@@ -76,16 +76,16 @@ admin.sub.setupLabelFilter = function(label) {
 };
 
 admin.sub.initControlPanel = function() {
-  jQuery('#refreshGrid').click(function() {
+  jQuery('#submissionRefreshGrid').click(function() {
     admin.sub.refreshGrid();
   });
   
-  jQuery('#nextPage').click(function() {
+  jQuery('#submissionNextPage').click(function() {
     admin.sub.pageIndex++;          
     admin.sub.refreshGrid();
   });  
   
-  jQuery('#prevPage').click(function() {
+  jQuery('#submissionPrevPage').click(function() {
     admin.sub.pageIndex--;          
     admin.sub.refreshGrid();
   });    
@@ -112,7 +112,7 @@ admin.sub.filterByText = function() {
 
   var matches = [];
 
-  var text = jQuery('#searchText').val();   
+  var text = jQuery('#submissionSearchText').val();   
   
   var regex = new RegExp(text, 'i');
 
@@ -134,7 +134,7 @@ admin.sub.filterByText = function() {
 admin.sub.initSubmissionGrid = function() {
   var grid = {};
   grid.datatype = 'local';
-  grid.height = 460;
+  grid.height = 500;
   grid.multiselect = false;
   grid.pgbuttons = false;  
   grid.caption = 'Submissions';
@@ -457,22 +457,22 @@ admin.sub.refreshGrid = function() {
     
     var totalPage = admin.sub.getTotalPage();
     if (totalPage > 0) {
-      jQuery('#pageIndex').html('Page ' + admin.sub.pageIndex + ' of ' + totalPage);
+      jQuery('#submissionPageIndex').html('Page ' + admin.sub.pageIndex + ' of ' + totalPage);
     } else {
-      jQuery('#pageIndex').html('0 result');
+      jQuery('#submissionPageIndex').html('0 result');
     }
     
     if (admin.sub.hasNextPage()) {
-      jQuery('#nextPage').get(0).disabled = false;
+      jQuery('#submissionNextPage').get(0).disabled = false;
     } else {
-      jQuery('#nextPage').get(0).disabled = true;
+      jQuery('#submissionNextPage').get(0).disabled = true;
       
     }
 
     if (admin.sub.hasPrevPage()) {
-      jQuery('#prevPage').get(0).disabled = false;
+      jQuery('#submissionPrevPage').get(0).disabled = false;
     } else {
-      jQuery('#prevPage').get(0).disabled = true; 
+      jQuery('#submissionPrevPage').get(0).disabled = true; 
     }   
     
   });
@@ -582,15 +582,14 @@ admin.sub.getAllSubmissions =function(callback) {
   
   if (admin.sub.filterType > -1) {
     url += '&filtertype=' + admin.sub.filterType;
-  }    
+  }
   
-  console.log(url);
   var ajaxCall = {};
   ajaxCall.cache = false;
   ajaxCall.type = 'GET';
   ajaxCall.url = url;
   ajaxCall.dataType = 'json';
-  ajaxCall.success = function(result) {  
+  ajaxCall.success = function(result) {
     admin.sub.total = result.total;
     var entries = result.entries                  
     admin.sub.submissions = entries.concat([]);

@@ -64,13 +64,12 @@ div.clear {
 	clear: left;
 }
 
-#filters a {
-	font-size: 16px;
-	font-weight: bold;
+.filter {
+	font-size: 14px;
+	font-weight: normal;
 	color: black;
 	background: white;	
 	width: 80px;
-	text-decoration: none;
 	padding: 5px;
 }
 

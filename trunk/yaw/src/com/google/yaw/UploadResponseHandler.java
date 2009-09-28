@@ -75,7 +75,7 @@ public class UploadResponseHandler extends HttpServlet {
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("videoId", videoId);
         responseJsonObj.put("status", status);
-        resp.setContentType("text/javascript");
+        resp.setContentType("text/html");
         resp.getWriter().println(responseJsonObj.toString());
       } catch (JSONException e) {
         log.warning(e.toString());

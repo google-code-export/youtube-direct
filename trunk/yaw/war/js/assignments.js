@@ -12,14 +12,67 @@ admin.assign.sortBy = 'created';
 admin.assign.sortOrder = 'desc';
 admin.assign.pageIndex = 1; 
 admin.assign.pageSize = 20; 
+admin.assign.filterType = -1; // all
 
 admin.assign.init = function() {
   admin.assign.initAssignmentGrid();  
   admin.assign.initControlPanel();  
+  admin.assign.initAssignmentFilters();
   
   jQuery('#assignmentCreateButton').click(function() {
     admin.assign.showAssignmentCreate();
   });
+};
+
+admin.assign.initAssignmentFilters = function() {
+  var labels = jQuery('#assignmentFilters a.filter');
+  for(var i=0; i<labels.length; i++) {    
+    var label = jQuery(labels[i]);     
+    admin.assign.setupLabelFilter(label);
+  }  
+};
+
+admin.assign.setupLabelFilter = function(label) {
+  label.click(function() {    
+    
+    // reset all label colors
+    var labels = jQuery('#assignmentFilters a.filter');
+    for(var i=0; i<labels.length; i++) {    
+      var label_ = jQuery(labels[i]);     
+      label_.css('background', 'white');
+      label_.css('color', 'black');
+    }     
+    
+    // set the selected label to be black
+    label.css('background', 'black');
+    label.css('color', 'white');     
+    
+    switch (label.html()) {
+      case 'ALL':
+        admin.assign.filterType = -1;   
+        break; 
+      case 'PENDING':
+        admin.assign.filterType = 0;
+        break;
+      case 'ACTIVE':
+        admin.assign.filterType = 1;
+        break;
+      case 'ARCHIVED':
+        admin.assign.filterType = 2;
+        break;      
+    }    
+          
+    // reset the page index to first page
+    admin.assign.pageIndex = 1;
+    
+    admin.assign.refreshGrid();                    
+    
+  });     
+  
+  if (label.html() == "ALL") {
+    label.css('background', 'black');
+    label.css('color', 'white');      
+  }
 };
 
 admin.assign.initControlPanel = function() {
@@ -58,7 +111,7 @@ admin.assign.hasPrevPage = function() {
 admin.assign.initAssignmentGrid = function() {
   var grid = {};
   grid.datatype = 'local';
-  grid.height = 460;
+  grid.height = 500;
   grid.multiselect = false;
   grid.pgbuttons = false;  
   grid.caption = 'Assignments';
@@ -357,6 +410,10 @@ admin.assign.showAssignmentCreate = function() {
     categorySelector.append('<option value="' + category + '">' + category + '</option>');    
   }  
 
+  div.find('#createCancelButton').click(function() {
+    div.dialog('destroy');
+  });
+  
   div.find('#createButton').click(function() {
     
     var newAssignment = {};
@@ -366,10 +423,7 @@ admin.assign.showAssignmentCreate = function() {
         options[div.find('#assignmentCategories').attr('selectedIndex')].value;
     newAssignment.status = 
         div.find('#assignmentStatusType').get(0).
-        options[div.find('#assignmentStatusType').attr('selectedIndex')].value;        
-    
-        
-    console.log(newAssignment);
+        options[div.find('#assignmentStatusType').attr('selectedIndex')].value;            
     
     var url = '/admin/NewAssignment';
     var ajaxCall = {};
@@ -380,13 +434,15 @@ admin.assign.showAssignmentCreate = function() {
     ajaxCall.processData = false;
     ajaxCall.success = function(res) {
       admin.assign.showLoading(false);
+      admin.assign.pageIndex = 1;
+      admin.assign.refreshGrid();      
     };
 
     admin.assign.showLoading(true, 'processing ...');
     jQuery.ajax(ajaxCall);    
     
     div.dialog('destroy');
-    admin.assign.refreshGrid();
+    
   });  
   
   div.dialog(dialogOptions);    
@@ -437,8 +493,13 @@ admin.assign.stringToStatus = function(str) {
 };
 
 admin.assign.getAllAssignments =function(callback) {
-  var url = '/admin/GetAllAssignments?sortby=' + admin.assign.sortBy + '&sortorder=' +  admin.assign.sortOrder + 
-      '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + admin.assign.pageSize;
+  var url = '/admin/GetAllAssignments?sortby=' + admin.assign.sortBy + '&sortorder=' +  
+      admin.assign.sortOrder + '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + 
+      admin.assign.pageSize;
+
+  if (admin.assign.filterType > -1) {
+    url += '&filtertype=' + admin.assign.filterType;
+  }  
   
   var ajaxCall = {};
   ajaxCall.cache = false;

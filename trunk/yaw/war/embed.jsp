@@ -45,10 +45,10 @@
 	}
 %>
 <br>
-<div id="message">&nbsp;</div> 
+<div id="message"></div> 
 <br>
 
-<span id="processing"></span>
+<div id="processing"></div>
 
 <div align="center">
 	<div id="loginInstruction" >			
