@@ -68,17 +68,19 @@ public class UpdateSubmission extends HttpServlet {
       entry.setVideoDescription(jsonObj.getVideoDescription());
       entry.setVideoTags(jsonObj.getVideoTags());
       entry.setUpdated(new Date());
-      
+
       //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
       if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal() &&
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
 
-        String prependText = adminConfig.getLinkBackText().replace(
-                "ARTICLE_URL", entry.getArticleUrl());
-        
-        if (!entry.getVideoDescription().contains(prependText)) {
-          // We only want to update the video if the text isn't already there.
-          updateVideoDescription(entry, prependText, adminConfig.getDefaultTag());
+        String linkBackText = adminConfig.getLinkBackText();
+        if (!Util.isNullOrEmpty(linkBackText)) {
+          String prependText = linkBackText.replace("ARTICLE_URL", entry.getArticleUrl());
+
+          if (!entry.getVideoDescription().contains(prependText)) {
+            // We only want to update the video if the text isn't already there.
+            updateVideoDescription(entry, prependText, adminConfig.getDefaultTag());
+          }
         }
       }
       
@@ -89,15 +91,13 @@ public class UpdateSubmission extends HttpServlet {
         // instance doesn't work, and we need to use the credentials of the account that owns the
         // developer token used to upload the video.
         YouTubeApiManager apiManager = new YouTubeApiManager();
-        // Modifying moderation also requires a ClientLogin token retrieved from a different,
-        // non-YouTube specific, ClientLogin endpoint. This call overrides that default.
-        apiManager.useGoogleAccountAuthService();
-        try {
-          apiManager.setLoginInfo(adminConfig.getYouTubeUsername(),
-                  adminConfig.getYouTubePassword());
+        String token = adminConfig.getYouTubeAuthSubToken();
+        if (Util.isNullOrEmpty(token)) {
+          log.warning(String.format("No AuthSub token found in admin config, so can't set the " +
+          		"moderation of video id '%s' to '%s'.", entry.getVideoId(), newStatus.toString()));
+        } else {
+          apiManager.setToken(token);
           apiManager.updateModeration(entry.getVideoId(), newStatus == ModerationStatus.APPROVED);
-        } catch (AuthenticationException e) {
-          log.log(Level.WARNING, "", e);
         }
       }
 

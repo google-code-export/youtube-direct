@@ -32,8 +32,6 @@ public class PersistAdminConfig extends HttpServlet {
     
     adminConfig.setClientId(jsonObj.getClientId());
     adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());
-    adminConfig.setYouTubeUsername(jsonObj.getYouTubeUsername());
-    adminConfig.setYouTubePassword(jsonObj.getYouTubePassword());
     adminConfig.setDefaultTag(jsonObj.getDefaultTag());
     adminConfig.setLinkBackText(jsonObj.getLinkBackText());
     adminConfig.setModerationMode(jsonObj.getModerationMode());

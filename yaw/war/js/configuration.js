@@ -8,8 +8,6 @@ admin.config.init = function() {
   admin.config.getAdminConfig(function(data) {
     jQuery('#developerKey').val(data.developerKey);
     jQuery('#clientId').val(data.clientId);
-    jQuery('#youTubeUsername').val(data.youTubeUsername);
-    jQuery('#youTubePassword').val(data.youTubePassword);
     jQuery('#defaultTag').val(data.defaultTag);
     jQuery('#linkBackText').val(data.linkBackText);
     jQuery('#moderationMode').val(data.moderationMode);
@@ -27,10 +25,20 @@ admin.config.init = function() {
       jQuery('#moderationEmail').attr('checked', false);
       admin.config.toggleModerationEmailTextDiv(false);
     }
+    
+    if (data.youTubeAuthSubToken && data.youTubeUsername) {
+      jQuery('#youTubeUsername').html("Authenticated as <a href='http://youtube.com/" + data.youTubeUsername + "'>" + data.youTubeUsername + "</b>");
+      jQuery('#authenticateButton').val("Re-Authenticate");
+    }
   });
   
   saveButton.click(function() {
     admin.config.persistAdminConfig();
+  });
+  
+  jQuery('#authenticateButton').click(function() {
+    var nextUrl = window.location.protocol + "//" + window.location.host + "/admin/PersistAuthSubToken";
+    window.location = "https://www.google.com/accounts/AuthSubRequest?next=" + nextUrl + "&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0";
   });
   
   jQuery('#moderationEmail').click(function() {
@@ -55,21 +63,19 @@ admin.config.getAdminConfig = function(callback) {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    console.log('Get admin config incurred an error: ' + xhr.statusText);
+    admin.config.showLoading(true, 'Unable to retrieve configuration: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
     admin.config.showLoading(false);
     callback(res);
   };
-  admin.config.showLoading(true, "loading ...");
+  admin.config.showLoading(true, "Loading configuration...");
   jQuery.ajax(ajaxCall);     
 };
 
 admin.config.persistAdminConfig = function() {
   var developerKey = jQuery('#developerKey').val();   
   var clientId = jQuery('#clientId').val();
-  var youTubeUsername = jQuery('#youTubeUsername').val();
-  var youTubePassword = jQuery('#youTubePassword').val();
   var defaultTag = jQuery('#defaultTag').val();
   var linkBackText = jQuery('#linkBackText').val();
   var moderationMode = jQuery('#moderationMode').val();
@@ -85,8 +91,6 @@ admin.config.persistAdminConfig = function() {
   var jsonObj = {};
   jsonObj.developerKey = developerKey;
   jsonObj.clientId = clientId;
-  jsonObj.youTubeUsername = youTubeUsername;
-  jsonObj.youTubePassword = youTubePassword;
   jsonObj.defaultTag = defaultTag;
   jsonObj.linkBackText = linkBackText;
   jsonObj.moderationMode = moderationMode;
@@ -106,18 +110,18 @@ admin.config.persistAdminConfig = function() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    admin.config.showLoading(true, 'Persist admin config incurred an error: ' + xhr.statusText);
+    admin.config.showLoading(true, 'Unable to save configuration: ' + xhr.statusText);
   };
   ajaxCall.success = function(res) {
     admin.config.showLoading(false);
   };
-  admin.config.showLoading(true, 'saving ...');
+  admin.config.showLoading(true, 'Saving configuration...');
   jQuery.ajax(ajaxCall);    
 };
 
 admin.config.showLoading = function(status, text) {
   if (status) {
-    text = text || 'loading ...';
+    text = text || 'Loading configuration...';
     jQuery('#configurationStatus').html(text).show();
   } else {
     jQuery('#configurationStatus').html('').hide();

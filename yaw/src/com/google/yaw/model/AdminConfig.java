@@ -33,7 +33,7 @@ public class AdminConfig implements Serializable {
   
   @Expose
   @Persistent
-  private String youTubePassword;
+  private String youTubeAuthSubToken;
   
   @Expose
   @Persistent
@@ -98,9 +98,7 @@ public class AdminConfig implements Serializable {
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
     clientId = System.getProperty("com.google.yaw.YTClientID", "");
-    developerKey = System.getProperty("com.google.yaw.YTDeveloperKey", "");
-    youTubeUsername = System.getProperty("com.google.yaw.YTUsername", "");
-    youTubePassword = System.getProperty("com.google.yaw.YTPassword", "");    
+    developerKey = System.getProperty("com.google.yaw.YTDeveloperKey", "");  
     defaultTag = System.getProperty("com.google.yaw.BrandingTag", "");
     linkBackText = System.getProperty("com.google.yaw.LinkBackText", "");
     
@@ -197,12 +195,12 @@ public class AdminConfig implements Serializable {
     this.youTubeUsername = youTubeUsername;
   }
   
-  public String getYouTubePassword() {
-    return youTubePassword;
+  public String getYouTubeAuthSubToken() {
+    return youTubeAuthSubToken;
   }
   
-  public void setYouTubePassword(String youTubePassword) {
-    this.youTubePassword = youTubePassword;
+  public void setYouTubeAuthSubToken(String youTubeAuthSubToken) {
+    this.youTubeAuthSubToken = youTubeAuthSubToken;
   }
   
   public String getDefaultTag() {
