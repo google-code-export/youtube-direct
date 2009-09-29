@@ -40,16 +40,11 @@ public class UpdatePlaylists extends HttpServlet {
       AdminConfig adminConfig = Util.getAdminConfig();
       YouTubeApiManager apiManager = new YouTubeApiManager();
       
-      String username = adminConfig.getYouTubeUsername();
-      if (Util.isNullOrEmpty(username)) {
-        throw new IllegalArgumentException("No YouTube username specified in configuration.");
+      String token = adminConfig.getYouTubeAuthSubToken();
+      if (Util.isNullOrEmpty(token)) {
+        throw new IllegalArgumentException("No YouTube AtuhSub token specified in configuration.");
       }
-      String password = adminConfig.getYouTubePassword();
-      if (Util.isNullOrEmpty(password)) {
-        throw new IllegalArgumentException("No YouTube password specified in configuration.");
-      }
-      
-      apiManager.setLoginInfo(username, password);
+      apiManager.setToken(token);
       
       Query query = pm.newQuery(VideoSubmission.class);
       //TODO: Don't hardcode 1 as the approved status; use the enum instead.
@@ -67,9 +62,6 @@ public class UpdatePlaylists extends HttpServlet {
           count++;
         }
       }
-    } catch (AuthenticationException e) {
-      log.log(Level.WARNING, "Couldn't log in to YouTube. Please check your configuration to " +
-      		"make sure your username and password are correct.", e);
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
     } finally {

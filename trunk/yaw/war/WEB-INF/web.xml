@@ -25,6 +25,15 @@
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>PersistAuthSubToken</servlet-name>
+    <servlet-class>com.google.yaw.admin.PersistAuthSubToken</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PersistAuthSubToken</servlet-name>
+    <url-pattern>/admin/PersistAuthSubToken</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>InsightDownloadRedirect</servlet-name>
     <servlet-class>com.google.yaw.admin.InsightDownloadRedirect</servlet-class>
   </servlet>

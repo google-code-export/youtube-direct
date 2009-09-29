@@ -61,21 +61,9 @@ public class YouTubeApiManager {
   private static final String UPDATED_ENTRY_ATOM_FORMAT = "<entry xmlns='http://www.w3.org/2005/" +
   		"Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007'><yt:moderationStatus>%s" +
   		"</yt:moderationStatus></entry>";
-  private static final String CLIENT_LOGIN_URL_PREFIX = "https://www.google.com";
-  private static final String MODERATION_ACCEPTED = "accetped";
+  private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
   
-  /**
-   * YouTubeService has a protected constructor that takes in a URL used for obtaining
-   * authentication tokens. In order to access the moderation feed, we need to use an auth token
-   * requested from the Google Account namespace (instead of the default YouTube namespace), so we
-   * need to use this class to specify a different authentication namespace.
-   */
-  private class YouTubeServiceCustomAuth extends YouTubeService {
-    public YouTubeServiceCustomAuth(String applicationName, String developerId, URL authBaseUrl) {
-      super(applicationName, developerId, authBaseUrl);
-    }
-  }
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -105,28 +93,6 @@ public class YouTubeApiManager {
 
     service = new YouTubeService(clientId);
   }
-  
-  public void useGoogleAccountAuthService() {
-    AdminConfig admingConfig = Util.getAdminConfig();
-    
-    String clientId = admingConfig.getClientId();
-    String developerKey = admingConfig.getDeveloperKey();        
-    
-    if (Util.isNullOrEmpty(clientId)) {    
-      log.warning("clientId settings property is null or empty.");
-    }
-
-    if (Util.isNullOrEmpty(developerKey)) {
-      log.warning("developerKey settings property is null or empty.");
-    }
-    
-    try {
-      service = new YouTubeServiceCustomAuth(clientId, developerKey,
-              new URL(CLIENT_LOGIN_URL_PREFIX));
-    } catch (MalformedURLException e) {
-      log.log(Level.WARNING, "", e);
-    }
-  }
 
   /**
    * Sets the AuthSub token to use for API requests.
@@ -136,16 +102,6 @@ public class YouTubeApiManager {
    */
   public void setToken(String token) {
     service.setAuthSubToken(token);
-  }
-  
-  /**
-   * Set the username and password ClientLogin credentials.
-   * @param username A valid YouTube username.
-   * @param password The password associated with that username.
-   * @throws AuthenticationException 
-   */
-  public void setLoginInfo(String username, String password) throws AuthenticationException {
-    service.setUserCredentials(username, password);
   }
   
   /**
