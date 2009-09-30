@@ -162,6 +162,15 @@
     <servlet-name>ApprovedVideoFeed</servlet-name>
     <url-pattern>/ApprovedVideoFeed</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>MobileAuthSub</servlet-name>
+    <servlet-class>com.google.yaw.MobileAuthSub</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MobileAuthSub</servlet-name>
+    <url-pattern>/MobileAuthSub</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>SubmitExistingVideo</servlet-name>
