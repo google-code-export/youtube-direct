@@ -442,7 +442,7 @@ admin.assign.showAssignmentCreate = function() {
   
   jQuery.ui.dialog.defaults.bgiframe = true; 
   
-  var div = jQuery('#assignmentCreate').clone();  
+  var div = jQuery('#assignmentCreateTemplate').clone();  
   
   var categorySelector = div.find('#assignmentCategories');
   

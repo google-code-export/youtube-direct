@@ -61,13 +61,15 @@ public class ApprovedVideoFeed extends HttpServlet {
       
       query.declareImports("import java.util.Date");      
       query.setOrdering(sortBy + " " + sortOrder);
-      
-      if (filterType > -1) {
-        String filters = "status == " + filterType; 
-        query.setFilter(filters);
-      }
       query.declareParameters("long assignmentId_");
-      query.setFilter("assignmentId == assignmentId_");
+      
+      String filters = "assignmentId == assignmentId_";
+            
+      if (filterType > -1) {
+        filters += "&& status == " + filterType;
+      }                  
+      
+      query.setFilter(filters);
       
       List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute(assignmentId);
                   

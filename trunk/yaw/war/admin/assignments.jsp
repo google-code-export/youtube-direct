@@ -24,7 +24,7 @@
 	<table id="assignmentGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	
 	
-	<div style="display: none;" id="assignmentCreate">	
+	<div style="display: none;" id="assignmentCreateTemplate">	
 		
 	  <div>Category</div> 
 	  <select id="assignmentCategories"></select>

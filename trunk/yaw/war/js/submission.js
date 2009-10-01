@@ -160,6 +160,10 @@ admin.sub.initSubmissionGrid = function() {
         entryId + '") value="download" />';
     jQuery('#submissionGrid').setCell(rowid, 'download', downloadButton);    
     
+    var detailsButton = '<input type="button" onclick=admin.sub.showDetails("' + 
+    entryId + '") value="details" />';
+    jQuery('#submissionGrid').setCell(rowid, 'details', detailsButton);     
+    
     if (rowdata['viewCount'] > 0) {
       var viewCountLink = 
           '<a title="Click to download YouTube Insight data." href="/admin/InsightDownloadRedirect?id=' + 
@@ -265,6 +269,7 @@ admin.sub.initGridModels = function(grid) {
     name : 'notifyEmail',
     index : 'notifyEmail',
     width : 70,
+    hidden : true,
     sorttype : 'string'
   });
 
@@ -355,8 +360,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'preview',
     width : 75,
     align : 'center',
-    sortable : false,
-    sorttype : 'string'
+    sortable : false
   });
 
   grid.colNames.push('Download');
@@ -366,7 +370,7 @@ admin.sub.initGridModels = function(grid) {
     width : 75,
     align : 'center',
     sortable : false,
-    sorttype : 'string'
+    hidden: true
   }); 
   
   grid.colNames.push('Delete');
@@ -376,9 +380,18 @@ admin.sub.initGridModels = function(grid) {
     width : 75,
     align : 'center',
     sortable : false,
-    hidden: true,
-    sorttype : 'string'
+    hidden: true
   });  
+
+  grid.colNames.push('Details');
+  grid.colModel.push( {
+    name : 'details',
+    index : 'details',
+    width : 75,
+    align : 'center',
+    sortable : false,
+    hidden: false
+  });    
   
 };
 
@@ -483,6 +496,47 @@ admin.sub.refreshGridUI = function(entries) {
   for ( var i = 0; i < entries.length; i++) {
     jqGrid.addRowData(i + 1, entries[i]);
   }
+};
+
+admin.sub.showDetails = function(entryId) {
+  var submission = admin.sub.getSubmission(entryId);
+  
+  var mainDiv = jQuery('#submissionDetailsTemplate').clone();   
+  
+  var videoWidth = 255;
+  var videoHeight = 220;  
+  
+  var dialogOptions = {};
+  dialogOptions.title = submission.videoTitle;
+  dialogOptions.width = 700;
+  dialogOptions.height = 500;
+  
+  jQuery.ui.dialog.defaults.bgiframe = true;
+  
+  var videoHtml = admin.sub.getVideoHTML(submission.videoId, videoWidth, videoHeight);
+  
+  mainDiv.css('display', 'block');
+  
+  mainDiv.find('#assignmentId').html(submission.assignmentId);
+  
+  var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
+      new Date(submission.created).toLocaleDateString()
+  
+  mainDiv.find('#submissionCreated').html(created);
+  mainDiv.find('#submissionCreator').html(submission.youtubeName);  
+  mainDiv.find('#submissionTitle').html(submission.videoTitle);
+  mainDiv.find('#submissionDescription').html(submission.videoDescription);
+  mainDiv.find('#submissionTags').html(submission.videoTags);
+  mainDiv.find('#submissionArticleUrl').html('<a target="_blank" href="' + 
+      submission.articleUrl + '">' + 
+      submission.articleUrl + '</a>');  
+  mainDiv.find('#submissionVideoDate').html(
+      submission.videoDate?submission.videoDate:'N/A');
+  mainDiv.find('#submissionVideoLocation').html(
+      submission.videoLocation?submission.videoLocation:'N/A');
+  mainDiv.find('#submissionVideo').html(videoHtml);
+  
+  mainDiv.dialog(dialogOptions);
 };
 
 admin.sub.downloadVideo = function(entryId) {
