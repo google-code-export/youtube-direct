@@ -152,9 +152,12 @@ admin.assign.initAssignmentGrid = function() {
     var entryId = admin.assign.getEntryId(rowid);
 
     var embedButton = '<input type="button" onclick=admin.assign.showEmbedCode("' + 
-    entryId + '") value="embed" />';
-    
+    entryId + '") value="embed" />';    
     jQuery('#assignmentGrid').setCell(rowid, 'embed', embedButton);    
+
+    var playlistButton = '<input type="button" onclick=admin.assign.showPlaylistCode("' + 
+    entryId + '") value="playlist" />';    
+    jQuery('#assignmentGrid').setCell(rowid, 'playlist', playlistButton);        
     
   };
 
@@ -247,7 +250,7 @@ admin.assign.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'status',
     index : 'status',
-    width : 100,
+    width : 90,
     edittype : 'select',
     editable : true,
     editoptions : {
@@ -271,11 +274,14 @@ admin.assign.initGridModels = function(grid) {
     name: 'playlistId', 
     index: 'playlistId', 
     width: 70,
-    searchoptions: {sopt: ['eq', 'ne', 'cn', 'nc']},
-    hidden: true
+    formatter : function(cellvalue, options, rowObject) {
+      var url = 'http://www.youtube.com/view_play_list?p=' + cellvalue;
+      return '<a title="' + url + '" href="' + url + '" target="_blank">link</a>';
+    },    
+    hidden: false
   });
 
-  grid.colNames.push('Embed');
+  grid.colNames.push('Embed Code');
   grid.colModel.push( {
     name : 'embed',
     index : 'embed',
@@ -283,6 +289,15 @@ admin.assign.initGridModels = function(grid) {
     align : 'center',
     sortable : false
   });  
+
+  grid.colNames.push('Playlist Code');
+  grid.colModel.push( {
+    name : 'playlist',
+    index : 'playlist',
+    width : 75,
+    align : 'center',
+    sortable : false
+  });    
   
 };
 
@@ -292,10 +307,8 @@ admin.assign.getSelfUrl = function() {
   return protocol + '//' + host;
 };
 
-admin.assign.showEmbedCode = function(id) {
-  
-  var entry = admin.assign.getAssignment(id); 
-  
+admin.assign.showEmbedCode = function(id) {  
+  var entry = admin.assign.getAssignment(id);   
   jQuery.ui.dialog.defaults.bgiframe = true;
   
   var code = [];
@@ -326,13 +339,58 @@ admin.assign.showEmbedCode = function(id) {
   textarea.html(code);
   
   var dialogOptions = {};
-  dialogOptions.title = 'Embed code';
+  dialogOptions.title = 'Embed Code';
   dialogOptions.width = 400;
   dialogOptions.height = 270;  
    
   textarea.dialog(dialogOptions);
 
 };
+
+admin.assign.showPlaylistCode = function(id) {  
+  var entry = admin.assign.getAssignment(id); 
+  var playlistId = entry.playlistId;
+  
+  jQuery.ui.dialog.defaults.bgiframe = true;
+
+  var width = 480;
+  var height = 385;
+  var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
+
+  var code = [];
+  code.push('<object width="' + width + '" height="' + height + '">\n');
+  code.push('<param name="movie" value="\n');
+  code.push(playlistUrl);
+  code.push('&hl=en&fs=1&">\n');
+  code.push('</param>\n');
+  code.push('<param name="allowFullScreen" value="true"></param>\n');
+  code.push('<param name="allowscriptaccess" value="always"></param>\n');
+  code.push('<embed src="\n');
+  code.push(playlistUrl);
+  code.push('&hl=en&fs=1&" type="application/x-shockwave-flash"\n');
+  code.push(' allowscriptaccess="always" allowfullscreen="true" width="'
+      + width + '" height="' + height + '">\n');
+  code.push('</embed>\n');
+  code.push('</object>\n');  
+  code = code.join('');
+  code = code.replace(/\</g,'&lt;');
+  code = code.replace(/\>/g,'&gt;');  
+  
+  var textarea = jQuery('<textarea cols="80" cols="15"/>');
+  textarea.css('font-size', '11px');
+  textarea.css('color', 'black');
+  textarea.css('border', '0px');
+  textarea.html(code);
+  
+  var dialogOptions = {};
+  dialogOptions.title = 'Playlist Code';
+  dialogOptions.width = 400;
+  dialogOptions.height = 270;  
+   
+  textarea.dialog(dialogOptions);
+
+};
+
 
 admin.assign.formatDate = function(date) {
   var year = admin.assign.padZero(date.getFullYear());
@@ -491,50 +549,6 @@ admin.assign.showAssignmentCreate = function() {
   div.dialog(dialogOptions);    
 };
 
-admin.assign.statusToString = function(status) {
-
-  var newStatus = status;
-
-  if (/^[0-2]$/.test(status)) {
-    switch (status) {
-    case 0:
-      newStatus = 'UNREVIEWED';
-      break;
-    case 1:
-      newStatus = 'APPROVED';
-      break;
-    case 2:
-      newStatus = 'REJECTED';
-      break;
-    }
-  }
-
-  if (newStatus == 'UNREVIEWED') {
-    newStatus = '<b>UNREVIEWED</b>';
-  }
-
-  return newStatus;
-};
-
-admin.assign.stringToStatus = function(str) {
-
-  var status = 0;
-
-  switch (str) {
-  case 'unreviewed':
-    status = 0;
-    break;
-  case 'approved':
-    status = 1;
-    break;
-  case 'rejected':
-    status = 2;
-    break;
-  }
-
-  return status;
-};
-
 admin.assign.getAllAssignments =function(callback) {
   var url = '/admin/GetAllAssignments?sortby=' + admin.assign.sortBy + '&sortorder=' +  
       admin.assign.sortOrder + '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + 
@@ -575,6 +589,29 @@ admin.assign.updateAssignment = function(entry) {
   admin.assign.showLoading(true, 'saving ...');
   jQuery.ajax(ajaxCall);
 
+};
+
+admin.assign.getPlaylistHTML = function(playlistId, width, height) {
+
+  width = width || 250;
+  height = height || 250;
+  var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
+
+  var html = [];
+  html.push('<object width="' + width + '" height="' + height + '">');
+  html.push('<param name="movie" value="');
+  html.push(playlistUrl);
+  html.push('&hl=en&fs=1&"></param>');
+  html.push('<param name="allowFullScreen" value="true"></param>');
+  html.push('<param name="allowscriptaccess" value="always"></param>');
+  html.push('<embed src="');
+  html.push(playlistUrl);
+  html.push('&hl=en&fs=1&" type="application/x-shockwave-flash"');
+  html.push(' allowscriptaccess="always" allowfullscreen="true" width="'
+      + width + '" height="' + height + '">');
+  html.push('</embed></object>');
+  
+  return html.join('');
 };
 
 admin.assign.showLoading = function(status, text) {

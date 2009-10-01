@@ -79,15 +79,6 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>GetOptionsHTML</servlet-name>
-    <servlet-class>com.google.yaw.admin.GetOptionsHTML</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>GetOptionsHTML</servlet-name>
-    <url-pattern>/admin/GetOptionsHTML</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>UpdateSubmission</servlet-name>
     <servlet-class>com.google.yaw.admin.UpdateSubmission</servlet-class>
   </servlet>
