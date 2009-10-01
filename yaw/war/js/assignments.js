@@ -205,14 +205,14 @@ admin.assign.initGridModels = function(grid) {
   grid.colModel.push({
     name: 'id', 
     index: 'id', 
-    width: 70  
+    width: 60  
   });
   
   grid.colNames.push('Description');
   grid.colModel.push({
     name: 'description', 
     index: 'description', 
-    width: 300,
+    width: 280,
     editable: true,
     edittype: 'text',
     editoptions: {rows:'3', cols: '30'},
@@ -269,7 +269,7 @@ admin.assign.initGridModels = function(grid) {
     hidden: true
   });
   
-  grid.colNames.push('Playlist ID');
+  grid.colNames.push('Playlist');
   grid.colModel.push({
     name: 'playlistId', 
     index: 'playlistId', 
@@ -285,7 +285,7 @@ admin.assign.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'embed',
     index : 'embed',
-    width : 75,
+    width : 80,
     align : 'center',
     sortable : false
   });  
@@ -294,7 +294,7 @@ admin.assign.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'playlist',
     index : 'playlist',
-    width : 75,
+    width : 80,
     align : 'center',
     sortable : false
   });    

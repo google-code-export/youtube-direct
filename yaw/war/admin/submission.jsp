@@ -1,4 +1,4 @@
-	<span class="status" id="submissionStatus"></span>
+	<span class="status" id="submissionStatus"></span> 
 	<br>
 	<br>
 	
@@ -27,28 +27,29 @@
 	  	<tr valign="top">
 	  		<td>
 				  <b>Assignment ID:&nbsp;</b><div id="assignmentId"></div><br>
-				  <b>Submitted on:</b><div id="submissionCreated"></div><br>
-				  <b>Submitted by:</b><div id="submissionCreator"></div><br>
-				  <b>Title:</b><div id="submissionTitle"></div><br>
-				  <b>Description: </b><div id="submissionDescription"></div><br>
-				  <b>Tags:</b><div id="submissionTags"></div><br>
-				  <b>Article URL:</b><div id="submissionArticleUrl"></div><br>
-				  <b>Video taken on:</b><div id="submissionVideoDate"></div><br>
-				  <b>Video Location:</b><div id="submissionVideoLocation"></div><br>			  				    			
+				  <b>Submitted on:</b><div id="created"></div><br>
+				  <b>Submitted by:</b><div id="youtubeName"></div><br>
+				  <b>Video ID:</b><div id="videoId"></div><br>
+				  <b>Title:</b><div id="videoTitle"></div><br>
+				  <b>Description: </b><div id="videoDescription"></div><br>
+				  <b>Tags:</b><div id="videoTags"></div><br>
+				  <b>Article URL:</b><div id="articleUrl"></div><br>
+				  <b>Video taken on:</b><div id="videoDate"></div><br>
+				  <b>Video location:</b><div id="videoLocation"></div><br>			  				    			
 	  		</td>
 	  		<td align="left">
-	  			<div id="submissionVideo"></div>
+	  			<div id="video"></div>
 	  			<span>Moderation status: </span>
-				  <select id="submissionStatusType">
+				  <select id="moderationStatus">
 				  	<option value="UNREVIEW" selected>UNREVIEW</option>
 				  	<option value="APPROVED">APPROVED</option>
 				  	<option value="REJECTED">REJECTED</option>
 				  	<option value="SPAM">SPAM</option>
 				  </select>  
 					<br><br><br>								  						   			
-					<div><b>Notes:</b></div>
-					<textarea cols="35" rows="5" id=""></textarea><br>				
-					<input id="saveNotes" type="button" value="Save Notes"/>	
+					<div><b>Admin notes:</b></div>
+					<textarea cols="35" rows="5" id="adminNotes"></textarea><br>				
+					<input id="saveAdminNotes" type="button" value="Save Notes"/>	
 	  		</td>	  		
 	  	</tr>
 	  </table>	  	  		
