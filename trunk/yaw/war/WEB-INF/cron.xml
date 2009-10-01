@@ -5,10 +5,4 @@
     <description>Syncs local datastore metadata with authoritative version from YouTube API.</description>
     <schedule>every 2 minutes</schedule>
   </cron>
-  
-    <cron>
-    <url>/admin/UpdatePlaylists</url>
-    <description>Creates or updates playlists in the configured YouTube account. There is one playlist per assignment, and each playlist consists of all approved videos.</description>
-    <schedule>every 2 minutes</schedule>
-  </cron>
 </cronentries>

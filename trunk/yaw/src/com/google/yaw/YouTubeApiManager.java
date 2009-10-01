@@ -24,6 +24,7 @@ import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.PlaylistEntry;
+import com.google.gdata.data.youtube.PlaylistFeed;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
@@ -244,13 +245,42 @@ public class YouTubeApiManager {
     return null;
   }
   
+  public PlaylistEntry getVideoInPlaylist(String playlistId, String videoId) {
+    String playlistUrl = getPlaylistFeedUrl(playlistId);
+
+    try {
+      PlaylistFeed playlistFeed = service.getFeed(new URL(playlistUrl), PlaylistFeed.class);
+
+      // TODO: Is there a better way to find the video in the playlist than O(n) looping?
+      for(PlaylistEntry playlistEntry : playlistFeed.getEntries()) {
+        if (playlistEntry.getMediaGroup().getVideoId().equals(videoId)) {
+          return playlistEntry;
+        }
+      }
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
+      log.log(Level.WARNING, "", e);
+    }
+
+    return null;
+  }
+  
   public boolean insertVideoIntoPlaylist(String playlistId, String videoId) {
     VideoEntry videoEntry = getVideoEntry(videoId);
     
     if (videoEntry != null) {
       PlaylistEntry playlistEntry = new PlaylistEntry(videoEntry);
       
-      //TODO: Check to make sure video isn't already in playlist?
+      if(getVideoInPlaylist(playlistId, videoId) != null) {
+        log.warning(String.format("Video id '%s' is already in playlist id '%s'.", videoId,
+                playlistId));
+        // Return true here, so that the video is flagged as being in the playlist.
+        return true;
+      }
       
       try {
         service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
@@ -274,6 +304,34 @@ public class YouTubeApiManager {
     return false;
   }
   
+  public boolean removeVideoFromPlaylist(String playlistId, String videoId) {
+    try {
+      PlaylistEntry playlistEntry = getVideoInPlaylist(playlistId, videoId);
+
+      if (playlistEntry == null) {
+        log.warning(String.format("Could not find video id '%s' in playlist id '%s'.", videoId,
+                playlistId));
+        return false;
+      } else {
+        playlistEntry.delete();
+
+        log.info(String.format("Removed video id '%s' from playlist id '%s'.", videoId,
+                playlistId));
+
+        return true;
+      }
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
+      log.log(Level.WARNING, "", e);
+    }
+
+    return false;
+  }
+  
   public String getPlaylistFeedUrl(String playlistId) {
     return String.format(PLAYLIST_ENTRY_URL_FORMAT, playlistId);
   }
@@ -294,8 +352,6 @@ public class YouTubeApiManager {
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
     } catch (ServiceException e) {
-      // This may be thrown if the video is not found, i.e. because it is not done processing.
-      // We don't need to log it at WARNING level.
       //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
       log.log(Level.WARNING, "", e);
     }

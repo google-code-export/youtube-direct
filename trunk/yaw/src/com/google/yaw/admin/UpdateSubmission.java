@@ -20,6 +20,7 @@ import com.google.gdata.util.ServiceException;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.AdminConfig;
+import com.google.yaw.model.Assignment;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.AdminConfig.BrandingModeType;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
@@ -84,20 +85,30 @@ public class UpdateSubmission extends HttpServlet {
         }
       }
       
+      YouTubeApiManager adminApiManager = new YouTubeApiManager();
+      String token = adminConfig.getYouTubeAuthSubToken();
+      if (Util.isNullOrEmpty(token)) {
+        log.warning(String.format("No AuthSub token found in admin config."));
+      } else {
+        adminApiManager.setToken(token);
+      }
+      
       // We can only update moderation for videos that were uploaded with our developer key.
       if (entry.getVideoSource() == VideoSource.NEW_UPLOAD &&
               adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
-        // Create a new API manager in this step because swapping out credentials in the same
-        // instance doesn't work, and we need to use the credentials of the account that owns the
-        // developer token used to upload the video.
-        YouTubeApiManager apiManager = new YouTubeApiManager();
-        String token = adminConfig.getYouTubeAuthSubToken();
-        if (Util.isNullOrEmpty(token)) {
-          log.warning(String.format("No AuthSub token found in admin config, so can't set the " +
-          		"moderation of video id '%s' to '%s'.", entry.getVideoId(), newStatus.toString()));
-        } else {
-          apiManager.setToken(token);
-          apiManager.updateModeration(entry.getVideoId(), newStatus == ModerationStatus.APPROVED);
+          adminApiManager.updateModeration(entry.getVideoId(),
+                  newStatus == ModerationStatus.APPROVED);
+      }
+      
+      if (newStatus == ModerationStatus.APPROVED && !entry.isInPlaylist()) {
+        // If this video is approved and it's not yet in a playlist, add it.
+        if(addToPlaylist(adminApiManager, entry)) {
+          entry.setIsInPlaylist(true);
+        }
+      } else if (newStatus != ModerationStatus.APPROVED && entry.isInPlaylist()) {
+        // If this video is not approved but it's in a playlist, remove it.
+        if(removeFromPlaylist(adminApiManager, entry)) {
+          entry.setIsInPlaylist(false);
         }
       }
 
@@ -177,5 +188,63 @@ public class UpdateSubmission extends HttpServlet {
     }
     
     return null;
+  }
+  
+  /**
+   * Adds a video to a YouTube playlist corresponding to the video's assignment.
+   * 
+   * @param apiManager The YouTubeApiManager instance to handle YouTube API calls.
+   * @param videoSubmission The video to add.
+   * @return true if the video was added; false otherwise.
+   */
+  private boolean addToPlaylist(YouTubeApiManager apiManager, VideoSubmission videoSubmission) {
+    long assignmentId = videoSubmission.getAssignmentId();
+    Assignment assignment = Util.getAssignmentById(assignmentId);
+
+    if (assignment == null) {
+      log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
+              videoSubmission.getId()));
+      return false;
+    }
+    
+    String playlistId = assignment.getPlaylistId();
+    if (Util.isNullOrEmpty(playlistId)) {
+      log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+              assignmentId));
+      return false;
+    }
+
+    //TODO: A playlist can have at most 200 videos. There needs to be a way to check for failures
+    // due to too many videos, and prevent continuously trying to add the same video to the same
+    // full playlist.
+    return apiManager.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
+  }
+  
+  /**
+   * Removes a video from a YouTube playlist corresponding to the video's assignment.
+   * 
+   * @param apiManager The YouTubeApiManager instance to handle YouTube API calls.
+   * @param videoSubmission The video to remove.
+   * @return true if the video was removed; false otherwise.
+   */
+  private boolean removeFromPlaylist(YouTubeApiManager apiManager,
+          VideoSubmission videoSubmission) {
+    long assignmentId = videoSubmission.getAssignmentId();
+    Assignment assignment = Util.getAssignmentById(assignmentId);
+    
+    if (assignment == null) {
+      log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
+              videoSubmission.getId()));
+      return false;
+    }
+    
+    String playlistId = assignment.getPlaylistId();
+    if (Util.isNullOrEmpty(playlistId)) {
+      log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+              assignmentId));
+      return false;
+    }
+    
+    return apiManager.removeVideoFromPlaylist(playlistId, videoSubmission.getVideoId());
   }
 }

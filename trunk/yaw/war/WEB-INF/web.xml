@@ -41,15 +41,6 @@
     <servlet-name>InsightDownloadRedirect</servlet-name>
     <url-pattern>/admin/InsightDownloadRedirect</url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UpdatePlaylists</servlet-name>
-    <servlet-class>com.google.yaw.admin.UpdatePlaylists</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UpdatePlaylists</servlet-name>
-    <url-pattern>/admin/UpdatePlaylists</url-pattern>
-  </servlet-mapping>
   
   <servlet>
     <servlet-name>VideoDownloadRedirect</servlet-name>
@@ -130,15 +121,6 @@
   <servlet-mapping>
     <servlet-name>UpdateAssignment</servlet-name>
     <url-pattern>/admin/UpdateAssignment</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>MutateAssignment</servlet-name>
-    <servlet-class>com.google.yaw.admin.MutateAssignment</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>MutateAssignment</servlet-name>
-    <url-pattern>/admin/MutateAssignment</url-pattern>
   </servlet-mapping>
 
   <servlet>

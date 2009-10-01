@@ -349,7 +349,7 @@ public class VideoSubmission implements Serializable {
     this.viewCount = viewCount;
   }
   
-  public boolean getIsInPlaylist() {
+  public boolean isInPlaylist() {
     return isInPlaylist;
   }
   
