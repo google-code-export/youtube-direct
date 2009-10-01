@@ -509,7 +509,7 @@ admin.sub.showDetails = function(entryId) {
   var dialogOptions = {};
   dialogOptions.title = submission.videoTitle;
   dialogOptions.width = 700;
-  dialogOptions.height = 500;
+  dialogOptions.height = 580;
   
   jQuery.ui.dialog.defaults.bgiframe = true;
   
@@ -522,19 +522,40 @@ admin.sub.showDetails = function(entryId) {
   var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
       new Date(submission.created).toLocaleDateString()
   
-  mainDiv.find('#submissionCreated').html(created);
-  mainDiv.find('#submissionCreator').html(submission.youtubeName);  
-  mainDiv.find('#submissionTitle').html(submission.videoTitle);
-  mainDiv.find('#submissionDescription').html(submission.videoDescription);
-  mainDiv.find('#submissionTags').html(submission.videoTags);
-  mainDiv.find('#submissionArticleUrl').html('<a target="_blank" href="' + 
+  mainDiv.find('#created').html(created);
+  
+  var creatorInfo = submission.youtubeName + 
+      (submission.notifyEmail?' (' + submission.notifyEmail +')':'');  
+  
+  mainDiv.find('#youtubeName').html(creatorInfo);  
+  mainDiv.find('#videoId').html(
+      '<a target="_blank" href="http://www.youtube.com/watch?v=' + 
+      submission.videoId + '">' + 
+      submission.videoId + '</a>');    
+  mainDiv.find('#videoTitle').html(submission.videoTitle);
+  mainDiv.find('#videoDescription').html(submission.videoDescription);
+  mainDiv.find('#videoTags').html(submission.videoTags);
+  mainDiv.find('#articleUrl').html('<a target="_blank" href="' + 
       submission.articleUrl + '">' + 
       submission.articleUrl + '</a>');  
-  mainDiv.find('#submissionVideoDate').html(
+  mainDiv.find('#videoDate').html(
       submission.videoDate?submission.videoDate:'N/A');
-  mainDiv.find('#submissionVideoLocation').html(
+  mainDiv.find('#videoLocation').html(
       submission.videoLocation?submission.videoLocation:'N/A');
-  mainDiv.find('#submissionVideo').html(videoHtml);
+  mainDiv.find('#video').html(videoHtml);
+  
+  mainDiv.find('#moderationStatus').get(0).selectedIndex = submission.status;  
+  mainDiv.find('#moderationStatus').change(function() {
+    submission.status = mainDiv.find('#moderationStatus').get(0).selectedIndex;
+    admin.sub.updateSubmission(submission);
+  });    
+  
+  mainDiv.find('#adminNotes').html(submission.adminNotes);
+  
+  mainDiv.find('#saveAdminNotes').click(function() {
+    submission.adminNotes = mainDiv.find('#adminNotes').val();
+    admin.sub.updateSubmission(submission);
+  });
   
   mainDiv.dialog(dialogOptions);
 };
@@ -664,6 +685,7 @@ admin.sub.updateSubmission = function(entry) {
   ajaxCall.processData = false;
   ajaxCall.success = function(res) {
     admin.sub.showLoading(false);
+    admin.sub.refreshGrid();
   };
 
   admin.sub.showLoading(true, 'saving ...');

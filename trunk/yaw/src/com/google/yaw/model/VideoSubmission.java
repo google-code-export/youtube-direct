@@ -79,6 +79,10 @@ public class VideoSubmission implements Serializable {
   
   @Expose
   @Persistent
+  private String adminNotes = null;  
+  
+  @Expose
+  @Persistent
   private Date created;
 
   @Persistent
@@ -355,5 +359,13 @@ public class VideoSubmission implements Serializable {
   
   public void setIsInPlaylist(boolean isInPlaylist) {
     this.isInPlaylist = isInPlaylist;
+  }
+
+  public void setAdminNotes(String adminNotes) {
+    this.adminNotes = adminNotes;
+  }
+
+  public String getAdminNotes() {
+    return adminNotes;
   }
 }

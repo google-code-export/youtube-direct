@@ -64,12 +64,14 @@ public class UpdateSubmission extends HttpServlet {
         Util.sendNotificationEmail(entry, newStatus);
       }
       
+      //Mutates all the entry attributes
       entry.setStatus(jsonObj.getStatus());
+      entry.setAdminNotes(jsonObj.getAdminNotes());
       entry.setVideoTitle(jsonObj.getVideoTitle());
       entry.setVideoDescription(jsonObj.getVideoDescription());
       entry.setVideoTags(jsonObj.getVideoTags());
-      entry.setUpdated(new Date());
-
+      entry.setUpdated(new Date());            
+      
       //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
       if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal() &&
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
