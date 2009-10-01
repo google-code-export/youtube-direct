@@ -17,12 +17,14 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.google.gson.JsonParseException;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.AdminConfig.BrandingModeType;
+import com.google.yaw.model.Assignment.AssignmentStatus;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import com.google.yaw.model.VideoSubmission.VideoSource;
 
@@ -35,32 +37,54 @@ public class UpdateAssignment extends HttpServlet {
   @SuppressWarnings("cast")
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
-    PersistenceManager pm = pmf.getPersistenceManager();
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
 
     try {
       String json = Util.getPostBody(req);
-
-      Assignment entry = null;
+      if (Util.isNullOrEmpty(json)) {
+        throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
+      }
 
       Assignment jsonObj = Util.GSON.fromJson(json, Assignment.class);
-
       long id = jsonObj.getId();
-
-      entry = (Assignment) pm.getObjectById(Assignment.class, id);
-      entry.setStatus(jsonObj.getStatus());
-      entry.setDescription(jsonObj.getDescription());
-      entry.setCategory(jsonObj.getCategory());
+      Assignment assignment = (Assignment) pm.getObjectById(Assignment.class, id);
       
-      pm.makePersistent(entry);
+      // If the updated assignment's status is ACTIVE and the existing assignment doesn't already
+      // have a playlist, create one.
+      if (jsonObj.getStatus() == AssignmentStatus.ACTIVE &&
+              Util.isNullOrEmpty(assignment.getPlaylistId())) {
+        YouTubeApiManager apiManager = new YouTubeApiManager();
+        
+        AdminConfig adminConfig = Util.getAdminConfig();
+        String token = adminConfig.getYouTubeAuthSubToken();
+        if (Util.isNullOrEmpty(token)) {
+          log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
+              " YouTube AuthSub token was found in the config.", assignment.getDescription()));
+        } else {
+          apiManager.setToken(token);
+          String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+                  assignment.getId()), assignment.getDescription());
+          
+          assignment.setPlaylistId(playlistId);
+        }
+      }
+      
+      assignment.setStatus(jsonObj.getStatus());
+      assignment.setDescription(jsonObj.getDescription());
+      assignment.setCategory(jsonObj.getCategory());
+      
+      pm.makePersistent(assignment);
+      
+      log.info(String.format("Updated assignment id %d in the datastore.", assignment.getId()));
 
       resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(entry));      
-
-      pm.makePersistent(entry);
-
-      resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(entry));
+      resp.getWriter().println(Util.GSON.toJson(assignment));
+    } catch (JsonParseException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
       pm.close();
     }
