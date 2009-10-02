@@ -27,7 +27,7 @@ admin.config.init = function() {
     }
     
     if (data.youTubeAuthSubToken && data.youTubeUsername) {
-      jQuery('#youTubeUsername').html("Authenticated as <a href='http://youtube.com/" + data.youTubeUsername + "'>" + data.youTubeUsername + "</b>");
+      jQuery('#youTubeUsername').html("Authenticated as <a href='http://youtube.com/" + data.youTubeUsername + "'>" + data.youTubeUsername + "</a>");
       jQuery('#authenticateButton').val("Re-Authenticate");
     }
   });
