@@ -55,7 +55,6 @@ public class NewAssignment extends HttpServlet {
           apiManager.setToken(token);
           String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
                   assignment.getId()), assignment.getDescription());
-          
           assignment.setPlaylistId(playlistId);
           
           // Persist again with the updated playlist id.

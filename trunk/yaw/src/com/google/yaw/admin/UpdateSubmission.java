@@ -43,14 +43,14 @@ public class UpdateSubmission extends HttpServlet {
 
       VideoSubmission entry = null;
 
-      VideoSubmission jsonObj = Util.GSON.fromJson(json, VideoSubmission.class);
+      VideoSubmission incomingEntry = Util.GSON.fromJson(json, VideoSubmission.class);
 
-      String id = jsonObj.getId();
+      String id = incomingEntry.getId();
 
       entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
 
       ModerationStatus currentStatus = entry.getStatus();
-      ModerationStatus newStatus = jsonObj.getStatus();
+      ModerationStatus newStatus = incomingEntry.getStatus();
 
       boolean hasEmail = !Util.isNullOrEmpty(entry.getNotifyEmail());
       
@@ -64,12 +64,9 @@ public class UpdateSubmission extends HttpServlet {
         Util.sendNotificationEmail(entry, newStatus);
       }
       
-      //Mutates all the entry attributes
-      entry.setStatus(jsonObj.getStatus());
-      entry.setAdminNotes(jsonObj.getAdminNotes());
-      entry.setVideoTitle(jsonObj.getVideoTitle());
-      entry.setVideoDescription(jsonObj.getVideoDescription());
-      entry.setVideoTags(jsonObj.getVideoTags());
+      //Mutates all the entry attributes with the incoming entry attributes
+      entry.setStatus(incomingEntry.getStatus());
+      entry.setAdminNotes(incomingEntry.getAdminNotes());
       entry.setUpdated(new Date());            
       
       //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
@@ -96,24 +93,26 @@ public class UpdateSubmission extends HttpServlet {
       }
       
       // We can only update moderation for videos that were uploaded with our developer key.
-      if (entry.getVideoSource() == VideoSource.NEW_UPLOAD &&
+      if (currentStatus != newStatus && entry.getVideoSource() == VideoSource.NEW_UPLOAD &&
               adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
           adminApiManager.updateModeration(entry.getVideoId(),
                   newStatus == ModerationStatus.APPROVED);
       }
       
-      if (newStatus == ModerationStatus.APPROVED && !entry.isInPlaylist()) {
-        // If this video is approved and it's not yet in a playlist, add it.
-        if(addToPlaylist(adminApiManager, entry)) {
-          entry.setIsInPlaylist(true);
-        }
-      } else if (newStatus != ModerationStatus.APPROVED && entry.isInPlaylist()) {
-        // If this video is not approved but it's in a playlist, remove it.
-        if(removeFromPlaylist(adminApiManager, entry)) {
-          entry.setIsInPlaylist(false);
+      // Initiate playlist update only if there is a change in moderation status
+      if (currentStatus != newStatus) {      
+        if (newStatus == ModerationStatus.APPROVED && !entry.isInPlaylist()) {
+          // If this video is approved and it's not yet in a playlist, add it.
+          if(addToPlaylist(adminApiManager, entry)) {
+            entry.setIsInPlaylist(true);
+          }
+        } else if (newStatus != ModerationStatus.APPROVED && entry.isInPlaylist()) {
+          // If this video is not approved but it's in a playlist, remove it.
+          if(removeFromPlaylist(adminApiManager, entry)) {
+            entry.setIsInPlaylist(false);
+          }
         }
       }
-
       pm.makePersistent(entry);
       // FullTextIndexer.addIndex(entry, entry.getClass());
       // FullTextIndexer.reIndex();

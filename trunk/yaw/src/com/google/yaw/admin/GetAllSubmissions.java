@@ -26,7 +26,7 @@ public class GetAllSubmissions extends HttpServlet {
     String sortOrder = "desc";
     int pageIndex = 1;
     int pageSize = 10;    
-    int filterType = -1; // all
+    String filterType = "ALL";
     
     if (req.getParameter("sortby") != null) {      
       sortBy = req.getParameter("sortby");
@@ -45,7 +45,7 @@ public class GetAllSubmissions extends HttpServlet {
     }    
 
     if (req.getParameter("filtertype") != null) {      
-      filterType = Integer.parseInt(req.getParameter("filtertype"));
+      filterType = req.getParameter("filtertype");
     }        
     
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
@@ -54,15 +54,16 @@ public class GetAllSubmissions extends HttpServlet {
     try {
       Query query = pm.newQuery(VideoSubmission.class);
       
-      query.declareImports("import java.util.Date");      
+      query.declareImports("import java.util.Date");  
+      query.declareParameters("String filterType");
       query.setOrdering(sortBy + " " + sortOrder);
       
-      if (filterType > -1) {
-        String filters = "status == " + filterType; 
+      if (!filterType.equals("ALL")) {
+        String filters = "status == filterType"; 
         query.setFilter(filters);
       }
       
-      List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute();
+      List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute(filterType);
                   
       int totalSize = videoEntries.size();
       int totalPages = (int) Math.ceil(((double)totalSize/(double)pageSize));
