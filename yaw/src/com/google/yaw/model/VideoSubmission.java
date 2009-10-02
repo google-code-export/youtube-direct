@@ -106,7 +106,7 @@ public class VideoSubmission implements Serializable {
   
   @Expose
   @Persistent
-  private int status;
+  private ModerationStatus status;
 
   public enum VideoSource {
     NEW_UPLOAD, EXISTING_VIDEO
@@ -114,7 +114,7 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
-  private int videoSource;  
+  private VideoSource videoSource;  
   
 
   /**
@@ -162,7 +162,7 @@ public class VideoSubmission implements Serializable {
    * @return The enumeration value representing this submission's status.
    */
   public ModerationStatus getStatus() {
-    return ModerationStatus.values()[status];
+    return this.status;
   }
 
   /**
@@ -172,15 +172,15 @@ public class VideoSubmission implements Serializable {
    *          The new status.
    */
   public void setStatus(ModerationStatus status) {
-    this.status = status.ordinal();
+    this.status = status;
   }
 
   public VideoSource getVideoSource() {
-    return VideoSource.values()[videoSource];
+    return this.videoSource;
   }
   
   public void setVideoSource(VideoSource videoSource) {
-    this.videoSource = videoSource.ordinal();
+    this.videoSource = videoSource;
   }  
   
   /**
@@ -299,10 +299,6 @@ public class VideoSubmission implements Serializable {
   }
   public void setUpdated(Date updated) {
     this.updated = updated;
-  }
-
-  public void setStatus(int status) {
-    this.status = status;
   }
 
   public String getArticleUrl() {

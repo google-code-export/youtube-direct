@@ -12,7 +12,7 @@ admin.assign.sortBy = 'created';
 admin.assign.sortOrder = 'desc';
 admin.assign.pageIndex = 1; 
 admin.assign.pageSize = 20; 
-admin.assign.filterType = -1; // all
+admin.assign.filterType = 'ALL';
 
 admin.assign.init = function() {
   admin.assign.initAssignmentGrid();  
@@ -52,20 +52,7 @@ admin.assign.setupLabelFilter = function(label) {
     label.css('background', '#a6c9e2');
     label.css('color', 'black');     
     
-    switch (label.html()) {
-      case 'ALL':
-        admin.assign.filterType = -1;   
-        break; 
-      case 'PENDING':
-        admin.assign.filterType = 0;
-        break;
-      case 'ACTIVE':
-        admin.assign.filterType = 1;
-        break;
-      case 'ARCHIVED':
-        admin.assign.filterType = 2;
-        break;      
-    }    
+    admin.assign.filterType = label.html();
           
     // reset the page index to first page
     admin.assign.pageIndex = 1;
@@ -230,7 +217,7 @@ admin.assign.initGridModels = function(grid) {
       }
     }
     return ret;
-  })(admin.assign.ytCategories)
+  })(admin.assign.ytCategories);
   
   grid.colNames.push('Category');
   grid.colModel.push( {
@@ -446,16 +433,16 @@ admin.assign.refreshGrid = function() {
     var captionTitle = null;
     
     switch(admin.assign.filterType) {
-      case -1:
+      case 'ALL':
         captionTitle = 'All Assignments';   
         break;
-      case 0:
+      case 'PENDING':
         captionTitle = 'Pending Assignments';
         break;
-      case 1:
+      case 'ACTIVE':
         captionTitle = 'Active Assignments';
         break;
-      case 2:
+      case 'ARCHIVED':
         captionTitle = 'Archived Assignments';
         break;  
     }
@@ -554,7 +541,7 @@ admin.assign.getAllAssignments =function(callback) {
       admin.assign.sortOrder + '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + 
       admin.assign.pageSize;
 
-  if (admin.assign.filterType > -1) {
+  if (admin.assign.filterType != 'ALL') {
     url += '&filtertype=' + admin.assign.filterType;
   }  
   
@@ -584,6 +571,7 @@ admin.assign.updateAssignment = function(entry) {
   ajaxCall.processData = false;
   ajaxCall.success = function(res) {
     admin.assign.showLoading(false);
+    admin.assign.refreshGrid();
   };
 
   admin.assign.showLoading(true, 'saving ...');

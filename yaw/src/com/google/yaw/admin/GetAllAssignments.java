@@ -27,7 +27,7 @@ public class GetAllAssignments extends HttpServlet {
     String sortOrder = "desc";
     int pageIndex = 1;
     int pageSize = 10;    
-    int filterType = -1; // all
+    String filterType = "ALL";
     
     if (req.getParameter("sortby") != null) {      
       sortBy = req.getParameter("sortby");
@@ -46,7 +46,7 @@ public class GetAllAssignments extends HttpServlet {
     }    
 
     if (req.getParameter("filtertype") != null) {      
-      filterType = Integer.parseInt(req.getParameter("filtertype"));
+      filterType = req.getParameter("filtertype");
     }       
     
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
@@ -56,30 +56,15 @@ public class GetAllAssignments extends HttpServlet {
       Query query = pm.newQuery(Assignment.class);
       
       query.declareImports("import java.util.Date");
-      query.declareParameters("String filterLabel");
+      query.declareParameters("String filterType");
       query.setOrdering(sortBy + " " + sortOrder);
       
-      String filterLabel = null;
-      
-      if (filterType > -1) {        
-        
-        switch(filterType) {
-          case 0:
-            filterLabel = "PENDING";
-            break;
-          case 1:
-            filterLabel = "ACTIVE";
-            break;
-          case 2:
-            filterLabel = "ARCHIVED";
-            break;            
-        }        
-        
-        String filters = "status == filterLabel"; 
+      if (!filterType.equals("ALL")) {                
+        String filters = "status == filterType"; 
         query.setFilter(filters);
       }
       
-      List<Assignment> assignments = (List<Assignment>) query.execute(filterLabel);
+      List<Assignment> assignments = (List<Assignment>) query.execute(filterType);
                   
       int totalSize = assignments.size();
       int totalPages = (int) Math.ceil(((double)totalSize/(double)pageSize));

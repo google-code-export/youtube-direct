@@ -45,13 +45,13 @@ public class UpdateAssignment extends HttpServlet {
         throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
       }
 
-      Assignment jsonObj = Util.GSON.fromJson(json, Assignment.class);
-      long id = jsonObj.getId();
+      Assignment incomingEntry = Util.GSON.fromJson(json, Assignment.class);
+      long id = incomingEntry.getId();
       Assignment assignment = (Assignment) pm.getObjectById(Assignment.class, id);
       
       // If the updated assignment's status is ACTIVE and the existing assignment doesn't already
       // have a playlist, create one.
-      if (jsonObj.getStatus() == AssignmentStatus.ACTIVE &&
+      if (incomingEntry.getStatus() == AssignmentStatus.ACTIVE &&
               Util.isNullOrEmpty(assignment.getPlaylistId())) {
         YouTubeApiManager apiManager = new YouTubeApiManager();
         
@@ -69,9 +69,9 @@ public class UpdateAssignment extends HttpServlet {
         }
       }
       
-      assignment.setStatus(jsonObj.getStatus());
-      assignment.setDescription(jsonObj.getDescription());
-      assignment.setCategory(jsonObj.getCategory());
+      assignment.setStatus(incomingEntry.getStatus());
+      assignment.setDescription(incomingEntry.getDescription());
+      assignment.setCategory(incomingEntry.getCategory());
       
       pm.makePersistent(assignment);
       

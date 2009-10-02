@@ -9,7 +9,7 @@ admin.sub.sortBy = 'created';
 admin.sub.sortOrder = 'desc';
 admin.sub.pageIndex = 1; 
 admin.sub.pageSize = 20; 
-admin.sub.filterType = -1; // ALL
+admin.sub.filterType = 'ALL';
 
 admin.sub.init = function() {
   admin.sub.initSubmissionGrid();  
@@ -44,23 +44,7 @@ admin.sub.setupLabelFilter = function(label) {
     label.css('background', '#a6c9e2');
     label.css('color', 'black');     
     
-    switch (label.html()) {
-      case 'ALL':
-        admin.sub.filterType = -1;   
-        break; 
-      case 'UNREVIEWED':
-        admin.sub.filterType = 0;
-        break;
-      case 'APPROVED':
-        admin.sub.filterType = 1;
-        break;
-      case 'REJECTED':
-        admin.sub.filterType = 2;
-        break;          
-      case 'SPAM':
-        admin.sub.filterType = 3;   
-        break;        
-    }    
+    admin.sub.filterType = label.html();
           
     // reset the page index to first page
     admin.sub.pageIndex = 1;
@@ -298,7 +282,8 @@ admin.sub.initGridModels = function(grid) {
     index : 'videoTags',
     width : 100,
     edittype : 'text',
-    sorttype : 'string'
+    sorttype : 'string',
+    hidden: true
   });
   
   grid.colNames.push('View Count');
@@ -307,6 +292,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'viewCount',
     width : 80,
     sorttype : 'int',
+    hidden: true,
     formatter : function(cellvalue, options, rowObject) {
       if (cellvalue < 0) {
         return 'no data';
@@ -321,20 +307,8 @@ admin.sub.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'videoSource',
     index : 'videoSource',
-    width : 100,
+    width : 110,
     edittype : 'text',
-    formatter : function(cellvalue, options, rowObject) {
-      var ret = null;
-      switch (cellvalue) {
-      case 0:
-        ret = 'New Upload';
-        break;
-      case 1:
-        ret = 'Existing Video';
-        break;
-      }      
-      return ret;
-    },
     sorttype : 'string'
   });
   
@@ -346,10 +320,7 @@ admin.sub.initGridModels = function(grid) {
     edittype : 'select',
     editable : true,
     editoptions : {
-      value : '0:UNREVIEWED;1:APPROVED;2:REJECTED;3:SPAM'
-    },
-    formatter : function(cellvalue, options, rowObject) {
-      return admin.sub.statusToString(cellvalue);
+      value : 'UNREVIEWED:UNREVIEWED;APPROVED:APPROVED;REJECTED:REJECTED;SPAM:SPAM'
     },
     sorttype : 'string'
   });
@@ -449,19 +420,19 @@ admin.sub.refreshGrid = function() {
     var captionTitle = null;
     
     switch(admin.sub.filterType) {
-      case -1:
+      case 'ALL':
         captionTitle = 'All Submissions';   
         break;
-      case 0:
+      case 'UNREVIEWED':
         captionTitle = 'Unreview Submissions';
         break;
-      case 1:
+      case 'APPROVED':
         captionTitle = 'Approved Submissions';
         break;
-      case 2:
+      case 'REJECTED':
         captionTitle = 'Rejected Submissions';
         break;
-      case 3:
+      case 'SPAM':
         captionTitle = 'Spam Submissions';
         break;        
     }
@@ -544,9 +515,38 @@ admin.sub.showDetails = function(entryId) {
       submission.videoLocation?submission.videoLocation:'N/A');
   mainDiv.find('#video').html(videoHtml);
   
-  mainDiv.find('#moderationStatus').get(0).selectedIndex = submission.status;  
+  var moderationStatus = -1;
+  switch(submission.status) {
+    case 'UNREVIEWED':
+      moderationStatus = 0;
+      break;
+    case 'APPROVED':
+      moderationStatus = 1;
+      break;
+    case 'REJECTED':
+      moderationStatus = 2;
+      break;
+    case 'SPAM':
+      moderationStatus = 3;
+      break;      
+  }
+    
+  mainDiv.find('#moderationStatus').get(0).selectedIndex = moderationStatus;  
   mainDiv.find('#moderationStatus').change(function() {
-    submission.status = mainDiv.find('#moderationStatus').get(0).selectedIndex;
+    switch(mainDiv.find('#moderationStatus').get(0).selectedIndex) {
+      case 0:
+        submission.status = 'UNREVIEWED';
+        break;
+      case 1:
+        submission.status = 'APPROVED';
+        break;
+      case 2:
+        submission.status = 'REJECTED';
+        break;
+      case 3:
+        submission.status = 'SPAM';
+        break;        
+    }
     admin.sub.updateSubmission(submission);
   });    
   
@@ -601,63 +601,14 @@ admin.sub.previewVideo = function(entryId) {
   div.dialog(dialogOptions);
 };
 
-admin.sub.statusToString = function(status) {
-
-  var newStatus = status;
-
-  if (/^\d$/.test(status)) {
-    switch (status) {
-    case 0:
-      newStatus = 'UNREVIEWED';
-      break;
-    case 1:
-      newStatus = 'APPROVED';
-      break;
-    case 2:
-      newStatus = 'REJECTED';
-      break;
-    case 3:
-      newStatus = 'SPAM';
-      break;      
-    }
-  }
-
-  if (newStatus == 'UNREVIEWED') {
-    newStatus = '<b>UNREVIEWED</b>';
-  }
-
-  return newStatus;
-};
-
-admin.sub.stringToStatus = function(str) {
-
-  var status = 0;
-
-  switch (str) {
-  case 'unreviewed':
-    status = 0;
-    break;
-  case 'approved':
-    status = 1;
-    break;
-  case 'rejected':
-    status = 2;
-    break;
-  case 'spam':
-    status = 3;
-    break;    
-  }
-
-  return status;
-};
-
 admin.sub.getAllSubmissions =function(callback) {
   var url = '/admin/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
       '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize;
   
-  if (admin.sub.filterType > -1) {
+  if (admin.sub.filterType != 'ALL') {
     url += '&filtertype=' + admin.sub.filterType;
   }
+  //console.log(url);
   
   var ajaxCall = {};
   ajaxCall.cache = false;
