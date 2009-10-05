@@ -66,7 +66,7 @@ body {
 	text-align: right;
 	width: 150px;
 	padding-top: 3px;
-	padding-right: 10px;
+	padding-right: 25px;
 }
 
 div.clear {
@@ -98,6 +98,8 @@ fieldset {
   width: 600px;
   background: #eaf4fd;
   margin: 20px;
+  float: left;
+  clear: left;
 }
 
 fieldset legend {
@@ -116,7 +118,7 @@ fieldset legend {
 
 #authenticateButton {
   float: right;
-  margin-right: 120px;
+  margin-right: 70px;
 }
 
 #youTubeUsername {
