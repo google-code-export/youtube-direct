@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.ServiceException;
+import com.google.yaw.model.UserAuthToken;
 import com.google.yaw.model.UserSession;
 
 /**
@@ -58,6 +59,15 @@ public class AuthSubHandler extends HttpServlet {
       }
       userSession.addMetaData("youTubeName", youTubeName);
       UserSessionManager.save(userSession);
+      
+      // Create or update the UserAuthToken entry, which maps a username to an AuthSub token.
+      UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
+      if (userAuthToken == null) {
+        userAuthToken = new UserAuthToken(youTubeName, authSubToken);
+      } else {
+        userAuthToken.setAuthSubToken(authSubToken);
+      }
+      Util.persistJdo(userAuthToken);
 
       response.sendRedirect(articleUrl + "#return");
     } catch (ServiceException e) {
