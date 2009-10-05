@@ -53,6 +53,9 @@ public class UploadResponseHandler extends HttpServlet {
       submission.setVideoLocation(videoLocation);      
       submission.setVideoDate(videoDate);      
       submission.setYouTubeName(youTubeName);
+      // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
+      // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
+      // UserAuthToken class.
       submission.setAuthSubToken(authSubToken);
       submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);      
       submission.setNotifyEmail(email);

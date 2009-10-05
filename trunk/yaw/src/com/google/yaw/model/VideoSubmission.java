@@ -1,11 +1,10 @@
 package com.google.yaw.model;
 
 import com.google.gson.annotations.Expose;
+import com.google.yaw.Util;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -33,11 +32,6 @@ public class VideoSubmission implements Serializable {
   @Expose
   @Persistent
   private String videoId = null;
-
-  // The AuthSub token used when uploading this video.
-  @Expose
-  @Persistent
-  private String authSubToken = null;
 
   // The article on the news site that this submission belongs to.
   @Expose
@@ -132,7 +126,6 @@ public class VideoSubmission implements Serializable {
       VideoSource videoSource) {
     this.articleUrl = articleUrl;
     this.videoId = videoId;
-    this.authSubToken = authSubToken;
     this.assignmentId = assignmentId;
     this.youtubeName = uploader;    
     this.videoTitle = title;
@@ -197,10 +190,16 @@ public class VideoSubmission implements Serializable {
    * has been revoked or expired (after a year), you should be able to update
    * the related video using this as your credentials.
    * 
-   * @return A YouTube video ID
+   * @return An AuthSub token for user youtubeName if there exists a corresponding UserAuthToken
+   *   record. If not, an empty string.
    */
   public String getAuthSubToken() {
-    return authSubToken;
+    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youtubeName);
+    if (userAuthToken == null) {
+      return "";
+    } else {
+      return userAuthToken.getAuthSubToken();
+    }
   }
 
   /**
@@ -290,8 +289,19 @@ public class VideoSubmission implements Serializable {
     this.videoId = videoId;
   }
 
+  /**
+   * Retrieves/creates a UserAuthToken instance for the given youtubeName, and persists the token.
+   * @param authSubToken The new AuthSub tokent to use for youtubeName.
+   */
   public void setAuthSubToken(String authSubToken) {
-    this.authSubToken = authSubToken;
+    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youtubeName);
+    if (userAuthToken == null) {
+      userAuthToken = new UserAuthToken(youtubeName, authSubToken);
+    } else {
+      userAuthToken.setAuthSubToken(authSubToken);      
+    }
+
+    Util.persistJdo(userAuthToken);
   }
 
   public void setCreated(Date created) {

@@ -1,15 +1,11 @@
 package com.google.yaw;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gdata.client.http.AuthSubUtil;
-import com.google.gdata.util.AuthenticationException;
 import com.google.yaw.model.UserSession;
 
 /**
@@ -19,27 +15,14 @@ import com.google.yaw.model.UserSession;
 @SuppressWarnings("serial")
 public class LogoutHandler extends HttpServlet {
 
-  private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
-
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     UserSession userSession = UserSessionManager.getUserSession(req);
 
-    // Revoke AuthSub token.
-    String authSubToken = userSession.getMetaData("authSubToken");
-    if (authSubToken != null) {
-      try {
-        AuthSubUtil.revokeToken(authSubToken, null);
-      } catch (AuthenticationException e) {
-        log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
-            .toString()));
-      } catch (GeneralSecurityException e) {
-        log.warning(String.format("Error while revoking AuthSub token '%s': %s", authSubToken, e
-            .toString()));
-      }
-    }
-
+    // Don't revoke the AuthSub token, since that's needed for branding the video after moderation.
+    // If the user wants to revoke their token, they can do it from youtube.com.
+    
     // Remove local cookie.
     UserSessionManager.destroySessionIdCookie(resp);
 

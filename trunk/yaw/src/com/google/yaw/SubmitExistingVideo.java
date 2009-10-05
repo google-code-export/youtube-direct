@@ -95,6 +95,9 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setVideoLocation(location);
         submission.setVideoDate(date);
         submission.setYouTubeName(youTubeName);
+        // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
+        // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
+        // UserAuthToken class.
         submission.setAuthSubToken(authSubToken);
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
         submission.setNotifyEmail(email);

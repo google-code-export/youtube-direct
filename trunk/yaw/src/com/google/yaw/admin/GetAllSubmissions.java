@@ -2,7 +2,6 @@ package com.google.yaw.admin;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -11,13 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.repackaged.com.google.common.base.Log;
 import com.google.yaw.Util;
 import com.google.yaw.model.VideoSubmission;
 
 public class GetAllSubmissions extends HttpServlet {
-
-  private static final Logger log = Logger.getLogger(GetAllSubmissions.class.getName());
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -81,7 +77,7 @@ public class GetAllSubmissions extends HttpServlet {
       }
       
       String json = null; 
-      List returnList = videoEntries.subList(startIndex, endIndex);                    
+      List<VideoSubmission> returnList = videoEntries.subList(startIndex, endIndex);
       json = Util.GSON.toJson(returnList);
       json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";        
         
