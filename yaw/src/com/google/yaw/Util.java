@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.AdminConfig;
+import com.google.yaw.model.UserAuthToken;
 import com.google.yaw.model.VideoSubmission;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import java.util.Properties;
@@ -176,6 +177,26 @@ public class Util {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public static UserAuthToken getUserAuthTokenForUser(String youtubeName) {
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+
+    try {
+      if (!Util.isNullOrEmpty(youtubeName)) {
+        Query query = pm.newQuery(UserAuthToken.class, "youtubeName == youtubeNameParam");
+        query.declareParameters("String youtubeNameParam");
+        List<UserAuthToken> results = (List<UserAuthToken>) query.execute(youtubeName);
+        if (results.size() > 0) {
+          return pm.detachCopy(results.get(0));
+        }
+      }
+    } finally {
+      pm.close();
+    }
+
+    return null;
+  }
+
   /**
    * Retrieves an Assignment from the datastore given its id.
    * 
@@ -207,7 +228,7 @@ public class Util {
         adminConfig = pm.detachCopy(adminConfigs.get(0));
       } else {        
         log.info("No admin config found in datastore.  Creating a new one.");
-        adminConfig = new AdminConfig();        
+        adminConfig = new AdminConfig();
         pm.makePersistent(adminConfig);
         adminConfig = pm.detachCopy(adminConfig);
       }

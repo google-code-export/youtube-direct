@@ -60,7 +60,7 @@ public class SyncMetadata extends HttpServlet {
         // Create a new instance each time through the loop, since changing AuthSub tokens for an
         // existing instance doesn't seem to work.
         YouTubeApiManager apiManager = new YouTubeApiManager();
-        apiManager.setToken(videoSubmission.getAuthSubToken() + "1");
+        apiManager.setToken(videoSubmission.getAuthSubToken());
        
         String videoId = videoSubmission.getVideoId();
         log.info(String.format("Syncing video id '%s'", videoId));
