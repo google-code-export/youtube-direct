@@ -1,7 +1,10 @@
 package com.google.yaw.model;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
+import java.util.logging.Level;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -136,7 +139,11 @@ public class AdminConfig implements Serializable {
   }
   
   public String getRejectionEmailText() {
-    return rejectionEmailText;
+    try {
+      return URLDecoder.decode(rejectionEmailText, "utf-8");
+    } catch (UnsupportedEncodingException e) {
+      return rejectionEmailText;
+    }
   }
 
   public void setRejectionEmailText(String rejectionEmailText) {
@@ -152,7 +159,11 @@ public class AdminConfig implements Serializable {
   }
 
   public String getApprovalEmailText() {
-    return approvalEmailText;
+    try {
+      return URLDecoder.decode(approvalEmailText, "utf-8");
+    } catch (UnsupportedEncodingException e) {
+      return approvalEmailText;
+    }
   }
 
   public void setApprovalEmailText(String moderationEmailText) {
