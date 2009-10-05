@@ -73,6 +73,10 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String loginInstruction;
+  
+  @Expose
+  @Persistent
+  private String postSubmitMessage;
 
   @Expose
   @Persistent
@@ -118,6 +122,8 @@ public class AdminConfig implements Serializable {
     loginInstruction = "Please login to your YouTube account to submit a video.<br/><br/>" +
     		"Use of this tool is governed by the " +
     		"<a href='terms.html' target='_blank'>terms of service</a>.";
+    
+    postSubmitMessage = "Thank you for your submission";
     
     setUpdated(new Date());
   }
@@ -260,6 +266,14 @@ public class AdminConfig implements Serializable {
 
   public Date getUpdated() {
     return updated;
+  }
+
+  public String getPostSubmitMessage() {
+    return postSubmitMessage;
+  }
+
+  public void setPostSubmitMessage(String postSubmitMessage) {
+    this.postSubmitMessage = postSubmitMessage;
   }
 
 }

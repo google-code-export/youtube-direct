@@ -83,6 +83,12 @@
 	</div>
 </div>
 
+<div align="center">
+  <div id="postSubmitMessage">      
+    <%=URLDecoder.decode(adminConfig.getPostSubmitMessage(), "UTF-8")%>   
+  </div>
+</div>
+
 <div id="existingVideoMain">
 	<div class="smallRed">* required</div>
 	<br>
