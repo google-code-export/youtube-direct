@@ -92,7 +92,7 @@ public class Util {
                 videoSubmission.getAssignmentId()));
 
         msg.setText(String.format("Video %s was submitted by YouTube user %s in response to " +
-                "assignment id %d.", videoSubmission.getVideoUrl(),
+                "assignment id %d.", videoSubmission.getWatchUrl(),
                 videoSubmission.getYouTubeName(), videoSubmission.getAssignmentId()));
 
         Transport.send(msg);
@@ -137,7 +137,7 @@ public class Util {
       }
       
       body = body.replace("ARTICLE_URL", entry.getArticleUrl());
-      body = body.replace("YOUTUBE_URL", entry.getVideoUrl());
+      body = body.replace("YOUTUBE_URL", entry.getWatchUrl());
       
       Properties props = new Properties();
       Session session = Session.getDefaultInstance(props, null);
