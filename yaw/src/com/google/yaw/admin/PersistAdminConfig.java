@@ -39,6 +39,7 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());        
     adminConfig.setNewSubmissionAddress(jsonObj.getNewSubmissionAddress());
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
+    adminConfig.setPostSubmitMessage(jsonObj.getPostSubmitMessage());
     adminConfig.setModerationEmail(jsonObj.isModerationEmail());
     adminConfig.setFromAddress(jsonObj.getFromAddress());
     adminConfig.setApprovalEmailText(jsonObj.getApprovalEmailText());

@@ -6,11 +6,14 @@ function init() {
   
   window.URL_PARAMS = getUrlParams();   
   
-  if (window.isLoggedIn) {                         
+  // Hide post submission message.
+  jQuery('#postSubmitMessage').css('display', 'none');
+  
+  if (window.isLoggedIn) {
     highlightRequired();        
     
     // hide YouTube instruction
-    jQuery('#loginInstruction').css('display', 'none');    
+    jQuery('#loginInstruction').css('display', 'none');
     
     // show submissionAsk
     jQuery('#submissionAsk').css('display', 'block');
@@ -96,7 +99,8 @@ function existingVideoMainInit() {
       switch(res.success) {
         case 'true':
           jQuery('#existingVideoMain').css('display', 'none');
-          showMessage("thank you!");   
+          // Show post submission message.
+          jQuery('#postSubmitMessage').css('display', 'block');
           break;
         case 'false':
           if (res.message) {

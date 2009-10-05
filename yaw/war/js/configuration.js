@@ -14,6 +14,7 @@ admin.config.init = function() {
     jQuery('#newSubmissionAddress').val(data.newSubmissionAddress);
     jQuery('#brandingMode').val(data.brandingMode);
     jQuery('#loginInstruction').val(unescape(data.loginInstruction));
+    jQuery('#postSubmitMessage').val(unescape(data.postSubmitMessage));
     jQuery('#fromAddress').val(data.fromAddress);
     jQuery('#approvalEmailText').val(unescape(data.approvalEmailText));
     jQuery('#rejectionEmailText').val(unescape(data.rejectionEmailText));
@@ -83,6 +84,7 @@ admin.config.persistAdminConfig = function() {
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
   var loginInstruction = escape(jQuery('#loginInstruction').val());
+  var postSubmitMessage = escape(jQuery('#postSubmitMessage').val());
   var moderationEmail = jQuery('#moderationEmail').attr('checked');
   var fromAddress = jQuery('#fromAddress').val();
   var approvalEmailText = escape(jQuery('#approvalEmailText').val());
@@ -98,6 +100,7 @@ admin.config.persistAdminConfig = function() {
   jsonObj.brandingMode = brandingMode;  
   jsonObj.submissionMode = submissionMode;  
   jsonObj.loginInstruction = loginInstruction;
+  jsonObj.postSubmitMessage = postSubmitMessage;
   jsonObj.moderationEmail = moderationEmail;
   jsonObj.fromAddress = fromAddress;
   jsonObj.approvalEmailText = approvalEmailText;
