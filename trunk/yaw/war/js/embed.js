@@ -239,7 +239,8 @@ function initiateUpload() {
   jQuery('#uploadForm').get(0).target = iframeName;
 
   var callback = function() {
-    showMessage('Upload completed!');
+    //showMessage('Upload completed!');
+    jQuery('#postSubmitMessage').css('display', 'block');
     clearProcessing();
     jQuery('#uploaderMain').css('display', 'none');
 
