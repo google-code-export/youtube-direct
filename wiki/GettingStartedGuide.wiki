@@ -18,7 +18,7 @@ The YAW platform is designed to run on Google App Engine. App Engine allows you 
   # Edit your local copy of the war/WEB-INF/appengine-web.xml file: 
     * Replace <application> with your registered App Engine instance name. 
     * Replace <version> with 1, and increment it as you see fit. 
-    * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at  http://code.google.com/apis/youtube/dashboard/)
+    * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at [http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
     * Replace com.google.yaw.YTClientID the unique identifier string of your choice.
     * Deploy YAW using the local development webserver environment that comes with the App Engine SDK. If using Eclipse with the GAE plugin, the default "Run" Eclipse action will do this. The webserver runs at *http://localhost:8080/ *.
   # Build and deploy YAW to your application instance on GAE. Be sure that you have completed step 3 and have the correct App Engine instance name in appengine-web.xml!
@@ -29,5 +29,6 @@ The YAW platform is designed to run on Google App Engine. App Engine allows you 
   # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YAW uploader on your page. 
     * Make sure that you modify the yaw-embed.js URL to point to the actual path to the file. 
     * If your page has an existing `window.onload handler`, add the `yaw.embed()` `JavaScript` code to that instead of creating a new `window.onload`.
-  # Visit the Submissions tab to view submitted videos and approve/reject them as desired.
+  # Visit the "Submissions" tab to view submitted videos and approve/reject them as desired.
+    * In the "Configuration" tab, you can specify an address that will receive mail whenever a new video is submitted.
     * Approved videos will be automatically added to a playlist associated with each assignment (owned by your YouTube account), and depending on your configuration settings, will have their descriptions and tags updated to reflect your approval.
