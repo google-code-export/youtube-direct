@@ -31,6 +31,8 @@ public class PersistMobileSubmission extends HttpServlet {
 
   private Map<String, String> processPostData(String postDataString){
     Map<String, String> submissionData = new HashMap<String, String>();
+    // remove new lines
+    postDataString = postDataString.replaceAll("\\n", "");
     String[] nameValuePairs = postDataString.split("&");
     for (String nameValuePair : nameValuePairs) {
       String[] tuple = nameValuePair.split("=");
