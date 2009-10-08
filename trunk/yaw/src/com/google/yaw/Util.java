@@ -23,6 +23,7 @@ import com.google.yaw.model.Assignment;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.UserAuthToken;
 import com.google.yaw.model.VideoSubmission;
+import com.google.yaw.model.Assignment.AssignmentStatus;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import java.util.Properties;
 
@@ -313,5 +314,46 @@ public class Util {
     }
 
     return tempBuffer.toString();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static long getDefaultMobileAssignmentId() {
+    long assignmentId = -1;   
+    String defaultMobileAssignmentDescription = "default mobile assignment";     
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    try {
+      Query query = pm.newQuery(Assignment.class);
+      query.declareParameters("String defaultMobileAssignmentDescription");
+      query.setFilter("description == defaultMobileAssignmentDescription");
+      List<Assignment> results = (List<Assignment>) 
+          query.execute(defaultMobileAssignmentDescription);
+      if (results.size() > 0) {
+        assignmentId = results.get(0).getId();
+      } else {
+        // create the singleton default mobile assignment
+        Assignment assignment = new Assignment();
+        assignment.setCategory("News");
+        assignment.setDescription(defaultMobileAssignmentDescription);
+        assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);        
+        assignment = pm.makePersistent(assignment);
+        
+        YouTubeApiManager apiManager = new YouTubeApiManager();
+        String token = Util.getAdminConfig().getYouTubeAuthSubToken();
+        if (Util.isNullOrEmpty(token)) {
+          log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
+              " YouTube AuthSub token was found in the config.", assignment.getDescription()));
+        } else {
+          apiManager.setToken(token);
+          String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+                  assignment.getId()), assignment.getDescription());
+          assignment.setPlaylistId(playlistId);
+          assignment = pm.makePersistent(assignment);          
+        }               
+        assignmentId = assignment.getId();
+      }
+    } finally {
+      pm.close();
+    }
+    return assignmentId;
   }
 }

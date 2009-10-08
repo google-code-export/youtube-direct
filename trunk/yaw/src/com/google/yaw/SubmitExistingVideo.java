@@ -63,7 +63,6 @@ public class SubmitExistingVideo extends HttpServlet {
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);      
       
       if (videoEntry == null) {        
-        log.info("videoEntry is null");
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "false");
         responseJsonObj.put("message", "Cannot find this video in your account.");  
@@ -71,7 +70,6 @@ public class SubmitExistingVideo extends HttpServlet {
         resp.setContentType("text/javascript");
         resp.getWriter().println(responseJsonObj.toString());
       } else {      
-        log.info("videoEntry is NOT null");
         String title = videoEntry.getTitle().getPlainText();
         String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
         
