@@ -105,7 +105,7 @@ public class VideoSubmission implements Serializable {
   private ModerationStatus status;
 
   public enum VideoSource {
-    NEW_UPLOAD, EXISTING_VIDEO
+    NEW_UPLOAD, EXISTING_VIDEO, MOBILE_SUBMIT
   }    
 
   @Expose

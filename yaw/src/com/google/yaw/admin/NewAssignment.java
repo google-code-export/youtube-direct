@@ -40,7 +40,7 @@ public class NewAssignment extends HttpServlet {
       assignment.setCategory(jsonObj.getCategory());
       
       // Need to make it persistant first in order to get an id assigned to it.
-      pm.makePersistent(assignment);
+      assignment = pm.makePersistent(assignment);
       
       if (assignment.getStatus() == AssignmentStatus.ACTIVE &&
               Util.isNullOrEmpty(assignment.getPlaylistId())) {

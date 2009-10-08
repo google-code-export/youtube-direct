@@ -138,11 +138,20 @@
   
   <servlet>
     <servlet-name>MobileAuthSub</servlet-name>
-    <servlet-class>com.google.yaw.MobileAuthSub</servlet-class>
+    <servlet-class>com.google.yaw.mobile.MobileAuthSub</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MobileAuthSub</servlet-name>
     <url-pattern>/MobileAuthSub</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>PersistMobileSubmission</servlet-name>
+    <servlet-class>com.google.yaw.mobile.PersistMobileSubmission</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PersistMobileSubmission</servlet-name>
+    <url-pattern>/PersistMobileSubmission</url-pattern>
   </servlet-mapping>
 
   <servlet>

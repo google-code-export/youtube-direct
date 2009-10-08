@@ -1,9 +1,10 @@
-package com.google.yaw;
+package com.google.yaw.mobile;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.yaw.Util;
+import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.admin.PersistAuthSubToken;
 
 import java.io.IOException;
