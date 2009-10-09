@@ -56,7 +56,8 @@
 	   }
 	 %>
 </div>
-
+<br>
+<div align="left"><h1>YAW Admin</h1></div>
 <div id="tabs">
 	<ul>
 		<li><a href="#submissions">Submissions</a></li>
