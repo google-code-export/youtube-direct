@@ -233,7 +233,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'articleUrl',
     width : 50,
     formatter : function(cellvalue, options, rowObject) {
-      var link = "";    
+      var link = '';    
       if (cellvalue) { 
         link = '<a title="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
       }
@@ -510,9 +510,11 @@ admin.sub.showDetails = function(entryId) {
   mainDiv.find('#videoTitle').html(submission.videoTitle);
   mainDiv.find('#videoDescription').html(submission.videoDescription);
   mainDiv.find('#videoTags').html(submission.videoTags);
-  mainDiv.find('#articleUrl').html('<a target="_blank" href="' + 
-      submission.articleUrl + '">' + 
-      submission.articleUrl + '</a>');  
+  
+  var articleLink = submission.articleUrl?'<a target="_blank" href="' + 
+      submission.articleUrl + '">' + submission.articleUrl + '</a>':'N/A';  
+  mainDiv.find('#articleUrl').html(articleLink);  
+  
   mainDiv.find('#videoDate').html(
       submission.videoDate?submission.videoDate:'N/A');
   mainDiv.find('#videoLocation').html(
