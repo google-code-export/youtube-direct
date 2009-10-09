@@ -2,6 +2,7 @@ package com.google.yaw.admin;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -14,7 +15,9 @@ import com.google.yaw.Util;
 import com.google.yaw.model.VideoSubmission;
 
 public class GetAllSubmissions extends HttpServlet {
+  private static final Logger log = Logger.getLogger(GetAllSubmissions.class.getName());
 
+  @SuppressWarnings("unchecked")
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
@@ -78,6 +81,15 @@ public class GetAllSubmissions extends HttpServlet {
       
       String json = null; 
       List<VideoSubmission> returnList = videoEntries.subList(startIndex, endIndex);
+      
+      // TODO: This is obviously a hack. In order to get the GSON module to serialize the
+      // VideoSubmission.videoDescription field, which is of type Text, it's apparently necessary
+      // to make this call on each object--commenting out getVideoDescription() will result in
+      // GSON making no attempt to serialize that field.
+      for (VideoSubmission videoSubmission : returnList) {
+        videoSubmission.getVideoDescription();
+      }
+      
       json = Util.GSON.toJson(returnList);
       json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";        
         

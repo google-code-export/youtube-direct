@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,13 +18,20 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.appengine.api.datastore.Text;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.yaw.model.Assignment;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.UserAuthToken;
 import com.google.yaw.model.VideoSubmission;
-import com.google.yaw.model.Assignment.AssignmentStatus;
 import com.google.yaw.model.VideoSubmission.ModerationStatus;
 import java.util.Properties;
 
@@ -35,13 +43,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class Util {
-
   private static final Logger log = Logger.getLogger(Util.class.getName());
 
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
   public final static Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-      .setDateFormat(DATE_TIME_PATTERN).create();
+      .setDateFormat(DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
+      .create();
 
   private static PersistenceManagerFactory pmf = null;
 
@@ -51,6 +59,31 @@ public class Util {
 
   public static PersistenceManagerFactory getPersistenceManagerFactory() {
     return pmf;
+  }
+  
+  public static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
+    public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
+      return serialize(text, type, context);
+    }
+    
+    public Text fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
+      return deserialize(json, type, context);
+    }
+
+    @Override
+    public JsonElement serialize(Text text, Type type, JsonSerializationContext context) {
+      return new JsonPrimitive(text.getValue());
+    }
+
+    @Override
+    public Text deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+      try {
+        return new Text(json.getAsString());
+      } catch (JsonParseException e) {
+        // TODO: This is kind of a hacky way of reporting back a parse exception.
+        return new Text(e.toString());
+      }
+    }
   }
 
   public static Object persistJdo(Object entry) {

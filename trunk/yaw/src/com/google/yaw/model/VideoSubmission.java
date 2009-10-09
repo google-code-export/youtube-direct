@@ -1,5 +1,6 @@
 package com.google.yaw.model;
 
+import com.google.appengine.api.datastore.Text;
 import com.google.gson.annotations.Expose;
 import com.google.yaw.Util;
 
@@ -47,7 +48,7 @@ public class VideoSubmission implements Serializable {
   @Expose
   @Persistent
   @SearchableProperty
-  private String videoDescription = null;
+  private Text videoDescription = null;
 
   @Expose
   @Persistent
@@ -134,7 +135,7 @@ public class VideoSubmission implements Serializable {
     this.assignmentId = assignmentId;
     this.youtubeName = uploader;    
     this.videoTitle = title;
-    this.videoDescription = description;
+    this.videoDescription = new Text(description);
     this.videoTags = tagList;
     this.youtubeState = "UNKNOWN";
     
@@ -269,11 +270,11 @@ public class VideoSubmission implements Serializable {
   }
 
   public String getVideoDescription() {
-    return videoDescription;
+    return videoDescription.getValue();
   }
 
   public void setVideoDescription(String videoDescription) {
-    this.videoDescription = videoDescription;
+    this.videoDescription = new Text(videoDescription);
   }
 
   public String getVideoLocation() {
