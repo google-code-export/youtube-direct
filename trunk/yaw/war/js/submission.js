@@ -233,7 +233,11 @@ admin.sub.initGridModels = function(grid) {
     index : 'articleUrl',
     width : 50,
     formatter : function(cellvalue, options, rowObject) {
-      return '<a title="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
+      var link = "";    
+      if (cellvalue) { 
+        link = '<a title="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
+      }
+      return link;
     },
     align : 'center',
     sorttype : 'string'
