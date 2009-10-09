@@ -2,6 +2,8 @@ package com.google.yaw.admin;
 
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.data.youtube.YouTubeMediaRating;
+import com.google.gdata.data.youtube.YtPublicationState;
 import com.google.gdata.data.youtube.YtStatistics;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
@@ -81,16 +83,46 @@ public class SyncMetadata extends HttpServlet {
             if (videoEntry == null) {
               // The video must have been deleted...
               log.info(String.format("Unable to find YouTube video id '%s'.", videoId));
+              videoSubmission.setYoutubeState("NOT_FOUND");
             }
           }
         }
        
         if (videoEntry != null) {
           try {
+            YtPublicationState state = videoEntry.getPublicationState();
+            String stateValue;
+            if (state == null) {
+              // TODO: Find some way to check whether the video is embeddable and/or private, and
+              // populate that info. Because we're getting the video from the authenticated
+              // uploads feed (by default), that info isn't easily exposed on the videoEntry
+              // object. An alternative would be to get an instance from the public video feed
+              // and check that.
+              
+              List<YouTubeMediaRating> ratings = videoEntry.getMediaGroup().getYouTubeRatings();
+              if (ratings.size() == 0) {
+                stateValue = "OKAY";
+              } else {
+                StringBuffer restrictionBuffer = new StringBuffer("RESTRICTED IN: ");
+                for (YouTubeMediaRating rating : ratings) {
+                  restrictionBuffer.append(rating.getCountries());
+                }
+                stateValue = restrictionBuffer.toString();
+              }
+            } else {
+              stateValue = state.getState().toString();
+            }
+            if (!stateValue.equals(videoSubmission.getYoutubeState())) {
+              log.info(String.format("YouTube state differs: '%s' (local) vs. '%s' (YT).",
+                      videoSubmission.getYoutubeState(), stateValue));
+              videoSubmission.setYoutubeState(stateValue);
+              videoSubmission.setUpdated(now);
+            }
+            
             String title = videoEntry.getTitle().getPlainText();
             if (!title.equals(videoSubmission.getVideoTitle())) {
-              log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).", videoSubmission
-                      .getVideoTitle(), title));
+              log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).",
+                      videoSubmission.getVideoTitle(), title));
               videoSubmission.setVideoTitle(title);
               videoSubmission.setUpdated(now);
             }
@@ -106,8 +138,8 @@ public class SyncMetadata extends HttpServlet {
             List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
             String sortedTags = Util.sortedJoin(tags, ",");
             if (!sortedTags.equals(videoSubmission.getVideoTags())) {
-              log.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).", videoSubmission
-                      .getVideoTags(), sortedTags));
+              log.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).",
+                      videoSubmission.getVideoTags(), sortedTags));
               videoSubmission.setVideoTags(sortedTags);
               videoSubmission.setUpdated(now);
             }

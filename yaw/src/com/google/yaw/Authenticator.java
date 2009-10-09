@@ -1,9 +1,11 @@
 package com.google.yaw;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,14 +35,13 @@ public class Authenticator {
 
     String assignmentId = request.getParameter("assignmentId");
     String articleUrl = request.getParameter("articleUrl");
-    
     try {
-      // this URL string was encoded on JavaScript side with escape()
+      // This URL string was encoded by JavaScript with escape()
       articleUrl = URLDecoder.decode(articleUrl, "UTF-8");
-      log.info(articleUrl);
-    } catch (Exception e) {      
-      e.printStackTrace();
+    } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
     }
+    
     String selfUrl = Util.getSelfUrl(request);
 
     if (userSession == null) {
@@ -119,10 +120,9 @@ public class Authenticator {
     
     try {
       articleUrl = URLEncoder.encode(articleUrl, "UTF-8");
-      log.info(articleUrl);
-    } catch (Exception e) {      
-      e.printStackTrace();
-    }    
+    } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
+    }
     
     StringBuffer nextUrl = new StringBuffer();
     nextUrl.append(request.getScheme());

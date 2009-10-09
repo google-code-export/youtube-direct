@@ -90,6 +90,10 @@ public class VideoSubmission implements Serializable {
   
   @Expose
   @Persistent
+  private String youtubeState = null;
+  
+  @Expose
+  @Persistent
   private boolean isInPlaylist = false;
 
   @Expose
@@ -124,8 +128,7 @@ public class VideoSubmission implements Serializable {
    *          The YouTube username of the uploader
    */
   public VideoSubmission(Long assignmentId, String articleUrl, String videoId, String title,
-      String description, String tagList, String uploader, String authSubToken, 
-      VideoSource videoSource) {
+      String description, String tagList, String uploader, VideoSource videoSource) {
     this.articleUrl = articleUrl;
     this.videoId = videoId;
     this.assignmentId = assignmentId;
@@ -133,6 +136,7 @@ public class VideoSubmission implements Serializable {
     this.videoTitle = title;
     this.videoDescription = description;
     this.videoTags = tagList;
+    this.youtubeState = "UNKNOWN";
     
     this.created = new Date();
     this.updated = this.created;
@@ -148,6 +152,7 @@ public class VideoSubmission implements Serializable {
     this.updated = this.created;
     this.lastSynced = this.created;
     this.viewCount = -1;
+    this.youtubeState = "UNKNOWN";
     setStatus(ModerationStatus.UNREVIEWED);
   }  
   
@@ -379,5 +384,13 @@ public class VideoSubmission implements Serializable {
 
   public String getAdminNotes() {
     return adminNotes;
+  }
+
+  public String getYoutubeState() {
+    return youtubeState;
+  }
+
+  public void setYoutubeState(String youtubeState) {
+    this.youtubeState = youtubeState;
   }
 }
