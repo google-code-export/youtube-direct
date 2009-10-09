@@ -146,6 +146,8 @@ public class YouTubeApiManager {
    * @param isApproved true if this video is approved, and false if not.
    */
   public void updateModeration(String videoId, boolean isApproved) {
+    log.info(String.format("Setting moderation of video id '%s' to '%s'.", videoId, isApproved));
+    
     String entryUrl = String.format(MODERATION_FEED_ENTRY_URL_FORMAT, videoId);
     String updatedEntry;
     if (isApproved) {
