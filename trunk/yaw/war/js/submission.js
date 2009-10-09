@@ -139,10 +139,6 @@ admin.sub.initSubmissionGrid = function() {
     var deleteButton = '<input type="button" onclick=admin.sub.deleteEntry("' + 
         entryId + '") value="delete" />';
     jQuery('#submissionGrid').setCell(rowid, 'delete', deleteButton);
-
-    var downloadButton = '<input type="button" onclick=admin.sub.downloadVideo("' + 
-        entryId + '") value="download" />';
-    jQuery('#submissionGrid').setCell(rowid, 'download', downloadButton);    
     
     var detailsButton = '<input type="button" onclick=admin.sub.showDetails("' + 
     entryId + '") value="details" />';
@@ -484,7 +480,7 @@ admin.sub.showDetails = function(entryId) {
   var dialogOptions = {};
   dialogOptions.title = submission.videoTitle;
   dialogOptions.width = 700;
-  dialogOptions.height = 580;
+  dialogOptions.height = 650;
   
   jQuery.ui.dialog.defaults.bgiframe = true;
   
@@ -499,17 +495,23 @@ admin.sub.showDetails = function(entryId) {
   
   mainDiv.find('#created').html(created);
   
-  var creatorInfo = submission.youtubeName + 
-      (submission.notifyEmail?' (' + submission.notifyEmail +')':'');  
+  mainDiv.find('#videoSource').html(submission.videoSource);  
   
-  mainDiv.find('#youtubeName').html(creatorInfo);  
+  var creatorInfo = submission.youTubeName + 
+      (submission.notifyEmail?' (' + submission.notifyEmail +')':'');    
+  mainDiv.find('#youTubeName').html(creatorInfo);  
+  
   mainDiv.find('#videoId').html(
       '<a target="_blank" href="http://www.youtube.com/watch?v=' + 
       submission.videoId + '">' + 
-      submission.videoId + '</a>');    
+      submission.videoId + '</a>');   
+  mainDiv.find('#youTubeState').html(submission.youTubeState);
+  
   mainDiv.find('#videoTitle').html(submission.videoTitle);
+  
   mainDiv.find('#videoDescription').html(submission.videoDescription);
-  mainDiv.find('#videoTags').html(submission.videoTags);
+  
+  mainDiv.find('#videoTags').html(submission.videoTags);  
   
   var articleLink = submission.articleUrl?'<a target="_blank" href="' + 
       submission.articleUrl + '">' + submission.articleUrl + '</a>':'N/A';  
@@ -517,8 +519,10 @@ admin.sub.showDetails = function(entryId) {
   
   mainDiv.find('#videoDate').html(
       submission.videoDate?submission.videoDate:'N/A');
+  
   mainDiv.find('#videoLocation').html(
       submission.videoLocation?submission.videoLocation:'N/A');
+  
   mainDiv.find('#video').html(videoHtml);
   
   var moderationStatus = -1;
@@ -563,13 +567,16 @@ admin.sub.showDetails = function(entryId) {
     admin.sub.updateSubmission(submission);
   });
   
+  mainDiv.find('#download').click(function() {
+    admin.sub.downloadVideo(submission);
+  });  
+  
   mainDiv.dialog(dialogOptions);
 };
 
-admin.sub.downloadVideo = function(entryId) {
-  var submission = admin.sub.getSubmission(entryId);
-  var videoId = submission.videoId;
-  document.location.href = '/admin/VideoDownloadRedirect?id=' + videoId;   
+admin.sub.downloadVideo = function(submission) {
+  document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 
+  '&username=' + submission.youTubeName;   
 };
 
 admin.sub.deleteEntry = function(entryId) {

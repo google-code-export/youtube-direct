@@ -28,8 +28,10 @@
 	  		<td>
 				  <b>Assignment ID:&nbsp;</b><div id="assignmentId"></div><br>
 				  <b>Submitted on:</b><div id="created"></div><br>
-				  <b>Submitted by:</b><div id="youtubeName"></div><br>
+				  <b>Submitted by:</b><div id="youTubeName"></div><br>
 				  <b>Video ID:</b><div id="videoId"></div><br>
+				  <b>Video source:</b><div id="videoSource"></div><br>
+				  <b>Video state:</b><div id="youTubeState"></div><br>
 				  <b>Title:</b><div id="videoTitle"></div><br>
 				  <b>Description: </b><div id="videoDescription"></div><br>
 				  <b>Tags:</b><div id="videoTags"></div><br>
@@ -37,7 +39,8 @@
 				  <b>Video taken on:</b><div id="videoDate"></div><br>
 				  <b>Video location:</b><div id="videoLocation"></div><br>			  				    			
 	  		</td>
-	  		<td align="left">
+	  		<td align="left">	  		  					
+					<input id="download" type="button" value="download mp4"/>
 	  			<div id="video"></div>
 	  			<span>Moderation status: </span>
 				  <select id="moderationStatus">
@@ -46,7 +49,7 @@
 				  	<option value="REJECTED">REJECTED</option>
 				  	<option value="SPAM">SPAM</option>
 				  </select>  
-					<br><br><br>								  						   			
+					<br><br><br>							  						   			
 					<div><b>Admin notes:</b></div>
 					<textarea cols="35" rows="5" id="adminNotes"></textarea><br>				
 					<input id="saveAdminNotes" type="button" value="Save Notes"/>	

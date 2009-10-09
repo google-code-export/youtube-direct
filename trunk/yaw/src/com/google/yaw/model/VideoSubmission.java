@@ -64,7 +64,7 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
-  private String youtubeName = null;
+  private String youTubeName = null;
 
   @Expose
   @Persistent
@@ -91,7 +91,7 @@ public class VideoSubmission implements Serializable {
   
   @Expose
   @Persistent
-  private String youtubeState = null;
+  private String youTubeState = null;
   
   @Expose
   @Persistent
@@ -133,12 +133,11 @@ public class VideoSubmission implements Serializable {
     this.articleUrl = articleUrl;
     this.videoId = videoId;
     this.assignmentId = assignmentId;
-    this.youtubeName = uploader;    
+    this.youTubeName = uploader;    
     this.videoTitle = title;
     this.videoDescription = new Text(description);
     this.videoTags = tagList;
-    this.youtubeState = "UNKNOWN";
-    
+    this.youTubeState = "UNKNOWN";
     this.created = new Date();
     this.updated = this.created;
     this.lastSynced = this.created;
@@ -153,7 +152,7 @@ public class VideoSubmission implements Serializable {
     this.updated = this.created;
     this.lastSynced = this.created;
     this.viewCount = -1;
-    this.youtubeState = "UNKNOWN";
+    this.youTubeState = "UNKNOWN";
     setStatus(ModerationStatus.UNREVIEWED);
   }  
   
@@ -202,7 +201,7 @@ public class VideoSubmission implements Serializable {
    *   record. If not, an empty string.
    */
   public String getAuthSubToken() {
-    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youtubeName);
+    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
     if (userAuthToken == null) {
       return "";
     } else {
@@ -247,7 +246,7 @@ public class VideoSubmission implements Serializable {
    * @return The YouTube user who submitted this video.
    */
   public String getYouTubeName() {
-    return youtubeName;
+    return youTubeName;
   }
 
   /**
@@ -257,7 +256,7 @@ public class VideoSubmission implements Serializable {
    *          A YouTube username.
    */
   public void setYouTubeName(String youTubeName) {
-    this.youtubeName = youTubeName;
+    this.youTubeName = youTubeName;
   }
 
   @SearchableProperty
@@ -302,9 +301,9 @@ public class VideoSubmission implements Serializable {
    * @param authSubToken The new AuthSub tokent to use for youtubeName.
    */
   public void setAuthSubToken(String authSubToken) {
-    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youtubeName);
+    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
     if (userAuthToken == null) {
-      userAuthToken = new UserAuthToken(youtubeName, authSubToken);
+      userAuthToken = new UserAuthToken(youTubeName, authSubToken);
     } else {
       userAuthToken.setAuthSubToken(authSubToken);      
     }
@@ -388,10 +387,10 @@ public class VideoSubmission implements Serializable {
   }
 
   public String getYoutubeState() {
-    return youtubeState;
+    return youTubeState;
   }
 
   public void setYoutubeState(String youtubeState) {
-    this.youtubeState = youtubeState;
+    this.youTubeState = youtubeState;
   }
 }
