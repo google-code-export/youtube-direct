@@ -3,6 +3,6 @@
   <cron>
     <url>/cron/SyncMetadata</url>
     <description>Syncs local datastore metadata with authoritative version from YouTube API.</description>
-    <schedule>every 2 minutes</schedule>
+    <schedule>every 5 minutes</schedule>
   </cron>
 </cronentries>

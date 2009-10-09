@@ -28,7 +28,6 @@ public class UploadResponseHandler extends HttpServlet {
     UserSession userSession = UserSessionManager.getUserSession(req);
 
     if (status.equals("200")) {
-      
       String authSubToken = userSession.getMetaData("authSubToken");
       String articleUrl = userSession.getMetaData("articleUrl");
       String assignmentId = userSession.getMetaData("assignmentId");
@@ -59,13 +58,20 @@ public class UploadResponseHandler extends HttpServlet {
       submission.setAuthSubToken(authSubToken);
       submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);      
       submission.setNotifyEmail(email);
-
-      AdminConfig adminConfig = Util.getAdminConfig();      
+      
+      AdminConfig adminConfig = Util.getAdminConfig();
+      
+      YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
+      
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
         // NO_MOD is set, auto approve all submission
         //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
         // etc.) isn't taking place.
-        submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
+        submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
+        apiManager.updateModeration(videoId, true);
+      } else {
+        apiManager.updateModeration(videoId, false);
       }
       
       Util.persistJdo(submission);
