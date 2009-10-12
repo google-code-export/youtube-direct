@@ -1,7 +1,21 @@
+/* Copyright (c) 2009 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.yaw;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,27 +24,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gdata.data.media.mediarss.MediaCategory;
-import com.google.gdata.data.media.mediarss.MediaDescription;
-import com.google.gdata.data.media.mediarss.MediaKeywords;
-import com.google.gdata.data.media.mediarss.MediaTitle;
-import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.VideoEntry;
-import com.google.gdata.data.youtube.YouTubeMediaGroup;
-import com.google.gdata.data.youtube.YouTubeNamespace;
 import com.google.gdata.data.youtube.YtStatistics;
 import com.google.yaw.model.AdminConfig;
-import com.google.yaw.model.Assignment;
 import com.google.yaw.model.UserSession;
 import com.google.yaw.model.VideoSubmission;
-import com.google.yaw.model.Assignment.AssignmentStatus;
 
+/**
+ * Servlet that handles the submission of an existing YouTube video. It creates a new
+ * VideoSubmission object and persists it to the datastore. The response is the JSON representation
+ * of the new object.
+ */
 public class SubmitExistingVideo extends HttpServlet {
-
   private static final Logger log = Logger.getLogger(SubmitExistingVideo.class.getName());
 
   @Override
@@ -97,6 +105,7 @@ public class SubmitExistingVideo extends HttpServlet {
         // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
         // UserAuthToken class.
         submission.setAuthSubToken(authSubToken);
+        submission.setViewCount(viewCount);
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
         submission.setNotifyEmail(email);
 

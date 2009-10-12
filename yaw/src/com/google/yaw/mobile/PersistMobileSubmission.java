@@ -1,3 +1,18 @@
+/* Copyright (c) 2009 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.yaw.mobile;
 
 import java.io.IOException;
@@ -11,20 +26,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
-
 import com.google.gdata.data.youtube.VideoEntry;
-import com.google.gdata.data.youtube.YtStatistics;
 import com.google.yaw.Util;
 import com.google.yaw.YouTubeApiManager;
 import com.google.yaw.model.AdminConfig;
 import com.google.yaw.model.VideoSubmission;
 
+/**
+ * Servlet that handles mobile phone submissions, creating an appropriate datastore entry for them.
+ */
 public class PersistMobileSubmission extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(PersistMobileSubmission.class.getName());
 
   private String decode(String input) {
+    //TODO: This should use a URL decode method from a library.
     input = input.replaceAll("%26", "&");
     return input.replaceAll("%3D|%3d", "=");
   }
