@@ -300,7 +300,7 @@ admin.assign.showEmbedCode = function(id) {
   
   var code = [];
   code.push('<script type="text/javascript" src="' + admin.assign.getSelfUrl() 
-      + '/js/yaw-embed.js" />\n');
+      + '/js/yaw-embed.js"></script>\n');
   code.push('<script type="text/javascript">\n');
   code.push('window.onload = function() {\n');   
   code.push('  var yaw = new Yaw();\n');

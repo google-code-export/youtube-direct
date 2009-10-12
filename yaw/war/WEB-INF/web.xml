@@ -193,6 +193,10 @@
     <servlet-name>AuthsubHandler</servlet-name>
     <url-pattern>/AuthsubHandler</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AuthsubHandler</servlet-name>
+    <url-pattern>/AuthSubHandler</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>LogoutHandler</servlet-name>
