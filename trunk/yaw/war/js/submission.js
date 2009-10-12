@@ -575,6 +575,7 @@ admin.sub.showDetails = function(entryId) {
 };
 
 admin.sub.downloadVideo = function(submission) {
+  console.log(submission);
   document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 
   '&username=' + submission.youTubeName;   
 };
