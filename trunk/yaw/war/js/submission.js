@@ -590,7 +590,6 @@ admin.sub.showDetails = function(entryId) {
 };
 
 admin.sub.downloadVideo = function(submission) {
-  console.log(submission);
   document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 
   '&username=' + submission.youTubeName;   
 };
@@ -637,7 +636,6 @@ admin.sub.getAllSubmissions =function(callback) {
   if (admin.sub.filterType != 'ALL') {
     url += '&filtertype=' + admin.sub.filterType;
   }
-  //console.log(url);
   
   var ajaxCall = {};
   ajaxCall.cache = false;

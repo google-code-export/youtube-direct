@@ -87,6 +87,10 @@ function existingVideoMainInit() {
       return;
     }        
     
+    // disable buttons during submitting
+    jQuery('#submitButton').get(0).disabled = true;
+    jQuery('#cancelSubmitButton').get(0).disabled = true;    
+    
     var url = jQuery('#videoUrl').val();   
     var location = jQuery('#submitLocation').val();  
     var date = jQuery('#submitDate').val();
@@ -116,6 +120,8 @@ function existingVideoMainInit() {
           jQuery('#existingVideoMain').css('display', 'none');
           // Show post submission message.
           jQuery('#postSubmitMessage').css('display', 'block');
+          jQuery('#submitButton').get(0).disabled = false;
+          jQuery('#cancelSubmitButton').get(0).disabled = false;             
           break;
         case 'false':
           if (res.message) {
@@ -128,7 +134,6 @@ function existingVideoMainInit() {
     clearMessage();
     showProcessing('Submitting ...');
     jQuery.ajax(ajaxCall);    
-    
   });
 
   jQuery('#cancelSubmitButton').click( function(event) {
@@ -160,6 +165,8 @@ function uploaderMainInit() {
       event.preventDefault();
       showMessage('Please fill in all required field(s).');
     } else {
+      jQuery('#uploadButton').get(0).disabled = true;
+      jQuery('#cancelUploadButton').get(0).disabled = true;
       getUploadToken();
       return false;
     }
@@ -230,7 +237,6 @@ function getUploadToken() {
       jQuery('#token').val(uploadToken);
       jQuery('#uploadForm').get(0).action = uploadUrl + '?nexturl='
           + getSelfUrl() + '/UploadResponseHandler';
-
       initiateUpload();
     }
 
@@ -255,6 +261,8 @@ function initiateUpload() {
 
   var callback = function() {
     //showMessage('Upload completed!');
+    jQuery('#uploadButton').get(0).disabled = false;
+    jQuery('#cancelUploadButton').get(0).disabled = false;
     jQuery('#postSubmitMessage').css('display', 'block');
     clearProcessing();
     jQuery('#uploaderMain').css('display', 'none');
