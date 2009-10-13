@@ -3,6 +3,8 @@
 = Introduction =
 The YAW platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YAW.
 
+If you are upgrading from a previous release, please familiarize yourself with the latest [http://code.google.com/p/yaw-project/wiki/ReleaseNotes release notes].
+
 = Details =
 
 ==YAW Getting Started Guide==
