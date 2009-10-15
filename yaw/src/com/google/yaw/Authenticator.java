@@ -31,8 +31,8 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.yaw.model.UserSession;
 
 /**
- * Class to handle aspects of user authentication and persisting that information in UserSession
- * objects.
+ * Class to handle aspects of user authentication and persisting that
+ * information in UserSession objects.
  */
 public class Authenticator {
   private HttpServletRequest request = null;
@@ -59,7 +59,7 @@ public class Authenticator {
     } catch (UnsupportedEncodingException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     String selfUrl = Util.getSelfUrl(request);
 
     if (userSession == null) {
@@ -68,11 +68,11 @@ public class Authenticator {
       // stick the session id as cookie
       UserSessionManager.sendSessionIdCookie(userSession.getId(), response);
     }
-    
+
     userSession.addMetaData("assignmentId", assignmentId);
     userSession.addMetaData("articleUrl", articleUrl);
     userSession.addMetaData("selfUrl", selfUrl);
-    
+
     userSession = UserSessionManager.save(userSession);
 
     String authSubToken = userSession.getMetaData("authSubToken");
@@ -135,13 +135,13 @@ public class Authenticator {
   public String getLogInUrl() {
     String loginUrl = null;
     String articleUrl = userSession.getMetaData("articleUrl");
-    
+
     try {
       articleUrl = URLEncoder.encode(articleUrl, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     StringBuffer nextUrl = new StringBuffer();
     nextUrl.append(request.getScheme());
     nextUrl.append("://");
@@ -152,9 +152,9 @@ public class Authenticator {
     nextUrl.append(AUTHSUB_HANDLER);
     nextUrl.append("?articleUrl=");
     nextUrl.append(articleUrl);
-    
+
     loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
-    
+
     return loginUrl;
   }
 
