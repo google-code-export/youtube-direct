@@ -321,13 +321,14 @@ admin.assign.showEmbedCode = function(id) {
   code.push('  var yaw = new Yaw();\n');
   code.push('  yaw.setAssignmentId("' + entry.id + '");\n');
   code.push('  yaw.setCallToAction("callToActionId");\n');  
-  code.push('  var containerWidth = 300;\n');
-  code.push('  var containerHeight = 300;\n');
+  code.push('  var containerWidth = 350;\n');
+  code.push('  var containerHeight = 550;\n');
   code.push('  yaw.setYawContainer("yawContainer", containerWidth, containerHeight);\n');   
   code.push('  yaw.ready();\n');
   code.push('};\n');  
   code.push('</script>\n');
-  code.push('<img src"callToActionImage.jpg" id="callToActionId" />\n');  
+  code.push('<a id="callToActionId" href="javascript:void(0);"><img src"' + admin.assign.getSelfUrl()  + 
+      '/calltoaction.png"/></a>\n');  
   code.push('<div id="yawContainer" />');  
   
   code = code.join('');
