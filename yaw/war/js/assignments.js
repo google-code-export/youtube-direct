@@ -327,8 +327,8 @@ admin.assign.showEmbedCode = function(id) {
   code.push('  yaw.ready();\n');
   code.push('};\n');  
   code.push('</script>\n');
-  code.push('<a id="callToActionId" href="javascript:void(0);"><img src"' + admin.assign.getSelfUrl()  + 
-      '/calltoaction.png"/></a>\n');  
+  code.push('<a id="callToActionId" href="javascript:void(0);"><img src="' 
+      + admin.assign.getSelfUrl() + '/calltoaction.png"/></a>\n');  
   code.push('<div id="yawContainer" />');  
   
   code = code.join('');
