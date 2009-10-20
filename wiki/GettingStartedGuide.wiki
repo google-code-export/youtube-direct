@@ -1,13 +1,13 @@
-#summary Getting Started with YAW Platform
+#summary Getting Started with YouTube Direct (YTD)
 #labels Featured
 = Introduction =
-The YAW platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YAW.
+The YouTube Direct platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YTD.
 
 If you are upgrading from a previous release, please familiarize yourself with the latest [http://code.google.com/p/yaw-project/wiki/ReleaseNotes release notes].
 
 = Details =
 
-==YAW Getting Started Guide==
+==YouTube Direct Getting Started Guide==
 
   # Register an application instance on Google App Engine (GAE)
     * [http://appengine.google.com/ Sign up for an App Engine account]
