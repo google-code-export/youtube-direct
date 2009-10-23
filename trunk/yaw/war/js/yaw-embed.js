@@ -67,6 +67,7 @@ Yaw.prototype.embed = function() {
 	iframeElement.height = this.height + 'px';
 	iframeElement.style.border = '0px solid gray';
 	iframeElement.scrolling = 'no';
+	iframeElement.frameborder = '0px';
 
 	this.articleUrl = this.articleUrl || document.location.href;
 	// remove hash link
