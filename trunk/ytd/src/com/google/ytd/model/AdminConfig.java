@@ -137,7 +137,7 @@ public class AdminConfig implements Serializable {
     		"Use of this tool is governed by the " +
     		"<a href='terms.html' target='_blank'>terms of service</a>.";
     
-    postSubmitMessage = "Thank you for your submission";
+    postSubmitMessage = "Thank you for your submission.";
     
     setUpdated(new Date());
   }

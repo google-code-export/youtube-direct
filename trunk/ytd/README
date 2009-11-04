@@ -13,10 +13,10 @@ The YouTube Direct (YTD) platform consist of 2 components:
   
 To get started, please read the Getting Started guide at
 
-  http://code.google.com/p/yaw-project/wiki/GettingStartedGuide
+  http://code.google.com/p/youtube-direct/wiki/GettingStarted
   
 While it's recommended to sync to the SVN repository so that future updates
 can be easily retrieved, you can also downloaded a package tarball of the
 YTD project at
 
-  http://code.google.com/p/yaw-project/downloads/list
+  http://code.google.com/p/youtube-direct/downloads/list

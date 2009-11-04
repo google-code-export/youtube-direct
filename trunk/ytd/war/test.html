@@ -3,7 +3,7 @@
 <head>
 <title>Partner Test Page</title>
 <script type="text/javascript" src="js/ext/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="js/yaw-embed.js"></script>
+<script type="text/javascript" src="js/ytd-embed.js"></script>
 <script type="text/javascript">
 
 jQuery(document).ready(function() {
@@ -16,11 +16,11 @@ jQuery(document).ready(function() {
 
 	addVideoList(assignmentId); 
   
-	var yaw = new Yaw();
-	yaw.setAssignmentId(assignmentId);
-	yaw.setCallToAction('callToAction');
-	yaw.setYawContainer('yaw');
-	yaw.ready();  
+	var ytd = new Ytd();
+	ytd.setAssignmentId(assignmentId);
+	ytd.setCallToAction('callToAction');
+	ytd.setYtdContainer('ytd');
+	ytd.ready();  
 
 	 	
 });
@@ -133,7 +133,7 @@ function getUrlParams() {
 		<br><br>
 		
 		<a id="callToAction" href="javascript:void(0);"><img src="calltoaction.png" border="0"/></a>
-		<div id="yaw"></div>
+		<div id="ytd"></div>
 		<div id="approvedVideos"></div>
 		
 		</td>
