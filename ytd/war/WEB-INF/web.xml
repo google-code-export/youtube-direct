@@ -8,7 +8,7 @@
   <!-- BEGIN admin servlets -->
   <servlet>
     <servlet-name>Test</servlet-name>
-    <servlet-class>com.google.yaw.admin.FullTextIndexer</servlet-class>
+    <servlet-class>com.google.ytd.admin.FullTextIndexer</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Test</servlet-name>
@@ -17,7 +17,7 @@
 
   <servlet>
     <servlet-name>GetAllSubmissions</servlet-name>
-    <servlet-class>com.google.yaw.admin.GetAllSubmissions</servlet-class>
+    <servlet-class>com.google.ytd.admin.GetAllSubmissions</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>GetAllSubmissions</servlet-name>
@@ -26,7 +26,7 @@
   
   <servlet>
     <servlet-name>PersistAuthSubToken</servlet-name>
-    <servlet-class>com.google.yaw.admin.PersistAuthSubToken</servlet-class>
+    <servlet-class>com.google.ytd.admin.PersistAuthSubToken</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>PersistAuthSubToken</servlet-name>
@@ -35,7 +35,7 @@
   
   <servlet>
     <servlet-name>InsightDownloadRedirect</servlet-name>
-    <servlet-class>com.google.yaw.admin.InsightDownloadRedirect</servlet-class>
+    <servlet-class>com.google.ytd.admin.InsightDownloadRedirect</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>InsightDownloadRedirect</servlet-name>
@@ -44,7 +44,7 @@
   
   <servlet>
     <servlet-name>VideoDownloadRedirect</servlet-name>
-    <servlet-class>com.google.yaw.admin.VideoDownloadRedirect</servlet-class>
+    <servlet-class>com.google.ytd.admin.VideoDownloadRedirect</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>VideoDownloadRedirect</servlet-name>
@@ -53,7 +53,7 @@
 
   <servlet>
     <servlet-name>GetAdminConfig</servlet-name>
-    <servlet-class>com.google.yaw.admin.GetAdminConfig</servlet-class>
+    <servlet-class>com.google.ytd.admin.GetAdminConfig</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>GetAdminConfig</servlet-name>
@@ -62,7 +62,7 @@
   
   <servlet>
     <servlet-name>PersistAdminConfig</servlet-name>
-    <servlet-class>com.google.yaw.admin.PersistAdminConfig</servlet-class>
+    <servlet-class>com.google.ytd.admin.PersistAdminConfig</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>PersistAdminConfig</servlet-name>
@@ -71,7 +71,7 @@
 
   <servlet>
     <servlet-name>UpdateSubmission</servlet-name>
-    <servlet-class>com.google.yaw.admin.UpdateSubmission</servlet-class>
+    <servlet-class>com.google.ytd.admin.UpdateSubmission</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UpdateSubmission</servlet-name>
@@ -80,7 +80,7 @@
 
   <servlet>
     <servlet-name>DeleteSubmission</servlet-name>
-    <servlet-class>com.google.yaw.admin.DeleteSubmission</servlet-class>
+    <servlet-class>com.google.ytd.admin.DeleteSubmission</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DeleteSubmission</servlet-name>
@@ -89,7 +89,7 @@
 
   <servlet>
     <servlet-name>NewAssignment</servlet-name>
-    <servlet-class>com.google.yaw.admin.NewAssignment</servlet-class>
+    <servlet-class>com.google.ytd.admin.NewAssignment</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewAssignment</servlet-name>
@@ -98,7 +98,7 @@
 
   <servlet>
     <servlet-name>UpdateAssignment</servlet-name>
-    <servlet-class>com.google.yaw.admin.UpdateAssignment</servlet-class>
+    <servlet-class>com.google.ytd.admin.UpdateAssignment</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UpdateAssignment</servlet-name>
@@ -107,7 +107,7 @@
 
   <servlet>
     <servlet-name>GetAllAssignments</servlet-name>
-    <servlet-class>com.google.yaw.admin.GetAllAssignments</servlet-class>
+    <servlet-class>com.google.ytd.admin.GetAllAssignments</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>GetAllAssignments</servlet-name>
@@ -120,7 +120,7 @@
   
   <servlet>
     <servlet-name>SyncMetadata</servlet-name>
-    <servlet-class>com.google.yaw.admin.SyncMetadata</servlet-class>
+    <servlet-class>com.google.ytd.admin.SyncMetadata</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SyncMetadata</servlet-name>
@@ -133,7 +133,7 @@
 
   <servlet>
     <servlet-name>ApprovedVideoFeed</servlet-name>
-    <servlet-class>com.google.yaw.ApprovedVideoFeed</servlet-class>
+    <servlet-class>com.google.ytd.ApprovedVideoFeed</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ApprovedVideoFeed</servlet-name>
@@ -142,7 +142,7 @@
   
   <servlet>
     <servlet-name>MobileAuthSub</servlet-name>
-    <servlet-class>com.google.yaw.mobile.MobileAuthSub</servlet-class>
+    <servlet-class>com.google.ytd.mobile.MobileAuthSub</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MobileAuthSub</servlet-name>
@@ -151,7 +151,7 @@
 
   <servlet>
     <servlet-name>PersistMobileSubmission</servlet-name>
-    <servlet-class>com.google.yaw.mobile.PersistMobileSubmission</servlet-class>
+    <servlet-class>com.google.ytd.mobile.PersistMobileSubmission</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>PersistMobileSubmission</servlet-name>
@@ -160,7 +160,7 @@
 
   <servlet>
     <servlet-name>SubmitExistingVideo</servlet-name>
-    <servlet-class>com.google.yaw.SubmitExistingVideo</servlet-class>
+    <servlet-class>com.google.ytd.SubmitExistingVideo</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SubmitExistingVideo</servlet-name>
@@ -169,7 +169,7 @@
 
   <servlet>
     <servlet-name>UploadResponseHandler</servlet-name>
-    <servlet-class>com.google.yaw.UploadResponseHandler</servlet-class>
+    <servlet-class>com.google.ytd.UploadResponseHandler</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UploadResponseHandler</servlet-name>
@@ -178,7 +178,7 @@
 
   <servlet>
     <servlet-name>GetUploadToken</servlet-name>
-    <servlet-class>com.google.yaw.GetUploadToken</servlet-class>
+    <servlet-class>com.google.ytd.GetUploadToken</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>GetUploadToken</servlet-name>
@@ -187,7 +187,7 @@
 
   <servlet>
     <servlet-name>AuthsubHandler</servlet-name>
-    <servlet-class>com.google.yaw.AuthSubHandler</servlet-class>
+    <servlet-class>com.google.ytd.AuthSubHandler</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>AuthsubHandler</servlet-name>
@@ -200,7 +200,7 @@
 
   <servlet>
     <servlet-name>LogoutHandler</servlet-name>
-    <servlet-class>com.google.yaw.LogoutHandler</servlet-class>
+    <servlet-class>com.google.ytd.LogoutHandler</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LogoutHandler</servlet-name>

@@ -18,8 +18,8 @@ limitations under the License.
 <%@ page import="com.google.appengine.api.users.User"%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
-<%@ page import="com.google.yaw.Util"%>
-<%@ page import="com.google.yaw.model.AdminConfig"%>
+<%@ page import="com.google.ytd.Util"%>
+<%@ page import="com.google.ytd.model.AdminConfig"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

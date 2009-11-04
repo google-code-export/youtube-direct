@@ -1,7 +1,7 @@
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@ page import="com.google.yaw.Authenticator"%>
-<%@ page import="com.google.yaw.Util"%>
-<%@ page import="com.google.yaw.model.AdminConfig"%>
+<%@ page import="com.google.ytd.Authenticator"%>
+<%@ page import="com.google.ytd.Util"%>
+<%@ page import="com.google.ytd.model.AdminConfig"%>
 <%@ page import="java.net.URLDecoder"%>
 <% 
 	Authenticator authenticator = new Authenticator(request, response); 
