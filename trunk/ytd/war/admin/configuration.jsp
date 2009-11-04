@@ -30,7 +30,7 @@ limitations under the License.
     <div class="clear">
       <label for="clientId" class="configureLabel">YouTube Client ID:</label>
       <input class="configureInput" id="clientId" type="text"/>
-      <img class="tip" src="/questionmark.png" title="Use any unqiue string, e.g. 'yourcompany-youtube-anywhere'"></img>
+      <img class="tip" src="/questionmark.png" title="Use any unqiue string, e.g. 'yourcompany-youtube-direct'"></img>
     </div>
   </fieldset>
   <fieldset>
