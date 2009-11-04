@@ -1,21 +1,22 @@
-The YAW platform consist of 2 components:
+The YouTube Direct (YTD) platform consist of 2 components:
 
-1. The embeddable YAW container
+1. The embeddable YTD container
   - Google AuthSub authentication to YouTube
   - Direct video upload to YouTube
 
-2. The YAW admin panel
+2. The YTD admin panel
   - Manage assignments
   - Manage video submissions
-  - Generate embed code for YAW container for each assignment
+  - Generate embed code for YTD container for each assignment
   - Preview submitted videos
   - Search filter for assigments and submissions
   
-The project is currently available as an alpha release.
 To get started, please read the Getting Started guide at
 
   http://code.google.com/p/yaw-project/wiki/GettingStartedGuide
   
-and download the latest release at
+While it's recommended to sync to the SVN repository so that future updates
+can be easily retrieved, you can also downloaded a package tarball of the
+YTD project at
 
   http://code.google.com/p/yaw-project/downloads/list
