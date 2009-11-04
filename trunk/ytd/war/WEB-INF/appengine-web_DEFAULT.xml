@@ -17,15 +17,15 @@
     <property name="com.google.gdata.DisableCookieHandler" value="true"/>
     
     <!-- Configure memcache delays in seconds -->
-    <property name="com.google.yaw.ArticleSubmissionCacheTime" value="60"/>    
+    <property name="com.google.ytd.ArticleSubmissionCacheTime" value="60"/>    
 
 		<!-- Default YouTube account information -->
-    <property name="com.google.yaw.YTDeveloperKey" value=""/>
-    <property name="com.google.yaw.YTClientID" value=""/>
-    <property name="com.google.yaw.YTUsername" value=""/>
-    <property name="com.google.yaw.YTPassword" value=""/>
-    <property name="com.google.yaw.BrandingTag" value=""/>
-    <property name="com.google.yaw.LinkBackText" value=""/>
+    <property name="com.google.ytd.YTDeveloperKey" value=""/>
+    <property name="com.google.ytd.YTClientID" value=""/>
+    <property name="com.google.ytd.YTUsername" value=""/>
+    <property name="com.google.ytd.YTPassword" value=""/>
+    <property name="com.google.ytd.BrandingTag" value=""/>
+    <property name="com.google.ytd.LinkBackText" value=""/>
     
 	</system-properties>
 	
