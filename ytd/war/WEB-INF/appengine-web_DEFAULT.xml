@@ -14,16 +14,11 @@
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 		<!-- The DisableCookieHandler property needs to be set to true when using
          the GData Java client. -->
-    <property name="com.google.gdata.DisableCookieHandler" value="true"/>
-    
-    <!-- Configure memcache delays in seconds -->
-    <property name="com.google.ytd.ArticleSubmissionCacheTime" value="60"/>    
+    <property name="com.google.gdata.DisableCookieHandler" value="true"/> 
 
-		<!-- Default YouTube account information -->
+		<!-- Default YouTube Direct admin information -->
     <property name="com.google.ytd.YTDeveloperKey" value=""/>
     <property name="com.google.ytd.YTClientID" value=""/>
-    <property name="com.google.ytd.YTUsername" value=""/>
-    <property name="com.google.ytd.YTPassword" value=""/>
     <property name="com.google.ytd.BrandingTag" value=""/>
     <property name="com.google.ytd.LinkBackText" value=""/>
     

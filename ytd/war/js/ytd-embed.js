@@ -13,33 +13,33 @@
  * limitations under the License.
  */
 
-function Yaw() {
+function Ytd() {
     
 }
 
-Yaw.prototype.isAuthReturn = function() {
+Ytd.prototype.isAuthReturn = function() {
   return /#return$/i.test(document.location.href);
 };
 
-Yaw.prototype.setAssignmentId = function(id) {
+Ytd.prototype.setAssignmentId = function(id) {
 	this.assignmentId = id;
 };
 
-Yaw.prototype.setArticleUrl = function(url) {
+Ytd.prototype.setArticleUrl = function(url) {
 	this.articleUrl = url;
 };
 
-Yaw.prototype.setYawContainer = function(id, width, height) {
+Ytd.prototype.setYtdContainer = function(id, width, height) {
   
   var defaultHeight = 550;
   var defaultWidth = 350;
   
-  this.yawContainer = id;
+  this.ytdContainer = id;
   this.width = width || defaultWidth;
   this.height = height || defaultHeight;
 };
 
-Yaw.prototype.setCallToAction = function(id) {
+Ytd.prototype.setCallToAction = function(id) {
   this.callToAction = id;
   
   var callToAction = document.getElementById(this.callToAction);
@@ -53,7 +53,7 @@ Yaw.prototype.setCallToAction = function(id) {
   };  
 };
 
-Yaw.prototype.ready = function() {
+Ytd.prototype.ready = function() {
   if (/#return$/i.test(document.location.href)) {
     var callToAction = document.getElementById(this.callToAction);
     callToAction.style.display = 'none';
@@ -61,7 +61,7 @@ Yaw.prototype.ready = function() {
   }  
 };
 
-Yaw.prototype.embed = function() {
+Ytd.prototype.embed = function() {
 	var iframeElement = document.createElement('iframe');
 	iframeElement.width = this.width + 'px';
 	iframeElement.height = this.height + 'px';
@@ -77,7 +77,7 @@ Yaw.prototype.embed = function() {
 	    + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height;
 	iframeElement.src = iframeUrl;
 	
-	var iframeContainer = document.getElementById(this.yawContainer);
+	var iframeContainer = document.getElementById(this.ytdContainer);
 	iframeContainer.innerHTML = '';
 	iframeContainer.appendChild(iframeElement);
 };
@@ -118,7 +118,7 @@ function getScriptSelfDomain() {
 
 function isEmbedScript(url) {
   var isEmbedScript = false;
-  var re = /.+yaw-embed.js$/;  
+  var re = /.+ytd-embed.js$/;  
   
   if (re.test(url)) {
     isEmbedScript = true;

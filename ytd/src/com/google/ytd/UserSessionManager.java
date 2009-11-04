@@ -33,7 +33,7 @@ import com.google.ytd.model.UserSession;
  * Class that manages UserSession objects.
  */
 public class UserSessionManager {
-  private static final String USER_SESSION_ID_NAME = "YAW_SESSION_ID";
+  private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
 
   public static void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);

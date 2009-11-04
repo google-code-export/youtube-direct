@@ -315,21 +315,21 @@ admin.assign.showEmbedCode = function(id) {
   
   var code = [];
   code.push('<script type="text/javascript" src="' + admin.assign.getSelfUrl() 
-      + '/js/yaw-embed.js"></script>\n');
+      + '/js/ytd-embed.js"></script>\n');
   code.push('<script type="text/javascript">\n');
   code.push('window.onload = function() {\n');   
-  code.push('  var yaw = new Yaw();\n');
-  code.push('  yaw.setAssignmentId("' + entry.id + '");\n');
-  code.push('  yaw.setCallToAction("callToActionId");\n');  
+  code.push('  var ytd = new Ytd();\n');
+  code.push('  ytd.setAssignmentId("' + entry.id + '");\n');
+  code.push('  ytd.setCallToAction("callToActionId");\n');  
   code.push('  var containerWidth = 350;\n');
   code.push('  var containerHeight = 550;\n');
-  code.push('  yaw.setYawContainer("yawContainer", containerWidth, containerHeight);\n');   
-  code.push('  yaw.ready();\n');
+  code.push('  ytd.setYtdContainer("ytdContainer", containerWidth, containerHeight);\n');   
+  code.push('  ytd.ready();\n');
   code.push('};\n');  
   code.push('</script>\n');
   code.push('<a id="callToActionId" href="javascript:void(0);"><img src="' 
       + admin.assign.getSelfUrl() + '/calltoaction.png"/></a>\n');  
-  code.push('<div id="yawContainer" />');  
+  code.push('<div id="ytdContainer" />');  
   
   code = code.join('');
   code = code.replace(/\</g,'&lt;');
