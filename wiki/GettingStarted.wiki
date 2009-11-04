@@ -1,4 +1,5 @@
 #summary Getting Started with YouTube Direct (YTD)
+#labels Featured
 = Introduction =
 The YouTube Direct platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YTD.
 
