@@ -1,160 +1,103 @@
+* {
+  padding:0;
+  margin:0;
+}
 body {
-	background: #E3E4FA;
-	font-size: 11px;
-	font-family: arial;
+  color:#000;
+  font-size: 13px;
+  font-family: arial, sans-serif;
 } 
 #main {
-	text-align: left;
+  padding:10px;
+  text-align:left;
 }
-
 #main label {
-	color: black;
-	font-size: 10px;
+  font-weight:bold;
 }
-
-input {
-	font-size: 11px;
-	font-family: arial;
-}
-
 #message {
-	color: green;
-	fonts-size: 9px;
-	font-style: italic;
+  border-top:1px solid #ddd;
+  margin-top:6px;
+  padding-top:10px;
+  font-weight:bold;
+  color:#f00;
 }
-
 #youTubeLogo {
-	position: absolute;
-	top: 15px;
-	right: 0px;
+  position: absolute;
+  top: 13px;
+  right: 10px;
 }
-
 #uploaderMain {
-	display: none;
-	clear: right;
+  display: none;
+  clear: right;
 }
-
 #existingVideoMain {
-	display: none;
-	clear: right;
+  display: none;
+  clear: right;
 }
-
 #submissionAsk {
-	display: none;
-	clear: right;
+  display: none;
+  clear: right;
 }
-
+#submissionAsk * {
+  text-align:center;
+}
 #loginInstruction {
-	text-align: left;
-	background: white;
-	color: gray;
-	border: 1px solid gray;
-	width: 80%;
-	padding: 5px;
-	clear: right;
-	margin-top: 25px;
+  text-align:center;
+  clear:right;
+  margin-top:25px;
 }
-
 #postSubmitMessage {
-  align: center;
-  text-align: left;
-  background: white;
-  color: gray;
-  border: 1px solid gray;
-  width: 80%;
+  text-align: center;
   padding: 5px;
   clear: right;
   margin-top: 25px;
 }
-
 #youTubeTOS {
-  font-size: 9px;
-  color: gray;
+  font-size: 11px;
+  color: #666;
 }
-
-#logInLink {
-	font-size: 28px;	
-}
-
 .inputBox {
-	width: 100%;
-	border: 1px solid lightGray;
-	color: gray;
+  margin-top:2px;
+  width:100%;
 }
-
+#uploadDate {
+  width:80px;
+}
+#file {
+  margin-bottom:10px;
+}
+div[align="center"] {
+  text-align:left;
+}
+div[align="center"] input[value="Login"] {
+  margin:0 auto;
+  display:block;
+}
+#uploadButton {
+  font-weight:bold;
+}
 .emailInputBox {
-	width: 120px;
-	border: 1px solid lightGray;
-	color: gray;
-	visibility: hidden;
+  width:100px;
+  visibility: hidden;
 }
-
-.actionButton {
-	border: 1px solid white;
-	background: #98AFC7;
-	color: white;
-	font-size: 12px;
-	padding: 2px;
-	padding-left: 20px;
-	padding-right: 20px;
-}
-
-.actionButton:hover {
-	border: 1px solid black;
-	background: #98AFC7;
-	color: black;
-	font-size: 12px;
-	padding: 2px;
-	padding-left: 20px;
-	padding-right: 20px;
-}
-
-.askButton {
-	border: 1px solid white;
-	background: #98AFC7;
-	color: white;
-	font-size: 12px;
-	padding: 2px;
-	padding-left: 20px;
-	padding-right: 20px;
-	width: 200px;
-}
-
-.askButton:hover {
-	border: 1px solid black;
-	background: #98AFC7;
-	color: black;
-	font-size: 12px;
-	padding: 2px;
-	padding-left: 20px;
-	padding-right: 20px;
-	width: 200px;
-}
-
 .small {
-	font-size: 9px;
-	font-style: italic;
+  font-size: 11px;
 }
-
 .smallRed {
-	font-size: 9px;
-	color: red;
-	font-style: italic;
+  font-size: 11px;
+  color: #f00;
 }
-
 .tip {
-	font-size: 9px;
-	font-style: italic;
-	color: gray;
+  font-size: 11px;
+  color: #666;
 }
-
 #processing {
-	display: none;
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	color: white;
-	background: red;
-	font-size: 11px;	
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: white;
+  background: #f00;
+  font-size: 11px;  
 }
 
