@@ -48,6 +48,14 @@ public class NewAssignment extends HttpServlet {
         throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
       }
       
+      AdminConfig adminConfig = Util.getAdminConfig();
+      if (Util.isNullOrEmpty(adminConfig.getClientId()) ||
+              Util.isNullOrEmpty(adminConfig.getDeveloperKey()) ||
+              Util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {
+        throw new IllegalArgumentException("Unable to create new assignment. " +
+        		"Please configure all YouTube API settings first.");
+      }
+      
       Assignment jsonObj = Util.GSON.fromJson(json, Assignment.class);
 
       Assignment assignment = new Assignment();
@@ -62,20 +70,14 @@ public class NewAssignment extends HttpServlet {
               Util.isNullOrEmpty(assignment.getPlaylistId())) {
         YouTubeApiManager apiManager = new YouTubeApiManager();
         
-        AdminConfig adminConfig = Util.getAdminConfig();
         String token = adminConfig.getYouTubeAuthSubToken();
-        if (Util.isNullOrEmpty(token)) {
-          log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
-          		" YouTube AuthSub token was found in the config.", assignment.getDescription()));
-        } else {
-          apiManager.setToken(token);
-          String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
-                  assignment.getId()), assignment.getDescription());
-          assignment.setPlaylistId(playlistId);
-          
-          // Persist again with the updated playlist id.
-          pm.makePersistent(assignment);
-        }
+        apiManager.setToken(token);
+        String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+                assignment.getId()), assignment.getDescription());
+        assignment.setPlaylistId(playlistId);
+
+        // Persist again with the updated playlist id.
+        pm.makePersistent(assignment);
       }
       
       log.info(String.format("Added assignment id %d to the datastore.", assignment.getId()));

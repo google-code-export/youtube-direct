@@ -542,6 +542,9 @@ admin.assign.showAssignmentCreate = function() {
     ajaxCall.data = JSON.stringify(newAssignment);
     ajaxCall.cache = false;
     ajaxCall.processData = false;
+    ajaxCall.error = function(xhr, text, error) {
+      admin.assign.showLoading(true, xhr.statusText);
+    };
     ajaxCall.success = function(res) {
       admin.assign.showLoading(false);
       admin.assign.pageIndex = 1;
