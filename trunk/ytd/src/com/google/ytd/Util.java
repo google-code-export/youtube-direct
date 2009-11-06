@@ -88,12 +88,10 @@ public class Util {
       return deserialize(json, type, context);
     }
 
-    @Override
     public JsonElement serialize(Text text, Type type, JsonSerializationContext context) {
       return new JsonPrimitive(text.getValue());
     }
 
-    @Override
     public Text deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
       try {
         return new Text(json.getAsString());
