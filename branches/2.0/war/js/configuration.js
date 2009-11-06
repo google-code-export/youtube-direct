@@ -53,7 +53,10 @@ admin.config.init = function() {
   });
   
   jQuery('#authenticateButton').click(function() {
-    var nextUrl = window.location.protocol + "//" + window.location.host + "/admin/PersistAuthSubToken";
+    // Hardcode http:// rather than allowing for https:// to ensure that we can get by with
+    // registering http://APP.appspot.com/ as the prefix for AuthSub requests in the Google
+    // Manage Your Domain pages.
+    var nextUrl = "http://" + window.location.host + "/admin/PersistAuthSubToken";
     window.location = "https://www.google.com/accounts/AuthSubRequest?next=" + nextUrl + "&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0";
   });
   
