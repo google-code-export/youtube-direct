@@ -96,9 +96,10 @@ public class YouTubeApiManager {
 
     if (Util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
+      service = new YouTubeService(clientId);
+    } else {
+      service = new YouTubeService(clientId, developerKey);
     }
-
-    service = new YouTubeService(clientId, developerKey);
   }
   
   public YouTubeApiManager(String clientId) {

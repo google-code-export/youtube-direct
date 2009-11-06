@@ -361,24 +361,30 @@ admin.assign.showPlaylistCode = function(id) {
   var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
 
   var code = [];
-  code.push('<object width="' + width + '" height="' + height + '">\n');
-  code.push('<param name="movie" value="\n');
-  code.push(playlistUrl);
-  code.push('&hl=en&fs=1&">\n');
-  code.push('</param>\n');
-  code.push('<param name="allowFullScreen" value="true"></param>\n');
-  code.push('<param name="allowscriptaccess" value="always"></param>\n');
-  code.push('<embed src="\n');
-  code.push(playlistUrl);
-  code.push('&hl=en&fs=1&" type="application/x-shockwave-flash"\n');
-  code.push(' allowscriptaccess="always" allowfullscreen="true" width="'
-      + width + '" height="' + height + '">\n');
-  code.push('</embed>\n');
-  code.push('</object>\n');  
-  code = code.join('');
-  code = code.replace(/\</g,'&lt;');
-  code = code.replace(/\>/g,'&gt;');  
-  
+  if (playlistId == null || playlistId == '') {
+    code = 'No playlist is associated with this assignment. Please check the YouTube account ' +
+        'settings in the "Configuration" tab.';
+  } else {
+    code.push('<object width="' + width + '" height="' + height + '">\n');
+    code.push('<param name="movie" value="\n');
+    code.push(playlistUrl);
+    code.push('&hl=en&fs=1&">\n');
+    code.push('</param>\n');
+    code.push('<param name="allowFullScreen" value="true"></param>\n');
+    code.push('<param name="allowscriptaccess" value="always"></param>\n');
+    code.push('<embed src="\n');
+    code.push(playlistUrl);
+    code.push('&hl=en&fs=1&" type="application/x-shockwave-flash"\n');
+    code.push(' allowscriptaccess="always" allowfullscreen="true" width="'
+            + width + '" height="' + height + '">\n');
+    code.push('</embed>\n');
+    code.push('</object>\n');
+    
+    code = code.join('');
+    code = code.replace(/\</g,'&lt;');
+    code = code.replace(/\>/g,'&gt;');
+  }
+
   var textarea = jQuery('<textarea cols="80" cols="15"/>');
   textarea.css('font-size', '11px');
   textarea.css('color', 'black');
