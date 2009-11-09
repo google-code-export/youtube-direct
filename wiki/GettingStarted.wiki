@@ -18,7 +18,7 @@ If you are upgrading from a previous release, please familiarize yourself with t
     * List of tagged releases at http://code.google.com/p/yaw-project/source/browse/#svn/tags
     * SVN readonly checkout URL: http://yaw-project.googlecode.com/svn/tags/YYYYMMDD    
     * Subclipse (http://subclipse.tigris.org/) makes checking out SVN code into Eclipse straight forward, but any SVN client can be used.  
-  # Edit your local copy of the war/WEB-INF/appengine-web.xml file: 
+  # Make a copy of war/WEB-INF/appengine-web_DEFAULT.xml and name it war/WEB-INF/appengine-web.xml. Edit your local copy of the file to: 
     * Replace <application> with your registered App Engine instance name. 
     * Replace <version> with 1, and increment it as you see fit. 
     * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at [http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
