@@ -125,3 +125,28 @@ fieldset legend {
   float: left;
   margin-top: 3px;
 }
+
+#messageContainer {
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  width: 100%;
+}
+
+#messageList {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.messageListWrapper {
+  margin: 0px;
+}
+
+.message {
+  color: #2e6e9e;
+}
+
+.error {
+  color: red;
+}

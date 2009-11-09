@@ -23,8 +23,55 @@ jQuery(document).ready( function() {
 	}
 });
 
-admin.init = function() {  
+admin.init = function() {
   admin.sub.init(); // from submission.js	
   admin.assign.init(); // from assignments.js
 	admin.config.init(); //from configuration.js
 };
+
+admin.showMessage = function(message, elementToHide, displaySeconds) {
+  return admin.showSomething(message, 'message', elementToHide, displaySeconds);
+}
+
+// errorObj may be a XHR object returned from an AJAX call, or a string.
+admin.showError = function(errorObj, elementToHide) {
+  var errorString = '';
+  
+  if (errorObj.responseText) {
+    // In the local App Engine web server, errors are returned wrapped in <pre>.
+    var re = new RegExp('<pre>(.*?)</pre>', 'i');
+    var matches = re.exec(errorObj.responseText);
+    if (matches && matches.length  && matches.length >= 2) {
+      errorString = matches[1];
+    } else {
+      // In the production App Engine web server, errors are returned wrapped in <h1>.
+      re = new RegExp('<h1>(.*?)</h1>', 'i');
+      matches = re.exec(errorObj.responseText);
+      if (matches && matches.length  && matches.length >= 2) {
+        errorString = matches[1];
+      }
+    }
+  } else {
+    errorString = errorObj.toString();
+  }
+  
+  return admin.showSomething(errorString, 'error', elementToHide, 10);
+}
+
+admin.showSomething = function(message, elementClass, elementToHide, displaySeconds) {
+  var wrapperElement = $('<p>').addClass('messageListWrapper').prependTo('#messageList');
+  var messageElement = $('<span>' + message + '</span>').addClass(elementClass);
+  messageElement.prependTo(wrapperElement);
+  
+  if(elementToHide) {
+    $(elementToHide).hide();
+  }
+  
+  if (typeof displaySeconds == 'number') {
+    setTimeout(function() {
+      messageElement.fadeOut('fast');
+    }, displaySeconds * 1000);
+  }
+  
+  return wrapperElement;
+}
