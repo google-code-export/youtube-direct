@@ -3,6 +3,9 @@
 
 =Release Notes=
 
+===20091104===
+* Rebranding for YouTube Direct.
+
 ===20091013===
   * Major user interface changes to the administration interface and default submission interface.
   * Many changes to the various data model classes.
