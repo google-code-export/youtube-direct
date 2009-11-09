@@ -30,7 +30,7 @@ If you are upgrading from a previous release, please familiarize yourself with t
     * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key.
   # Go to the "Assignments" tab and create a new assignment.
   # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YTD uploader on your page. 
-    * Make sure that you modify the ytd-embed.js URL to point to the actual path to the file. 
+    * Make sure that you modify the ytd-embed.js URL to point to the actual path to the file. *Note: in order to reduce the traffic to your App Engine instance, it's recommended that you host the ytd-embed.js file on your own web infrastructure and reference it from there!*
     * If your page has an existing `window.onload` handler, add the `ytd.embed()` JavaScript code to that instead of creating a new `window.onload`.
   # Visit the "Submissions" tab to view submitted videos and approve/reject them as desired.
     * In the "Configuration" tab, you can specify an address that will receive mail whenever a new video is submitted.
