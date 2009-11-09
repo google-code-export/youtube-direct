@@ -21,8 +21,8 @@ If you are upgrading from a previous release, please familiarize yourself with t
   # Make a copy of war/WEB-INF/appengine-web_DEFAULT.xml and name it war/WEB-INF/appengine-web.xml. Edit your local copy of the file to: 
     * Replace <application> with your registered App Engine instance name. 
     * Replace <version> with 1, and increment it as you see fit. 
-    * Replace com.google.yaw.YTDeveloperKey property with your registered YT Developer Key (get one at [http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
-    * Replace com.google.yaw.YTClientID the unique identifier string of your choice.
+    * Replace com.google.ytd.YTDeveloperKey property with your registered YT Developer Key (get one at [http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
+    * Replace com.google.ytd.YTClientID the unique identifier string of your choice.
     * Deploy YTD using the local development webserver environment that comes with the App Engine SDK. If using Eclipse with the GAE plugin, the default "Run" Eclipse action will do this. The webserver runs at *http://localhost:8080/ *.
   # Build and deploy YTD to your application instance on GAE. Be sure that you have completed step 3 and have the correct App Engine instance name in appengine-web.xml!
   # Go to the admin panel for YTD by visiting http://APP_ID.appspot.com/admin, where *APP_ID* is your registered App Engine instance name. You'll need to log in with a Google Account that is set up as an administrator for your App Engine instance.
@@ -30,7 +30,7 @@ If you are upgrading from a previous release, please familiarize yourself with t
     * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key.
   # Go to the "Assignments" tab and create a new assignment.
   # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YTD uploader on your page. 
-    * Make sure that you modify the yaw-embed.js URL to point to the actual path to the file. 
+    * Make sure that you modify the ytd-embed.js URL to point to the actual path to the file. 
     * If your page has an existing `window.onload handler`, add the `ytd.embed()` `JavaScript` code to that instead of creating a new `window.onload`.
   # Visit the "Submissions" tab to view submitted videos and approve/reject them as desired.
     * In the "Configuration" tab, you can specify an address that will receive mail whenever a new video is submitted.
