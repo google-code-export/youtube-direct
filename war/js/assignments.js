@@ -501,7 +501,6 @@ admin.assign.refreshGridUI = function(entries) {
 };
 
 admin.assign.showAssignmentCreate = function() {
-
   var dialogOptions = {};
   dialogOptions.title = "Create New Assignment";
   dialogOptions.width = 300;
@@ -525,6 +524,7 @@ admin.assign.showAssignmentCreate = function() {
   });
   
   div.find('#createButton').click(function() {
+    var messageElement = admin.showMessage("Creating assignment...");
     
     var newAssignment = {};
     newAssignment.description = div.find('#assignmentDescription').val();
@@ -543,25 +543,25 @@ admin.assign.showAssignmentCreate = function() {
     ajaxCall.cache = false;
     ajaxCall.processData = false;
     ajaxCall.error = function(xhr, text, error) {
-      admin.assign.showLoading(true, xhr.statusText);
+      admin.showError(xhr, messageElement);
     };
     ajaxCall.success = function(res) {
-      admin.assign.showLoading(false);
+      admin.showMessage("Assignment created.", messageElement, 5);
       admin.assign.pageIndex = 1;
       admin.assign.refreshGrid();      
     };
-
-    admin.assign.showLoading(true, 'processing ...');
+    
     jQuery.ajax(ajaxCall);    
     
     div.dialog('destroy');
-    
   });  
   
   div.dialog(dialogOptions);    
 };
 
-admin.assign.getAllAssignments =function(callback) {
+admin.assign.getAllAssignments = function(callback) {
+  var messageElement = admin.showMessage("Loading assignments...");
+  
   var url = '/admin/GetAllAssignments?sortby=' + admin.assign.sortBy + '&sortorder=' +  
       admin.assign.sortOrder + '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + 
       admin.assign.pageSize;
@@ -575,18 +575,23 @@ admin.assign.getAllAssignments =function(callback) {
   ajaxCall.type = 'GET';
   ajaxCall.url = url;
   ajaxCall.dataType = 'json';
-  ajaxCall.success = function(result) {  
+  ajaxCall.error = function(xhr, text, error) {
+    admin.showError(xhr, messageElement);
+  };
+  ajaxCall.success = function(result) {
+    admin.showMessage("Assignments loaded.", messageElement, 5);
     admin.assign.total = result.total;
     var entries = result.entries                  
     admin.assign.assignments = entries.concat([]);
-    admin.assign.showLoading(false);
     callback(entries);        
   };
-  admin.assign.showLoading(true);
+  
   jQuery.ajax(ajaxCall);
 };
 
 admin.assign.updateAssignment = function(entry) {
+  var messageElement = admin.showMessage("Updating assignment...");
+  
   var url = '/admin/UpdateAssignment';
   var ajaxCall = {};
   ajaxCall.type = 'POST';
@@ -594,20 +599,20 @@ admin.assign.updateAssignment = function(entry) {
   ajaxCall.data = JSON.stringify(entry);
   ajaxCall.cache = false;
   ajaxCall.processData = false;
+  ajaxCall.error = function(xhr, text, error) {
+    admin.showError(xhr, messageElement);
+  };
   ajaxCall.success = function(res) {
-    admin.assign.showLoading(false);
+    admin.showMessage("Assignment updated.", messageElement, 5);
     admin.assign.refreshGrid();
   };
 
-  admin.assign.showLoading(true, 'saving ...');
   jQuery.ajax(ajaxCall);
-
 };
 
 admin.assign.getPlaylistHTML = function(playlistId, width, height) {
-
-  width = width || 250;
-  height = height || 250;
+  var width = width || 250;
+  var height = height || 250;
   var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
 
   var html = [];
@@ -625,13 +630,4 @@ admin.assign.getPlaylistHTML = function(playlistId, width, height) {
   html.push('</embed></object>');
   
   return html.join('');
-};
-
-admin.assign.showLoading = function(status, text) {
-  if (status) {
-    text = text || 'loading ...';
-    jQuery('#assignmentStatus').html(text).show();
-  } else {
-    jQuery('#assignmentStatus').html('').hide();
-  }
 };

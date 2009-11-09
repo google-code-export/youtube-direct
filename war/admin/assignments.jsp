@@ -14,10 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-	<span class="status" id="assignmentStatus"></span>
-	<br>	
-	<br>
-	
 	<div id="assignmentFilters">
 		<a href="javascript:void(0);" class="filter">ALL</a>&nbsp;&nbsp;
 		<a href="javascript:void(0);" class="filter">ACTIVE</a>&nbsp;&nbsp;

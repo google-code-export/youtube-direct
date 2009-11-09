@@ -439,7 +439,7 @@ admin.sub.refreshGrid = function() {
         captionTitle = 'All Submissions';   
         break;
       case 'UNREVIEWED':
-        captionTitle = 'Unreview Submissions';
+        captionTitle = 'Unreviewed Submissions';
         break;
       case 'APPROVED':
         captionTitle = 'Approved Submissions';
@@ -596,15 +596,23 @@ admin.sub.downloadVideo = function(submission) {
 
 admin.sub.deleteEntry = function(entryId) {
   if (confirm("Delete this entry?")) {
+    var messageElement = admin.showMessage("Deleting submission...");
+    
     var url = '/admin/DeleteSubmission?id=' + entryId;
     var ajaxCall = {};
     ajaxCall.cache = false;
     ajaxCall.type = 'GET';
     ajaxCall.url = url;
     ajaxCall.dataType = 'text';
+    ajaxCall.error = function(xhr, text, error) {
+      admin.showError(xhr, messageElement);
+    };
     ajaxCall.success = function(res) {
+      admin.showMessage("Submission deleted.", messageElement, 5);
       admin.sub.refreshGrid();
     };
+    
+    admin.showMessage("Deleting submission...");
     jQuery.ajax(ajaxCall);
   }
 };
@@ -629,7 +637,9 @@ admin.sub.previewVideo = function(entryId) {
   div.dialog(dialogOptions);
 };
 
-admin.sub.getAllSubmissions =function(callback) {
+admin.sub.getAllSubmissions = function(callback) {
+  var messageElement = admin.showMessage("Loading submissions...");
+  
   var url = '/admin/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
       '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize;
   
@@ -642,18 +652,23 @@ admin.sub.getAllSubmissions =function(callback) {
   ajaxCall.type = 'GET';
   ajaxCall.url = url;
   ajaxCall.dataType = 'json';
-  ajaxCall.success = function(result) {
-    admin.sub.total = result.total;
-    var entries = result.entries                  
-    admin.sub.submissions = entries.concat([]);
-    admin.sub.showLoading(false);
-    callback(entries);        
+  ajaxCall.error = function(xhr, text, error) {
+    admin.showError(xhr, messageElement);
   };
-  admin.sub.showLoading(true);
+  ajaxCall.success = function(result) {
+    admin.showMessage("Submissions loaded.", messageElement, 5);
+    admin.sub.total = result.total;
+    var entries = result.entries;
+    admin.sub.submissions = entries.concat([]);
+    callback(entries);
+  };
+  
   jQuery.ajax(ajaxCall);
 };
 
 admin.sub.updateSubmission = function(entry) {
+  var messageElement = admin.showMessage("Updating submission...");
+  
   var url = '/admin/UpdateSubmission';
   var ajaxCall = {};
   ajaxCall.type = 'POST';
@@ -661,29 +676,20 @@ admin.sub.updateSubmission = function(entry) {
   ajaxCall.data = JSON.stringify(entry);
   ajaxCall.cache = false;
   ajaxCall.processData = false;
+  ajaxCall.error = function(xhr, text, error) {
+    admin.showError(xhr, messageElement);
+  };
   ajaxCall.success = function(res) {
-    admin.sub.showLoading(false);
+    admin.showMessage("Submission updated.", messageElement, 5);
     admin.sub.refreshGrid();
   };
-
-  admin.sub.showLoading(true, 'saving ...');
+  
   jQuery.ajax(ajaxCall);
-
-};
-
-admin.sub.showLoading = function(status, text) {
-  if (status) {
-    text = text || 'loading ...';
-    jQuery('#submissionStatus').html(text).show();
-  } else {
-    jQuery('#submissionStatus').html('').hide();
-  }
 };
 
 admin.sub.getVideoHTML = function(videoId, width, height) {
-
-  width = width || 250;
-  height = height || 250;
+  var width = width || 250;
+  var height = height || 250;
 
   var youtubeUrl = 'http://www.youtube.com/v/' + videoId;
 

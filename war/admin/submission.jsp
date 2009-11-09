@@ -14,10 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-	<span class="status" id="submissionStatus"></span> 
-	<br>
-	<br>
-	
 	<div id="submissionFilters">
 		<a href="javascript:void(0);" class="filter">ALL</a>&nbsp;&nbsp;
 		<a href="javascript:void(0);" class="filter">UNREVIEWED</a>&nbsp;&nbsp;

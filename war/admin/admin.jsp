@@ -48,6 +48,9 @@ limitations under the License.
 </head>
 
 <body>
+<div id="messageContainer">
+  <div id="messageList"></div>
+</div>
 <div align="center">
 <div id="authSection">
 	<%

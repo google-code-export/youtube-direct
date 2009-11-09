@@ -76,23 +76,27 @@ admin.config.toggleModerationEmailTextDiv = function(isVisible) {
 }
 
 admin.config.getAdminConfig = function(callback) {
+  var messageElement = admin.showMessage("Loading configuration...");
+  
   var ajaxCall = {};
   ajaxCall.type = 'GET';
   ajaxCall.url = '/admin/GetAdminConfig';
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    admin.config.showLoading(true, 'Unable to retrieve configuration: ' + xhr.statusText);
+    admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.config.showLoading(false);
+    admin.showMessage("Configuration loaded.", messageElement, 5);
     callback(res);
   };
-  admin.config.showLoading(true, "Loading configuration...");
+
   jQuery.ajax(ajaxCall);     
 };
 
 admin.config.persistAdminConfig = function() {
+  var messageElement = admin.showMessage("Saving configuration...");
+  
   var developerKey = jQuery('#developerKey').val();   
   var clientId = jQuery('#clientId').val();
   var defaultTag = jQuery('#defaultTag').val();
@@ -131,20 +135,11 @@ admin.config.persistAdminConfig = function() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    admin.config.showLoading(true, 'Unable to save configuration: ' + xhr.statusText);
+    admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.config.showLoading(false);
+    admin.showMessage("Configuration saved.", messageElement, 5);
   };
-  admin.config.showLoading(true, 'Saving configuration...');
+  
   jQuery.ajax(ajaxCall);    
-};
-
-admin.config.showLoading = function(status, text) {
-  if (status) {
-    text = text || 'Loading configuration...';
-    jQuery('#configurationStatus').html(text).show();
-  } else {
-    jQuery('#configurationStatus').html('').hide();
-  }
 };
