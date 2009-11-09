@@ -5,6 +5,7 @@
 
 ===20091104===
 * Rebranding for YouTube Direct.
+* Small change to the @Override annotation for an extension to the GSON class.
 
 ===20091013===
   * Major user interface changes to the administration interface and default submission interface.
