@@ -35,3 +35,6 @@ If you are upgrading from a previous release, please familiarize yourself with t
   # Visit the "Submissions" tab to view submitted videos and approve/reject them as desired.
     * In the "Configuration" tab, you can specify an address that will receive mail whenever a new video is submitted.
     * Approved videos will be automatically added to a playlist associated with each assignment (owned by your YouTube account), and depending on your configuration settings, will have their descriptions and tags updated to reflect your approval.
+  # (OPTIONAL) Register you new App Engine website with Google's AuthSub. This will get rid of the red warning text box that appears when unregistered web sites use AuthSub. There is more information on AuthSub in [http://code.google.com/apis/accounts/docs/AuthSub.html this document]. You can initiate the registration process at https://www.google.com/accounts/ManageDomains
+    * When asked for the _Target URL path prefix:_ you should use http://APP_ID.appspot.com/ (where APP_ID is the name of your App Engine instance). Be sure that you use http:// and not https://
+    * If you enter an incorrect value for _Target URL path prefix:_ then the AuthSub web interface will reject your requests for AuthSub tokens and will display an error message warning that a malicious web site might be requesting tokens on your behalf.
