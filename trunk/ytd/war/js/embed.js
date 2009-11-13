@@ -18,9 +18,8 @@ jQuery(document).ready( function() {
 });
 
 function init() {
-  
-  window.URL_PARAMS = getUrlParams();   
-  
+  window.URL_PARAMS = getUrlParams();
+
   // Hide post submission message.
   jQuery('#postSubmitMessage').css('display', 'none');
   
@@ -76,11 +75,9 @@ function isRequiredFilled(sectionId) {
 }
 
 function existingVideoMainInit() {
-  
   jQuery('#existingVideoMain').css('display', 'block');
   
   jQuery('#submitButton').click( function(event) {
-
     if (!isRequiredFilled('existingVideoMain')) {
       event.preventDefault();
       showMessage('Please fill in all required field(s).');
@@ -100,11 +97,13 @@ function existingVideoMainInit() {
     jsonObj.videoId = getVideoId(url);
     jsonObj.location = location;
     jsonObj.date = date;
-    jsonObj.email = email;  
+    jsonObj.email = email;
+    
+    var sessionId = window.URL_PARAMS.sessionId || '';
     
     var ajaxCall = {};
     ajaxCall.type = 'POST';
-    ajaxCall.url = '/SubmitExistingVideo';
+    ajaxCall.url = '/SubmitExistingVideo?sessionId=' + sessionId;
     ajaxCall.data = JSON.stringify(jsonObj);
     ajaxCall.dataType = 'json'; // expecting back
     ajaxCall.processData = false;
@@ -214,10 +213,12 @@ function getUploadToken() {
   jsonObj.date = date;
   jsonObj.email = email;
   jsonObj.tags = tags;
+  
+  var sessionId = window.URL_PARAMS.sessionId || '';
 
   var ajaxCall = {};
   ajaxCall.type = 'POST';
-  ajaxCall.url = '/GetUploadToken';
+  ajaxCall.url = '/GetUploadToken?sessionId=' + sessionId;
   ajaxCall.data = JSON.stringify(jsonObj);
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
@@ -236,7 +237,7 @@ function getUploadToken() {
     } else {
       jQuery('#token').val(uploadToken);
       jQuery('#uploadForm').get(0).action = uploadUrl + '?nexturl='
-          + getSelfUrl() + '/UploadResponseHandler';
+          + getSelfUrl() + '/UploadResponseHandler?sessionId=' + sessionId;
       initiateUpload();
     }
 
@@ -247,7 +248,6 @@ function getUploadToken() {
 }
 
 function initiateUpload() {
-
   var iframeName = 'hiddenIframe';
   var iframeId = iframeName;
 
