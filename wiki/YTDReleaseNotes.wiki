@@ -3,6 +3,9 @@
 
 =Release Notes=
 
+===20091113===
+  * Fixes to support scenarios in which the App Engine domain doesn't match the host page domain, and third-party cookies are disabled in the user's browser.
+
 ===20091104===
   * Rebranding for YouTube Direct.
 
