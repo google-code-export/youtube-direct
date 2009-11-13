@@ -163,6 +163,6 @@ public class Authenticator {
   }
 
   public String getLogOutUrl() {
-    return "/LogoutHandler";
+    return "/LogoutHandler?sessionId=" + userSession.getId();
   }
 }

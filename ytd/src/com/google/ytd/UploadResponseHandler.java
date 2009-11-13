@@ -39,7 +39,6 @@ public class UploadResponseHandler extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     String videoId = req.getParameter("id");
     String status = req.getParameter("status");
 
