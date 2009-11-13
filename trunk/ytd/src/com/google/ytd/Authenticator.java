@@ -152,6 +152,10 @@ public class Authenticator {
     nextUrl.append(AUTHSUB_HANDLER);
     nextUrl.append("?articleUrl=");
     nextUrl.append(articleUrl);
+    
+    // Insert the session id as a parameter, to support browsers with cookies disabled.
+    nextUrl.append("&sessionId=");
+    nextUrl.append(getUserSession().getId());
 
     loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
 
@@ -161,5 +165,4 @@ public class Authenticator {
   public String getLogOutUrl() {
     return "/LogoutHandler";
   }
-
 }

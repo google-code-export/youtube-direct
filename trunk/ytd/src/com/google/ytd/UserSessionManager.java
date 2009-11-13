@@ -49,13 +49,11 @@ public class UserSessionManager {
   }
 
   public static boolean isSessionValid(UserSession session) {
-
     boolean valid = true;
 
     String authSubToken = session.getMetaData("authSubToken");
 
     if (authSubToken != null) {
-
       try {
         AuthSubUtil.getTokenInfo(authSubToken, null);
       } catch (AuthenticationException e) {
@@ -67,8 +65,8 @@ public class UserSessionManager {
       }
     } else {
       valid = false;
-
     }
+    
     return valid;
   }
 
@@ -80,35 +78,48 @@ public class UserSessionManager {
     Util.removeJdo(session);
   }
 
+  @SuppressWarnings("unchecked")
   public static UserSession getUserSession(HttpServletRequest request) {
-
     UserSession userSession = null;
 
     Cookie[] cookies = request.getCookies();
-
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         if (USER_SESSION_ID_NAME.equals(cookie.getName())) {
           String sessionId = cookie.getValue();
-          PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-
-          String filters = "id == id_";
-          Query query = pm.newQuery(UserSession.class, filters);
-          query.declareParameters("String id_");
-          List<UserSession> list = (List<UserSession>) query
-              .executeWithArray(new Object[] { sessionId });
-
-          if (list.size() > 0) {
-            userSession = list.get(0);
-            userSession = pm.detachCopy(userSession);
-          }
-
-          pm.close();
+          userSession = getUserSessionById(sessionId);
         }
+      }
+    }
+    
+    // Fall back on checking the sessionId parameter if cookies are disabled.
+    if (userSession == null) {
+      String sessionId = request.getParameter("sessionId");
+      if(!Util.isNullOrEmpty(sessionId)) {
+        userSession = getUserSessionById(sessionId);
       }
     }
 
     return userSession;
   }
 
+  @SuppressWarnings("unchecked")
+  public static UserSession getUserSessionById(String id) {
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    UserSession userSession = null;
+    
+    String filters = "id == id_";
+    Query query = pm.newQuery(UserSession.class, filters);
+    query.declareParameters("String id_");
+    List<UserSession> list = (List<UserSession>) query.executeWithArray(new Object[] { id });
+
+    if (list.size() > 0) {
+      userSession = list.get(0);
+      userSession = pm.detachCopy(userSession);
+    }
+
+    pm.close();
+    
+    return userSession;
+  }
 }
