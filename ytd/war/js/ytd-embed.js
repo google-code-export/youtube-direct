@@ -18,7 +18,7 @@ function Ytd() {
 }
 
 Ytd.prototype.isAuthReturn = function() {
-  return /#return$/i.test(document.location.href);
+  return /#return-sessionId-(.+)/i.test(document.location.href);
 };
 
 Ytd.prototype.setAssignmentId = function(id) {
@@ -54,7 +54,9 @@ Ytd.prototype.setCallToAction = function(id) {
 };
 
 Ytd.prototype.ready = function() {
-  if (/#return$/i.test(document.location.href)) {
+  var matches = document.location.href.match(/#return-sessionId-(.+)/i);
+  if (matches && matches.length > 1) {
+    this.sessionId = matches[1];
     var callToAction = document.getElementById(this.callToAction);
     callToAction.style.display = 'none';
     this.embed();
@@ -74,7 +76,8 @@ Ytd.prototype.embed = function() {
 	this.articleUrl = this.articleUrl.replace(/#.+$/, '');	
 	
 	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
-	    + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height;
+	    + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height + 
+	    '&sessionId=' + this.sessionId;
 	iframeElement.src = iframeUrl;
 	
 	var iframeContainer = document.getElementById(this.ytdContainer);

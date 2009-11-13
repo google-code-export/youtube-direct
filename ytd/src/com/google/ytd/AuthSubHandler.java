@@ -84,7 +84,7 @@ public class AuthSubHandler extends HttpServlet {
       }
       Util.persistJdo(userAuthToken);
 
-      response.sendRedirect(articleUrl + "#return");
+      response.sendRedirect(articleUrl + "#return-sessionId-" + userSession.getId());
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
