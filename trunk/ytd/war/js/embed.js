@@ -248,57 +248,33 @@ function getUploadToken() {
 }
 
 function initiateUpload() {
-  var iframeName = 'hiddenIframe';
-  var iframeId = iframeName;
+  var iframeId = 'hiddenIframe';
+  var hiddenIframe = jQuery('#' + iframeId).get(0);
 
-  var hiddenIframe = document.createElement('iframe');
-  hiddenIframe.src = '/blank.html';
-  hiddenIframe.style.display = 'none';
-  hiddenIframe.id = iframeId;
-  hiddenIframe.name = iframeName;
-
-  jQuery('#uploadForm').get(0).target = iframeName;
+  jQuery('#uploadForm').get(0).target = iframeId;
 
   var callback = function() {
-    //showMessage('Upload completed!');
     jQuery('#uploadButton').get(0).disabled = false;
     jQuery('#cancelUploadButton').get(0).disabled = false;
     jQuery('#postSubmitMessage').css('display', 'block');
     clearProcessing();
     jQuery('#uploaderMain').css('display', 'none');
-
-    // if I care about the iframe content
-    /*
-     * var rawResponse = window.frames[0].document.body.innerHTML; rawResponse =
-     * rawResponse.replace('<pre>', ''); rawResponse = rawResponse.replace('</pre>',
-     * ''); console.log(rawResponse);
-     * 
-     * var json = JSON.parse(rawResponse); var youTubeId = json.id; var status =
-     * json.status;
-     * 
-     * if (status == '200') { jQuery('#message').html('upload completed!');
-     * jQuery('#uploaderMain').empty(); } else { jQuery('#message').html('upload
-     * failed, please try again!'); }
-     */
   };
 
   // most browsers
   hiddenIframe.onload = callback;
-
+  
   // IE 6 & 7
   hiddenIframe.onreadystatechange = function() {
     if (hiddenIframe.readyState == 'loaded'
         || hiddenIframe.readyState == 'complete') {
-
       if (self.frames[iframeId].name != iframeId) {
-        /* *** IMPORTANT: This is a BUG FIX for Internet Explorer *** */
+        /* IMPORTANT: This is a BUG FIX for Internet Explorer */
         self.frames[iframeId].name = iframeId;
       }
       callback();
     }
   };
-
-  jQuery(document.body).append(hiddenIframe);
 
   // submit the upload form!  
   jQuery('#uploadForm').get(0).submit();

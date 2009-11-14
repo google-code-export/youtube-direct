@@ -152,6 +152,8 @@
 	</div>
 	</form>
 	<br>
+	<iframe name="hiddenIframe" id="hiddenIframe" width=0 height=0 src="/blank.html" 
+			style="display: none; width: 0px; height: 0px;">
   <div id="youTubeTOS">
     By clicking 'Upload,' you certify that you own all rights to the content or that you are
     authorized by the owner to make the content publicly available on YouTube, and that it otherwise
