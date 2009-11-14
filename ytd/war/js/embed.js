@@ -110,6 +110,8 @@ function existingVideoMainInit() {
     ajaxCall.error = function(xhr, text, error) {
       clearProcessing();
       showMessage('Submit existing video incurred an error: ' + xhr.statusText);
+      jQuery('#submitButton').get(0).disabled = false;
+      jQuery('#cancelSubmitButton').get(0).disabled = false;         
     };
     ajaxCall.success = function(res) {
       clearProcessing();
@@ -122,12 +124,14 @@ function existingVideoMainInit() {
           jQuery('#submitButton').get(0).disabled = false;
           jQuery('#cancelSubmitButton').get(0).disabled = false;             
           break;
-        case 'false':
+        case 'false':         
           if (res.message) {
             showMessage(res.message);
           } else {          
             showMessage("Submit error incurred on server.")
           }      
+          jQuery('#submitButton').get(0).disabled = false;
+          jQuery('#cancelSubmitButton').get(0).disabled = false;              
       }
     };
     clearMessage();
