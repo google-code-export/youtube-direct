@@ -1,7 +1,10 @@
 #summary Getting Started with YouTube Direct (YTD)
 #labels Featured
 = Introduction =
-The YouTube Direct platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YTD.
+The YouTube Direct platform is designed to run on Google App Engine. App Engine allows you to run applications on top of Google's infrastructure. Follow this guide to deploy your own instance of YTD. But before you do that, you need to set up your environments for YTD:
+   * [Set up your YouTube and Google Account for YTD]
+   * [Set up Eclipse for YTD]
+   * [Set up App Engine for YTD]
 
 If you are upgrading from a previous release, please familiarize yourself with the latest [http://code.google.com/p/youtube-direct/wiki/YTDReleaseNotes release notes].
 
@@ -9,32 +12,70 @@ If you are upgrading from a previous release, please familiarize yourself with t
 
 ==YouTube Direct Getting Started Guide==
 
-  # Register an application instance on Google App Engine (GAE)
-    * [http://appengine.google.com/ Sign up for an App Engine account]
-    * Permission additional Google Account addresses to be administrators of your App Engine instance. You should permission all users who will need to create assignments and moderate submissions, as well as any email addresses that you would like to use as the `From:` address for mails that App Engine sends.
-    * [http://code.google.com/appengine/docs/java/overview.html Read the App Engine Java Overview]
-    * (STRONGLY RECOMMENDED) Install Eclipse plugin for GAE [http://code.google.com/eclipse/ http://code.google.com/eclipse/]
-  # Check out most recent tagged release of YTD project source code. 
-    * List of tagged releases at http://code.google.com/p/youtube-direct/source/browse/#svn/tags
-    * SVN readonly checkout URL: http://youtube-direct.googlecode.com/svn/tags/YYYYMMDD    
-    * Subclipse (http://subclipse.tigris.org/) makes checking out SVN code into Eclipse straight forward, but any SVN client can be used.  
-  # Make a copy of war/WEB-INF/appengine-web_DEFAULT.xml and name it war/WEB-INF/appengine-web.xml. Edit your local copy of the file to: 
-    * Replace <application> with your registered App Engine instance name. 
-    * Replace <version> with 1, and increment it as you see fit. 
-    * Replace com.google.ytd.YTDeveloperKey property with your registered YT Developer Key (get one at [http://code.google.com/apis/youtube/dashboard/ http://code.google.com/apis/youtube/dashboard/])
+Please complete the setup steps listed in the Introduction above before proceeding. 
+
+===Sync your Eclipse project to the YTD codebase===
+In your Eclipse window, select the *File menu > New*
+  * In the sub menu, choose Other ...
+  * With the popup menu, choose SVN > "Checkout projects from SVN". Click the Next button.
+  * Click on "Create a new repository location". Click the Next button.
+  * Enter "http://youtube-direct.googlecode.com/svn/trunk/" as the URL.
+  * Click on the URL to highlight it. Click the Finish button.
+
+Eclipse should now be downloading all the files from YTD repository in a project named "ytd".   
+
+===Build the YTD project in Eclipse===
+
+Once the download is completed, Eclipse should automatically begin to build the deploy binary. While it is building the status bar on the bottom right should say "Building workspace". If you do not have automatic build enabled for Eclipse, you can go to *Project > Build All*.
+
+===Deploy YTD on your local machine===
+Before deploying your YTD instance to App Engine, it's always a good idea to run it locally and test. The App Engine development server was automatically installed when you installed the Google Eclipse plugin in the previous step.
+
+  * Make a copy of war/WEB-INF/appengine-web_DEFAULT.xml and name it war/WEB-INF/appengine-web.xml. Edit your local copy of the file to:
+    * Replace <application> with your registered App Engine application ID.
+    * Replace <version> with 1, and increment it as you see fit.
+    * Replace com.google.ytd.YTDeveloperKey property with your registered YT Developer Key 
     * Replace com.google.ytd.YTClientID the unique identifier string of your choice.
-    * Deploy YTD using the local development webserver environment that comes with the App Engine SDK. If using Eclipse with the GAE plugin, the default "Run" Eclipse action will do this. The webserver runs at *http://localhost:8080/ *.
-  # Build and deploy YTD to your application instance on GAE. Be sure that you have completed step 3 and have the correct App Engine instance name in appengine-web.xml!
-  # Go to the admin panel for YTD by visiting http://APP_ID.appspot.com/admin, where *APP_ID* is your registered App Engine instance name. You'll need to log in with a Google Account that is set up as an administrator for your App Engine instance.
-  # Go to the "Configuration" tab and make the desired configuration changes. Mouse over the ? icons for descriptions of each option.
-    * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key.
-  # Go to the "Assignments" tab and create a new assignment.
-  # Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the `JavaScript` code to embed the YTD uploader on your page. 
-    * Make sure that you modify the ytd-embed.js URL to point to the actual path to the file. *Note: in order to reduce the traffic to your App Engine instance, it's recommended that you host the ytd-embed.js file on your own web infrastructure and reference it from there!*
-    * If your page has an existing `window.onload` handler, add the `ytd.embed()` JavaScript code to that instead of creating a new `window.onload`.
-  # Visit the "Submissions" tab to view submitted videos and approve/reject them as desired.
-    * In the "Configuration" tab, you can specify an address that will receive mail whenever a new video is submitted.
-    * Approved videos will be automatically added to a playlist associated with each assignment (owned by your YouTube account), and depending on your configuration settings, will have their descriptions and tags updated to reflect your approval.
-  # (OPTIONAL) Register you new App Engine website with Google's AuthSub. This will get rid of the red warning text box that appears when unregistered web sites use AuthSub. There is more information on AuthSub in [http://code.google.com/apis/accounts/docs/AuthSub.html this document]. You can initiate the registration process at https://www.google.com/accounts/ManageDomains
-    * When asked for the _Target URL path prefix:_ you should use http://APP_ID.appspot.com/ (where APP_ID is the name of your App Engine instance). Be sure that you use http:// and not https://
-    * If you enter an incorrect value for _Target URL path prefix:_ then the AuthSub web interface will reject your requests for AuthSub tokens and will display an error message warning that a malicious web site might be requesting tokens on your behalf.
+    * Deploy YTD using the local development webserver environment that comes with the App Engine SDK. If using Eclipse with the GAE plugin, the default "Run" Eclipse action will do this. The webserver runs at http://localhost:8080/ .
+    * You can test the YTD instance by going to http://localhost:8080/admin. The data you entered in the local instance will not be deployed to production. Once you're satisfied with your testing, you can proceed to deploy your YTD instance to Google App Engine. 
+
+
+===Deploy YTD to Google App Engine===
+If local deployment is successful, you can procede to deploy to Google App Engine.
+  * Right click on the project "ytd". See the dropdown menu and select *Google > Deploy to App Engine*
+  * Enter the email and password for your Google App Engine account. Click on the Deploy button.
+  * Once deployment is done, you can access your production instance of YTD at http://APP_ID.appspot.com/admin.  
+
+===Configuration of YTD Admin===
+After deployment is completed. You must perform a few configuration before you can start creating assignment.
+  * Go to the admin panel for YTD by visiting http://APP_ID.appspot.com/admin, where APP_ID is your registered App Engine instance name. You'll need to log in with a Google Account that is set up as an administrator for your App Engine instance.
+  * Go to the "Configuration" tab and make the desired configuration changes. Mouse over the ? icons for descriptions of each option.
+    * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key. 
+
+===Registering your website for AuthSub===
+Register your new YTD instance with Google's AuthSub. This will get rid of the red warning text box that appears when unregistered web sites us AuthSub. There is more information on AuthSub in this document. You can initiate the registration process at https://www.google.com/accounts/ManageDomains.
+  * When asked for the Target URL path prefix: you should use http://APP_ID.appspot.com/ (where APP_ID is the name of your App Engine instance). Be sure that you use http:// and not https://
+  * If you enter an incorrect value for Target URL path prefix: then the AuthSub web interface will reject your requests for AuthSub tokens and will display an error message warning that a malicious web site might be requesting tokens on your behalf. 
+
+
+===Creating new assignments & Embedding YTD Uploader to your page===
+  * In your YTD Admin panel, go to the "Assignments" tab and create a new assignment.
+  * Set the Assignment to the appropriate category (e.g "Entertainment"), set the status to "Active" to enable video submission and put a description to the assignment.
+  * Select the new assignment by highlighting it in the list and click the "Embed Code" button to show the JavaScript code to embed the YTD uploader on your page.
+    * Make sure that you modify the ytd-embed.js URL to point to the actual path to the file. By default, ytd-embed.js is hosted on your App Engine instance at http://APP_ID.appspot.com/ytd-embed.js.
+    * If your page has an existing window.onload handler, add the ytd.embed() JavaScript code to that instead of creating a new window.onload.
+  * Copy the embed code and paste it onto the page where you want the uploader to appear. Save and deploy your updated page. Now your site visitors can start submitting their videos. They have 2 options to do this, they can upload a new video, or submit an existing video that they already own. 
+
+
+===Moderating submissions===
+Once videos have been submitted through the uploader, you can go back the YouTube Direct admin panel to moderate the videos.
+
+  * Visit the "Submissions" tab to view submitted videos and approve/reject them as desired. All newly submitted videos will have the UNREVIEWED statys. As an admin, you can preview the video and details, and once you're satisfied, you can change the status as "APPROVED".
+  * Approved videos will be automatically added to a playlist associated with each assignment (owned by your YouTube account), and depending on your configuration settings, will have their descriptions and tags updated to reflect your approval.
+  * Note that in the "Configuration" tab, you can specify an address to receive an email whenever a new video is submitted.
+
+===Embedding playlists===
+
+Once you have approved videos to display, you can go back to Assignment tab to get the code to display the playlist.
+  * Select the Assignment, and click on the "Playlist" button.
+  * Copy the code and paste it onto the page where you want to display the approved videos. Approved videos are automatically added to the playlist. 
