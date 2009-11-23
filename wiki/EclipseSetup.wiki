@@ -1,0 +1,39 @@
+==Set up Eclipse environment for YTD==
+
+YTD is source-controlled, built and deployed using Eclipse and its plugins. If you already have Eclipse installed, please go to the next section to install plugins. If not, please first install [http://www.eclipse.org/downloads/ Eclipse IDE for Java EE Developers].
+
+===Install the Google App Engine plugin===
+
+You can install the Google Plugin for Eclipse using the Software Update feature of Eclipse.
+
+To install the plugin, using *Eclipse 3.5 (Galileo)*:
+
+  # Select the *Help* menu > *Install New Software...*.
+  # In the *Work with* text box, enter: http://dl.google.com/eclipse/plugin/3.5 the Add... button. In the dialog that shows, click *OK* (keep the name blank; it will be retrieved from the update site.)
+  # Click the triangle next to "Plugin" and "SDKs". Check the boxes next to "Google Plugin for Eclipse 3.5" and "Google App Engine Java SDK". Click the *Next* button. Follow the prompts to accept the terms of service and install the plugin.
+  # When the installation is complete, Eclipse prompts you to restart. Click Yes. Eclipse restarts. The plugin is installed.
+
+To install the plugin, using *Eclipse 3.4 (Ganymede)*:
+
+  #Select the *Help* menu > *Software Updates...* The "Software Updates and Add-ons" window opens.
+  # Select the *Available Software* tab. Click the *Add Site...* button. The "Add Site" window opens. For "Location," enter the install location for the Eclipse 3.4 version of the plugin: http://dl.google.com/eclipse/plugin/3.4 then click *OK*. The dialog closes, and the new location is added to the list of available software.
+  # Click the triangle next to the new install location, then click the triangle next to "Google" to display installation options. Check the boxes next to "Google Plugin for Eclipse 3.4" and "Google App Engine Java SDK". Click the I*nstall...* button. Follow the prompts to accept the terms of service and install the plugin.
+  # When the installation is complete, Eclipse prompts you to restart. Click *Yes*. Eclipse restarts. The plugin is installed.
+
+===Install the Subclipse plugin===
+
+You can install the Subclipse for Eclipse using the Software Update feature of Eclipse.
+
+To install the plugin, using *Eclipse 3.5 (Galileo)*:
+
+  # Select the *Help* menu > *Install New Software...*.
+  # In the *Work with* text box, enter: http://subclipse.tigris.org/update_1.6.x the *Add...* button. In the dialog that shows, click *OK* (keep the name blank; it will be retrieved from the update site.)
+  # Click the triangle next to "Subclipse". Check the boxes next to "Subclipse". Click the *Next* button. Follow the prompts to accept the terms of service and install the plugin.
+  # When the installation is complete, Eclipse prompts you to restart. Click *Yes*. Eclipse restarts. The plugin is installed.
+
+To install the plugin, using *Eclipse 3.4 (Ganymede)*:
+
+  # Select the *Help* menu > *Software Updates...* The "Software Updates and Add-ons" window opens.
+  # Select the *Available Software* tab. Click the *Add Site...* button. The "Add Site" window opens. For "Location," enter http://subclipse.tigris.org/update_1.6.x then click *OK*. The dialog closes, and the new location is added to the list of available software.
+  # Open the URL and select "Subclipse". Click the *Install...* button. Follow the prompts to accept the terms of service and install the plugin.
+  # When the installation is complete, Eclipse prompts you to restart. Click *Yes*. Eclipse restarts. The plugin is installed.
