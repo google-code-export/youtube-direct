@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+	<!-- BEGIN Guice config -->
+	<filter>
+    <filter-name>guiceFilter</filter-name>
+    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>guiceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>com.google.ytd.guice.GuiceServletConfig</listener-class>
+  </listener>
+	<!-- END Guice config -->  
+
+  <servlet>
+    <servlet-name>DefaultExceptionHandler</servlet-name>
+    <servlet-class>com.google.ytd.jsonrpc.DefaultExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DefaultExceptionHandler</servlet-name>
+    <url-pattern>/exception</url-pattern>
+  </servlet-mapping>
+
+	<error-page>
+		<error-code>400</error-code>
+		<error-code>403</error-code>
+		<error-code>404</error-code>
+		<error-code>500</error-code>
+    <exception-type>java.lang.RuntimeException</exception-type>
+    <location>/exception</location>
+  </error-page>
+
+
+  <!-- BEGIN user-facing JSPs -->
+  <servlet>
+    <servlet-name>embed</servlet-name>
+    <jsp-file>/embed.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>embed</servlet-name>
+    <url-pattern>/embed</url-pattern>
+  </servlet-mapping>
+  <!-- END user-facing JSPs -->
+  
+  <!-- BEGIN admin JSPs -->
+  <servlet>
+    <servlet-name>admin</servlet-name>
+    <jsp-file>/admin/admin.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>admin</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
+  <!-- END admin JSPs -->	
+	
+  <security-constraint>
+    <web-resource-collection>
+      <url-pattern>/admin/*</url-pattern>
+      <url-pattern>/admin</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  
+  <security-constraint>
+    <web-resource-collection>
+      <url-pattern>/cron/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+</web-app>
