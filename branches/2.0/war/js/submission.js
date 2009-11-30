@@ -608,7 +608,7 @@ admin.sub.deleteEntry = function(entryId) {
       admin.showError(xhr, messageElement);
     };
     ajaxCall.success = function(res) {
-      admin.showMessage("Submission deleted.", messageElement, 5);
+      admin.showMessage("Submission deleted.", messageElement);
       admin.sub.refreshGrid();
     };
     
@@ -656,7 +656,7 @@ admin.sub.getAllSubmissions = function(callback) {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(result) {
-    admin.showMessage("Submissions loaded.", messageElement, 5);
+    admin.showMessage("Submissions loaded.", messageElement);
     admin.sub.total = result.total;
     var entries = result.entries;
     admin.sub.submissions = entries.concat([]);
@@ -680,7 +680,7 @@ admin.sub.updateSubmission = function(entry) {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.showMessage("Submission updated.", messageElement, 5);
+    admin.showMessage("Submission updated.", messageElement);
     admin.sub.refreshGrid();
   };
   

@@ -30,8 +30,10 @@ admin.init = function() {
 };
 
 admin.showMessage = function(message, elementToHide, displaySeconds) {
+  // Default timeout is 5 sec.
+  displaySeconds = displaySeconds || 5;
   return admin.showSomething(message, 'message', elementToHide, displaySeconds);
-}
+};
 
 // errorObj may be a XHR object returned from an AJAX call, or a string.
 admin.showError = function(errorObj, elementToHide) {
@@ -56,15 +58,15 @@ admin.showError = function(errorObj, elementToHide) {
   }
   
   return admin.showSomething(errorString, 'error', elementToHide, 10);
-}
+};
 
 admin.showSomething = function(message, elementClass, elementToHide, displaySeconds) {
-  var wrapperElement = $('<p>').addClass('messageListWrapper').prependTo('#messageList');
-  var messageElement = $('<span>' + message + '</span>').addClass(elementClass);
+  var wrapperElement = jQuery('<p>').addClass('messageListWrapper').prependTo('#messageList');
+  var messageElement = jQuery('<span>' + message + '</span>').addClass(elementClass);
   messageElement.prependTo(wrapperElement);
   
   if(elementToHide) {
-    $(elementToHide).hide();
+    jQuery(elementToHide).hide();
   }
   
   if (typeof displaySeconds == 'number') {
@@ -74,4 +76,4 @@ admin.showSomething = function(message, elementClass, elementToHide, displaySeco
   }
   
   return wrapperElement;
-}
+};

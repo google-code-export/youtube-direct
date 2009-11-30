@@ -21,12 +21,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
 
 /**
  * Simple servlet to handle logging a user out.
  */
-@SuppressWarnings("serial")
+@Singleton
 public class LogoutHandler extends HttpServlet {
 
   @Override
@@ -35,7 +36,7 @@ public class LogoutHandler extends HttpServlet {
 
     // Don't revoke the AuthSub token, since that's needed for branding the video after moderation.
     // If the user wants to revoke their token, they can do it from youtube.com.
-    
+
     // Remove local cookie.
     UserSessionManager.destroySessionIdCookie(resp);
 

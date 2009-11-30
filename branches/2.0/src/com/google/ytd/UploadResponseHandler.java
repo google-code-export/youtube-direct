@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.inject.Singleton;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
@@ -34,6 +35,7 @@ import com.google.ytd.model.VideoSubmission;
  * a successful upload, it creates a new VideoSubmission object in the datastore that corresponds to
  * the new video, and return a JSON representation of it.
  */
+@Singleton
 public class UploadResponseHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
 
@@ -53,35 +55,35 @@ public class UploadResponseHandler extends HttpServlet {
       String videoDescription = userSession.getMetaData("videoDescription");
       String youTubeName = userSession.getMetaData("youTubeName");
       String email = userSession.getMetaData("email");
-      String videoTags = userSession.getMetaData("videoTags");      
+      String videoTags = userSession.getMetaData("videoTags");
       String videoLocation = userSession.getMetaData("videoLocation");
       String videoDate = userSession.getMetaData("videoDate");
 
       log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
           + "for assignment id '%s'...", videoId, assignmentId));
-      
+
       VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
-      
+
       submission.setArticleUrl(articleUrl);
       submission.setVideoId(videoId);
       submission.setVideoTitle(videoTitle);
       submission.setVideoDescription(videoDescription);
       submission.setVideoTags(videoTags);
-      submission.setVideoLocation(videoLocation);      
-      submission.setVideoDate(videoDate);      
+      submission.setVideoLocation(videoLocation);
+      submission.setVideoDate(videoDate);
       submission.setYouTubeName(youTubeName);
       // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
       // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
       // UserAuthToken class.
       submission.setAuthSubToken(authSubToken);
-      submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);      
+      submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);
       submission.setNotifyEmail(email);
-      
+
       AdminConfig adminConfig = Util.getAdminConfig();
-      
+
       YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
-      
+
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
         // NO_MOD is set, auto approve all submission
         //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
@@ -91,13 +93,13 @@ public class UploadResponseHandler extends HttpServlet {
       } else {
         apiManager.updateModeration(videoId, false);
       }
-      
+
       Util.persistJdo(submission);
-      
+
       log.fine("...VideoSubmission persisted.");
 
       Util.sendNewSubmissionEmail(submission);
-      
+
       try {
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("videoId", videoId);

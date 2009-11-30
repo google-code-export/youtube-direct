@@ -34,14 +34,16 @@ import org.compass.gps.CompassGps;
 import org.compass.gps.device.jdo.Jdo2GpsDevice;
 import org.compass.gps.impl.SingleCompassGps;
 
+import com.google.inject.Singleton;
 import com.google.ytd.Util;
 import com.google.ytd.model.VideoSubmission;
 
 /**
  * Servlet to handle full text indexing of datastore properties.
- * 
+ *
  * Not currently used, but may be in the future.
  */
+@Singleton
 public class FullTextIndexer extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(FullTextIndexer.class.getName());
@@ -106,12 +108,12 @@ public class FullTextIndexer extends HttpServlet {
 
   /*
    * public void testTaskQueue() { Queue queue = QueueFactory.getDefaultQueue();
-   * 
+   *
    * TaskOptions taskOptions = TaskOptions.Builder.withDefaults();
-   * 
+   *
    * taskOptions = taskOptions.url("/test"); taskOptions =
    * taskOptions.method(Method.POST);
-   * 
+   *
    * queue.add(taskOptions); }
    */
 }

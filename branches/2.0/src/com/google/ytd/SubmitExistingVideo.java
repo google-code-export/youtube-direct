@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YtStatistics;
+import com.google.inject.Singleton;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
@@ -38,61 +39,62 @@ import com.google.ytd.model.VideoSubmission;
  * VideoSubmission object and persists it to the datastore. The response is the JSON representation
  * of the new object.
  */
+@Singleton
 public class SubmitExistingVideo extends HttpServlet {
   private static final Logger log = Logger.getLogger(SubmitExistingVideo.class.getName());
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String json = Util.getPostBody(req);
-    
+
     try {
       JSONObject jsonObj = new JSONObject(json);
-      
+
       String videoId = jsonObj.getString("videoId");
       String location = jsonObj.getString("location");
       String date = jsonObj.getString("date");
-      String email = jsonObj.getString("email");                        
-      
+      String email = jsonObj.getString("email");
+
       // Only check for required parameters 'videoId'.
       if (Util.isNullOrEmpty(videoId)) {
         throw new IllegalArgumentException("'videoId' parameter is null or empty.");
       }
-      
+
       // Grab user session meta data
       UserSession userSession = UserSessionManager.getUserSession(req);
       String youTubeName = userSession.getMetaData("youTubeName");
       String authSubToken = userSession.getMetaData("authSubToken");
       String assignmentId = userSession.getMetaData("assignmentId");
       String articleUrl = userSession.getMetaData("articleUrl");
-      
-      YouTubeApiManager apiManager = new YouTubeApiManager();      
+
+      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
-      
-      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);      
-      
-      if (videoEntry == null) {        
+
+      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
+
+      if (videoEntry == null) {
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "false");
-        responseJsonObj.put("message", "Cannot find this video in your account.");  
+        responseJsonObj.put("message", "Cannot find this video in your account.");
 
         resp.setContentType("text/javascript");
         resp.getWriter().println(responseJsonObj.toString());
-      } else {      
+      } else {
         String title = videoEntry.getTitle().getPlainText();
         String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
-        
+
         List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
         String sortedTags = Util.sortedJoin(tags, ",");
-        
+
         long viewCount = -1;
-        
+
         YtStatistics stats = videoEntry.getStatistics();
         if (stats != null) {
           viewCount = stats.getViewCount();
-        }      
-        
+        }
+
         VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
-        
+
         submission.setArticleUrl(articleUrl);
         submission.setVideoId(videoId);
         submission.setVideoTitle(title);
@@ -106,24 +108,24 @@ public class SubmitExistingVideo extends HttpServlet {
         // UserAuthToken class.
         submission.setAuthSubToken(authSubToken);
         submission.setViewCount(viewCount);
-        submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);      
+        submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
         submission.setNotifyEmail(email);
 
-        AdminConfig adminConfig = Util.getAdminConfig();      
+        AdminConfig adminConfig = Util.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
           // etc.) isn't taking place.
-          submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);        
+          submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
         }
-        
+
         Util.persistJdo(submission);
-        
+
         Util.sendNewSubmissionEmail(submission);
-        
+
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "true");
- 
+
         resp.setContentType("text/javascript");
         resp.getWriter().println(responseJsonObj.toString());
       }

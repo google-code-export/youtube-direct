@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonParseException;
+import com.google.inject.Singleton;
 import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
@@ -34,6 +35,7 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
 /**
  * Servlet responsible for updating an Assignment in the datastore.
  */
+@Singleton
 public class UpdateAssignment extends HttpServlet {
   private static final Logger log = Logger.getLogger(UpdateAssignment.class.getName());
 
@@ -51,13 +53,13 @@ public class UpdateAssignment extends HttpServlet {
       Assignment incomingEntry = Util.GSON.fromJson(json, Assignment.class);
       long id = incomingEntry.getId();
       Assignment assignment = (Assignment) pm.getObjectById(Assignment.class, id);
-      
+
       // If the updated assignment's status is ACTIVE and the existing assignment doesn't already
       // have a playlist, create one.
       if (incomingEntry.getStatus() == AssignmentStatus.ACTIVE &&
               Util.isNullOrEmpty(assignment.getPlaylistId())) {
         YouTubeApiManager apiManager = new YouTubeApiManager();
-        
+
         AdminConfig adminConfig = Util.getAdminConfig();
         String token = adminConfig.getYouTubeAuthSubToken();
         if (Util.isNullOrEmpty(token)) {
@@ -67,17 +69,17 @@ public class UpdateAssignment extends HttpServlet {
           apiManager.setToken(token);
           String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
                   assignment.getId()), assignment.getDescription());
-          
+
           assignment.setPlaylistId(playlistId);
         }
       }
-      
+
       assignment.setStatus(incomingEntry.getStatus());
       assignment.setDescription(incomingEntry.getDescription());
       assignment.setCategory(incomingEntry.getCategory());
-      
+
       pm.makePersistent(assignment);
-      
+
       log.info(String.format("Updated assignment id %d in the datastore.", assignment.getId()));
 
       resp.setContentType("text/javascript");
@@ -92,5 +94,5 @@ public class UpdateAssignment extends HttpServlet {
       pm.close();
     }
   }
-  
+
 }

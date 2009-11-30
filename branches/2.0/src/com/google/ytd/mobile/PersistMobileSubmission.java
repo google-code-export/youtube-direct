@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.inject.Singleton;
 import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
@@ -35,6 +36,7 @@ import com.google.ytd.model.VideoSubmission;
 /**
  * Servlet that handles mobile phone submissions, creating an appropriate datastore entry for them.
  */
+@Singleton
 public class PersistMobileSubmission extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(PersistMobileSubmission.class.getName());
@@ -59,27 +61,27 @@ public class PersistMobileSubmission extends HttpServlet {
         log.info(value);
         submissionData.put(name, value);
       } else {
-        submissionData = null;    
+        submissionData = null;
       }
-    }    
+    }
     return submissionData;
   }
-  
+
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
-      Map<String, String> submissionData = processPostData(Util.getPostBody(req));      
+      Map<String, String> submissionData = processPostData(Util.getPostBody(req));
       if (submissionData == null) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "invalid post data format");
       }
-      
+
       long assignmentId = -1;
       String videoId = null;
       String location = null;
       String date = null;
       String authSubToken = null;
       String email = null;
-      
+
       assignmentId = submissionData.get("assignmentId") != null ? Long.parseLong(submissionData
           .get("assignmentId")) : -1;
       videoId = submissionData.get("videoId");
@@ -87,7 +89,7 @@ public class PersistMobileSubmission extends HttpServlet {
       date = submissionData.get("date");
       authSubToken = submissionData.get("authSubToken");
       email = submissionData.get("email");
-  
+
       if (assignmentId <= 0) {
         // get default mobile assignment ID
         assignmentId = Util.getDefaultMobileAssignmentId();
@@ -98,21 +100,21 @@ public class PersistMobileSubmission extends HttpServlet {
       if (Util.isNullOrEmpty(authSubToken)) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing authSubToken");
       }
-  
-      YouTubeApiManager apiManager = new YouTubeApiManager();      
+
+      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
-      
-      if (videoEntry == null) {        
-        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, 
+
+      if (videoEntry == null) {
+        resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
             "video id does not match the authsub token");
-      } else {      
-        String youTubeName = videoEntry.getAuthors().get(0).getName();        
+      } else {
+        String youTubeName = videoEntry.getAuthors().get(0).getName();
         String title = videoEntry.getTitle().getPlainText();
-        String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();        
+        String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
         List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
         String sortedTags = Util.sortedJoin(tags, ",");
-        
+
         VideoSubmission submission = new VideoSubmission(assignmentId);
         submission.setVideoId(videoId);
         submission.setVideoTitle(title);
@@ -125,10 +127,10 @@ public class PersistMobileSubmission extends HttpServlet {
         // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
         // UserAuthToken class.
         submission.setAuthSubToken(authSubToken);
-        submission.setVideoSource(VideoSubmission.VideoSource.MOBILE_SUBMIT);      
+        submission.setVideoSource(VideoSubmission.VideoSource.MOBILE_SUBMIT);
         submission.setNotifyEmail(email);
-  
-        AdminConfig adminConfig = Util.getAdminConfig();      
+
+        AdminConfig adminConfig = Util.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
@@ -137,7 +139,7 @@ public class PersistMobileSubmission extends HttpServlet {
         }
         Util.persistJdo(submission);
         Util.sendNewSubmissionEmail(submission);
-  
+
         resp.setContentType("text/plain");
         resp.getWriter().println("success");
       }

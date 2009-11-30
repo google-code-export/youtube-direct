@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonParseException;
+import com.google.inject.Singleton;
 import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
@@ -35,6 +36,7 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
  * Servlet responsible for creating new a new Assignment in the datastore and returning a JSON
  * representation of it.
  */
+@Singleton
 public class NewAssignment extends HttpServlet {
   private static final Logger log = Logger.getLogger(NewAssignment.class.getName());
 
@@ -47,7 +49,7 @@ public class NewAssignment extends HttpServlet {
       if (Util.isNullOrEmpty(json)) {
         throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
       }
-      
+
       AdminConfig adminConfig = Util.getAdminConfig();
       if (Util.isNullOrEmpty(adminConfig.getClientId()) ||
               Util.isNullOrEmpty(adminConfig.getDeveloperKey()) ||
@@ -55,21 +57,21 @@ public class NewAssignment extends HttpServlet {
         throw new IllegalArgumentException("Unable to create new assignment. " +
         		"Please configure all YouTube API settings first.");
       }
-      
+
       Assignment jsonObj = Util.GSON.fromJson(json, Assignment.class);
 
       Assignment assignment = new Assignment();
       assignment.setStatus(jsonObj.getStatus());
       assignment.setDescription(jsonObj.getDescription());
       assignment.setCategory(jsonObj.getCategory());
-      
+
       // Need to make it persistant first in order to get an id assigned to it.
       assignment = pm.makePersistent(assignment);
-      
+
       if (assignment.getStatus() == AssignmentStatus.ACTIVE &&
               Util.isNullOrEmpty(assignment.getPlaylistId())) {
         YouTubeApiManager apiManager = new YouTubeApiManager();
-        
+
         String token = adminConfig.getYouTubeAuthSubToken();
         apiManager.setToken(token);
         String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
@@ -79,7 +81,7 @@ public class NewAssignment extends HttpServlet {
         // Persist again with the updated playlist id.
         pm.makePersistent(assignment);
       }
-      
+
       log.info(String.format("Added assignment id %d to the datastore.", assignment.getId()));
 
       resp.setContentType("text/javascript");
@@ -94,5 +96,5 @@ public class NewAssignment extends HttpServlet {
       pm.close();
     }
   }
-  
+
 }

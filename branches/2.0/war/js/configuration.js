@@ -87,7 +87,7 @@ admin.config.getAdminConfig = function(callback) {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.showMessage("Configuration loaded.", messageElement, 5);
+    admin.showMessage("Configuration loaded.", messageElement);
     callback(res);
   };
 
@@ -138,7 +138,7 @@ admin.config.persistAdminConfig = function() {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.showMessage("Configuration saved.", messageElement, 5);
+    admin.showMessage("Configuration saved.", messageElement);
   };
   
   jQuery.ajax(ajaxCall);    

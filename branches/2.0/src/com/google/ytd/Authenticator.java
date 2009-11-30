@@ -28,12 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
 
 /**
  * Class to handle aspects of user authentication and persisting that
  * information in UserSession objects.
  */
+@Singleton
 public class Authenticator {
   private HttpServletRequest request = null;
   private HttpServletResponse response = null;
