@@ -33,14 +33,14 @@ public class BasicCommandTest{
       protected void configure() {
         final VideoSubmission videoSubmission = new VideoSubmission(1l);
         videoSubmission.setArticleUrl("blah");
-        List<VideoSubmission> submissions = new ArrayList<VideoSubmission>();
+        final List<VideoSubmission> submissions = new ArrayList<VideoSubmission>();
         submissions.add(videoSubmission);
 
         JUnit4Mockery mockery = new JUnit4Mockery();
         final SubmissionManager manager = mockery.mock(SubmissionManager.class);
         mockery.checking(new Expectations() {{
-          oneOf(manager).getSubmissions(with("created"), with(""), with(""));
-          will(returnValue(videoSubmission));
+          oneOf(manager).getSubmissions(with("created"), with("desc"), with("all"));
+          will(returnValue(submissions));
         }});
 
         this.bind(SubmissionManager.class).toInstance(manager);
@@ -55,6 +55,12 @@ public class BasicCommandTest{
   public void testGetSubmissions() throws JSONException {
     String method = "ytd.getSubmissions";
     Map<String,String> params = new HashMap<String,String>();
+    params.put("sortBy", "created");
+    params.put("sortOrder", "desc");
+    params.put("pageIndex", "1");
+    params.put("pageSize", "10");
+    params.put("filterType", "all");
+
     Command command = commandDirectory.getCommand(method, params);
     JSONObject response = command.execute();
     assertNotNull(response);
