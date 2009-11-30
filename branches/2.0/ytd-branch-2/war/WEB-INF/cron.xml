@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cronentries>
-  <cron>
-    <url>/cron/SyncMetadata</url>
-    <description>Syncs local datastore metadata with authoritative version from YouTube API.</description>
-    <schedule>every 5 minutes</schedule>
-  </cron>
-</cronentries>
