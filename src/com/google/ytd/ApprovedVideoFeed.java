@@ -26,15 +26,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.ytd.Util;
+import com.google.inject.Singleton;
 import com.google.ytd.model.VideoSubmission;
 
 /**
  * Returns JSON data representing approved videos.
- * 
+ *
  * Usage of this servlet is not recommended on high-volume sites, as there is a cost involved with
  * every App Engine datastore lookup. Instead, the YouTube API can be used to retrieve similar info.
  */
+@Singleton
 public class ApprovedVideoFeed extends HttpServlet {
   private static final Logger log = Logger.getLogger(ApprovedVideoFeed.class.getName());
 
@@ -44,76 +45,76 @@ public class ApprovedVideoFeed extends HttpServlet {
     String sortBy = "created";
     String sortOrder = "desc";
     int pageIndex = 1;
-    int pageSize = 10;    
+    int pageSize = 10;
     int filterType = 1; // approved
     long assignmentId = -1;
-    
-    if (req.getParameter("id") != null) {      
+
+    if (req.getParameter("id") != null) {
       assignmentId = Long.parseLong(req.getParameter("id"));
-    }    
-    
-    if (req.getParameter("sortby") != null) {      
+    }
+
+    if (req.getParameter("sortby") != null) {
       sortBy = req.getParameter("sortby");
     }
-    
-    if (req.getParameter("sortorder") != null) {      
+
+    if (req.getParameter("sortorder") != null) {
       sortOrder = req.getParameter("sortorder");
     }
-    
-    if (req.getParameter("pageindex") != null) {      
-      pageIndex = Integer.parseInt(req.getParameter("pageindex"));
-    }    
-    
-    if (req.getParameter("pagesize") != null) {      
-      pageSize = Integer.parseInt(req.getParameter("pagesize"));
-    }    
 
-    if (req.getParameter("filtertype") != null) {      
+    if (req.getParameter("pageindex") != null) {
+      pageIndex = Integer.parseInt(req.getParameter("pageindex"));
+    }
+
+    if (req.getParameter("pagesize") != null) {
+      pageSize = Integer.parseInt(req.getParameter("pagesize"));
+    }
+
+    if (req.getParameter("filtertype") != null) {
       filterType = Integer.parseInt(req.getParameter("filtertype"));
-    }        
-    
+    }
+
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       Query query = pm.newQuery(VideoSubmission.class);
-      
-      query.declareImports("import java.util.Date");      
+
+      query.declareImports("import java.util.Date");
       query.setOrdering(sortBy + " " + sortOrder);
       query.declareParameters("long assignmentId_");
-      
+
       String filters = "assignmentId == assignmentId_";
-            
+
       if (filterType > -1) {
         filters += "&& status == " + filterType;
-      }                  
-      
+      }
+
       query.setFilter(filters);
-      
+
       List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute(assignmentId);
-                  
+
       int totalSize = videoEntries.size();
       int totalPages = (int) Math.ceil(((double)totalSize/(double)pageSize));
       int startIndex = (pageIndex - 1) * pageSize; //inclusive
       int endIndex = -1; //exclusive
-      
+
       if (pageIndex < totalPages) {
-        endIndex = startIndex + pageSize;        
+        endIndex = startIndex + pageSize;
       } else {
         if (pageIndex == totalPages && totalSize % pageSize == 0) {
-          endIndex = startIndex + pageSize;                              
+          endIndex = startIndex + pageSize;
         } else {
-          endIndex = startIndex + (totalSize % pageSize);  
+          endIndex = startIndex + (totalSize % pageSize);
         }
       }
-      
-      String json = null; 
-      List returnList = videoEntries.subList(startIndex, endIndex);                    
+
+      String json = null;
+      List returnList = videoEntries.subList(startIndex, endIndex);
       json = Util.GSON.toJson(returnList);
-      json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";        
-        
+      json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
+
       resp.setContentType("text/javascript");
-      resp.getWriter().println(json);      
+      resp.getWriter().println(json);
     } finally {
       pm.close();
     }

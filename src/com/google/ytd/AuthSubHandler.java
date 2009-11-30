@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Singleton;
 import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.model.UserSession;
 
@@ -33,6 +34,7 @@ import com.google.ytd.model.UserSession;
  * Super simple class to handle doing the AuthSub token exchange to upgrade a
  * one-time token into a session token.
  */
+@Singleton
 public class AuthSubHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
 
@@ -74,7 +76,7 @@ public class AuthSubHandler extends HttpServlet {
       }
       userSession.addMetaData("youTubeName", youTubeName);
       UserSessionManager.save(userSession);
-      
+
       // Create or update the UserAuthToken entry, which maps a username to an AuthSub token.
       UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
       if (userAuthToken == null) {

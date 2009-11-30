@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,12 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.appengine.api.datastore.Text;
@@ -43,19 +50,11 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.ytd.model.Assignment;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.model.Assignment;
 import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 /**
  * Misc. utility methods.
@@ -78,12 +77,12 @@ public class Util {
   public static PersistenceManagerFactory getPersistenceManagerFactory() {
     return pmf;
   }
-  
+
   public static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
     public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
       return serialize(text, type, context);
     }
-    
+
     public Text fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
       return deserialize(json, type, context);
     }
@@ -104,7 +103,7 @@ public class Util {
 
   public static Object persistJdo(Object entry) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    
+
     try {
       entry = pm.makePersistent(entry);
       entry = pm.detachCopy(entry);
@@ -117,17 +116,17 @@ public class Util {
 
   public static void removeJdo(Object entry) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    
+
     try {
       pm.deletePersistent(entry);
     } finally {
       pm.close();
     }
   }
-  
+
   public static void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
     AdminConfig adminConfig = Util.getAdminConfig();
-    
+
     String address = adminConfig.getNewSubmissionAddress();
     if (!Util.isNullOrEmpty(address)) {
       try {
@@ -153,26 +152,26 @@ public class Util {
       }
     }
   }
-  
+
   public static void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
     try {
       String toAddress = entry.getNotifyEmail();
       if (Util.isNullOrEmpty(toAddress)) {
         throw new IllegalArgumentException("No destination email address in VideoSubmission.");
       }
-      
+
       AdminConfig adminConfig = Util.getAdminConfig();
-      
+
       String body;
       switch (status) {
         case APPROVED:
           body = adminConfig.getApprovalEmailText();
         break;
-        
+
         case REJECTED:
           body = adminConfig.getRejectionEmailText();
         break;
-        
+
         default:
           throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
                 status.toString()));
@@ -180,28 +179,28 @@ public class Util {
       if (Util.isNullOrEmpty(body)) {
         throw new IllegalArgumentException("No email body found in configuration.");
       }
-      
+
       String fromAddress = adminConfig.getFromAddress();
       if (Util.isNullOrEmpty(fromAddress)) {
         throw new IllegalArgumentException("No from address found in configuration.");
       }
-      
+
       body = body.replace("ARTICLE_URL", entry.getArticleUrl());
       body = body.replace("YOUTUBE_URL", entry.getWatchUrl());
-      
+
       Properties props = new Properties();
       Session session = Session.getDefaultInstance(props, null);
       Message msg = new MimeMessage(session);
-      
+
       msg.setFrom(new InternetAddress(fromAddress, fromAddress));
       msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
-      
+
       msg.setSubject("Your Recent Video Submission");
-      
+
       msg.setText(body);
-      
+
       Transport.send(msg);
-      
+
       log.info(String.format("Sent %s notification email for status %s", toAddress,
               status.toString()));
     } catch(IllegalArgumentException e) {
@@ -212,10 +211,10 @@ public class Util {
       log.log(Level.WARNING, "", e);
     }
   }
-  
+
   public static Assignment getAssignmentById(long id) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-    
+
     try {
       Assignment assignment = pm.getObjectById(Assignment.class, id);
       return pm.detachCopy(assignment);
@@ -249,7 +248,7 @@ public class Util {
 
   /**
    * Retrieves an Assignment from the datastore given its id.
-   * 
+   *
    * @param id
    *          An ID corresponding to an Assignment object in the datastore.
    * @return The Assignment object whose id is specified, or null if the id is
@@ -263,20 +262,20 @@ public class Util {
       return null;
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public static AdminConfig getAdminConfig() {
     AdminConfig adminConfig = null;
-    
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();      
-    
+
+    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+
     try {
       Query query = pm.newQuery(AdminConfig.class);
       List<AdminConfig> adminConfigs = (List<AdminConfig>) query.execute();
-      
+
       if (adminConfigs.size() > 0) {
         adminConfig = pm.detachCopy(adminConfigs.get(0));
-      } else {        
+      } else {
         log.info("No admin config found in datastore.  Creating a new one.");
         adminConfig = new AdminConfig();
         pm.makePersistent(adminConfig);
@@ -284,12 +283,12 @@ public class Util {
       }
     } catch (JDOObjectNotFoundException e) {
       // this path can only occur when there is model class errors (model binary mistmatch in store)
-      log.log(Level.WARNING, "Query cannot be executed against AdminConfig model class.  " + 
+      log.log(Level.WARNING, "Query cannot be executed against AdminConfig model class.  " +
           "Has model class been changed?", e);
     } finally {
       pm.close();
     }
-    
+
     return adminConfig;
   }
 
@@ -301,7 +300,7 @@ public class Util {
     }
     return uploadOnly;
   }
-  
+
   public static String getPostBody(HttpServletRequest req) throws IOException {
     InputStream is = req.getInputStream();
 
@@ -343,7 +342,7 @@ public class Util {
   /**
    * Sorts a list and then performs a join into one large string, using the
    * delimeter specified.
-   * 
+   *
    * @param strings
    *          The list of strings to sort and join.
    * @param delimeter
@@ -367,14 +366,14 @@ public class Util {
 
   @SuppressWarnings("unchecked")
   public static long getDefaultMobileAssignmentId() {
-    long assignmentId = -1;   
-    String defaultMobileAssignmentDescription = "default mobile assignment";     
+    long assignmentId = -1;
+    String defaultMobileAssignmentDescription = "default mobile assignment";
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
     try {
       Query query = pm.newQuery(Assignment.class);
       query.declareParameters("String defaultMobileAssignmentDescription");
       query.setFilter("description == defaultMobileAssignmentDescription");
-      List<Assignment> results = (List<Assignment>) 
+      List<Assignment> results = (List<Assignment>)
           query.execute(defaultMobileAssignmentDescription);
       if (results.size() > 0) {
         assignmentId = results.get(0).getId();
@@ -383,9 +382,9 @@ public class Util {
         Assignment assignment = new Assignment();
         assignment.setCategory("News");
         assignment.setDescription(defaultMobileAssignmentDescription);
-        assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);        
+        assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);
         assignment = pm.makePersistent(assignment);
-        
+
         YouTubeApiManager apiManager = new YouTubeApiManager();
         String token = Util.getAdminConfig().getYouTubeAuthSubToken();
         if (Util.isNullOrEmpty(token)) {
@@ -396,8 +395,8 @@ public class Util {
           String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
                   assignment.getId()), assignment.getDescription());
           assignment.setPlaylistId(playlistId);
-          assignment = pm.makePersistent(assignment);          
-        }               
+          assignment = pm.makePersistent(assignment);
+        }
         assignmentId = assignment.getId();
       }
     } finally {

@@ -15,15 +15,6 @@
 
 package com.google.ytd.admin;
 
-import com.google.apphosting.api.DeadlineExceededException;
-import com.google.gdata.data.youtube.VideoEntry;
-import com.google.gdata.data.youtube.YouTubeMediaRating;
-import com.google.gdata.data.youtube.YtPublicationState;
-import com.google.gdata.data.youtube.YtStatistics;
-import com.google.ytd.Util;
-import com.google.ytd.YouTubeApiManager;
-import com.google.ytd.model.VideoSubmission;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +26,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.apphosting.api.DeadlineExceededException;
+import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.data.youtube.YouTubeMediaRating;
+import com.google.gdata.data.youtube.YtPublicationState;
+import com.google.gdata.data.youtube.YtStatistics;
+import com.google.inject.Singleton;
+import com.google.ytd.Util;
+import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.model.VideoSubmission;
+
 /**
  * Servlet that syncs metadata from YouTube with the local datastore.
  *
@@ -45,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
  * entries. Don't invoke this more than once every 30 seconds because this may
  * take up to 30 seconds to complete.
  */
+@Singleton
 public class SyncMetadata extends HttpServlet {
   private static final Logger log = Logger.getLogger(SyncMetadata.class.getName());
 
@@ -73,12 +75,12 @@ public class SyncMetadata extends HttpServlet {
 
       for (VideoSubmission videoSubmission : videoSubmissions) {
         Date now = new Date();
-       
+
         // Create a new instance each time through the loop, since changing AuthSub tokens for an
         // existing instance doesn't seem to work.
         YouTubeApiManager apiManager = new YouTubeApiManager();
         apiManager.setToken(videoSubmission.getAuthSubToken());
-       
+
         String videoId = videoSubmission.getVideoId();
         log.info(String.format("Syncing video id '%s'", videoId));
 
@@ -89,12 +91,12 @@ public class SyncMetadata extends HttpServlet {
           // Try an unauthenticated request to the specific user's uploads feed next.
           apiManager = new YouTubeApiManager();
           videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
-         
+
           if (videoEntry == null) {
             // Fall back on looking for the video in the public feed.
             apiManager = new YouTubeApiManager();
             videoEntry = apiManager.getVideoEntry(videoId);
-           
+
             if (videoEntry == null) {
               // The video must have been deleted...
               log.info(String.format("Unable to find YouTube video id '%s'.", videoId));
@@ -102,7 +104,7 @@ public class SyncMetadata extends HttpServlet {
             }
           }
         }
-       
+
         if (videoEntry != null) {
           try {
             YtPublicationState state = videoEntry.getPublicationState();
@@ -113,7 +115,7 @@ public class SyncMetadata extends HttpServlet {
               // uploads feed (by default), that info isn't easily exposed on the videoEntry
               // object. An alternative would be to get an instance from the public video feed
               // and check that.
-              
+
               List<YouTubeMediaRating> ratings = videoEntry.getMediaGroup().getYouTubeRatings();
               if (ratings.size() == 0) {
                 stateValue = "OKAY";
@@ -133,7 +135,7 @@ public class SyncMetadata extends HttpServlet {
               videoSubmission.setYoutubeState(stateValue);
               videoSubmission.setUpdated(now);
             }
-            
+
             String title = videoEntry.getTitle().getPlainText();
             if (!title.equals(videoSubmission.getVideoTitle())) {
               log.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).",
@@ -162,7 +164,7 @@ public class SyncMetadata extends HttpServlet {
             log.info(String.format("Couldn't get metadata for video id '%s'. It may not have been" +
                         " accepted by YouTube.", videoId));
           }
-         
+
           // Unconditionally update view count info, but don't call setUpdated() since this is an
           // auto-update.
           YtStatistics stats = videoEntry.getStatistics();

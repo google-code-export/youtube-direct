@@ -15,9 +15,6 @@
 
 package com.google.ytd.admin;
 
-import com.google.ytd.Util;
-import com.google.ytd.model.AdminConfig;
-
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -25,22 +22,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Singleton;
+import com.google.ytd.Util;
+import com.google.ytd.model.AdminConfig;
+
 /**
  * Servlet that retrieves the AdminConfig singleton from the datastore.
  */
+@Singleton
 public class GetAdminConfig extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetAdminConfig.class.getName());
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    AdminConfig adminConfig = Util.getAdminConfig();    
-    
-    if (adminConfig != null) {     
+    AdminConfig adminConfig = Util.getAdminConfig();
+
+    if (adminConfig != null) {
       resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(adminConfig));     
+      resp.getWriter().println(Util.GSON.toJson(adminConfig));
     } else {
       log.warning("Couldn't retrieve an AdminConfig instance.");
-      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't retrieve AdminConfig");  
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't retrieve AdminConfig");
     }
   }
 }

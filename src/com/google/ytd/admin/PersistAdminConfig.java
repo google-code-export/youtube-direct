@@ -15,9 +15,6 @@
 
 package com.google.ytd.admin;
 
-import com.google.ytd.Util;
-import com.google.ytd.model.AdminConfig;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -28,9 +25,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Singleton;
+import com.google.ytd.Util;
+import com.google.ytd.model.AdminConfig;
+
 /**
  * Servlet responsible for saving updates to the AdminConfig singleton, based on JSON input.
  */
+@Singleton
 public class PersistAdminConfig extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAdminConfig.class.getName());
 
@@ -38,20 +40,20 @@ public class PersistAdminConfig extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
-    
-    String json = Util.getPostBody(req); 
-    
+
+    String json = Util.getPostBody(req);
+
     AdminConfig jsonObj = Util.GSON.fromJson(json, AdminConfig.class);
-            
+
     AdminConfig adminConfig = Util.getAdminConfig();
-    
+
     adminConfig.setClientId(jsonObj.getClientId());
     adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());
     adminConfig.setDefaultTag(jsonObj.getDefaultTag());
     adminConfig.setLinkBackText(jsonObj.getLinkBackText());
     adminConfig.setModerationMode(jsonObj.getModerationMode());
     adminConfig.setBrandingMode(jsonObj.getBrandingMode());
-    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());        
+    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());
     adminConfig.setNewSubmissionAddress(jsonObj.getNewSubmissionAddress());
     adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
     adminConfig.setPostSubmitMessage(jsonObj.getPostSubmitMessage());
@@ -60,10 +62,10 @@ public class PersistAdminConfig extends HttpServlet {
     adminConfig.setApprovalEmailText(jsonObj.getApprovalEmailText());
     adminConfig.setRejectionEmailText(jsonObj.getRejectionEmailText());
     adminConfig.setUpdated(new Date());
-    
+
     pm.makePersistent(adminConfig);
     pm.close();
-    
+
     resp.setContentType("text/javascript");
     resp.getWriter().println(Util.GSON.toJson(adminConfig));
   }

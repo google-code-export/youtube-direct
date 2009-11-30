@@ -15,13 +15,6 @@
 
 package com.google.ytd.admin;
 
-import com.google.gdata.client.http.AuthSubUtil;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
-import com.google.ytd.Util;
-import com.google.ytd.YouTubeApiManager;
-import com.google.ytd.model.AdminConfig;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.logging.Level;
@@ -32,9 +25,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gdata.client.http.AuthSubUtil;
+import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
+import com.google.inject.Singleton;
+import com.google.ytd.Util;
+import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.model.AdminConfig;
+
 /**
  * AuthSub redirection flow to persist the token belonging to the admin YouTube account.
  */
+@Singleton
 public class PersistAuthSubToken extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
 

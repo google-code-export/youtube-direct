@@ -546,7 +546,7 @@ admin.assign.showAssignmentCreate = function() {
       admin.showError(xhr, messageElement);
     };
     ajaxCall.success = function(res) {
-      admin.showMessage("Assignment created.", messageElement, 5);
+      admin.showMessage("Assignment created.", messageElement);
       admin.assign.pageIndex = 1;
       admin.assign.refreshGrid();      
     };
@@ -579,7 +579,7 @@ admin.assign.getAllAssignments = function(callback) {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(result) {
-    admin.showMessage("Assignments loaded.", messageElement, 5);
+    admin.showMessage("Assignments loaded.", messageElement);
     admin.assign.total = result.total;
     var entries = result.entries                  
     admin.assign.assignments = entries.concat([]);
@@ -603,7 +603,7 @@ admin.assign.updateAssignment = function(entry) {
     admin.showError(xhr, messageElement);
   };
   ajaxCall.success = function(res) {
-    admin.showMessage("Assignment updated.", messageElement, 5);
+    admin.showMessage("Assignment updated.", messageElement);
     admin.assign.refreshGrid();
   };
 

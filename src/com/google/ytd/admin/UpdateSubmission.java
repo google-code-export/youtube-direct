@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
-import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Singleton;
 import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
@@ -44,6 +44,7 @@ import com.google.ytd.model.VideoSubmission.VideoSource;
 /**
  * Servlet responsible for updating submissions, both in the AppEngine datastore and on YouTube.
  */
+@Singleton
 public class UpdateSubmission extends HttpServlet {
   private static final Logger log = Logger.getLogger(UpdateSubmission.class.getName());
 
@@ -68,22 +69,22 @@ public class UpdateSubmission extends HttpServlet {
       ModerationStatus newStatus = incomingEntry.getStatus();
 
       boolean hasEmail = !Util.isNullOrEmpty(entry.getNotifyEmail());
-      
+
       AdminConfig adminConfig = Util.getAdminConfig();
-      
-      boolean isRejectedOrApproved = (currentStatus !=  newStatus) && 
+
+      boolean isRejectedOrApproved = (currentStatus !=  newStatus) &&
           (newStatus != ModerationStatus.UNREVIEWED || newStatus != ModerationStatus.SPAM);
 
       if (adminConfig.isModerationEmail() && hasEmail && isRejectedOrApproved
               && currentStatus != newStatus) {
         Util.sendNotificationEmail(entry, newStatus);
       }
-      
+
       //Mutates all the entry attributes with the incoming entry attributes
       entry.setStatus(incomingEntry.getStatus());
       entry.setAdminNotes(incomingEntry.getAdminNotes());
-      entry.setUpdated(new Date());            
-      
+      entry.setUpdated(new Date());
+
       //TODO: Handle removing the branding if a video goes from APPROVED to REJECTED.
       if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal() &&
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
@@ -98,7 +99,7 @@ public class UpdateSubmission extends HttpServlet {
           }
         }
       }
-      
+
       YouTubeApiManager adminApiManager = new YouTubeApiManager();
       String token = adminConfig.getYouTubeAuthSubToken();
       if (Util.isNullOrEmpty(token)) {
@@ -106,16 +107,16 @@ public class UpdateSubmission extends HttpServlet {
       } else {
         adminApiManager.setToken(token);
       }
-      
+
       // We can only update moderation for videos that were uploaded with our developer key.
       if (currentStatus != newStatus && entry.getVideoSource() == VideoSource.NEW_UPLOAD &&
               adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
           adminApiManager.updateModeration(entry.getVideoId(),
                   newStatus == ModerationStatus.APPROVED);
       }
-      
+
       // Initiate playlist update only if there is a change in moderation status
-      if (currentStatus != newStatus) {      
+      if (currentStatus != newStatus) {
         if (newStatus == ModerationStatus.APPROVED && !entry.isInPlaylist()) {
           // If this video is approved and it's not yet in a playlist, add it.
           if(addToPlaylist(adminApiManager, entry)) {
@@ -138,7 +139,7 @@ public class UpdateSubmission extends HttpServlet {
       pm.close();
     }
   }
-  
+
   /**
    * Updates the description of a video, both in the datastore and on YouTube, to prepend the
    * "branding" text and apply a tag.
@@ -160,7 +161,7 @@ public class UpdateSubmission extends HttpServlet {
 
     YouTubeApiManager apiManager = new YouTubeApiManager();
     apiManager.setToken(videoSubmission.getAuthSubToken());
-    
+
     VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
     if (videoEntry == null) {
       log.warning(String.format("Couldn't get video with id '%s' in the uploads feed of user " +
@@ -169,7 +170,7 @@ public class UpdateSubmission extends HttpServlet {
     } else {
       String currentDescription = videoSubmission.getVideoDescription();
       String newDescription = String.format("%s\n\n%s", prependText, currentDescription);
-      
+
       // If we have a new tag to add, add to the datastore and YouTube entries.
       if (!Util.isNullOrEmpty(newTag)) {
         String currentTags = videoSubmission.getVideoTags();
@@ -180,18 +181,18 @@ public class UpdateSubmission extends HttpServlet {
           String newTags = Util.sortedJoin(tagsArrayList, ",");
           videoSubmission.setVideoTags(newTags);
         }
-        
+
         YouTubeMediaGroup mg = videoEntry.getOrCreateMediaGroup();
         // This should work as expected even if the tag already exists; No duplicates will be added.
         mg.getKeywords().addKeyword(newTag);
       }
-      
+
       // Update the datastore entry's description.
       videoSubmission.setVideoDescription(newDescription);
-      
+
       // Update the YouTube entry's description.
       videoEntry.getMediaGroup().getDescription().setPlainTextContent(newDescription);
-      
+
       try {
         // And update the YouTube.com video as well.
         videoEntry.update();
@@ -202,13 +203,13 @@ public class UpdateSubmission extends HttpServlet {
         log.log(Level.WARNING, String.format("Error while updating video id '%s':", videoId), e);
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * Adds a video to a YouTube playlist corresponding to the video's assignment.
-   * 
+   *
    * @param apiManager The YouTubeApiManager instance to handle YouTube API calls.
    * @param videoSubmission The video to add.
    * @return true if the video was added; false otherwise.
@@ -222,7 +223,7 @@ public class UpdateSubmission extends HttpServlet {
               videoSubmission.getId()));
       return false;
     }
-    
+
     String playlistId = assignment.getPlaylistId();
     if (Util.isNullOrEmpty(playlistId)) {
       log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
@@ -235,10 +236,10 @@ public class UpdateSubmission extends HttpServlet {
     // full playlist.
     return apiManager.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
   }
-  
+
   /**
    * Removes a video from a YouTube playlist corresponding to the video's assignment.
-   * 
+   *
    * @param apiManager The YouTubeApiManager instance to handle YouTube API calls.
    * @param videoSubmission The video to remove.
    * @return true if the video was removed; false otherwise.
@@ -247,20 +248,20 @@ public class UpdateSubmission extends HttpServlet {
           VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
     Assignment assignment = Util.getAssignmentById(assignmentId);
-    
+
     if (assignment == null) {
       log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
               videoSubmission.getId()));
       return false;
     }
-    
+
     String playlistId = assignment.getPlaylistId();
     if (Util.isNullOrEmpty(playlistId)) {
       log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
               assignmentId));
       return false;
     }
-    
+
     return apiManager.removeVideoFromPlaylist(playlistId, videoSubmission.getVideoId());
   }
 }

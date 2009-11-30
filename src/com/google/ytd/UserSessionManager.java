@@ -27,11 +27,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
 
 /**
  * Class that manages UserSession objects.
  */
+@Singleton
 public class UserSessionManager {
   private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
 
