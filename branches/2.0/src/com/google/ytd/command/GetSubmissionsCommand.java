@@ -23,10 +23,12 @@ public class GetSubmissionsCommand extends Command {
 
   @Override
   public JSONObject execute() throws JSONException {
+    LOG.info(this.toString());
     JSONObject json = new JSONObject();
-    this.printMap(this.getParams());
     List<VideoSubmission> submissions = null;
 
+    // TODO(austinchau) Add params validation, preferably something more structured and reusable
+    // across all commands
     String sortBy = getParam("sortBy");
     String sortOrder = getParam("sortOrder");
     String filterType = getParam("filterType");

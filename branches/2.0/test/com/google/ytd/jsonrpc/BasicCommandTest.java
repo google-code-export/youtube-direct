@@ -46,7 +46,6 @@ public class BasicCommandTest{
     params.put("pageIndex", "1");
     params.put("pageSize", "10");
     command.setParams(params);
-
     JSONObject response = command.execute();
     assertNotNull("JSONObject is null", response);
     assertTrue("result length is zero", response.getInt("totalPages") > 0);
