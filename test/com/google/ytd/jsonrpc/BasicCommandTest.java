@@ -23,11 +23,12 @@ import com.google.ytd.dao.SubmissionManager;
 import com.google.ytd.model.VideoSubmission;
 
 public class BasicCommandTest{
-  Injector injector = null;
-  CommandDirectory commandDirectory = null;
-
   @Before
   public void setUp() {
+  }
+
+  @Test
+  public void testGetSubmissions() throws JSONException {
     AbstractModule testModule = new AbstractModule() {
       @Override
       protected void configure() {
@@ -47,12 +48,9 @@ public class BasicCommandTest{
       }
     };
 
-    injector = Guice.createInjector(testModule);
-    commandDirectory = new CommandDirectory(injector);
-  }
+    Injector injector = Guice.createInjector(testModule);
+    CommandDirectory commandDirectory = new CommandDirectory(injector);
 
-  @Test
-  public void testGetSubmissions() throws JSONException {
     String method = "ytd.getSubmissions";
     Map<String,String> params = new HashMap<String,String>();
     params.put("sortBy", "created");
