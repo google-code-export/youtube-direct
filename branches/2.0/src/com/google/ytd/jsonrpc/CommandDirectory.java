@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.ytd.command.Command;
+import com.google.ytd.command.GetSubmissionsCommand;
 
 @Singleton
 public class CommandDirectory {

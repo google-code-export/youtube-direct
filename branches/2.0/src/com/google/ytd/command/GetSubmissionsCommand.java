@@ -1,4 +1,4 @@
-package com.google.ytd.jsonrpc;
+package com.google.ytd.command;
 
 import java.util.List;
 import java.util.logging.Logger;

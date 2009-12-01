@@ -1,6 +1,7 @@
 package com.google.ytd.jsonrpc;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.junit.Test;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.ytd.command.Command;
 import com.google.ytd.dao.SubmissionManager;
 import com.google.ytd.model.VideoSubmission;
 
@@ -26,9 +28,7 @@ public class BasicCommandTest{
 
   @Before
   public void setUp() {
-
     AbstractModule testModule = new AbstractModule() {
-
       @Override
       protected void configure() {
         final VideoSubmission videoSubmission = new VideoSubmission(1l);
@@ -57,12 +57,12 @@ public class BasicCommandTest{
     Map<String,String> params = new HashMap<String,String>();
     params.put("sortBy", "created");
     params.put("sortOrder", "desc");
+    params.put("filterType", "all");
     params.put("pageIndex", "1");
     params.put("pageSize", "10");
-    params.put("filterType", "all");
-
     Command command = commandDirectory.getCommand(method, params);
     JSONObject response = command.execute();
-    assertNotNull(response);
+    assertNotNull("JSONObject is null", response);
+    assertTrue("result length is zero", response.getInt("totalPages") > 0);
   }
 }

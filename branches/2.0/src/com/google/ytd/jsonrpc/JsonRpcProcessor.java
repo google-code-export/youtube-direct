@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.Util;
+import com.google.ytd.command.Command;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {

@@ -1,4 +1,4 @@
-package com.google.ytd.jsonrpc;
+package com.google.ytd.command;
 
 import java.util.HashMap;
 import java.util.Iterator;
