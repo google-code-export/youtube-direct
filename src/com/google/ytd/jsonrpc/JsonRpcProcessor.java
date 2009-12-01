@@ -31,8 +31,7 @@ public class JsonRpcProcessor extends HttpServlet {
     try {
       String postBody = Util.getPostBody(req);
       if (Util.isNullOrEmpty(postBody)) {
-        jsonExceptionHandler.send(resp, new IllegalArgumentException(
-            "No data found in HTTP POST request."));
+        throw new IllegalArgumentException("No data found in HTTP POST request.");
       }
 
       Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();

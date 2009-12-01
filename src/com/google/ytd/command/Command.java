@@ -28,14 +28,20 @@ abstract public class Command {
     return this.params.get(key);
   }
 
-  protected void printMap(Map<String, String> map) {
-    Set<Entry<String, String>> params = map.entrySet();
-    Iterator<Entry<String, String>> iterator = params.iterator();
+  @Override
+  public String toString() {
+    Set<Entry<String, String>> params_ = params.entrySet();
+    Iterator<Entry<String, String>> iterator = params_.iterator();
+    StringBuffer str = new StringBuffer();
     while(iterator.hasNext()) {
       Entry<String, String> entry = iterator.next();
       String name = entry.getKey();
       String value = entry.getValue();
-      LOG.info(name + " = " + value);
+      str.append(String.format("%s=%s", name, value));
+      if (iterator.hasNext()) {
+        str.append(";");
+      }
     }
+    return str.toString();
   }
 }
