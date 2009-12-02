@@ -20,17 +20,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gson.annotations.Expose;
-import com.google.ytd.Util;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * Model class for an assignment. All submissions are associated with exactly
@@ -60,7 +56,7 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private String category = null;
-  
+
   @Persistent
   @Expose
   private String playlistId = "";
@@ -72,22 +68,22 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private Date updated;
-  
+
   public enum AssignmentStatus {
     PENDING, ACTIVE, ARCHIVED
   }
-  
+
   @Persistent
   @Expose
-  private AssignmentStatus status;  
-  
-  
+  private AssignmentStatus status;
+
+
   public Assignment() {
     this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
     this.created = new Date();
     this.updated = this.created;
-  }  
-  
+  }
+
   public Assignment(String description, String category, AssignmentStatus status) {
     this.description = description;
     this.category = category;
@@ -108,7 +104,7 @@ public class Assignment implements Serializable {
 
   /**
    * Gets the description of this assignment.
-   * 
+   *
    * @return The description of this assignment.
    */
   public String getDescription() {
@@ -117,7 +113,7 @@ public class Assignment implements Serializable {
 
   /**
    * Sets the description of this assignment.
-   * 
+   *
    * @param description
    *          The assignment description.
    */
@@ -128,7 +124,7 @@ public class Assignment implements Serializable {
 
   /**
    * Gets the YouTube category used for videos uploaded for this assignment.
-   * 
+   *
    * @return The YouTube category name.
    */
   public String getCategory() {
@@ -137,7 +133,7 @@ public class Assignment implements Serializable {
 
   /**
    * Sets the YouTube category used for videos uploaded for this assignment.
-   * 
+   *
    * @param category
    *          The YouTube category name.
    */
@@ -148,7 +144,7 @@ public class Assignment implements Serializable {
 
   /**
    * Gets the date this assignment was initially created.
-   * 
+   *
    * @return The date this assignment was initially created.
    */
   public Date getCreated() {
@@ -157,16 +153,16 @@ public class Assignment implements Serializable {
 
   /**
    * Gets the date this assignment was last updated.
-   * 
+   *
    * @return The date this assignment was last updated.
    */
   public Date getUpdated() {
     return updated;
   }
-  
+
   /**
    * Update the schema version when the model changes.
-   * 
+   *
    * @param version
    *          The new version.
    */
@@ -176,7 +172,7 @@ public class Assignment implements Serializable {
 
   /**
    * Gets the current schema version.
-   * 
+   *
    * @return The current schema version of this entity
    */
   public int getSchemaVersion() {
@@ -210,15 +206,16 @@ public class Assignment implements Serializable {
   public Long getId() {
     return id;
   }
-  
+
   public String getPlaylistId() {
     return playlistId;
   }
-  
+
   public void setPlaylistId(String playlistId) {
     this.playlistId = playlistId;
   }
-  
+
+  /*
   @SuppressWarnings("unchecked")
   //TODO: This should probably be calculated periodically and persisted instead of dynamically.
   public int getSubmissionCount() {
@@ -234,5 +231,5 @@ public class Assignment implements Serializable {
 
     return size;
   }
-  
+  */
 }

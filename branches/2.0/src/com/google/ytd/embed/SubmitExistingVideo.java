@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +30,14 @@ import org.json.JSONObject;
 
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YtStatistics;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that handles the submission of an existing YouTube video. It creates a new
@@ -43,9 +48,20 @@ import com.google.ytd.model.VideoSubmission;
 public class SubmitExistingVideo extends HttpServlet {
   private static final Logger log = Logger.getLogger(SubmitExistingVideo.class.getName());
 
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private UserSessionManager userSessionManager;
+  @Inject
+  private YouTubeApiManager apiManager;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
+
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String json = Util.getPostBody(req);
+    String json = util.getPostBody(req);
 
     try {
       JSONObject jsonObj = new JSONObject(json);
@@ -56,18 +72,17 @@ public class SubmitExistingVideo extends HttpServlet {
       String email = jsonObj.getString("email");
 
       // Only check for required parameters 'videoId'.
-      if (Util.isNullOrEmpty(videoId)) {
+      if (util.isNullOrEmpty(videoId)) {
         throw new IllegalArgumentException("'videoId' parameter is null or empty.");
       }
 
       // Grab user session meta data
-      UserSession userSession = UserSessionManager.getUserSession(req);
+      UserSession userSession = userSessionManager.getUserSession(req);
       String youTubeName = userSession.getMetaData("youTubeName");
       String authSubToken = userSession.getMetaData("authSubToken");
       String assignmentId = userSession.getMetaData("assignmentId");
       String articleUrl = userSession.getMetaData("articleUrl");
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
 
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
@@ -84,7 +99,7 @@ public class SubmitExistingVideo extends HttpServlet {
         String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
 
         List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-        String sortedTags = Util.sortedJoin(tags, ",");
+        String sortedTags = util.sortedJoin(tags, ",");
 
         long viewCount = -1;
 
@@ -103,15 +118,14 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setVideoLocation(location);
         submission.setVideoDate(date);
         submission.setYouTubeName(youTubeName);
-        // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
-        // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
-        // UserAuthToken class.
-        submission.setAuthSubToken(authSubToken);
+
+        userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
+
         submission.setViewCount(viewCount);
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
         submission.setNotifyEmail(email);
 
-        AdminConfig adminConfig = Util.getAdminConfig();
+        AdminConfig adminConfig = util.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
@@ -119,9 +133,9 @@ public class SubmitExistingVideo extends HttpServlet {
           submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
         }
 
-        Util.persistJdo(submission);
+        util.persistJdo(submission);
 
-        Util.sendNewSubmissionEmail(submission);
+        util.sendNewSubmissionEmail(submission);
 
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "true");

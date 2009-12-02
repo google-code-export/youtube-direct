@@ -7,18 +7,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
-import com.google.ytd.Util;
-import com.google.ytd.dao.SubmissionManager;
+import com.google.ytd.dao.SubmissionDao;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 public class GetSubmissionsCommand extends Command {
   private static final Logger LOG = Logger.getLogger(GetSubmissionsCommand.class.getName());
 
-  private SubmissionManager submissionManager = null;
+  private SubmissionDao submissionDao = null;
 
   @Inject
-  public GetSubmissionsCommand(SubmissionManager submissionManager) {
-    this.submissionManager = submissionManager;
+  private Util util;
+
+  @Inject
+  public GetSubmissionsCommand(SubmissionDao submissionDao) {
+    this.submissionDao = submissionDao;
   }
 
   @Override
@@ -35,7 +38,7 @@ public class GetSubmissionsCommand extends Command {
     int pageIndex = Integer.parseInt(getParam("pageIndex"));
     int pageSize = Integer.parseInt(getParam("pageSize"));
 
-    submissions = submissionManager.getSubmissions(sortBy, sortOrder, filterType);
+    submissions = submissionDao.getSubmissions(sortBy, sortOrder, filterType);
     int totalSize = submissions.size();
     int totalPages = (int) Math.ceil(((double)totalSize/(double)pageSize));
     int startIndex = (pageIndex - 1) * pageSize; //inclusive
@@ -53,7 +56,7 @@ public class GetSubmissionsCommand extends Command {
 
     submissions = submissions.subList(startIndex, endIndex);
     json.put("totalPages", totalPages);
-    json.put("result", Util.GSON.toJson(submissions));
+    json.put("result", util.toJson(submissions));
     return json;
   }
 }

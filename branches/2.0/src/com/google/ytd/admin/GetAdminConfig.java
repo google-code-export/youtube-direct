@@ -18,13 +18,15 @@ package com.google.ytd.admin;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that retrieves the AdminConfig singleton from the datastore.
@@ -32,14 +34,18 @@ import com.google.ytd.model.AdminConfig;
 @Singleton
 public class GetAdminConfig extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetAdminConfig.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    AdminConfig adminConfig = Util.getAdminConfig();
+    AdminConfig adminConfig = util.getAdminConfig();
 
     if (adminConfig != null) {
       resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(adminConfig));
+      resp.getWriter().println(util.toJson(adminConfig));
     } else {
       log.warning("Couldn't retrieve an AdminConfig instance.");
       resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't retrieve AdminConfig");

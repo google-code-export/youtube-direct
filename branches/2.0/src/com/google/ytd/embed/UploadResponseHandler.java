@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +26,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that is invoked as part of the browser-based YouTube video upload flow. If it detects
@@ -39,13 +45,26 @@ import com.google.ytd.model.VideoSubmission;
 public class UploadResponseHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
 
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private UserSessionManager userSessionManager;
+  @Inject
+  private YouTubeApiManager apiManager;
+  @Inject
+  private SubmissionDao submissionManager;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     String videoId = req.getParameter("id");
     String status = req.getParameter("status");
 
-    UserSession userSession = UserSessionManager.getUserSession(req);
+    UserSession userSession = userSessionManager.getUserSession(req);
 
     if (status.equals("200")) {
       String authSubToken = userSession.getMetaData("authSubToken");
@@ -62,7 +81,9 @@ public class UploadResponseHandler extends HttpServlet {
       log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
           + "for assignment id '%s'...", videoId, assignmentId));
 
-      VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
+      //VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
+
+      VideoSubmission submission = submissionManager.newSubmission(Long.parseLong(assignmentId));
 
       submission.setArticleUrl(articleUrl);
       submission.setVideoId(videoId);
@@ -72,16 +93,13 @@ public class UploadResponseHandler extends HttpServlet {
       submission.setVideoLocation(videoLocation);
       submission.setVideoDate(videoDate);
       submission.setYouTubeName(youTubeName);
-      // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
-      // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
-      // UserAuthToken class.
-      submission.setAuthSubToken(authSubToken);
       submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);
       submission.setNotifyEmail(email);
 
-      AdminConfig adminConfig = Util.getAdminConfig();
+      userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
+      AdminConfig adminConfig = util.getAdminConfig();
+
       apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
 
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
@@ -94,11 +112,11 @@ public class UploadResponseHandler extends HttpServlet {
         apiManager.updateModeration(videoId, false);
       }
 
-      Util.persistJdo(submission);
+      util.persistJdo(submission);
 
       log.fine("...VideoSubmission persisted.");
 
-      Util.sendNewSubmissionEmail(submission);
+      util.sendNewSubmissionEmail(submission);
 
       try {
         JSONObject responseJsonObj = new JSONObject();

@@ -25,9 +25,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet responsible for saving updates to the AdminConfig singleton, based on JSON input.
@@ -35,17 +36,20 @@ import com.google.ytd.model.AdminConfig;
 @Singleton
 public class PersistAdminConfig extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAdminConfig.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
-    String json = Util.getPostBody(req);
+    String json = util.getPostBody(req);
 
-    AdminConfig jsonObj = Util.GSON.fromJson(json, AdminConfig.class);
+    AdminConfig jsonObj = util.GSON.fromJson(json, AdminConfig.class);
 
-    AdminConfig adminConfig = Util.getAdminConfig();
+    AdminConfig adminConfig = util.getAdminConfig();
 
     adminConfig.setClientId(jsonObj.getClientId());
     adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());
@@ -67,6 +71,6 @@ public class PersistAdminConfig extends HttpServlet {
     pm.close();
 
     resp.setContentType("text/javascript");
-    resp.getWriter().println(Util.GSON.toJson(adminConfig));
+    resp.getWriter().println(util.GSON.toJson(adminConfig));
   }
 }

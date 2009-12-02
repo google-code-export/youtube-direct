@@ -26,8 +26,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Returns JSON data representing approved videos.
@@ -38,6 +40,11 @@ import com.google.ytd.model.VideoSubmission;
 @Singleton
 public class ApprovedVideoFeed extends HttpServlet {
   private static final Logger log = Logger.getLogger(ApprovedVideoFeed.class.getName());
+
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -73,7 +80,6 @@ public class ApprovedVideoFeed extends HttpServlet {
       filterType = Integer.parseInt(req.getParameter("filtertype"));
     }
 
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
@@ -110,7 +116,7 @@ public class ApprovedVideoFeed extends HttpServlet {
 
       String json = null;
       List returnList = videoEntries.subList(startIndex, endIndex);
-      json = Util.GSON.toJson(returnList);
+      json = util.toJson(returnList);
       json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
 
       resp.setContentType("text/javascript");

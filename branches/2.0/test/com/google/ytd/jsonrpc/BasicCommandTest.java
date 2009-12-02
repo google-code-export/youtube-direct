@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.ytd.command.GetSubmissionsCommand;
-import com.google.ytd.dao.SubmissionManager;
+import com.google.ytd.dao.SubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 
 public class BasicCommandTest{
@@ -32,7 +32,7 @@ public class BasicCommandTest{
     submissions.add(videoSubmission);
 
     JUnit4Mockery mockery = new JUnit4Mockery();
-    final SubmissionManager manager = mockery.mock(SubmissionManager.class);
+    final SubmissionDao manager = mockery.mock(SubmissionDao.class);
     mockery.checking(new Expectations() {{
       oneOf(manager).getSubmissions(with("created"), with("desc"), with("all"));
       will(returnValue(submissions));

@@ -14,23 +14,24 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.command.Command;
+import com.google.ytd.util.Util;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
   @Inject
   private CommandDirectory commandDirectory;
-
   @Inject
   private JsonExceptionHandler jsonExceptionHandler;
+  @Inject
+  private Util util;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
-      String postBody = Util.getPostBody(req);
-      if (Util.isNullOrEmpty(postBody)) {
+      String postBody = util.getPostBody(req);
+      if (util.isNullOrEmpty(postBody)) {
         throw new IllegalArgumentException("No data found in HTTP POST request.");
       }
 

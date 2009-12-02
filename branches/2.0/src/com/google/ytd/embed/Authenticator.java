@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,13 +23,16 @@ import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
+import com.google.ytd.util.Util;
 
 /**
  * Class to handle aspects of user authentication and persisting that
@@ -37,6 +40,13 @@ import com.google.ytd.model.UserSession;
  */
 @Singleton
 public class Authenticator {
+
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+
+  private UserSessionManager userSessionManager;
+
   private HttpServletRequest request = null;
   private HttpServletResponse response = null;
 
@@ -47,11 +57,14 @@ public class Authenticator {
 
   private static final Logger log = Logger.getLogger(Authenticator.class.getName());
 
-  public Authenticator(HttpServletRequest req, HttpServletResponse resp) {
+  @Inject
+  public Authenticator(HttpServletRequest req, HttpServletResponse resp,
+      UserSessionManager userSessionManager, Util util) {
+    this.userSessionManager = userSessionManager;
     this.request = req;
     this.response = resp;
-
-    this.userSession = UserSessionManager.getUserSession(request);
+    this.util = util;
+    this.userSession = userSessionManager.getUserSession(request);
 
     String assignmentId = request.getParameter("assignmentId");
     String articleUrl = request.getParameter("articleUrl");
@@ -62,20 +75,21 @@ public class Authenticator {
       log.log(Level.WARNING, "", e);
     }
 
-    String selfUrl = Util.getSelfUrl(request);
+    // TODO(austinchau) This request object is before the JspForwarder, the url is not correct
+    String selfUrl = util.getSelfUrl(request);
 
     if (userSession == null) {
       userSession = new UserSession();
-      userSession = UserSessionManager.save(userSession);
+      userSession = userSessionManager.save(userSession);
       // stick the session id as cookie
-      UserSessionManager.sendSessionIdCookie(userSession.getId(), response);
+      userSessionManager.sendSessionIdCookie(userSession.getId(), response);
     }
 
     userSession.addMetaData("assignmentId", assignmentId);
     userSession.addMetaData("articleUrl", articleUrl);
     userSession.addMetaData("selfUrl", selfUrl);
 
-    userSession = UserSessionManager.save(userSession);
+    userSession = userSessionManager.save(userSession);
 
     String authSubToken = userSession.getMetaData("authSubToken");
 
@@ -87,7 +101,7 @@ public class Authenticator {
 
         authSubToken = null;
 
-        UserSessionManager.delete(userSession);
+        userSessionManager.delete(userSession);
 
         // replace with new session
 
@@ -95,10 +109,10 @@ public class Authenticator {
         userSession.addMetaData("assignmentId", assignmentId);
         userSession.addMetaData("articleUrl", articleUrl);
         userSession.addMetaData("selfUrl", selfUrl);
-        userSession = UserSessionManager.save(userSession);
+        userSession = userSessionManager.save(userSession);
 
         // stick the session id as cookie
-        UserSessionManager.sendSessionIdCookie(userSession.getId(), response);
+        userSessionManager.sendSessionIdCookie(userSession.getId(), response);
       } else {
         // good token
         log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
@@ -161,7 +175,7 @@ public class Authenticator {
   }
 
   public String getLogOutUrl() {
-    return "/LogoutHandler";
+    return "/logout";
   }
 
 }

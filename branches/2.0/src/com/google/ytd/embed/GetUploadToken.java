@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,10 +38,13 @@ import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.Assignment.AssignmentStatus;
+import com.google.ytd.util.Util;
 
 /**
  * Class responsible for submitting metadata about a new video to the YouTube API server. It gets
@@ -51,9 +55,18 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
 public class GetUploadToken extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetUploadToken.class.getName());
 
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private UserSessionManager userSessionManager;
+  @Inject
+  private YouTubeApiManager apiManager;
+
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String json = Util.getPostBody(req);
+    String json = util.getPostBody(req);
 
     try {
       JSONObject jsonObj = new JSONObject(json);
@@ -66,14 +79,14 @@ public class GetUploadToken extends HttpServlet {
       JSONArray tagsArray = jsonObj.getJSONArray("tags");
 
       // Only check for required parameters 'title' and 'description'.
-      if (Util.isNullOrEmpty(title)) {
+      if (util.isNullOrEmpty(title)) {
         throw new IllegalArgumentException("'title' parameter is null or empty.");
       }
-      if (Util.isNullOrEmpty(description)) {
+      if (util.isNullOrEmpty(description)) {
         throw new IllegalArgumentException("'description' parameter is null or empty.");
       }
 
-      UserSession userSession = UserSessionManager.getUserSession(req);
+      UserSession userSession = userSessionManager.getUserSession(req);
       if (userSession == null) {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("No user session found.");
@@ -81,7 +94,7 @@ public class GetUploadToken extends HttpServlet {
       String authSubToken = userSession.getMetaData("authSubToken");
       String assignmentId = userSession.getMetaData("assignmentId");
 
-      Assignment assignment = Util.getAssignmentById(assignmentId);
+      Assignment assignment = util.getAssignmentById(assignmentId);
       if (assignment == null) {
         throw new IllegalArgumentException(String.format(
             "Could not find an assignment with id '%s'.", assignmentId));
@@ -118,7 +131,7 @@ public class GetUploadToken extends HttpServlet {
       // Sort the list of tags and join with "," so that we can easily compare
       // what's in the
       // datastore with what we get back from the YouTube API.
-      String sortedTags = Util.sortedJoin(tags, ",");
+      String sortedTags = util.sortedJoin(tags, ",");
 
       mg.setDescription(new MediaDescription());
       mg.getDescription().setPlainTextContent(description);
@@ -145,9 +158,8 @@ public class GetUploadToken extends HttpServlet {
       userSession.addMetaData("videoDate", date);
       userSession.addMetaData("videoTags", sortedTags);
       userSession.addMetaData("email", email);
-      UserSessionManager.save(userSession);
+      userSessionManager.save(userSession);
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
 
       FormUploadToken token = apiManager.getFormUploadToken(newEntry);

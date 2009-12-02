@@ -39,16 +39,6 @@
   </error-page>
 
 
-  <!-- BEGIN user-facing JSPs -->
-  <servlet>
-    <servlet-name>embed</servlet-name>
-    <jsp-file>/embed.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>embed</servlet-name>
-    <url-pattern>/embed</url-pattern>
-  </servlet-mapping>
-  <!-- END user-facing JSPs -->
   
   <!-- BEGIN admin JSPs -->
   <servlet>
@@ -60,6 +50,7 @@
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
   <!-- END admin JSPs -->	
+
 	
   <security-constraint>
     <web-resource-collection>

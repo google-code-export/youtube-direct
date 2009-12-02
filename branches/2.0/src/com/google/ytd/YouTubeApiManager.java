@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,15 +51,22 @@ import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
-import com.google.inject.Singleton;
+import com.google.inject.Inject;
+import com.google.ytd.embed.UserSessionManager;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.util.Util;
 
 /**
  * Class to handle interfacing with the Google Data Java Client Library's
  * YouTube support.
  */
-@Singleton
 public class YouTubeApiManager {
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private UserSessionManager userSessionManager;
+
   private YouTubeService service = null;
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
 
@@ -86,17 +94,19 @@ public class YouTubeApiManager {
    * Create a new instance of the class, initializing a YouTubeService object
    * with parameters specified in appengine-web.xml
    */
-  public YouTubeApiManager() {
-    AdminConfig admingConfig = Util.getAdminConfig();
+  @Inject
+  public YouTubeApiManager(Util util) {
+    this.util = util;
+    AdminConfig admingConfig = util.getAdminConfig();
 
     String clientId = admingConfig.getClientId();
     String developerKey = admingConfig.getDeveloperKey();
 
-    if (Util.isNullOrEmpty(clientId)) {
+    if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId settings property is null or empty.");
     }
 
-    if (Util.isNullOrEmpty(developerKey)) {
+    if (util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
       service = new YouTubeService(clientId);
     } else {
@@ -105,7 +115,7 @@ public class YouTubeApiManager {
   }
 
   public YouTubeApiManager(String clientId) {
-    if (Util.isNullOrEmpty(clientId)) {
+    if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId parameter is null or empty.");
     }
 

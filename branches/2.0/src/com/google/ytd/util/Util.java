@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.JDOHelper;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -50,35 +49,38 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
-import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 
 /**
  * Misc. utility methods.
  */
+@Singleton
 public class Util {
   private static final Logger log = Logger.getLogger(Util.class.getName());
-
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
-  public final static Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
       .setDateFormat(DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
       .create();
 
-  private static PersistenceManagerFactory pmf = null;
+  private PersistenceManagerFactory pmf = null;
 
-  static {
-    pmf = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+  @Inject
+  private Injector injector;
+
+  @Inject
+  public Util(PersistenceManagerFactory pmf) {
+    this.pmf = pmf;
   }
 
-  public static PersistenceManagerFactory getPersistenceManagerFactory() {
-    return pmf;
-  }
-
-  public static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
+  public class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
     public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
       return serialize(text, type, context);
     }
@@ -101,8 +103,8 @@ public class Util {
     }
   }
 
-  public static Object persistJdo(Object entry) {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+  public Object persistJdo(Object entry) {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       entry = pm.makePersistent(entry);
@@ -114,8 +116,8 @@ public class Util {
     return entry;
   }
 
-  public static void removeJdo(Object entry) {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+  public void removeJdo(Object entry) {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       pm.deletePersistent(entry);
@@ -124,11 +126,11 @@ public class Util {
     }
   }
 
-  public static void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
-    AdminConfig adminConfig = Util.getAdminConfig();
+  public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
+    AdminConfig adminConfig = getAdminConfig();
 
     String address = adminConfig.getNewSubmissionAddress();
-    if (!Util.isNullOrEmpty(address)) {
+    if (!isNullOrEmpty(address)) {
       try {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
@@ -153,14 +155,14 @@ public class Util {
     }
   }
 
-  public static void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
+  public void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
     try {
       String toAddress = entry.getNotifyEmail();
-      if (Util.isNullOrEmpty(toAddress)) {
+      if (isNullOrEmpty(toAddress)) {
         throw new IllegalArgumentException("No destination email address in VideoSubmission.");
       }
 
-      AdminConfig adminConfig = Util.getAdminConfig();
+      AdminConfig adminConfig = getAdminConfig();
 
       String body;
       switch (status) {
@@ -176,12 +178,12 @@ public class Util {
           throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
                 status.toString()));
       }
-      if (Util.isNullOrEmpty(body)) {
+      if (isNullOrEmpty(body)) {
         throw new IllegalArgumentException("No email body found in configuration.");
       }
 
       String fromAddress = adminConfig.getFromAddress();
-      if (Util.isNullOrEmpty(fromAddress)) {
+      if (isNullOrEmpty(fromAddress)) {
         throw new IllegalArgumentException("No from address found in configuration.");
       }
 
@@ -212,8 +214,8 @@ public class Util {
     }
   }
 
-  public static Assignment getAssignmentById(long id) {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+  public Assignment getAssignmentById(long id) {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       Assignment assignment = pm.getObjectById(Assignment.class, id);
@@ -226,26 +228,6 @@ public class Util {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public static UserAuthToken getUserAuthTokenForUser(String youtubeName) {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
-
-    try {
-      if (!Util.isNullOrEmpty(youtubeName)) {
-        Query query = pm.newQuery(UserAuthToken.class, "youtubeName == youtubeNameParam");
-        query.declareParameters("String youtubeNameParam");
-        List<UserAuthToken> results = (List<UserAuthToken>) query.execute(youtubeName);
-        if (results.size() > 0) {
-          return pm.detachCopy(results.get(0));
-        }
-      }
-    } finally {
-      pm.close();
-    }
-
-    return null;
-  }
-
   /**
    * Retrieves an Assignment from the datastore given its id.
    *
@@ -254,7 +236,7 @@ public class Util {
    * @return The Assignment object whose id is specified, or null if the id is
    *         invalid.
    */
-  public static Assignment getAssignmentById(String id) {
+  public Assignment getAssignmentById(String id) {
     try {
       return getAssignmentById(Long.parseLong(id));
     } catch (NumberFormatException e) {
@@ -264,10 +246,10 @@ public class Util {
   }
 
   @SuppressWarnings("unchecked")
-  public static AdminConfig getAdminConfig() {
+  public AdminConfig getAdminConfig() {
     AdminConfig adminConfig = null;
 
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       Query query = pm.newQuery(AdminConfig.class);
@@ -292,16 +274,16 @@ public class Util {
     return adminConfig;
   }
 
-  public static boolean isUploadOnly() {
+  public boolean isUploadOnly() {
     boolean uploadOnly = false;
-    AdminConfig adminConfig = Util.getAdminConfig();
+    AdminConfig adminConfig = getAdminConfig();
     if (adminConfig.getSubmissionMode() == AdminConfig.SubmissionModeType.NEW_ONLY.ordinal()) {
       uploadOnly = true;
     }
     return uploadOnly;
   }
 
-  public static String getPostBody(HttpServletRequest req) throws IOException {
+  public String getPostBody(HttpServletRequest req) throws IOException {
     InputStream is = req.getInputStream();
 
     StringBuffer body = new StringBuffer();
@@ -314,12 +296,12 @@ public class Util {
     return body.toString();
   }
 
-  public static String getSelfUrl(HttpServletRequest request) {
+  public String getSelfUrl(HttpServletRequest request) {
     StringBuffer url = new StringBuffer();
 
     url.append(request.getRequestURL());
     String queryString = request.getQueryString();
-    if (!Util.isNullOrEmpty(queryString)) {
+    if (!isNullOrEmpty(queryString)) {
       url.append("?");
       url.append(queryString);
     }
@@ -327,7 +309,7 @@ public class Util {
     return url.toString();
   }
 
-  public static boolean isNullOrEmpty(String input) {
+  public boolean isNullOrEmpty(String input) {
     if (input == null || input.length() <= 0) {
       return true;
     } else {
@@ -335,7 +317,7 @@ public class Util {
     }
   }
 
-  public static String toJson(Object o) {
+  public String toJson(Object o) {
     return GSON.toJson(o);
   }
 
@@ -350,7 +332,7 @@ public class Util {
    * @return A string consisting of a sorted list of strings, joined with
    *         delimeter.
    */
-  public static String sortedJoin(List<String> strings, String delimeter) {
+  public String sortedJoin(List<String> strings, String delimeter) {
     Collections.sort(strings);
 
     StringBuffer tempBuffer = new StringBuffer();
@@ -365,10 +347,10 @@ public class Util {
   }
 
   @SuppressWarnings("unchecked")
-  public static long getDefaultMobileAssignmentId() {
+  public long getDefaultMobileAssignmentId() {
     long assignmentId = -1;
     String defaultMobileAssignmentDescription = "default mobile assignment";
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
     try {
       Query query = pm.newQuery(Assignment.class);
       query.declareParameters("String defaultMobileAssignmentDescription");
@@ -385,9 +367,9 @@ public class Util {
         assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);
         assignment = pm.makePersistent(assignment);
 
-        YouTubeApiManager apiManager = new YouTubeApiManager();
-        String token = Util.getAdminConfig().getYouTubeAuthSubToken();
-        if (Util.isNullOrEmpty(token)) {
+        YouTubeApiManager apiManager = injector.getInstance(YouTubeApiManager.class);
+        String token = getAdminConfig().getYouTubeAuthSubToken();
+        if (isNullOrEmpty(token)) {
           log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
               " YouTube AuthSub token was found in the config.", assignment.getDescription()));
         } else {
