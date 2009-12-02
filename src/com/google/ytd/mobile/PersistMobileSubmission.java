@@ -22,24 +22,34 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that handles mobile phone submissions, creating an appropriate datastore entry for them.
  */
 @Singleton
 public class PersistMobileSubmission extends HttpServlet {
-
   private static final Logger log = Logger.getLogger(PersistMobileSubmission.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
 
   private String decode(String input) {
     //TODO: This should use a URL decode method from a library.
@@ -70,7 +80,7 @@ public class PersistMobileSubmission extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
-      Map<String, String> submissionData = processPostData(Util.getPostBody(req));
+      Map<String, String> submissionData = processPostData(util.getPostBody(req));
       if (submissionData == null) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "invalid post data format");
       }
@@ -92,16 +102,15 @@ public class PersistMobileSubmission extends HttpServlet {
 
       if (assignmentId <= 0) {
         // get default mobile assignment ID
-        assignmentId = Util.getDefaultMobileAssignmentId();
+        assignmentId = util.getDefaultMobileAssignmentId();
       }
-      if (Util.isNullOrEmpty(videoId)) {
+      if (util.isNullOrEmpty(videoId)) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing videoId");
       }
-      if (Util.isNullOrEmpty(authSubToken)) {
+      if (util.isNullOrEmpty(authSubToken)) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing authSubToken");
       }
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
 
@@ -113,7 +122,7 @@ public class PersistMobileSubmission extends HttpServlet {
         String title = videoEntry.getTitle().getPlainText();
         String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
         List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-        String sortedTags = Util.sortedJoin(tags, ",");
+        String sortedTags = util.sortedJoin(tags, ",");
 
         VideoSubmission submission = new VideoSubmission(assignmentId);
         submission.setVideoId(videoId);
@@ -123,22 +132,20 @@ public class PersistMobileSubmission extends HttpServlet {
         submission.setVideoLocation(location);
         submission.setVideoDate(date);
         submission.setYouTubeName(youTubeName);
-        // Note: the call to setAuthSubToken needs to be made after the call to setYouTubeName,
-        // since setAuthSubToken relies on a youtubeName being set in order to proxy to the
-        // UserAuthToken class.
-        submission.setAuthSubToken(authSubToken);
         submission.setVideoSource(VideoSubmission.VideoSource.MOBILE_SUBMIT);
         submission.setNotifyEmail(email);
 
-        AdminConfig adminConfig = Util.getAdminConfig();
+        userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
+
+        AdminConfig adminConfig = util.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
           // etc.) isn't taking place.
             submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
         }
-        Util.persistJdo(submission);
-        Util.sendNewSubmissionEmail(submission);
+        util.persistJdo(submission);
+        util.sendNewSubmissionEmail(submission);
 
         resp.setContentType("text/plain");
         resp.getWriter().println("success");

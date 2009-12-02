@@ -1,11 +1,39 @@
+<%@ page import="com.google.inject.Guice"%>
+<%@ page import="com.google.inject.Injector"%>
+<%@ page import="com.google.inject.AbstractModule"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@ page import="com.google.ytd.Authenticator"%>
-<%@ page import="com.google.ytd.Util"%>
+<%@ page import="com.google.ytd.embed.Authenticator"%>
+<%@ page import="com.google.ytd.embed.UserSessionManager"%>
+<%@ page import="com.google.ytd.dao.SubmissionDao"%>
+<%@ page import="com.google.ytd.dao.SubmissionDaoImpl"%>
+<%@ page import="com.google.ytd.dao.UserAuthTokenDao"%>
+<%@ page import="com.google.ytd.dao.UserAuthTokenDaoImpl"%>
+<%@ page import="com.google.ytd.util.Util"%>
 <%@ page import="com.google.ytd.model.AdminConfig"%>
 <%@ page import="java.net.URLDecoder"%>
-<% 
-	Authenticator authenticator = new Authenticator(request, response); 
-	AdminConfig adminConfig = Util.getAdminConfig();			
+<%@ page import="javax.jdo.PersistenceManagerFactory"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
+<%@ page import="javax.servlet.http.HttpServletResponse"%>
+
+<%
+  AbstractModule module = new AbstractModule() {
+	  @Override
+	  protected void configure() {
+	    bind(SubmissionDao.class).to(SubmissionDaoImpl.class);
+	    bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
+	    bind(PersistenceManagerFactory.class).toInstance(
+	        (PersistenceManagerFactory) getServletContext().getAttribute("pmf"));
+	    bind(HttpServletRequest.class).toInstance(
+	        (HttpServletRequest)getServletContext().getAttribute("req"));
+	    bind(HttpServletResponse.class).toInstance(
+	        (HttpServletResponse)getServletContext().getAttribute("resp"));	    
+	  }
+	};
+	Injector injector = Guice.createInjector(module);
+	Util util = injector.getInstance(Util.class);
+	UserSessionManager userSessionManager = injector.getInstance(UserSessionManager.class);
+	Authenticator authenticator = injector.getInstance(Authenticator.class);;
+	AdminConfig adminConfig = util.getAdminConfig();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -72,7 +100,7 @@
 	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
 
 	<%		
-		if (!Util.isUploadOnly()) {		
+		if (!util.isUploadOnly()) {		
 	%> 	
 	<br><br>
 	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />	

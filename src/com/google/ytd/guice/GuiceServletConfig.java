@@ -8,10 +8,6 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.google.ytd.ApprovedVideoFeed;
-import com.google.ytd.AuthSubHandler;
-import com.google.ytd.GetUploadToken;
-import com.google.ytd.LogoutHandler;
-import com.google.ytd.UploadResponseHandler;
 import com.google.ytd.admin.DeleteSubmission;
 import com.google.ytd.admin.GetAdminConfig;
 import com.google.ytd.admin.GetAllAssignments;
@@ -24,6 +20,10 @@ import com.google.ytd.admin.SyncMetadata;
 import com.google.ytd.admin.UpdateAssignment;
 import com.google.ytd.admin.UpdateSubmission;
 import com.google.ytd.admin.VideoDownloadRedirect;
+import com.google.ytd.embed.AuthSubHandler;
+import com.google.ytd.embed.GetUploadToken;
+import com.google.ytd.embed.LogoutHandler;
+import com.google.ytd.embed.UploadResponseHandler;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
@@ -38,8 +38,13 @@ public class GuiceServletConfig extends GuiceServletContextListener {
       protected void configureServlets() {
         // TODO(austinchau) Remove V1 binding when fully migrated to V2 jsonrpc style
         initV1Binding();
+
         // Single entry point for all jsonrpc requests
         serve("/jsonrpc").with(JsonRpcProcessor.class);
+
+        // Frontend jsp embed endpoint
+        serve("/embed").with(JspForwarder.class);
+        serve("/logout").with(LogoutHandler.class);
       }
 
       private void initV1Binding() {

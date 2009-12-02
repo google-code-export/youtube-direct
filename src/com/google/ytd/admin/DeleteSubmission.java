@@ -25,9 +25,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that deletes VideoSubmission objects from the datastore.
@@ -36,18 +37,21 @@ import com.google.ytd.model.VideoSubmission;
  */
 @Singleton
 public class DeleteSubmission extends HttpServlet {
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   private static final Logger log = Logger.getLogger(DeleteSubmission.class.getName());
 
   @Override
   @SuppressWarnings("cast")
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       String id = req.getParameter("id");
-      if (Util.isNullOrEmpty(id)) {
+      if (util.isNullOrEmpty(id)) {
         throw new IllegalArgumentException("'id' parameter is null or empty.");
       }
 

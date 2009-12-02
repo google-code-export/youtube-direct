@@ -19,15 +19,17 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.data.Link;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that retrieves the Insight download link for a video and redirects the browser there.
@@ -40,20 +42,26 @@ import com.google.ytd.YouTubeApiManager;
 public class InsightDownloadRedirect extends HttpServlet {
   private static final Logger log = Logger.getLogger(InsightDownloadRedirect.class.getName());
 
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
       String id = req.getParameter("id");
-      if (Util.isNullOrEmpty(id)) {
+      if (util.isNullOrEmpty(id)) {
         throw new IllegalArgumentException("'id' parameter is null or empty.");
       }
 
       String token = req.getParameter("token");
-      if (Util.isNullOrEmpty(token)) {
+      if (util.isNullOrEmpty(token)) {
         throw new IllegalArgumentException("'token' parameter is null or empty.");
       }
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(token);
 
       VideoEntry videoEntry = apiManager.getVideoEntry(id);
@@ -66,7 +74,7 @@ public class InsightDownloadRedirect extends HttpServlet {
               null);
       if (insightLink != null) {
         String url = insightLink.getHref();
-        if (Util.isNullOrEmpty(url)) {
+        if (util.isNullOrEmpty(url)) {
           throw new IllegalArgumentException(String.format("No insight download URL found for " +
           		"video id '%s'.", id));
         }

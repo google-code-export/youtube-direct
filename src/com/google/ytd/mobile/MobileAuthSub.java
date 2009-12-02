@@ -20,6 +20,7 @@ import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,10 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.admin.PersistAuthSubToken;
+import com.google.ytd.util.Util;
 
 /**
  * AuthSub redirection flow for mobile phones.
@@ -43,6 +45,12 @@ public class MobileAuthSub extends HttpServlet {
   private static final String AUTH_SUB_FORMAT = "https://www.google.com/accounts/AuthSubRequest?" +
       "next=%s&scope=http://gdata.youtube.com&session=1&secure=0&nomobile=1";
   private static final String REDIRECT_FORMAT = "%s://authsub/%s/%s";
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -50,24 +58,23 @@ public class MobileAuthSub extends HttpServlet {
       // We need to know what the redirection protocol will be whether this is an initial request
       // or a response back from the AuthSub flow.
       String protocol = req.getParameter("protocol");
-      if (Util.isNullOrEmpty(protocol)) {
+      if (util.isNullOrEmpty(protocol)) {
         throw new IllegalArgumentException("'protocol' parameter is null or empty.");
       }
 
       String token = req.getParameter("token");
 
-      if (Util.isNullOrEmpty(token)) {
+      if (util.isNullOrEmpty(token)) {
         // If there is no token URL parameter, start the AuthSub request flow.
-        resp.sendRedirect(String.format(AUTH_SUB_FORMAT, Util.getSelfUrl(req)));
+        resp.sendRedirect(String.format(AUTH_SUB_FORMAT, util.getSelfUrl(req)));
       } else {
         String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
         // Test the token to make sure it's valid, and get the username it corresponds to.
-        YouTubeApiManager apiManager = new YouTubeApiManager();
         apiManager.setToken(sessionToken);
 
         String youTubeName = apiManager.getCurrentUsername();
-        if (Util.isNullOrEmpty(youTubeName)) {
+        if (util.isNullOrEmpty(youTubeName)) {
           // TODO: Throw a better Exception class here.
           throw new IllegalArgumentException("Unable to retrieve a YouTube username for the " +
           		"authenticated user.");

@@ -13,22 +13,26 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.model.UserAuthToken;
+import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.UserSession;
+import com.google.ytd.util.Util;
 
 /**
  * Super simple class to handle doing the AuthSub token exchange to upgrade a
@@ -37,6 +41,17 @@ import com.google.ytd.model.UserSession;
 @Singleton
 public class AuthSubHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
+
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private UserSessionManager userSessionManager;
+  @Inject
+  private YouTubeApiManager apiManager;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -49,13 +64,13 @@ public class AuthSubHandler extends HttpServlet {
       }
 
       String articleUrl = request.getParameter("articleUrl");
-      if (Util.isNullOrEmpty(articleUrl)) {
+      if (util.isNullOrEmpty(articleUrl)) {
         throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
       }
 
       String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-      UserSession userSession = UserSessionManager.getUserSession(request);
+      UserSession userSession = userSessionManager.getUserSession(request);
 
       if (userSession == null) {
         // TODO: Throw a better Exception class here.
@@ -65,26 +80,19 @@ public class AuthSubHandler extends HttpServlet {
       //userSession.setAuthSubToken(authSubToken);
       userSession.addMetaData("authSubToken", authSubToken);
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(authSubToken);
 
       String youTubeName = apiManager.getCurrentUsername();
-      if (Util.isNullOrEmpty(youTubeName)) {
+      if (util.isNullOrEmpty(youTubeName)) {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
             + "the authenticated user.");
       }
       userSession.addMetaData("youTubeName", youTubeName);
-      UserSessionManager.save(userSession);
+      userSessionManager.save(userSession);
 
       // Create or update the UserAuthToken entry, which maps a username to an AuthSub token.
-      UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
-      if (userAuthToken == null) {
-        userAuthToken = new UserAuthToken(youTubeName, authSubToken);
-      } else {
-        userAuthToken.setAuthSubToken(authSubToken);
-      }
-      Util.persistJdo(userAuthToken);
+      userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
       response.sendRedirect(articleUrl + "#return");
     } catch (ServiceException e) {

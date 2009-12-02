@@ -20,17 +20,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonParseException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet responsible for creating new a new Assignment in the datastore and returning a JSON
@@ -39,26 +41,32 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
 @Singleton
 public class NewAssignment extends HttpServlet {
   private static final Logger log = Logger.getLogger(NewAssignment.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
-      String json = Util.getPostBody(req);
-      if (Util.isNullOrEmpty(json)) {
+      String json = util.getPostBody(req);
+      if (util.isNullOrEmpty(json)) {
         throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
       }
 
-      AdminConfig adminConfig = Util.getAdminConfig();
-      if (Util.isNullOrEmpty(adminConfig.getClientId()) ||
-              Util.isNullOrEmpty(adminConfig.getDeveloperKey()) ||
-              Util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {
+      AdminConfig adminConfig = util.getAdminConfig();
+      if (util.isNullOrEmpty(adminConfig.getClientId()) ||
+              util.isNullOrEmpty(adminConfig.getDeveloperKey()) ||
+              util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {
         throw new IllegalArgumentException("Unable to create new assignment. " +
         		"Please configure all YouTube API settings first.");
       }
 
-      Assignment jsonObj = Util.GSON.fromJson(json, Assignment.class);
+      Assignment jsonObj = util.GSON.fromJson(json, Assignment.class);
 
       Assignment assignment = new Assignment();
       assignment.setStatus(jsonObj.getStatus());
@@ -69,8 +77,7 @@ public class NewAssignment extends HttpServlet {
       assignment = pm.makePersistent(assignment);
 
       if (assignment.getStatus() == AssignmentStatus.ACTIVE &&
-              Util.isNullOrEmpty(assignment.getPlaylistId())) {
-        YouTubeApiManager apiManager = new YouTubeApiManager();
+              util.isNullOrEmpty(assignment.getPlaylistId())) {
 
         String token = adminConfig.getYouTubeAuthSubToken();
         apiManager.setToken(token);
@@ -85,7 +92,7 @@ public class NewAssignment extends HttpServlet {
       log.info(String.format("Added assignment id %d to the datastore.", assignment.getId()));
 
       resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(assignment));
+      resp.getWriter().println(util.toJson(assignment));
     } catch (JsonParseException e) {
       log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

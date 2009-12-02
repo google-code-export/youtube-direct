@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
+import com.google.ytd.util.Util;
 
 /**
  * Class that manages UserSession objects.
@@ -37,20 +40,25 @@ import com.google.ytd.model.UserSession;
 public class UserSessionManager {
   private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
 
-  public static void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+
+  public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
     // cookie lives for a year
     cookie.setMaxAge(31536000);
     response.addCookie(cookie);
   }
 
-  public static void destroySessionIdCookie(HttpServletResponse response) {
+  public void destroySessionIdCookie(HttpServletResponse response) {
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, "");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
   }
 
-  public static boolean isSessionValid(UserSession session) {
+  public boolean isSessionValid(UserSession session) {
 
     boolean valid = true;
 
@@ -74,15 +82,15 @@ public class UserSessionManager {
     return valid;
   }
 
-  public static UserSession save(UserSession session) {
-    return (UserSession) Util.persistJdo(session);
+  public UserSession save(UserSession session) {
+    return (UserSession) util.persistJdo(session);
   }
 
-  public static void delete(UserSession session) {
-    Util.removeJdo(session);
+  public void delete(UserSession session) {
+    util.removeJdo(session);
   }
 
-  public static UserSession getUserSession(HttpServletRequest request) {
+  public UserSession getUserSession(HttpServletRequest request) {
 
     UserSession userSession = null;
 
@@ -92,7 +100,7 @@ public class UserSessionManager {
       for (Cookie cookie : cookies) {
         if (USER_SESSION_ID_NAME.equals(cookie.getName())) {
           String sessionId = cookie.getValue();
-          PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+          PersistenceManager pm = pmf.getPersistenceManager();
 
           String filters = "id == id_";
           Query query = pm.newQuery(UserSession.class, filters);

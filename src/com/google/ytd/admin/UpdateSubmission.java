@@ -31,15 +31,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.AdminConfig.BrandingModeType;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.model.VideoSubmission.VideoSource;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet responsible for updating submissions, both in the AppEngine datastore and on YouTube.
@@ -47,19 +50,28 @@ import com.google.ytd.model.VideoSubmission.VideoSource;
 @Singleton
 public class UpdateSubmission extends HttpServlet {
   private static final Logger log = Logger.getLogger(UpdateSubmission.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager adminApiManager;
+  @Inject
+  private Injector injector;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
 
   @SuppressWarnings("cast")
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
-      String json = Util.getPostBody(req);
+      String json = util.getPostBody(req);
 
       VideoSubmission entry = null;
 
-      VideoSubmission incomingEntry = Util.GSON.fromJson(json, VideoSubmission.class);
+      VideoSubmission incomingEntry = util.GSON.fromJson(json, VideoSubmission.class);
 
       String id = incomingEntry.getId();
 
@@ -68,16 +80,16 @@ public class UpdateSubmission extends HttpServlet {
       ModerationStatus currentStatus = entry.getStatus();
       ModerationStatus newStatus = incomingEntry.getStatus();
 
-      boolean hasEmail = !Util.isNullOrEmpty(entry.getNotifyEmail());
+      boolean hasEmail = !util.isNullOrEmpty(entry.getNotifyEmail());
 
-      AdminConfig adminConfig = Util.getAdminConfig();
+      AdminConfig adminConfig = util.getAdminConfig();
 
       boolean isRejectedOrApproved = (currentStatus !=  newStatus) &&
           (newStatus != ModerationStatus.UNREVIEWED || newStatus != ModerationStatus.SPAM);
 
       if (adminConfig.isModerationEmail() && hasEmail && isRejectedOrApproved
               && currentStatus != newStatus) {
-        Util.sendNotificationEmail(entry, newStatus);
+        util.sendNotificationEmail(entry, newStatus);
       }
 
       //Mutates all the entry attributes with the incoming entry attributes
@@ -90,7 +102,7 @@ public class UpdateSubmission extends HttpServlet {
               currentStatus != newStatus && newStatus == ModerationStatus.APPROVED) {
 
         String linkBackText = adminConfig.getLinkBackText();
-        if (!Util.isNullOrEmpty(linkBackText)) {
+        if (!util.isNullOrEmpty(linkBackText)) {
           String prependText = linkBackText.replace("ARTICLE_URL", entry.getArticleUrl());
 
           if (!entry.getVideoDescription().contains(prependText)) {
@@ -100,9 +112,8 @@ public class UpdateSubmission extends HttpServlet {
         }
       }
 
-      YouTubeApiManager adminApiManager = new YouTubeApiManager();
       String token = adminConfig.getYouTubeAuthSubToken();
-      if (Util.isNullOrEmpty(token)) {
+      if (util.isNullOrEmpty(token)) {
         log.warning(String.format("No AuthSub token found in admin config."));
       } else {
         adminApiManager.setToken(token);
@@ -134,7 +145,7 @@ public class UpdateSubmission extends HttpServlet {
       // FullTextIndexer.reIndex();
 
       resp.setContentType("text/javascript");
-      resp.getWriter().println(Util.GSON.toJson(entry));
+      resp.getWriter().println(util.GSON.toJson(entry));
     } finally {
       pm.close();
     }
@@ -159,8 +170,10 @@ public class UpdateSubmission extends HttpServlet {
     log.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
             videoSubmission.getId(), videoId));
 
-    YouTubeApiManager apiManager = new YouTubeApiManager();
-    apiManager.setToken(videoSubmission.getAuthSubToken());
+    YouTubeApiManager apiManager = injector.getInstance(YouTubeApiManager.class);
+
+    apiManager.setToken(
+        userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName()).getAuthSubToken());
 
     VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
     if (videoEntry == null) {
@@ -172,13 +185,13 @@ public class UpdateSubmission extends HttpServlet {
       String newDescription = String.format("%s\n\n%s", prependText, currentDescription);
 
       // If we have a new tag to add, add to the datastore and YouTube entries.
-      if (!Util.isNullOrEmpty(newTag)) {
+      if (!util.isNullOrEmpty(newTag)) {
         String currentTags = videoSubmission.getVideoTags();
         String[] tagsArray = currentTags.split(",\\s?");
         ArrayList<String> tagsArrayList = new ArrayList<String>(Arrays.asList(tagsArray));
         if (!tagsArrayList.contains(newTag)) {
           tagsArrayList.add(newTag);
-          String newTags = Util.sortedJoin(tagsArrayList, ",");
+          String newTags = util.sortedJoin(tagsArrayList, ",");
           videoSubmission.setVideoTags(newTags);
         }
 
@@ -216,7 +229,7 @@ public class UpdateSubmission extends HttpServlet {
    */
   private boolean addToPlaylist(YouTubeApiManager apiManager, VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
-    Assignment assignment = Util.getAssignmentById(assignmentId);
+    Assignment assignment = util.getAssignmentById(assignmentId);
 
     if (assignment == null) {
       log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
@@ -225,7 +238,7 @@ public class UpdateSubmission extends HttpServlet {
     }
 
     String playlistId = assignment.getPlaylistId();
-    if (Util.isNullOrEmpty(playlistId)) {
+    if (util.isNullOrEmpty(playlistId)) {
       log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
               assignmentId));
       return false;
@@ -247,7 +260,7 @@ public class UpdateSubmission extends HttpServlet {
   private boolean removeFromPlaylist(YouTubeApiManager apiManager,
           VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
-    Assignment assignment = Util.getAssignmentById(assignmentId);
+    Assignment assignment = util.getAssignmentById(assignmentId);
 
     if (assignment == null) {
       log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
@@ -256,7 +269,7 @@ public class UpdateSubmission extends HttpServlet {
     }
 
     String playlistId = assignment.getPlaylistId();
-    if (Util.isNullOrEmpty(playlistId)) {
+    if (util.isNullOrEmpty(playlistId)) {
       log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
               assignmentId));
       return false;

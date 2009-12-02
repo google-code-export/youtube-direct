@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,10 +29,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.util.Util;
 
 /**
  * AuthSub redirection flow to persist the token belonging to the admin YouTube account.
@@ -39,31 +41,36 @@ import com.google.ytd.model.AdminConfig;
 @Singleton
 public class PersistAuthSubToken extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       String token = AuthSubUtil.getTokenFromReply(req.getQueryString());
-      if (Util.isNullOrEmpty(token)) {
+      if (util.isNullOrEmpty(token)) {
         throw new IllegalArgumentException(String.format("Could not retrieve token from "
                 + "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
       }
 
       String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-      YouTubeApiManager apiManager = new YouTubeApiManager();
       apiManager.setToken(sessionToken);
 
       String youTubeName = apiManager.getCurrentUsername();
-      if (Util.isNullOrEmpty(youTubeName)) {
+      if (util.isNullOrEmpty(youTubeName)) {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
                 + "the authenticated user.");
       }
 
-      AdminConfig adminConfig = Util.getAdminConfig();
+      AdminConfig adminConfig = util.getAdminConfig();
       adminConfig.setYouTubeAuthSubToken(sessionToken);
       adminConfig.setYouTubeUsername(youTubeName);
 

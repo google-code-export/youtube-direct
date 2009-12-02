@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +32,12 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaRating;
 import com.google.gdata.data.youtube.YtPublicationState;
 import com.google.gdata.data.youtube.YtStatistics;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that syncs metadata from YouTube with the local datastore.
@@ -49,6 +52,14 @@ import com.google.ytd.model.VideoSubmission;
 @Singleton
 public class SyncMetadata extends HttpServlet {
   private static final Logger log = Logger.getLogger(SyncMetadata.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiManager apiManager;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
 
   @SuppressWarnings("unchecked")
   @Override
@@ -58,7 +69,7 @@ public class SyncMetadata extends HttpServlet {
     // The total number of videos in the datastore.
     int total = 0;
 
-    PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
       log.info("Starting sync operation...");
@@ -78,8 +89,8 @@ public class SyncMetadata extends HttpServlet {
 
         // Create a new instance each time through the loop, since changing AuthSub tokens for an
         // existing instance doesn't seem to work.
-        YouTubeApiManager apiManager = new YouTubeApiManager();
-        apiManager.setToken(videoSubmission.getAuthSubToken());
+        apiManager.setToken(
+            userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName()).getAuthSubToken());
 
         String videoId = videoSubmission.getVideoId();
         log.info(String.format("Syncing video id '%s'", videoId));
@@ -89,12 +100,10 @@ public class SyncMetadata extends HttpServlet {
         VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
         if (videoEntry == null) {
           // Try an unauthenticated request to the specific user's uploads feed next.
-          apiManager = new YouTubeApiManager();
           videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
 
           if (videoEntry == null) {
             // Fall back on looking for the video in the public feed.
-            apiManager = new YouTubeApiManager();
             videoEntry = apiManager.getVideoEntry(videoId);
 
             if (videoEntry == null) {
@@ -153,7 +162,7 @@ public class SyncMetadata extends HttpServlet {
             }
 
             List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-            String sortedTags = Util.sortedJoin(tags, ",");
+            String sortedTags = util.sortedJoin(tags, ",");
             if (!sortedTags.equals(videoSubmission.getVideoTags())) {
               log.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).",
                       videoSubmission.getVideoTags(), sortedTags));

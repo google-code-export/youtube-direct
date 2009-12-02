@@ -26,9 +26,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.Assignment;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet that retrieves Assignments from the datastore, and returns a paged subset of them as
@@ -37,6 +38,11 @@ import com.google.ytd.model.Assignment;
 @Singleton
 public class GetAllAssignments extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
+
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -67,7 +73,6 @@ public class GetAllAssignments extends HttpServlet {
       filterType = req.getParameter("filtertype");
     }
 
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
     PersistenceManager pm = pmf.getPersistenceManager();
 
     try {
@@ -101,7 +106,7 @@ public class GetAllAssignments extends HttpServlet {
 
       String json = null;
       List<Assignment> returnList = assignments.subList(startIndex, endIndex);
-      json = Util.GSON.toJson(returnList);
+      json = util.toJson(returnList);
       json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
 
       resp.setContentType("text/javascript");

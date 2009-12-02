@@ -10,20 +10,27 @@ import javax.jdo.Query;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
+import com.google.ytd.util.Util;
 
 @Singleton
-public class SubmissionManagerImpl implements SubmissionManager  {
-  private static final Logger LOG = Logger.getLogger(SubmissionManagerImpl .class.getName());
+public class SubmissionDaoImpl implements SubmissionDao  {
+  private static final Logger LOG = Logger.getLogger(SubmissionDaoImpl .class.getName());
 
   private PersistenceManagerFactory pmf = null;
 
   @Inject
-  public SubmissionManagerImpl(PersistenceManagerFactory pmf) {
+  private Util util;
+
+  @Inject
+  public SubmissionDaoImpl(PersistenceManagerFactory pmf) {
     this.pmf = pmf;
+  }
+  @Override
+  public VideoSubmission newSubmission(long assignmentId) {
+    return new VideoSubmission(assignmentId);
   }
 
   @Override
@@ -100,11 +107,11 @@ public class SubmissionManagerImpl implements SubmissionManager  {
   }
 
   private void onApproved(VideoSubmission submission) {
-    AdminConfig adminConfig = Util.getAdminConfig();
+    AdminConfig adminConfig = util.getAdminConfig();
 
     // Send notify email
     if (submission.getNotifyEmail() != null && adminConfig.isModerationEmail()) {
-      Util.sendNotificationEmail(submission, ModerationStatus.APPROVED);
+      util.sendNotificationEmail(submission, ModerationStatus.APPROVED);
     }
 
 

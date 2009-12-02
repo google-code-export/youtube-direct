@@ -34,9 +34,10 @@ import org.compass.gps.CompassGps;
 import org.compass.gps.device.jdo.Jdo2GpsDevice;
 import org.compass.gps.impl.SingleCompassGps;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.Util;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.Util;
 
 /**
  * Servlet to handle full text indexing of datastore properties.
@@ -45,18 +46,20 @@ import com.google.ytd.model.VideoSubmission;
  */
 @Singleton
 public class FullTextIndexer extends HttpServlet {
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
   private static final Logger log = Logger.getLogger(FullTextIndexer.class.getName());
 
   private static Compass compass;
   private static CompassGps compassGps;
 
-  static {
+  public FullTextIndexer() {
     compass = new CompassConfiguration().setConnection("gae://index").setSetting(
         CompassEnvironment.ExecutorManager.EXECUTOR_MANAGER_TYPE, "disabled").addScan(
         "com.google.ytd/model").buildCompass();
-
-    PersistenceManagerFactory pmf = Util.getPersistenceManagerFactory();
 
     compassGps = new SingleCompassGps(compass);
     Jdo2GpsDevice gpsDevice = new Jdo2GpsDevice("appengine", pmf);
@@ -67,15 +70,15 @@ public class FullTextIndexer extends HttpServlet {
     compassGps.index();
   }
 
-  public static void reIndex() {
+  public void reIndex() {
     compassGps.index();
   }
 
-  public static Compass getCompass() {
+  public Compass getCompass() {
     return compass;
   }
 
-  public static void addIndex(Object object, Class indexClass) {
+  public void addIndex(Object object, Class indexClass) {
     compass.getSearchEngineIndexManager().releaseLocks();
     CompassIndexSession indexSession = compass.openIndexSession();
     indexSession.save(object);
@@ -86,7 +89,7 @@ public class FullTextIndexer extends HttpServlet {
 
     String query = req.getParameter("q");
 
-    CompassSearchSession search = FullTextIndexer.getCompass().openSearchSession();
+    CompassSearchSession search = getCompass().openSearchSession();
 
     CompassHits hits = search.find(query);
 

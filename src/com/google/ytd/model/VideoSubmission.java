@@ -15,10 +15,6 @@
 
 package com.google.ytd.model;
 
-import com.google.appengine.api.datastore.Text;
-import com.google.gson.annotations.Expose;
-import com.google.ytd.Util;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,16 +25,14 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.compass.annotations.Searchable;
-import org.compass.annotations.SearchableId;
-import org.compass.annotations.SearchableProperty;
+import com.google.appengine.api.datastore.Text;
+import com.google.gson.annotations.Expose;
 
 /**
  * Model class for video submissions.
  */
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
-@Searchable
 public class VideoSubmission implements Serializable {
   private static final String YOUTUBE_VIDEO_URL_FORMAT = "http://www.youtube.com/v/%s";
   private static final String YOUTUBE_WATCH_URL_FORMAT = "http://www.youtube.com/watch?v=%s";
@@ -47,7 +41,6 @@ public class VideoSubmission implements Serializable {
   @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   @Expose
-  @SearchableId
   private String id;
 
   @Expose
@@ -65,7 +58,6 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
-  @SearchableProperty
   private Text videoDescription = null;
 
   @Expose
@@ -74,8 +66,8 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
-  private String videoDate = null;  
-  
+  private String videoDate = null;
+
   @Expose
   @Persistent
   private String videoTags = null;
@@ -91,26 +83,26 @@ public class VideoSubmission implements Serializable {
   @Expose
   @Persistent
   private String notifyEmail = null;
-  
+
   @Expose
   @Persistent
-  private String adminNotes = null;  
-  
+  private String adminNotes = null;
+
   @Expose
   @Persistent
   private Date created;
 
   @Persistent
   private Date lastSynced;
-  
+
   @Expose
   @Persistent
   private long viewCount;
-  
+
   @Expose
   @Persistent
   private String youTubeState = null;
-  
+
   @Expose
   @Persistent
   private boolean isInPlaylist = false;
@@ -122,23 +114,23 @@ public class VideoSubmission implements Serializable {
   public enum ModerationStatus {
     UNREVIEWED, APPROVED, REJECTED, SPAM
   }
-  
+
   @Expose
   @Persistent
   private ModerationStatus status;
 
   public enum VideoSource {
     NEW_UPLOAD, EXISTING_VIDEO, MOBILE_SUBMIT
-  }    
+  }
 
   @Expose
   @Persistent
-  private VideoSource videoSource;  
-  
+  private VideoSource videoSource;
+
 
   /**
    * Create a new video submission entry object for the datastore.
-   * 
+   *
    * @param videoId
    *          The YouTube video ID of the upload
    * @param assignmentId
@@ -151,7 +143,7 @@ public class VideoSubmission implements Serializable {
     this.articleUrl = articleUrl;
     this.videoId = videoId;
     this.assignmentId = assignmentId;
-    this.youTubeName = uploader;    
+    this.youTubeName = uploader;
     this.videoTitle = title;
     this.videoDescription = new Text(description);
     this.videoTags = tagList;
@@ -172,11 +164,20 @@ public class VideoSubmission implements Serializable {
     this.viewCount = -1;
     this.youTubeState = "UNKNOWN";
     setStatus(ModerationStatus.UNREVIEWED);
-  }  
-  
+  }
+
+  public VideoSubmission() {
+    this.created = new Date();
+    this.updated = this.created;
+    this.lastSynced = this.created;
+    this.viewCount = -1;
+    this.youTubeState = "UNKNOWN";
+    setStatus(ModerationStatus.UNREVIEWED);
+  }
+
   /**
    * Get the moderation status of the video.
-   * 
+   *
    * @return The enumeration value representing this submission's status.
    */
   public ModerationStatus getStatus() {
@@ -185,7 +186,7 @@ public class VideoSubmission implements Serializable {
 
   /**
    * Set the moderation status of the video.
-   * 
+   *
    * @param status
    *          The new status.
    */
@@ -196,35 +197,18 @@ public class VideoSubmission implements Serializable {
   public VideoSource getVideoSource() {
     return this.videoSource;
   }
-  
+
   public void setVideoSource(VideoSource videoSource) {
     this.videoSource = videoSource;
-  }  
-  
+  }
+
   /**
    * Get the YouTube video ID of this submission
-   * 
+   *
    * @return A YouTube video ID
    */
   public String getVideoId() {
     return videoId;
-  }
-
-  /**
-   * Get the AuthSub token associated with this video upload. Unless the token
-   * has been revoked or expired (after a year), you should be able to update
-   * the related video using this as your credentials.
-   * 
-   * @return An AuthSub token for user youtubeName if there exists a corresponding UserAuthToken
-   *   record. If not, an empty string.
-   */
-  public String getAuthSubToken() {
-    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
-    if (userAuthToken == null) {
-      return "";
-    } else {
-      return userAuthToken.getAuthSubToken();
-    }
   }
 
   /**
@@ -243,7 +227,7 @@ public class VideoSubmission implements Serializable {
 
   /**
    * Sets the site-specific article ID the submission is tied to.
-   * 
+   *
    * @param assignmentId
    *          The new ID.
    */
@@ -252,7 +236,7 @@ public class VideoSubmission implements Serializable {
   }
 
   /**
-   * 
+   *
    * @return The ID of this entity
    */
   public String getId() {
@@ -260,7 +244,7 @@ public class VideoSubmission implements Serializable {
   }
 
   /**
-   * 
+   *
    * @return The YouTube user who submitted this video.
    */
   public String getYouTubeName() {
@@ -269,7 +253,7 @@ public class VideoSubmission implements Serializable {
 
   /**
    * Set the YouTube user who uploaded this video.
-   * 
+   *
    * @param youTubeName
    *          A YouTube username.
    */
@@ -277,7 +261,6 @@ public class VideoSubmission implements Serializable {
     this.youTubeName = youTubeName;
   }
 
-  @SearchableProperty
   public String getVideoTitle() {
     return videoTitle;
   }
@@ -314,21 +297,6 @@ public class VideoSubmission implements Serializable {
     this.videoId = videoId;
   }
 
-  /**
-   * Retrieves/creates a UserAuthToken instance for the given youtubeName, and persists the token.
-   * @param authSubToken The new AuthSub tokent to use for youtubeName.
-   */
-  public void setAuthSubToken(String authSubToken) {
-    UserAuthToken userAuthToken = Util.getUserAuthTokenForUser(youTubeName);
-    if (userAuthToken == null) {
-      userAuthToken = new UserAuthToken(youTubeName, authSubToken);
-    } else {
-      userAuthToken.setAuthSubToken(authSubToken);      
-    }
-
-    Util.persistJdo(userAuthToken);
-  }
-
   public void setCreated(Date created) {
     this.created = created;
   }
@@ -359,7 +327,7 @@ public class VideoSubmission implements Serializable {
   public String getVideoUrl() {
     return String.format(YOUTUBE_VIDEO_URL_FORMAT, videoId);
   }
-  
+
   public String getWatchUrl() {
     return String.format(YOUTUBE_WATCH_URL_FORMAT, videoId);
   }
@@ -379,19 +347,19 @@ public class VideoSubmission implements Serializable {
   public String getVideoDate() {
     return videoDate;
   }
-  
+
   public long getViewCount() {
     return viewCount;
   }
-  
+
   public void setViewCount(long viewCount) {
     this.viewCount = viewCount;
   }
-  
+
   public boolean isInPlaylist() {
     return isInPlaylist;
   }
-  
+
   public void setIsInPlaylist(boolean isInPlaylist) {
     this.isInPlaylist = isInPlaylist;
   }
