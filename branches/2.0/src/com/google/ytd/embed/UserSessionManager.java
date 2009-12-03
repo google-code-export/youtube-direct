@@ -31,6 +31,7 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.UserSession;
+import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
 
 /**
@@ -42,6 +43,8 @@ public class UserSessionManager {
 
   @Inject
   private Util util;
+  @Inject
+  private PmfUtil pmfUtil;
   @Inject
   private PersistenceManagerFactory pmf;
 
@@ -83,11 +86,11 @@ public class UserSessionManager {
   }
 
   public UserSession save(UserSession session) {
-    return (UserSession) util.persistJdo(session);
+    return (UserSession) pmfUtil.persistJdo(session);
   }
 
   public void delete(UserSession session) {
-    util.removeJdo(session);
+    pmfUtil.removeJdo(session);
   }
 
   public UserSession getUserSession(HttpServletRequest request) {

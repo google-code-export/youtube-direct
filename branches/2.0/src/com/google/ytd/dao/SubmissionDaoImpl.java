@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
+import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
 
 @Singleton
@@ -23,6 +24,10 @@ public class SubmissionDaoImpl implements SubmissionDao  {
 
   @Inject
   private Util util;
+  @Inject
+  private EmailUtil emailUtil;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Inject
   public SubmissionDaoImpl(PersistenceManagerFactory pmf) {
@@ -107,11 +112,11 @@ public class SubmissionDaoImpl implements SubmissionDao  {
   }
 
   private void onApproved(VideoSubmission submission) {
-    AdminConfig adminConfig = util.getAdminConfig();
+    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
     // Send notify email
     if (submission.getNotifyEmail() != null && adminConfig.isModerationEmail()) {
-      util.sendNotificationEmail(submission, ModerationStatus.APPROVED);
+      emailUtil.sendNotificationEmail(submission, ModerationStatus.APPROVED);
     }
 
 

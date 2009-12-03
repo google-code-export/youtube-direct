@@ -8,7 +8,6 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.util.Util;
 
@@ -16,9 +15,6 @@ public class UserAuthTokenDaoImpl implements UserAuthTokenDao {
   private static final Logger LOG = Logger.getLogger(UserAuthTokenDaoImpl .class.getName());
 
   private PersistenceManagerFactory pmf = null;
-
-  @Inject
-  private Injector injector;
 
   @Inject
   private Util util;

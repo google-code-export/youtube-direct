@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,11 +29,15 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.EmailUtil;
+import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet that handles mobile phone submissions, creating an appropriate datastore entry for them.
@@ -45,11 +48,17 @@ public class PersistMobileSubmission extends HttpServlet {
   @Inject
   private Util util;
   @Inject
-  private PersistenceManagerFactory pmf;
+  private PmfUtil pmfUtil;
   @Inject
-  private YouTubeApiManager apiManager;
+  private EmailUtil emailUtil;
+  @Inject
+  private YouTubeApiProxy youtubeApiProxy;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AssignmentDao assignmentDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   private String decode(String input) {
     //TODO: This should use a URL decode method from a library.
@@ -102,7 +111,7 @@ public class PersistMobileSubmission extends HttpServlet {
 
       if (assignmentId <= 0) {
         // get default mobile assignment ID
-        assignmentId = util.getDefaultMobileAssignmentId();
+        assignmentId = assignmentDao.getDefaultMobileAssignmentId();
       }
       if (util.isNullOrEmpty(videoId)) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing videoId");
@@ -111,8 +120,8 @@ public class PersistMobileSubmission extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing authSubToken");
       }
 
-      apiManager.setToken(authSubToken);
-      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
+      youtubeApiProxy.setToken(authSubToken);
+      VideoEntry videoEntry = youtubeApiProxy.getUploadsVideoEntry(videoId);
 
       if (videoEntry == null) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
@@ -137,15 +146,15 @@ public class PersistMobileSubmission extends HttpServlet {
 
         userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-        AdminConfig adminConfig = util.getAdminConfig();
+        AdminConfig adminConfig = adminConfigDao.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
           // etc.) isn't taking place.
             submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
         }
-        util.persistJdo(submission);
-        util.sendNewSubmissionEmail(submission);
+        pmfUtil.persistJdo(submission);
+        emailUtil.sendNewSubmissionEmail(submission);
 
         resp.setContentType("text/plain");
         resp.getWriter().println("success");

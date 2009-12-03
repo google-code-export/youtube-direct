@@ -16,17 +16,19 @@
 package com.google.ytd.dao;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Class that handles persisting new assignments to the datastore and creating their associated
@@ -41,7 +43,45 @@ public class AssignmentDaoImpl implements AssignmentDao {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
+
+  @Inject
+  public AssignmentDaoImpl(PersistenceManagerFactory pmf) {
+    this.pmf = pmf;
+  }
+
+  public Assignment getAssignmentById(long id) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+
+    try {
+      Assignment assignment = pm.getObjectById(Assignment.class, id);
+      return pm.detachCopy(assignment);
+    } catch (JDOObjectNotFoundException e) {
+      log.log(Level.WARNING, "", e);
+      return null;
+    } finally {
+      pm.close();
+    }
+  }
+
+  /**
+   * Retrieves an Assignment from the datastore given its id.
+   *
+   * @param id
+   *          An ID corresponding to an Assignment object in the datastore.
+   * @return The Assignment object whose id is specified, or null if the id is
+   *         invalid.
+   */
+  public Assignment getAssignmentById(String id) {
+    try {
+      return getAssignmentById(Long.parseLong(id));
+    } catch (NumberFormatException e) {
+      log.log(Level.WARNING, "", e);
+      return null;
+    }
+  }
 
   /* (non-Javadoc)
    * @see com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment)
@@ -49,7 +89,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
   public void newAssignment(Assignment assignment) {
     PersistenceManager pm = pmf.getPersistenceManager();
     assignment = pm.makePersistent(assignment);
-    String token = util.getAdminConfig().getYouTubeAuthSubToken();
+    String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
     if (util.isNullOrEmpty(token)) {
       log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
           " YouTube AuthSub token was found in the config.", assignment.getDescription()));
@@ -67,9 +107,9 @@ public class AssignmentDaoImpl implements AssignmentDao {
    */
   @SuppressWarnings("unchecked")
   public long getDefaultMobileAssignmentId() {
-    PersistenceManager pm = pmf.getPersistenceManager();
     long assignmentId = -1;
     String defaultMobileAssignmentDescription = "default mobile assignment";
+    PersistenceManager pm = pmf.getPersistenceManager();
     try {
       Query query = pm.newQuery(Assignment.class);
       query.declareParameters("String defaultMobileAssignmentDescription");
@@ -84,7 +124,19 @@ public class AssignmentDaoImpl implements AssignmentDao {
         assignment.setCategory("News");
         assignment.setDescription(defaultMobileAssignmentDescription);
         assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);
-        newAssignment(assignment);
+        assignment = pm.makePersistent(assignment);
+
+        String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
+        if (util.isNullOrEmpty(token)) {
+          log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
+              " YouTube AuthSub token was found in the config.", assignment.getDescription()));
+        } else {
+          apiManager.setToken(token);
+          String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+                  assignment.getId()), assignment.getDescription());
+          assignment.setPlaylistId(playlistId);
+          assignment = pm.makePersistent(assignment);
+        }
         assignmentId = assignment.getId();
       }
     } finally {

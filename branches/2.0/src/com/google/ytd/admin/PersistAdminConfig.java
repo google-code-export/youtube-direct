@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
 
@@ -40,6 +41,8 @@ public class PersistAdminConfig extends HttpServlet {
   private Util util;
   @Inject
   private PersistenceManagerFactory pmf;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -49,7 +52,7 @@ public class PersistAdminConfig extends HttpServlet {
 
     AdminConfig jsonObj = util.GSON.fromJson(json, AdminConfig.class);
 
-    AdminConfig adminConfig = util.getAdminConfig();
+    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
     adminConfig.setClientId(jsonObj.getClientId());
     adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());

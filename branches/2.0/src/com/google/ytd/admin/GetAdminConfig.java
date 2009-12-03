@@ -18,13 +18,13 @@ package com.google.ytd.admin;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
 
@@ -37,11 +37,11 @@ public class GetAdminConfig extends HttpServlet {
   @Inject
   private Util util;
   @Inject
-  private PersistenceManagerFactory pmf;
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    AdminConfig adminConfig = util.getAdminConfig();
+    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
     if (adminConfig != null) {
       resp.setContentType("text/javascript");

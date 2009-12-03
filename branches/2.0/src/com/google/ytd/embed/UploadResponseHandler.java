@@ -28,13 +28,16 @@ import org.json.JSONObject;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.SubmissionDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.EmailUtil;
+import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet that is invoked as part of the browser-based YouTube video upload flow. If it detects
@@ -48,15 +51,21 @@ public class UploadResponseHandler extends HttpServlet {
   @Inject
   private Util util;
   @Inject
+  private EmailUtil emailUtil;
+  @Inject
+  private PmfUtil pmfUtil;
+  @Inject
   private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
   @Inject
   private SubmissionDao submissionManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -98,7 +107,7 @@ public class UploadResponseHandler extends HttpServlet {
 
       userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-      AdminConfig adminConfig = util.getAdminConfig();
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
       apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
 
@@ -112,11 +121,11 @@ public class UploadResponseHandler extends HttpServlet {
         apiManager.updateModeration(videoId, false);
       }
 
-      util.persistJdo(submission);
+      pmfUtil.persistJdo(submission);
 
       log.fine("...VideoSubmission persisted.");
 
-      util.sendNewSubmissionEmail(submission);
+      emailUtil.sendNewSubmissionEmail(submission);
 
       try {
         JSONObject responseJsonObj = new JSONObject();

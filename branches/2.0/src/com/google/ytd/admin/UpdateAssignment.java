@@ -28,11 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonParseException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet responsible for updating an Assignment in the datastore.
@@ -45,7 +46,9 @@ public class UpdateAssignment extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @SuppressWarnings("cast")
   @Override
@@ -67,7 +70,7 @@ public class UpdateAssignment extends HttpServlet {
       if (incomingEntry.getStatus() == AssignmentStatus.ACTIVE &&
               util.isNullOrEmpty(assignment.getPlaylistId())) {
 
-        AdminConfig adminConfig = util.getAdminConfig();
+        AdminConfig adminConfig = adminConfigDao.getAdminConfig();
         String token = adminConfig.getYouTubeAuthSubToken();
         if (util.isNullOrEmpty(token)) {
           log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
