@@ -43,7 +43,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/jsonrpc").with(JsonRpcProcessor.class);
 
         // Frontend jsp embed endpoint
-        serve("/embed").with(JspForwarder.class);
+        serve("/embed").with(EmbedJspForwarder.class);
         serve("/logout").with(LogoutHandler.class);
       }
 

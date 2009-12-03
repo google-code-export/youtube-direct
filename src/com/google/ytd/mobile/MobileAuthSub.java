@@ -30,9 +30,9 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.admin.PersistAuthSubToken;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * AuthSub redirection flow for mobile phones.
@@ -50,7 +50,7 @@ public class MobileAuthSub extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

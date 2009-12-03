@@ -28,11 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonParseException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet responsible for creating new a new Assignment in the datastore and returning a JSON
@@ -46,7 +47,9 @@ public class NewAssignment extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -58,7 +61,7 @@ public class NewAssignment extends HttpServlet {
         throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
       }
 
-      AdminConfig adminConfig = util.getAdminConfig();
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
       if (util.isNullOrEmpty(adminConfig.getClientId()) ||
               util.isNullOrEmpty(adminConfig.getDeveloperKey()) ||
               util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {

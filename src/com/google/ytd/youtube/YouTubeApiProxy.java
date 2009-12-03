@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd;
+package com.google.ytd.youtube;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,23 +51,18 @@ import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
-import com.google.ytd.embed.UserSessionManager;
-import com.google.ytd.model.AdminConfig;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.util.Util;
 
 /**
  * Class to handle interfacing with the Google Data Java Client Library's
  * YouTube support.
  */
-public class YouTubeApiManager {
+public class YouTubeApiProxy {
   private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
-  @Inject
-  private UserSessionManager userSessionManager;
 
   private YouTubeService service = null;
-  private static final Logger log = Logger.getLogger(YouTubeApiManager.class.getName());
+  private static final Logger log = Logger.getLogger(YouTubeApiProxy.class.getName());
 
   // CONSTANTS
   private static final String CATEGORIES_CACHE_KEY = "categories";
@@ -95,12 +89,11 @@ public class YouTubeApiManager {
    * with parameters specified in appengine-web.xml
    */
   @Inject
-  public YouTubeApiManager(Util util) {
-    this.util = util;
-    AdminConfig admingConfig = util.getAdminConfig();
+  public YouTubeApiProxy(AdminConfigDao adminConfigDao) {
+    this.util = Util.get();
 
-    String clientId = admingConfig.getClientId();
-    String developerKey = admingConfig.getDeveloperKey();
+    String clientId = adminConfigDao.getAdminConfig().getClientId();
+    String developerKey = adminConfigDao.getAdminConfig().getDeveloperKey();
 
     if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId settings property is null or empty.");
@@ -114,7 +107,7 @@ public class YouTubeApiManager {
     }
   }
 
-  public YouTubeApiManager(String clientId) {
+  public YouTubeApiProxy(String clientId) {
     if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId parameter is null or empty.");
     }

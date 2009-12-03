@@ -31,9 +31,10 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * AuthSub redirection flow to persist the token belonging to the admin YouTube account.
@@ -46,7 +47,9 @@ public class PersistAuthSubToken extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -70,7 +73,7 @@ public class PersistAuthSubToken extends HttpServlet {
                 + "the authenticated user.");
       }
 
-      AdminConfig adminConfig = util.getAdminConfig();
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
       adminConfig.setYouTubeAuthSubToken(sessionToken);
       adminConfig.setYouTubeUsername(youTubeName);
 

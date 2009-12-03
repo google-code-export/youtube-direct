@@ -34,7 +34,8 @@ import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
@@ -42,7 +43,9 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.AdminConfig.BrandingModeType;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.model.VideoSubmission.VideoSource;
+import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet responsible for updating submissions, both in the AppEngine datastore and on YouTube.
@@ -53,13 +56,19 @@ public class UpdateSubmission extends HttpServlet {
   @Inject
   private Util util;
   @Inject
+  private EmailUtil emailUtil;
+  @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiManager adminApiManager;
+  private YouTubeApiProxy adminApiManager;
   @Inject
   private Injector injector;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
+  @Inject
+  private AssignmentDao assignmentDao;
 
   @SuppressWarnings("cast")
   @Override
@@ -82,14 +91,14 @@ public class UpdateSubmission extends HttpServlet {
 
       boolean hasEmail = !util.isNullOrEmpty(entry.getNotifyEmail());
 
-      AdminConfig adminConfig = util.getAdminConfig();
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
       boolean isRejectedOrApproved = (currentStatus !=  newStatus) &&
           (newStatus != ModerationStatus.UNREVIEWED || newStatus != ModerationStatus.SPAM);
 
       if (adminConfig.isModerationEmail() && hasEmail && isRejectedOrApproved
               && currentStatus != newStatus) {
-        util.sendNotificationEmail(entry, newStatus);
+        emailUtil.sendNotificationEmail(entry, newStatus);
       }
 
       //Mutates all the entry attributes with the incoming entry attributes
@@ -170,7 +179,7 @@ public class UpdateSubmission extends HttpServlet {
     log.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
             videoSubmission.getId(), videoId));
 
-    YouTubeApiManager apiManager = injector.getInstance(YouTubeApiManager.class);
+    YouTubeApiProxy apiManager = injector.getInstance(YouTubeApiProxy.class);
 
     apiManager.setToken(
         userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName()).getAuthSubToken());
@@ -227,9 +236,9 @@ public class UpdateSubmission extends HttpServlet {
    * @param videoSubmission The video to add.
    * @return true if the video was added; false otherwise.
    */
-  private boolean addToPlaylist(YouTubeApiManager apiManager, VideoSubmission videoSubmission) {
+  private boolean addToPlaylist(YouTubeApiProxy apiManager, VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
-    Assignment assignment = util.getAssignmentById(assignmentId);
+    Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
 
     if (assignment == null) {
       log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
@@ -257,10 +266,10 @@ public class UpdateSubmission extends HttpServlet {
    * @param videoSubmission The video to remove.
    * @return true if the video was removed; false otherwise.
    */
-  private boolean removeFromPlaylist(YouTubeApiManager apiManager,
+  private boolean removeFromPlaylist(YouTubeApiProxy apiManager,
           VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
-    Assignment assignment = util.getAssignmentById(assignmentId);
+    Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
 
     if (assignment == null) {
       log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.", assignmentId,

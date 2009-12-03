@@ -10,27 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
-public class JspForwarder extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(JspForwarder.class.getName());
-
+public class EmbedJspForwarder extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(EmbedJspForwarder.class.getName());
   @Inject
-  Injector injector;
-
-  @Inject
-  private PersistenceManagerFactory pmf;
+  private PersistenceManagerFactory pmf = null;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
       getServletContext().setAttribute("pmf", pmf);
-      getServletContext().setAttribute("req", req);
-      getServletContext().setAttribute("resp", resp);
-      getServletContext().getRequestDispatcher("/WEB-INF/embed.jsp").forward(req, resp);
 
+      getServletContext().getRequestDispatcher("/embed.jsp").forward(req, resp);
     } catch (ServletException e) {
       e.printStackTrace();
     }

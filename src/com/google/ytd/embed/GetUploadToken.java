@@ -40,11 +40,12 @@ import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Class responsible for submitting metadata about a new video to the YouTube API server. It gets
@@ -62,7 +63,9 @@ public class GetUploadToken extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
+  @Inject
+  private AssignmentDao assignmentDao;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -94,7 +97,7 @@ public class GetUploadToken extends HttpServlet {
       String authSubToken = userSession.getMetaData("authSubToken");
       String assignmentId = userSession.getMetaData("assignmentId");
 
-      Assignment assignment = util.getAssignmentById(assignmentId);
+      Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
       if (assignment == null) {
         throw new IllegalArgumentException(String.format(
             "Could not find an assignment with id '%s'.", assignmentId));

@@ -32,12 +32,15 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YtStatistics;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
+import com.google.ytd.util.EmailUtil;
+import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Servlet that handles the submission of an existing YouTube video. It creates a new
@@ -51,13 +54,19 @@ public class SubmitExistingVideo extends HttpServlet {
   @Inject
   private Util util;
   @Inject
+  private EmailUtil emailUtil;
+  @Inject
+  private PmfUtil pmfUtil;
+  @Inject
   private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -125,7 +134,7 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
         submission.setNotifyEmail(email);
 
-        AdminConfig adminConfig = util.getAdminConfig();
+        AdminConfig adminConfig = adminConfigDao.getAdminConfig();
         if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
           // NO_MOD is set, auto approve all submission
           //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
@@ -133,9 +142,9 @@ public class SubmitExistingVideo extends HttpServlet {
           submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
         }
 
-        util.persistJdo(submission);
+        pmfUtil.persistJdo(submission);
 
-        util.sendNewSubmissionEmail(submission);
+        emailUtil.sendNewSubmissionEmail(submission);
 
         JSONObject responseJsonObj = new JSONObject();
         responseJsonObj.put("success", "true");

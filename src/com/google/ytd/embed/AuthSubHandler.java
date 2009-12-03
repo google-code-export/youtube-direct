@@ -29,10 +29,10 @@ import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.YouTubeApiManager;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.YouTubeApiProxy;
 
 /**
  * Super simple class to handle doing the AuthSub token exchange to upgrade a
@@ -49,7 +49,7 @@ public class AuthSubHandler extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiManager apiManager;
+  private YouTubeApiProxy apiManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
 
