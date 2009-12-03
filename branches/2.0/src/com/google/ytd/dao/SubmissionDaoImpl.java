@@ -65,7 +65,7 @@ public class SubmissionDaoImpl implements SubmissionDao  {
   }
 
   @Override
-  public VideoSubmission getVideoSubmission(String id) {
+  public VideoSubmission getSubmission(String id) {
     PersistenceManager pm = pmf.getPersistenceManager();
     VideoSubmission submission = null;
 
@@ -80,7 +80,7 @@ public class SubmissionDaoImpl implements SubmissionDao  {
 
   @Override
   public void setVideoStatus(String id, String status) {
-    VideoSubmission submission = getVideoSubmission(id);
+    VideoSubmission submission = getSubmission(id);
     ModerationStatus newStatus = ModerationStatus.valueOf(status);
     ModerationStatus currentStatus = submission.getStatus();
 
@@ -125,5 +125,14 @@ public class SubmissionDaoImpl implements SubmissionDao  {
 
   private void onNotApproved(VideoSubmission submission) {
 
+  }
+  @Override
+  public void save(VideoSubmission submission) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      pm.makePersistent(submission);
+    } finally {
+      pm.close();
+    }
   }
 }

@@ -13,19 +13,21 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.ytd.command.Command;
+import com.google.ytd.command.CommandType;
 import com.google.ytd.util.Util;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
   @Inject
-  private CommandDirectory commandDirectory;
-  @Inject
   private JsonExceptionHandler jsonExceptionHandler;
   @Inject
   private Util util;
+  @Inject
+  private Injector injector;
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -41,11 +43,14 @@ public class JsonRpcProcessor extends HttpServlet {
       if (jsonRpcRequest != null) {
         String method = jsonRpcRequest.getMethod();
         if (method != null) {
-          Command command = commandDirectory.getCommand(method, jsonRpcRequest.getParams());
-          resp.setContentType("application/json");
+          Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
+          Command command = injector.getInstance(commandClass);
+          command.setParams(jsonRpcRequest.getParams());
+
           try {
             JSONObject json = command.execute();
             json.put("error", "null");
+            resp.setContentType("application/json");
             resp.getWriter().write(json.toString());
           } catch (JSONException e) {
             jsonExceptionHandler.send(resp, e);

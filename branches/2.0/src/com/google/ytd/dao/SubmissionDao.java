@@ -9,5 +9,6 @@ public interface SubmissionDao {
   public List<VideoSubmission> getSubmissions(String sortBy, String sortOrder,
       String filterType);
   public void setVideoStatus(String id, String status);
-  public VideoSubmission getVideoSubmission(String id);
+  public VideoSubmission getSubmission(String id);
+  public void save(VideoSubmission submission);
 }
