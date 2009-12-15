@@ -66,6 +66,7 @@ public class YouTubeApiProxy {
 
   // CONSTANTS
   private static final String CATEGORIES_CACHE_KEY = "categories";
+  private static final String CLIENT_ID_PREFIX = "yt-direct";
   private static final String ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/videos/%s";
   private static final String UPLOADS_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
   		"users/%s/uploads/%s";
@@ -92,12 +93,9 @@ public class YouTubeApiProxy {
   public YouTubeApiProxy(AdminConfigDao adminConfigDao) {
     this.util = Util.get();
 
-    String clientId = adminConfigDao.getAdminConfig().getClientId();
+    String clientId = String.format("%s-%s", CLIENT_ID_PREFIX,
+            adminConfigDao.getAdminConfig().getClientId());
     String developerKey = adminConfigDao.getAdminConfig().getDeveloperKey();
-
-    if (util.isNullOrEmpty(clientId)) {
-      log.warning("clientId settings property is null or empty.");
-    }
 
     if (util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
