@@ -40,6 +40,8 @@ admin.showError = function(errorObj, elementToHide) {
   var errorString = '';
   
   if (errorObj.responseText) {
+    errorString = errorObj.responseText;
+    
     // In the local App Engine web server, errors are returned wrapped in <pre>.
     var re = new RegExp('<pre>(.*?)</pre>', 'i');
     var matches = re.exec(errorObj.responseText);
@@ -55,6 +57,13 @@ admin.showError = function(errorObj, elementToHide) {
     }
   } else {
     errorString = errorObj.toString();
+  }
+  
+  try {
+    var jsonObj = JSON.parse(errorString);
+    errorString = jsonObj.error;
+  } catch (e) {
+    // Ignore parse exceptions, as we'll just use the original errorString.
   }
   
   return admin.showSomething(errorString, 'error', elementToHide, 10);
