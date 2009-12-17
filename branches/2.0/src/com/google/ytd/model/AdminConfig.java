@@ -32,6 +32,10 @@ import com.google.gson.annotations.Expose;
  */
 @PersistenceCapable(detachable = "true")
 public class AdminConfig implements Serializable {
+  //CONSTANTS
+  private static final String CACHE_KEY = "adminconfig";
+  
+  
   @PrimaryKey
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   private Long id;
@@ -289,5 +293,8 @@ public class AdminConfig implements Serializable {
   public void setPostSubmitMessage(String postSubmitMessage) {
     this.postSubmitMessage = postSubmitMessage;
   }
-
+  
+  public static Object getCacheKey() {
+    return CACHE_KEY;
+  }
 }

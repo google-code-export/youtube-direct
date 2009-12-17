@@ -16,9 +16,14 @@
 package com.google.ytd.admin;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheManager;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
@@ -72,6 +77,13 @@ public class PersistAdminConfig extends HttpServlet {
 
     pm.makePersistent(adminConfig);
     pm.close();
+    
+    try {
+      Cache cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.EMPTY_MAP);
+      cache.remove(AdminConfig.getCacheKey());
+    } catch (CacheException e) {
+      log.log(Level.WARNING, "", e);
+    }
 
     resp.setContentType("text/javascript");
     resp.getWriter().println(util.GSON.toJson(adminConfig));
