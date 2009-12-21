@@ -8,6 +8,12 @@ The `YouTube` Direct platform is designed to run on Google App Engine. App Engin
 
 If you are upgrading from a previous release, please familiarize yourself with the latest [http://code.google.com/p/youtube-direct/wiki/YTDReleaseNotes release notes].
 
+= Getting Started Video =
+
+In addition to the material below, you might find the following video tutorial useful when getting started:
+
+<wiki:video url="http://www.youtube.com/watch?v=p1pxGe3zLXg"/>
+
 = Details =
 
 ==`YouTube` Direct Getting Started Guide==
