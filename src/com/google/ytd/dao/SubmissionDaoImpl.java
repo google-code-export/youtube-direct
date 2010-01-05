@@ -33,7 +33,7 @@ public class SubmissionDaoImpl implements SubmissionDao  {
   public SubmissionDaoImpl(PersistenceManagerFactory pmf) {
     this.pmf = pmf;
   }
-  @Override
+
   public VideoSubmission newSubmission(long assignmentId) {
     return new VideoSubmission(assignmentId);
   }
@@ -128,12 +128,14 @@ public class SubmissionDaoImpl implements SubmissionDao  {
   }
 
   @Override
-  public void save(VideoSubmission submission) {
+  public VideoSubmission save(VideoSubmission submission) {
     PersistenceManager pm = pmf.getPersistenceManager();
     try {
       pm.makePersistent(submission);
+      submission = pm.detachCopy(submission);
     } finally {
       pm.close();
     }
+    return submission;
   }
 }

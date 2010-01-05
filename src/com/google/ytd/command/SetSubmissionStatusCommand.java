@@ -128,7 +128,7 @@ public class SetSubmissionStatusCommand extends Command {
     if (submission.isInPlaylist()) {
       if(removeFromPlaylist(submission)) {
         submission.setIsInPlaylist(false);
-        submissionDao.save(submission);
+        submission = submissionDao.save(submission);
       }
     }
 
@@ -166,7 +166,7 @@ public class SetSubmissionStatusCommand extends Command {
       if(addToPlaylist(submission)) {
         LOG.info("added to playlist");
         submission.setIsInPlaylist(true);
-        submissionDao.save(submission);
+        submission = submissionDao.save(submission);
       }
     }
 

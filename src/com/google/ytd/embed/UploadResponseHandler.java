@@ -61,7 +61,7 @@ public class UploadResponseHandler extends HttpServlet {
   @Inject
   private YouTubeApiHelper apiManager;
   @Inject
-  private SubmissionDao submissionManager;
+  private SubmissionDao submissionDao;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
   @Inject
@@ -92,7 +92,7 @@ public class UploadResponseHandler extends HttpServlet {
 
       //VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
 
-      VideoSubmission submission = submissionManager.newSubmission(Long.parseLong(assignmentId));
+      VideoSubmission submission = submissionDao.newSubmission(Long.parseLong(assignmentId));
 
       submission.setArticleUrl(articleUrl);
       submission.setVideoId(videoId);
@@ -121,7 +121,7 @@ public class UploadResponseHandler extends HttpServlet {
         apiManager.updateModeration(videoId, false);
       }
 
-      pmfUtil.persistJdo(submission);
+      submission = submissionDao.save(submission);
 
       log.fine("...VideoSubmission persisted.");
 
