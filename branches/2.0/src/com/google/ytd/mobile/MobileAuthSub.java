@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.admin.PersistAuthSubToken;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * AuthSub redirection flow for mobile phones.
@@ -50,7 +50,7 @@ public class MobileAuthSub extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
