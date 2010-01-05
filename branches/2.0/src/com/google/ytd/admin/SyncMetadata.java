@@ -37,7 +37,7 @@ import com.google.inject.Singleton;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that syncs metadata from YouTube with the local datastore.
@@ -57,7 +57,7 @@ public class SyncMetadata extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
 

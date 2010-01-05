@@ -33,7 +33,7 @@ import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet responsible for creating new a new Assignment in the datastore and returning a JSON
@@ -47,7 +47,7 @@ public class NewAssignment extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private AdminConfigDao adminConfigDao;
 

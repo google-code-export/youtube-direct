@@ -34,7 +34,7 @@ import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * AuthSub redirection flow to persist the token belonging to the admin YouTube account.
@@ -47,7 +47,7 @@ public class PersistAuthSubToken extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private AdminConfigDao adminConfigDao;
 
