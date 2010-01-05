@@ -4,7 +4,8 @@ public enum CommandType {
   NEW_SUBMISSION(NewSubmissionCommand.class),
   GET_SUBMISSIONS(GetSubmissionsCommand.class),
   SET_SUBMISSION_STATUS(SetSubmissionStatusCommand.class),
-  NEW_ASSIGNMENT(NewAssignmentCommand.class);
+  NEW_ASSIGNMENT(NewAssignmentCommand.class),
+  GET_ASSIGNMENTS(GetAssignmentsCommand.class);
 
   private Class<? extends Command> clazz = null;
 

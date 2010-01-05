@@ -18,7 +18,6 @@ package com.google.ytd.embed;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +34,6 @@ import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.EmailUtil;
-import com.google.ytd.util.PmfUtil;
-import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
@@ -49,17 +46,11 @@ public class UploadResponseHandler extends HttpServlet {
   private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
 
   @Inject
-  private Util util;
-  @Inject
   private EmailUtil emailUtil;
-  @Inject
-  private PmfUtil pmfUtil;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiHelper apiManager;
+  private YouTubeApiHelper youTubeApiHelper;
   @Inject
   private SubmissionDao submissionDao;
   @Inject
@@ -109,16 +100,16 @@ public class UploadResponseHandler extends HttpServlet {
 
       AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-      apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
+      youTubeApiHelper.setToken(adminConfig.getYouTubeAuthSubToken());
 
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
         // NO_MOD is set, auto approve all submission
         //TODO: This isn't enough, as the normal approval flow (adding the branding, tags, emails,
         // etc.) isn't taking place.
         submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
-        apiManager.updateModeration(videoId, true);
+        youTubeApiHelper.updateModeration(videoId, true);
       } else {
-        apiManager.updateModeration(videoId, false);
+        youTubeApiHelper.updateModeration(videoId, false);
       }
 
       submission = submissionDao.save(submission);

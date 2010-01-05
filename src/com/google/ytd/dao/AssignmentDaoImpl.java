@@ -83,6 +83,31 @@ public class AssignmentDaoImpl implements AssignmentDao {
     }
   }
 
+  @Override
+  public List<Assignment> getAssignments(String sortBy, String sortOrder, String filterType) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    List<Assignment> assignments = null;
+
+    try {
+      Query query = pm.newQuery(Assignment.class);
+      query.declareImports("import java.util.Date");
+      query.declareParameters("String filterType");
+      query.setOrdering(sortBy + " " + sortOrder);
+
+      if (!filterType.toUpperCase().equals("ALL")) {
+        String filters = "status == filterType";
+        query.setFilter(filters);
+      }
+
+      assignments = (List<Assignment>) query.execute(filterType);
+      assignments = (List<Assignment>) pm.detachCopyAll(assignments);
+    } finally {
+      pm.close();
+    }
+
+    return assignments;
+  }
+
   /* (non-Javadoc)
    * @see com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment)
    */
