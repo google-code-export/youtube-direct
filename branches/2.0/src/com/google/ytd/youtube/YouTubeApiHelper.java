@@ -58,29 +58,28 @@ import com.google.ytd.util.Util;
  * Class to handle interfacing with the Google Data Java Client Library's
  * YouTube support.
  */
-public class YouTubeApiProxy {
+public class YouTubeApiHelper {
   private Util util;
 
   private YouTubeService service = null;
-  private static final Logger log = Logger.getLogger(YouTubeApiProxy.class.getName());
+  private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
 
   // CONSTANTS
   private static final String CATEGORIES_CACHE_KEY = "categories";
-  private static final String CLIENT_ID_PREFIX = "yt-direct";
   private static final String ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/videos/%s";
   private static final String UPLOADS_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
-  		"users/%s/uploads/%s";
+      "users/%s/uploads/%s";
   private static final String PLAYLIST_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
-  		"playlists/%s";
+      "playlists/%s";
   private static final String PLAYLIST_FEED_URL = "http://gdata.youtube.com/feeds/api/users/" +
-  		"default/playlists";
+      "default/playlists";
   private static final String USER_ENTRY_URL = "http://gdata.youtube.com/feeds/api/users/default";
   private static final String UPLOAD_TOKEN_URL = "http://gdata.youtube.com/action/GetUploadToken";
   private static final String MODERATION_FEED_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/" +
-  		"api/products/default/videos/%s";
+      "api/products/default/videos/%s";
   private static final String UPDATED_ENTRY_ATOM_FORMAT = "<entry xmlns='http://www.w3.org/2005/" +
-  		"Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007'><yt:moderationStatus>%s" +
-  		"</yt:moderationStatus></entry>";
+      "Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007'><yt:moderationStatus>%s" +
+      "</yt:moderationStatus></entry>";
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
 
@@ -90,12 +89,15 @@ public class YouTubeApiProxy {
    * with parameters specified in appengine-web.xml
    */
   @Inject
-  public YouTubeApiProxy(AdminConfigDao adminConfigDao) {
+  public YouTubeApiHelper(AdminConfigDao adminConfigDao) {
     this.util = Util.get();
 
-    String clientId = String.format("%s-%s", CLIENT_ID_PREFIX,
-            adminConfigDao.getAdminConfig().getClientId());
+    String clientId = adminConfigDao.getAdminConfig().getClientId();
     String developerKey = adminConfigDao.getAdminConfig().getDeveloperKey();
+
+    if (util.isNullOrEmpty(clientId)) {
+      log.warning("clientId settings property is null or empty.");
+    }
 
     if (util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
@@ -105,7 +107,7 @@ public class YouTubeApiProxy {
     }
   }
 
-  public YouTubeApiProxy(String clientId) {
+  public YouTubeApiHelper(String clientId) {
     if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId parameter is null or empty.");
     }
@@ -304,10 +306,8 @@ public class YouTubeApiProxy {
 
       try {
         service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
-
         log.info(String.format("Inserted video id '%s' into playlist id '%s'.", videoId,
                 playlistId));
-
         return true;
       } catch (MalformedURLException e) {
         log.log(Level.WARNING, "", e);
