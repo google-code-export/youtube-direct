@@ -40,7 +40,7 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that handles the submission of an existing YouTube video. It creates a new
@@ -62,7 +62,7 @@ public class SubmitExistingVideo extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
   @Inject

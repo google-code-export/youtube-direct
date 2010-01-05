@@ -45,7 +45,7 @@ import com.google.ytd.model.Assignment;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Class responsible for submitting metadata about a new video to the YouTube API server. It gets
@@ -63,7 +63,7 @@ public class GetUploadToken extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private AssignmentDao assignmentDao;
 
