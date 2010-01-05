@@ -10,5 +10,5 @@ public interface SubmissionDao {
       String filterType);
   public void setVideoStatus(String id, String status);
   public VideoSubmission getSubmission(String id);
-  public void save(VideoSubmission submission);
+  public VideoSubmission save(VideoSubmission submission);
 }

@@ -86,21 +86,39 @@ public class AssignmentDaoImpl implements AssignmentDao {
   /* (non-Javadoc)
    * @see com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment)
    */
-  public void newAssignment(Assignment assignment) {
+  public Assignment newAssignment(Assignment assignment) {
     PersistenceManager pm = pmf.getPersistenceManager();
-    assignment = pm.makePersistent(assignment);
-    String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
-    if (util.isNullOrEmpty(token)) {
-      log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
-          " YouTube AuthSub token was found in the config.", assignment.getDescription()));
-    } else {
-      apiManager.setToken(token);
-      String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
-              assignment.getId()), assignment.getDescription());
-      assignment.setPlaylistId(playlistId);
+    try {
       assignment = pm.makePersistent(assignment);
+      String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
+      if (util.isNullOrEmpty(token)) {
+        log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
+            " YouTube AuthSub token was found in the config.", assignment.getDescription()));
+      } else {
+        apiManager.setToken(token);
+        String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+                assignment.getId()), assignment.getDescription());
+        assignment.setPlaylistId(playlistId);
+        assignment = pm.makePersistent(assignment);
+        assignment = pm.detachCopy(assignment);
+      }
+    } finally {
+      pm.close();
     }
+    return assignment;
   }
+
+  public Assignment save(Assignment assignment) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      assignment = pm.makePersistent(assignment);
+      assignment = pm.detachCopy(assignment);
+    } finally {
+      pm.close();
+    }
+    return assignment;
+  }
+
 
   /* (non-Javadoc)
    * @see com.google.ytd.dao.AssignmentDao#getDefaultMobileAssignmentId()
