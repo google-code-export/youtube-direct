@@ -37,7 +37,7 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that is invoked as part of the browser-based YouTube video upload flow. If it detects
@@ -59,7 +59,7 @@ public class UploadResponseHandler extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private SubmissionDao submissionManager;
   @Inject
