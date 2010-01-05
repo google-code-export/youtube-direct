@@ -1,6 +1,7 @@
 package com.google.ytd.command;
 
 public enum CommandType {
+  NEW_SUBMISSION(NewSubmissionCommand.class),
   GET_SUBMISSIONS(GetSubmissionsCommand.class),
   SET_SUBMISSION_STATUS(SetSubmissionStatusCommand.class);
 
