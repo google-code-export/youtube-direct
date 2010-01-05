@@ -23,6 +23,7 @@ import com.google.ytd.admin.VideoDownloadRedirect;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
+import com.google.ytd.embed.SubmitExistingVideo;
 import com.google.ytd.embed.UploadResponseHandler;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
@@ -76,6 +77,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/GetUploadToken").with(GetUploadToken.class);
         serve("/AuthsubHandler").with(AuthSubHandler.class);
         serve("/LogoutHandler").with(LogoutHandler.class);
+        serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
       }
 
     };
