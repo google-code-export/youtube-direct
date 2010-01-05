@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Class that handles persisting new assignments to the datastore and creating their associated
@@ -43,7 +43,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
   @Inject
   private AdminConfigDao adminConfigDao;
 
@@ -59,7 +59,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
       Assignment assignment = pm.getObjectById(Assignment.class, id);
       return pm.detachCopy(assignment);
     } catch (JDOObjectNotFoundException e) {
-      log.log(Level.WARNING, "", e);
+      log.log(Level.WARNING, e.getMessage(), e);
       return null;
     } finally {
       pm.close();
