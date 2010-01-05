@@ -37,7 +37,7 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that handles mobile phone submissions, creating an appropriate datastore entry for them.
@@ -52,7 +52,7 @@ public class PersistMobileSubmission extends HttpServlet {
   @Inject
   private EmailUtil emailUtil;
   @Inject
-  private YouTubeApiProxy youtubeApiProxy;
+  private YouTubeApiHelper youtubeApiProxy;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
   @Inject
