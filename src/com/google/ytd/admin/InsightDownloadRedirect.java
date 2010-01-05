@@ -29,7 +29,7 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that retrieves the Insight download link for a video and redirects the browser there.
@@ -47,7 +47,7 @@ public class InsightDownloadRedirect extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy apiManager;
+  private YouTubeApiHelper apiManager;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
