@@ -126,6 +126,7 @@ public class SubmissionDaoImpl implements SubmissionDao  {
   private void onNotApproved(VideoSubmission submission) {
 
   }
+
   @Override
   public void save(VideoSubmission submission) {
     PersistenceManager pm = pmf.getPersistenceManager();
