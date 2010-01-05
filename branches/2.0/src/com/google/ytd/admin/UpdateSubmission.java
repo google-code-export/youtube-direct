@@ -45,7 +45,7 @@ import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.model.VideoSubmission.VideoSource;
 import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiProxy;
+import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet responsible for updating submissions, both in the AppEngine datastore and on YouTube.
@@ -60,7 +60,7 @@ public class UpdateSubmission extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiProxy adminApiManager;
+  private YouTubeApiHelper adminApiManager;
   @Inject
   private Injector injector;
   @Inject
@@ -179,7 +179,7 @@ public class UpdateSubmission extends HttpServlet {
     log.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
             videoSubmission.getId(), videoId));
 
-    YouTubeApiProxy apiManager = injector.getInstance(YouTubeApiProxy.class);
+    YouTubeApiHelper apiManager = injector.getInstance(YouTubeApiHelper.class);
 
     apiManager.setToken(
         userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName()).getAuthSubToken());
@@ -236,7 +236,7 @@ public class UpdateSubmission extends HttpServlet {
    * @param videoSubmission The video to add.
    * @return true if the video was added; false otherwise.
    */
-  private boolean addToPlaylist(YouTubeApiProxy apiManager, VideoSubmission videoSubmission) {
+  private boolean addToPlaylist(YouTubeApiHelper apiManager, VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
 
@@ -266,7 +266,7 @@ public class UpdateSubmission extends HttpServlet {
    * @param videoSubmission The video to remove.
    * @return true if the video was removed; false otherwise.
    */
-  private boolean removeFromPlaylist(YouTubeApiProxy apiManager,
+  private boolean removeFromPlaylist(YouTubeApiHelper apiManager,
           VideoSubmission videoSubmission) {
     long assignmentId = videoSubmission.getAssignmentId();
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
