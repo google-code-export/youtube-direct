@@ -43,7 +43,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiHelper apiManager;
+  private YouTubeApiHelper youTubeApiHelper;
   @Inject
   private AdminConfigDao adminConfigDao;
 
@@ -120,8 +120,8 @@ public class AssignmentDaoImpl implements AssignmentDao {
         log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
             " YouTube AuthSub token was found in the config.", assignment.getDescription()));
       } else {
-        apiManager.setToken(token);
-        String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+        youTubeApiHelper.setToken(token);
+        String playlistId = youTubeApiHelper.createPlaylist(String.format("Playlist for Assignment #%d",
                 assignment.getId()), assignment.getDescription());
         assignment.setPlaylistId(playlistId);
         assignment = pm.makePersistent(assignment);
@@ -174,8 +174,8 @@ public class AssignmentDaoImpl implements AssignmentDao {
           log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
               " YouTube AuthSub token was found in the config.", assignment.getDescription()));
         } else {
-          apiManager.setToken(token);
-          String playlistId = apiManager.createPlaylist(String.format("Playlist for Assignment #%d",
+          youTubeApiHelper.setToken(token);
+          String playlistId = youTubeApiHelper.createPlaylist(String.format("Playlist for Assignment #%d",
                   assignment.getId()), assignment.getDescription());
           assignment.setPlaylistId(playlistId);
           assignment = pm.makePersistent(assignment);

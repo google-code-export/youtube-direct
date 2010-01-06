@@ -56,7 +56,7 @@ public class SetSubmissionStatusCommand extends Command {
     LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String id = getParam("id");
-    String status = getParam("status");
+    String status = getParam("status").toUpperCase();
 
     if (util.isNullOrEmpty(id)) {
       throw new IllegalArgumentException("Missing required param: id");
@@ -71,7 +71,7 @@ public class SetSubmissionStatusCommand extends Command {
       throw new IllegalArgumentException("The input video id cannot be located.");
     }
 
-    ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
+    ModerationStatus newStatus = ModerationStatus.valueOf(status);
     ModerationStatus currentStatus = submission.getStatus();
 
     if (newStatus == currentStatus) {
