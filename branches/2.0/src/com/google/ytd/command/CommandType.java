@@ -6,7 +6,9 @@ public enum CommandType {
   SET_SUBMISSION_STATUS(SetSubmissionStatusCommand.class),
   NEW_ASSIGNMENT(NewAssignmentCommand.class),
   GET_ASSIGNMENTS(GetAssignmentsCommand.class),
-  UPDATE_ASSIGNMENT(UpdateAssignmentCommand.class);
+  UPDATE_ASSIGNMENT(UpdateAssignmentCommand.class),
+  GET_ADMIN_CONFIG(GetAdminConfigCommand.class),
+  UPDATE_ADMIN_CONFIG(UpdateAdminConfigCommand.class);
 
   private Class<? extends Command> clazz = null;
 
