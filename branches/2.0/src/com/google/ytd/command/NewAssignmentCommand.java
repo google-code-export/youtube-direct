@@ -30,9 +30,9 @@ public class NewAssignmentCommand extends Command{
   public JSONObject execute() throws JSONException {
     LOG.info(this.toString());
     JSONObject json = new JSONObject();
-    String status = getParam("status");
+    String status = getParam("status").toUpperCase();
     String description = getParam("description");
-    String category = getParam("category");
+    String category = getParam("category").toUpperCase();;
 
     if (util.isNullOrEmpty(description)) {
       throw new IllegalArgumentException("Missing required param: description");
@@ -46,7 +46,7 @@ public class NewAssignmentCommand extends Command{
     }
 
     Assignment assignment = new Assignment();
-    assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
+    assignment.setStatus(AssignmentStatus.valueOf(status));
     assignment.setDescription(description);
     assignment.setCategory(category);
 
