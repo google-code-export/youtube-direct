@@ -79,6 +79,7 @@ public class UploadResponseHandler extends HttpServlet {
       AdminConfig adminConfig = Util.getAdminConfig();
       
       YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(adminConfig.getYouTubeAuthSubToken());
       
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {

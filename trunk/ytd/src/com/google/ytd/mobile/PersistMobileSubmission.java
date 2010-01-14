@@ -90,7 +90,7 @@ public class PersistMobileSubmission extends HttpServlet {
   
       if (assignmentId <= 0) {
         // get default mobile assignment ID
-        assignmentId = Util.getDefaultMobileAssignmentId();
+        assignmentId = Util.getDefaultMobileAssignmentId(req.getRemoteAddr());
       }
       if (Util.isNullOrEmpty(videoId)) {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing videoId");
@@ -99,7 +99,8 @@ public class PersistMobileSubmission extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing authSubToken");
       }
   
-      YouTubeApiManager apiManager = new YouTubeApiManager();      
+      YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(authSubToken);
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
       

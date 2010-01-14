@@ -35,10 +35,11 @@ public class AssignmentManager {
   public AssignmentManager() {
   }
   
-  public void newAssignment(Assignment assignment) {    
+  public void newAssignment(Assignment assignment, String ipAddress) {    
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
     assignment = pm.makePersistent(assignment);
     YouTubeApiManager apiManager = new YouTubeApiManager();
+    apiManager.setRequestIpAddress(ipAddress);
     String token = Util.getAdminConfig().getYouTubeAuthSubToken();
     if (Util.isNullOrEmpty(token)) {
       log.warning(String.format("Could not create new playlist for assignment '%s' because no" +
@@ -53,7 +54,7 @@ public class AssignmentManager {
   }
   
   @SuppressWarnings("unchecked")
-  public long getDefaultMobileAssignmentId() {
+  public long getDefaultMobileAssignmentId(String ipAddress) {
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
     long assignmentId = -1;   
     String defaultMobileAssignmentDescription = "default mobile assignment";     
@@ -71,7 +72,7 @@ public class AssignmentManager {
         assignment.setCategory("News");
         assignment.setDescription(defaultMobileAssignmentDescription);
         assignment.setStatus(Assignment.AssignmentStatus.ACTIVE); 
-        newAssignment(assignment);     
+        newAssignment(assignment, ipAddress);     
         assignmentId = assignment.getId();
       }
     } finally {

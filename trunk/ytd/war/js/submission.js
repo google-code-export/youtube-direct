@@ -155,7 +155,7 @@ admin.sub.initSubmissionGrid = function() {
         entryId + '") value="delete" />';
     jQuery('#submissionGrid').setCell(rowid, 'delete', deleteButton);
     
-    var detailsButton = '<input type="button" onclick=admin.sub.showDetails("' + 
+    var detailsButton = '<input type="button" onclick=admin.sub.fetchDetails("' + 
     entryId + '") value="details" />';
     jQuery('#submissionGrid').setCell(rowid, 'details', detailsButton);     
     
@@ -484,9 +484,28 @@ admin.sub.refreshGridUI = function(entries) {
   }
 };
 
-admin.sub.showDetails = function(entryId) {
-  var submission = admin.sub.getSubmission(entryId);
-  
+admin.sub.fetchDetails = function(entryId) {
+  var ajaxCall = {};
+  ajaxCall.type = 'POST';
+  ajaxCall.url = '/admin/SyncMetadata';
+  ajaxCall.data = entryId;
+  ajaxCall.cache = false;
+  ajaxCall.processData = false;
+  ajaxCall.success = function(res) {
+    admin.sub.showLoading(false);
+    admin.sub.showDetails(JSON.parse(res));
+  };
+  ajaxCall.error = function() {
+    admin.sub.showLoading(false);
+    // If the metadata sync fails, then fall back on the local version of the data.
+    admin.sub.showDetails(admin.sub.getSubmission(entryId));
+  };
+
+  admin.sub.showLoading(true, 'Loading details ...');
+  jQuery.ajax(ajaxCall);
+}
+
+admin.sub.showDetails = function(submission) {
   var mainDiv = jQuery('#submissionDetailsTemplate').clone();   
   
   var videoWidth = 255;

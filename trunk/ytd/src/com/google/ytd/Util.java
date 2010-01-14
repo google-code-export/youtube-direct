@@ -366,7 +366,7 @@ public class Util {
   }
 
   @SuppressWarnings("unchecked")
-  public static long getDefaultMobileAssignmentId() {
+  public static long getDefaultMobileAssignmentId(String ipAddress) {
     long assignmentId = -1;   
     String defaultMobileAssignmentDescription = "default mobile assignment";     
     PersistenceManager pm = Util.getPersistenceManagerFactory().getPersistenceManager();
@@ -387,6 +387,7 @@ public class Util {
         assignment = pm.makePersistent(assignment);
         
         YouTubeApiManager apiManager = new YouTubeApiManager();
+        apiManager.setRequestIpAddress(ipAddress);
         String token = Util.getAdminConfig().getYouTubeAuthSubToken();
         if (Util.isNullOrEmpty(token)) {
           log.warning(String.format("Could not create new playlist for assignment '%s' because no" +

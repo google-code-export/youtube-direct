@@ -65,7 +65,8 @@ public class SubmitExistingVideo extends HttpServlet {
       String assignmentId = userSession.getMetaData("assignmentId");
       String articleUrl = userSession.getMetaData("articleUrl");
       
-      YouTubeApiManager apiManager = new YouTubeApiManager();      
+      YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(authSubToken);
       
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);      

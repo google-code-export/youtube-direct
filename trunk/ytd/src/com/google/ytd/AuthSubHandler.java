@@ -64,6 +64,7 @@ public class AuthSubHandler extends HttpServlet {
       userSession.addMetaData("authSubToken", authSubToken);
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(request.getRemoteAddr());
       apiManager.setToken(authSubToken);
 
       String youTubeName = apiManager.getCurrentUsername();

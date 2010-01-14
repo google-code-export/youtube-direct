@@ -52,6 +52,7 @@ public class InsightDownloadRedirect extends HttpServlet {
       }
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(token);
       
       VideoEntry videoEntry = apiManager.getVideoEntry(id);

@@ -146,6 +146,7 @@ public class GetUploadToken extends HttpServlet {
       UserSessionManager.save(userSession);
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(authSubToken);
 
       FormUploadToken token = apiManager.getFormUploadToken(newEntry);

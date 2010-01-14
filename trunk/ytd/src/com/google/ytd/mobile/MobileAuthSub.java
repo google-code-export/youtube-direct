@@ -62,6 +62,7 @@ public class MobileAuthSub extends HttpServlet {
         
         // Test the token to make sure it's valid, and get the username it corresponds to.
         YouTubeApiManager apiManager = new YouTubeApiManager();
+        apiManager.setRequestIpAddress(req.getRemoteAddr());
         apiManager.setToken(sessionToken);
 
         String youTubeName = apiManager.getCurrentUsername();
