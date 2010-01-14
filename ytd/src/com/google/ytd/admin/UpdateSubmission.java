@@ -94,12 +94,14 @@ public class UpdateSubmission extends HttpServlet {
 
           if (!entry.getVideoDescription().contains(prependText)) {
             // We only want to update the video if the text isn't already there.
-            updateVideoDescription(entry, prependText, adminConfig.getDefaultTag());
+            updateVideoDescription(entry, prependText, adminConfig.getDefaultTag(),
+                    req.getRemoteAddr());
           }
         }
       }
       
       YouTubeApiManager adminApiManager = new YouTubeApiManager();
+      adminApiManager.setRequestIpAddress(req.getRemoteAddr());
       String token = adminConfig.getYouTubeAuthSubToken();
       if (Util.isNullOrEmpty(token)) {
         log.warning(String.format("No AuthSub token found in admin config."));
@@ -153,12 +155,13 @@ public class UpdateSubmission extends HttpServlet {
    * could not be updated.
    */
   private VideoEntry updateVideoDescription(VideoSubmission videoSubmission, String prependText,
-          String newTag) {
+          String newTag, String ipAddress) {
     String videoId = videoSubmission.getVideoId();
     log.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
             videoSubmission.getId(), videoId));
 
     YouTubeApiManager apiManager = new YouTubeApiManager();
+    apiManager.setRequestIpAddress(ipAddress);
     apiManager.setToken(videoSubmission.getAuthSubToken());
     
     VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);

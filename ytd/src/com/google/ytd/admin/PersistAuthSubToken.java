@@ -52,6 +52,7 @@ public class PersistAuthSubToken extends HttpServlet {
       String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
       YouTubeApiManager apiManager = new YouTubeApiManager();
+      apiManager.setRequestIpAddress(req.getRemoteAddr());
       apiManager.setToken(sessionToken);
 
       String youTubeName = apiManager.getCurrentUsername();

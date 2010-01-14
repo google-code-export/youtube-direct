@@ -78,6 +78,7 @@ public class YouTubeApiManager {
   		"</yt:moderationStatus></entry>";
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
+  private static final String IP_ADDRESS_HEADER = "X-GData-IP";
   
 
   /**
@@ -107,6 +108,10 @@ public class YouTubeApiManager {
     }
 
     service = new YouTubeService(clientId);
+  }
+  
+  public void setRequestIpAddress(String ipAddress) {
+    setHeader(IP_ADDRESS_HEADER, ipAddress);
   }
 
   /**

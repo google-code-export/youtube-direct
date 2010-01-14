@@ -57,6 +57,7 @@ public class UpdateAssignment extends HttpServlet {
       if (incomingEntry.getStatus() == AssignmentStatus.ACTIVE &&
               Util.isNullOrEmpty(assignment.getPlaylistId())) {
         YouTubeApiManager apiManager = new YouTubeApiManager();
+        apiManager.setRequestIpAddress(req.getRemoteAddr());
         
         AdminConfig adminConfig = Util.getAdminConfig();
         String token = adminConfig.getYouTubeAuthSubToken();
