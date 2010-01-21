@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>JSON RPC Test</title>
+<script type="text/javascript" src="ext/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="ext/json2.js"></script>
+<script type="text/javascript" src="jsonrpc.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {  
+  jQuery('#submit').click(function() {
+    var command = jQuery('#command').val();
+    var params = JSON.parse(jQuery('#params').html());
+    jsonrpc.makeRequest(command, params, function(data) {
+      jQuery('#returnJson').html(data);
+    }); 
+  });
+});
+</script>
+</head>
+<style>
+</style>
+<body>
+
+command: <input id="command" type="text" value="GET_ADMIN_CONFIG"></input>
+<br><br>
+input params:<br>
+<textarea id="params" cols="40" rows="5">{"params":{}}</textarea>
+<br><br>
+<input id="submit" type="button" value="submit request"/>
+<br><br>
+output:<br>
+<textarea id="returnJson" cols="100" rows="20"></textarea>
+</body>
+</html>
