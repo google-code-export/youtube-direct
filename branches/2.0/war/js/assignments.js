@@ -526,33 +526,31 @@ admin.assign.showAssignmentCreate = function() {
   div.find('#createButton').click(function() {
     var messageElement = admin.showMessage("Creating assignment...");
     
-    var newAssignment = {};
-    newAssignment.description = div.find('#assignmentDescription').val();
-    newAssignment.category = 
-        div.find('#assignmentCategories').get(0).
+    var command = 'NEW_ASSIGNMENT';
+    var params = {};
+    params.description = div.find('#assignmentDescription').val();
+    params.category = div.find('#assignmentCategories').get(0).
         options[div.find('#assignmentCategories').attr('selectedIndex')].value;
-    newAssignment.status = 
-        div.find('#assignmentStatusType').get(0).
+    params.status = div.find('#assignmentStatusType').get(0).
         options[div.find('#assignmentStatusType').attr('selectedIndex')].value;            
+        
+    var callback = function(jsonStr) {
+      try {
+        var json = JSON.parse(jsonStr);
+        if (!json.error) {
+          //TODO(austinchau) fix admin.showError to display error without xhr obj
+          //admin.showError(xhr, messageElement);
+        } else {
+          admin.showMessage("Assignment created.", messageElement);
+          admin.assign.pageIndex = 1;
+          admin.assign.refreshGrid();            
+        }
+      } catch(exception) {
+        // json parse exception
+      }
+    } 
     
-    var url = '/admin/NewAssignment';
-    var ajaxCall = {};
-    ajaxCall.type = 'POST';
-    ajaxCall.url = url;
-    ajaxCall.data = JSON.stringify(newAssignment);
-    ajaxCall.cache = false;
-    ajaxCall.processData = false;
-    ajaxCall.error = function(xhr, text, error) {
-      admin.showError(xhr, messageElement);
-    };
-    ajaxCall.success = function(res) {
-      admin.showMessage("Assignment created.", messageElement);
-      admin.assign.pageIndex = 1;
-      admin.assign.refreshGrid();      
-    };
-    
-    jQuery.ajax(ajaxCall);    
-    
+    jsonrpc.makeRequest(command, params, callback);
     div.dialog('destroy');
   });  
   
