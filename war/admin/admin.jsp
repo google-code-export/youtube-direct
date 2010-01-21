@@ -40,6 +40,7 @@ limitations under the License.
 <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
 
+<script type="text/javascript" src="/js/jsonrpc.js"></script>
 <script type="text/javascript" src="/js/admin.js"></script>
 <script type="text/javascript" src="/js/submission.js"></script>
 <script type="text/javascript" src="/js/assignments.js"></script>

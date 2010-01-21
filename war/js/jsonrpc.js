@@ -19,16 +19,21 @@ var jsonrpc = jsonrpc || {};
 // JSON-RPC endpoint
 var JSON_RPC_URL = "/jsonrpc";
 
-jsonrpc.makeRequest = function(command, params, callback) {
-  params.method = command;
+jsonrpc.makeRequest = function(command, params, callback) {  
+  var postData = {};
+    
+  postData.method = command;
+  postData.params = params;
   
   var ajaxCall = {};
   ajaxCall.type = 'POST';
   ajaxCall.url = JSON_RPC_URL + '?cachebust=' + new Date().getTime();
-  ajaxCall.data = JSON.stringify(params);
+  alert(JSON.stringify(postData));
+  ajaxCall.data = JSON.stringify(postData);
   ajaxCall.cache = false;
   ajaxCall.processData = false;
-  ajaxCall.error = function(xhr, text, error) {
+  ajaxCall.error = function(res) {
+    callback(res);
   };
   ajaxCall.success = function(res) {
     callback(res);

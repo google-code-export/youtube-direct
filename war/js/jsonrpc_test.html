@@ -21,10 +21,10 @@ jQuery(document).ready(function() {
 </style>
 <body>
 
-command: <input id="command" type="text" value="GET_ADMIN_CONFIG"></input>
+command: <input id="command" type="text" value="GET_SUBMISSIONS"></input>
 <br><br>
 input params:<br>
-<textarea id="params" cols="40" rows="5">{"params":{}}</textarea>
+<textarea id="params" cols="40" rows="5">{"sortBy": "created", "sortOrder": "desc", "filterType": "all", "pageIndex": "1", "pageSize": "10"}</textarea>
 <br><br>
 <input id="submit" type="button" value="submit request"/>
 <br><br>
