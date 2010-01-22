@@ -29,10 +29,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class VideoDownloadRedirect extends HttpServlet {
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "This functionality is not "
-				+ "implemented.");
-	}
+    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "This functionality is not "
+        + "implemented.");
+  }
 }

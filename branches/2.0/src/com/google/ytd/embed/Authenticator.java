@@ -41,142 +41,142 @@ import com.google.ytd.util.Util;
 @Singleton
 public class Authenticator {
 
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
-	private UserSessionManager userSessionManager;
+  private UserSessionManager userSessionManager;
 
-	private HttpServletRequest request = null;
-	private HttpServletResponse response = null;
+  private HttpServletRequest request = null;
+  private HttpServletResponse response = null;
 
-	private static final String SCOPE = "http://gdata.youtube.com";
-	private static final String AUTHSUB_HANDLER = "/AuthsubHandler";
+  private static final String SCOPE = "http://gdata.youtube.com";
+  private static final String AUTHSUB_HANDLER = "/AuthsubHandler";
 
-	private UserSession userSession = null;
+  private UserSession userSession = null;
 
-	private static final Logger log = Logger.getLogger(Authenticator.class.getName());
+  private static final Logger log = Logger.getLogger(Authenticator.class.getName());
 
-	@Inject
-	public Authenticator(HttpServletRequest req, HttpServletResponse resp,
-			UserSessionManager userSessionManager, Util util) {
-		this.userSessionManager = userSessionManager;
-		this.request = req;
-		this.response = resp;
-		this.util = util;
-		this.userSession = userSessionManager.getUserSession(request);
+  @Inject
+  public Authenticator(HttpServletRequest req, HttpServletResponse resp,
+      UserSessionManager userSessionManager, Util util) {
+    this.userSessionManager = userSessionManager;
+    this.request = req;
+    this.response = resp;
+    this.util = util;
+    this.userSession = userSessionManager.getUserSession(request);
 
-		String assignmentId = request.getParameter("assignmentId");
-		String articleUrl = request.getParameter("articleUrl");
-		try {
-			// This URL string was encoded by JavaScript with escape()
-			articleUrl = URLDecoder.decode(articleUrl, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.log(Level.WARNING, "", e);
-		}
+    String assignmentId = request.getParameter("assignmentId");
+    String articleUrl = request.getParameter("articleUrl");
+    try {
+      // This URL string was encoded by JavaScript with escape()
+      articleUrl = URLDecoder.decode(articleUrl, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
+    }
 
-		// TODO(austinchau) This request object is before the JspForwarder, the url
-		// is not correct
-		String selfUrl = util.getSelfUrl(request);
+    // TODO(austinchau) This request object is before the JspForwarder, the url
+    // is not correct
+    String selfUrl = util.getSelfUrl(request);
 
-		if (userSession == null) {
-			userSession = new UserSession();
-			userSession = userSessionManager.save(userSession);
-			// stick the session id as cookie
-			userSessionManager.sendSessionIdCookie(userSession.getId(), response);
-		}
+    if (userSession == null) {
+      userSession = new UserSession();
+      userSession = userSessionManager.save(userSession);
+      // stick the session id as cookie
+      userSessionManager.sendSessionIdCookie(userSession.getId(), response);
+    }
 
-		userSession.addMetaData("assignmentId", assignmentId);
-		userSession.addMetaData("articleUrl", articleUrl);
-		userSession.addMetaData("selfUrl", selfUrl);
+    userSession.addMetaData("assignmentId", assignmentId);
+    userSession.addMetaData("articleUrl", articleUrl);
+    userSession.addMetaData("selfUrl", selfUrl);
 
-		userSession = userSessionManager.save(userSession);
+    userSession = userSessionManager.save(userSession);
 
-		String authSubToken = userSession.getMetaData("authSubToken");
+    String authSubToken = userSession.getMetaData("authSubToken");
 
-		if (authSubToken != null) {
-			// check for bad token
-			if (!isTokenValid(authSubToken)) {
-				log.finer(String.format("AuthSub token '%s' is invalid. Creating new session.",
-						authSubToken));
+    if (authSubToken != null) {
+      // check for bad token
+      if (!isTokenValid(authSubToken)) {
+        log.finer(String.format("AuthSub token '%s' is invalid. Creating new session.",
+            authSubToken));
 
-				authSubToken = null;
+        authSubToken = null;
 
-				userSessionManager.delete(userSession);
+        userSessionManager.delete(userSession);
 
-				// replace with new session
+        // replace with new session
 
-				userSession = new UserSession();
-				userSession.addMetaData("assignmentId", assignmentId);
-				userSession.addMetaData("articleUrl", articleUrl);
-				userSession.addMetaData("selfUrl", selfUrl);
-				userSession = userSessionManager.save(userSession);
+        userSession = new UserSession();
+        userSession.addMetaData("assignmentId", assignmentId);
+        userSession.addMetaData("articleUrl", articleUrl);
+        userSession.addMetaData("selfUrl", selfUrl);
+        userSession = userSessionManager.save(userSession);
 
-				// stick the session id as cookie
-				userSessionManager.sendSessionIdCookie(userSession.getId(), response);
-			} else {
-				// good token
-				log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
-			}
-		}
-	}
+        // stick the session id as cookie
+        userSessionManager.sendSessionIdCookie(userSession.getId(), response);
+      } else {
+        // good token
+        log.finest(String.format("Reusing cached AuthSub token '%s'.", authSubToken));
+      }
+    }
+  }
 
-	public boolean isTokenValid(String token) {
-		try {
-			AuthSubUtil.getTokenInfo(token, null);
-		} catch (AuthenticationException e) {
-			return false;
-		} catch (IOException e) {
-			return false;
-		} catch (GeneralSecurityException e) {
-			return false;
-		}
-		return true;
-	}
+  public boolean isTokenValid(String token) {
+    try {
+      AuthSubUtil.getTokenInfo(token, null);
+    } catch (AuthenticationException e) {
+      return false;
+    } catch (IOException e) {
+      return false;
+    } catch (GeneralSecurityException e) {
+      return false;
+    }
+    return true;
+  }
 
-	public boolean isLoggedIn() {
-		boolean isLoggedIn = false;
-		String authSubToken = userSession.getMetaData("authSubToken");
+  public boolean isLoggedIn() {
+    boolean isLoggedIn = false;
+    String authSubToken = userSession.getMetaData("authSubToken");
 
-		if (authSubToken != null && isTokenValid(authSubToken)) {
-			isLoggedIn = true;
-		}
+    if (authSubToken != null && isTokenValid(authSubToken)) {
+      isLoggedIn = true;
+    }
 
-		return isLoggedIn;
-	}
+    return isLoggedIn;
+  }
 
-	public UserSession getUserSession() {
-		return this.userSession;
-	}
+  public UserSession getUserSession() {
+    return this.userSession;
+  }
 
-	public String getLogInUrl() {
-		String loginUrl = null;
-		String articleUrl = userSession.getMetaData("articleUrl");
+  public String getLogInUrl() {
+    String loginUrl = null;
+    String articleUrl = userSession.getMetaData("articleUrl");
 
-		try {
-			articleUrl = URLEncoder.encode(articleUrl, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.log(Level.WARNING, "", e);
-		}
+    try {
+      articleUrl = URLEncoder.encode(articleUrl, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      log.log(Level.WARNING, "", e);
+    }
 
-		StringBuffer nextUrl = new StringBuffer();
-		nextUrl.append(request.getScheme());
-		nextUrl.append("://");
-		nextUrl.append(request.getServerName());
-		if (request.getServerPort() != 80) {
-			nextUrl.append(":").append(request.getServerPort());
-		}
-		nextUrl.append(AUTHSUB_HANDLER);
-		nextUrl.append("?articleUrl=");
-		nextUrl.append(articleUrl);
+    StringBuffer nextUrl = new StringBuffer();
+    nextUrl.append(request.getScheme());
+    nextUrl.append("://");
+    nextUrl.append(request.getServerName());
+    if (request.getServerPort() != 80) {
+      nextUrl.append(":").append(request.getServerPort());
+    }
+    nextUrl.append(AUTHSUB_HANDLER);
+    nextUrl.append("?articleUrl=");
+    nextUrl.append(articleUrl);
 
-		loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
+    loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
 
-		return loginUrl;
-	}
+    return loginUrl;
+  }
 
-	public String getLogOutUrl() {
-		return "/logout";
-	}
+  public String getLogOutUrl() {
+    return "/logout";
+  }
 
 }

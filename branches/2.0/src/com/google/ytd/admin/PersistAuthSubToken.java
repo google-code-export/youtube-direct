@@ -42,59 +42,59 @@ import com.google.ytd.youtube.YouTubeApiHelper;
  */
 @Singleton
 public class PersistAuthSubToken extends HttpServlet {
-	private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
-	@Inject
-	private YouTubeApiHelper apiManager;
-	@Inject
-	private AdminConfigDao adminConfigDao;
+  private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiHelper apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		PersistenceManager pm = pmf.getPersistenceManager();
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			String token = AuthSubUtil.getTokenFromReply(req.getQueryString());
-			if (util.isNullOrEmpty(token)) {
-				throw new IllegalArgumentException(String.format("Could not retrieve token from "
-						+ "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
-			}
+    try {
+      String token = AuthSubUtil.getTokenFromReply(req.getQueryString());
+      if (util.isNullOrEmpty(token)) {
+        throw new IllegalArgumentException(String.format("Could not retrieve token from "
+            + "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
+      }
 
-			String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+      String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-			apiManager.setToken(sessionToken);
+      apiManager.setToken(sessionToken);
 
-			String youTubeName = apiManager.getCurrentUsername();
-			if (util.isNullOrEmpty(youTubeName)) {
-				// TODO: Throw a better Exception class here.
-				throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
-						+ "the authenticated user.");
-			}
+      String youTubeName = apiManager.getCurrentUsername();
+      if (util.isNullOrEmpty(youTubeName)) {
+        // TODO: Throw a better Exception class here.
+        throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
+            + "the authenticated user.");
+      }
 
-			AdminConfig adminConfig = adminConfigDao.getAdminConfig();
-			adminConfig.setYouTubeAuthSubToken(sessionToken);
-			adminConfig.setYouTubeUsername(youTubeName);
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+      adminConfig.setYouTubeAuthSubToken(sessionToken);
+      adminConfig.setYouTubeUsername(youTubeName);
 
-			pm.makePersistent(adminConfig);
+      pm.makePersistent(adminConfig);
 
-			resp.sendRedirect("/admin#configuration");
-		} catch (IllegalArgumentException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (AuthenticationException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (GeneralSecurityException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (ServiceException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} finally {
-			pm.close();
-		}
-	}
+      resp.sendRedirect("/admin#configuration");
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } catch (AuthenticationException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (GeneralSecurityException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } finally {
+      pm.close();
+    }
+  }
 }

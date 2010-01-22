@@ -37,82 +37,82 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class GetAllAssignments extends HttpServlet {
-	private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
+  private static final Logger log = Logger.getLogger(GetAllAssignments.class.getName());
 
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		String sortBy = "created";
-		String sortOrder = "desc";
-		int pageIndex = 1;
-		int pageSize = 10;
-		String filterType = "ALL";
+    String sortBy = "created";
+    String sortOrder = "desc";
+    int pageIndex = 1;
+    int pageSize = 10;
+    String filterType = "ALL";
 
-		if (req.getParameter("sortby") != null) {
-			sortBy = req.getParameter("sortby");
-		}
+    if (req.getParameter("sortby") != null) {
+      sortBy = req.getParameter("sortby");
+    }
 
-		if (req.getParameter("sortorder") != null) {
-			sortOrder = req.getParameter("sortorder");
-		}
+    if (req.getParameter("sortorder") != null) {
+      sortOrder = req.getParameter("sortorder");
+    }
 
-		if (req.getParameter("pageindex") != null) {
-			pageIndex = Integer.parseInt(req.getParameter("pageindex"));
-		}
+    if (req.getParameter("pageindex") != null) {
+      pageIndex = Integer.parseInt(req.getParameter("pageindex"));
+    }
 
-		if (req.getParameter("pagesize") != null) {
-			pageSize = Integer.parseInt(req.getParameter("pagesize"));
-		}
+    if (req.getParameter("pagesize") != null) {
+      pageSize = Integer.parseInt(req.getParameter("pagesize"));
+    }
 
-		if (req.getParameter("filtertype") != null) {
-			filterType = req.getParameter("filtertype");
-		}
+    if (req.getParameter("filtertype") != null) {
+      filterType = req.getParameter("filtertype");
+    }
 
-		PersistenceManager pm = pmf.getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			Query query = pm.newQuery(Assignment.class);
+    try {
+      Query query = pm.newQuery(Assignment.class);
 
-			query.declareImports("import java.util.Date");
-			query.declareParameters("String filterType");
-			query.setOrdering(sortBy + " " + sortOrder);
+      query.declareImports("import java.util.Date");
+      query.declareParameters("String filterType");
+      query.setOrdering(sortBy + " " + sortOrder);
 
-			if (!filterType.equals("ALL")) {
-				String filters = "status == filterType";
-				query.setFilter(filters);
-			}
+      if (!filterType.equals("ALL")) {
+        String filters = "status == filterType";
+        query.setFilter(filters);
+      }
 
-			List<Assignment> assignments = (List<Assignment>) query.execute(filterType);
+      List<Assignment> assignments = (List<Assignment>) query.execute(filterType);
 
-			int totalSize = assignments.size();
-			int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
-			int startIndex = (pageIndex - 1) * pageSize; // inclusive
-			int endIndex = -1; // exclusive
+      int totalSize = assignments.size();
+      int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
+      int startIndex = (pageIndex - 1) * pageSize; // inclusive
+      int endIndex = -1; // exclusive
 
-			if (pageIndex < totalPages) {
-				endIndex = startIndex + pageSize;
-			} else {
-				if (pageIndex == totalPages && totalSize % pageSize == 0) {
-					endIndex = startIndex + pageSize;
-				} else {
-					endIndex = startIndex + (totalSize % pageSize);
-				}
-			}
+      if (pageIndex < totalPages) {
+        endIndex = startIndex + pageSize;
+      } else {
+        if (pageIndex == totalPages && totalSize % pageSize == 0) {
+          endIndex = startIndex + pageSize;
+        } else {
+          endIndex = startIndex + (totalSize % pageSize);
+        }
+      }
 
-			String json = null;
-			List<Assignment> returnList = assignments.subList(startIndex, endIndex);
-			json = util.toJson(returnList);
-			json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
+      String json = null;
+      List<Assignment> returnList = assignments.subList(startIndex, endIndex);
+      json = util.toJson(returnList);
+      json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
 
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(json);
-		} finally {
-			pm.close();
-		}
-	}
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(json);
+    } finally {
+      pm.close();
+    }
+  }
 }

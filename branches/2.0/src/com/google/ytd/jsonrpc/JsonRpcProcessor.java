@@ -21,46 +21,46 @@ import com.google.ytd.util.Util;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {
-	private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
-	@Inject
-	private JsonExceptionHandler jsonExceptionHandler;
-	@Inject
-	private Util util;
-	@Inject
-	private Injector injector;
+  private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
+  @Inject
+  private JsonExceptionHandler jsonExceptionHandler;
+  @Inject
+  private Util util;
+  @Inject
+  private Injector injector;
 
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		try {
-			String postBody = util.getPostBody(req);
-			if (util.isNullOrEmpty(postBody)) {
-				throw new IllegalArgumentException("No data found in HTTP POST request.");
-			}
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    try {
+      String postBody = util.getPostBody(req);
+      if (util.isNullOrEmpty(postBody)) {
+        throw new IllegalArgumentException("No data found in HTTP POST request.");
+      }
 
-			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-			JsonRpcRequest jsonRpcRequest = gson.fromJson(postBody, JsonRpcRequest.class);
+      Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+      JsonRpcRequest jsonRpcRequest = gson.fromJson(postBody, JsonRpcRequest.class);
 
-			if (jsonRpcRequest != null) {
-				String method = jsonRpcRequest.getMethod();
-				if (method != null) {
-					Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
-					Command command = injector.getInstance(commandClass);
-					command.setParams(jsonRpcRequest.getParams());
+      if (jsonRpcRequest != null) {
+        String method = jsonRpcRequest.getMethod();
+        if (method != null) {
+          Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
+          Command command = injector.getInstance(commandClass);
+          command.setParams(jsonRpcRequest.getParams());
 
-					try {
-						JSONObject json = command.execute();
-						json.put("error", "null");
-						resp.setContentType("application/json");
-						resp.getWriter().write(json.toString());
-					} catch (JSONException e) {
-						jsonExceptionHandler.send(resp, e);
-					} catch (IllegalArgumentException e) {
-						jsonExceptionHandler.send(resp, e);
-					}
-				}
-			}
-		} catch (RuntimeException e) {
-			jsonExceptionHandler.send(resp, e);
-		}
-	}
+          try {
+            JSONObject json = command.execute();
+            json.put("error", "null");
+            resp.setContentType("application/json");
+            resp.getWriter().write(json.toString());
+          } catch (JSONException e) {
+            jsonExceptionHandler.send(resp, e);
+          } catch (IllegalArgumentException e) {
+            jsonExceptionHandler.send(resp, e);
+          }
+        }
+      }
+    } catch (RuntimeException e) {
+      jsonExceptionHandler.send(resp, e);
+    }
+  }
 }
