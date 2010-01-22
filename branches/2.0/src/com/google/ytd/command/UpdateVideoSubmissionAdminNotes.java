@@ -7,20 +7,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
-import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
-public class UpdateSubmissionAdminNotes extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdateSubmissionAdminNotes.class.getName());
+public class UpdateVideoSubmissionAdminNotes extends Command {
+  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionAdminNotes.class.getName());
 
-  private SubmissionDao submissionDao = null;
+  private VideoSubmissionDao submissionDao = null;
 
   @Inject
   private Util util;
 
   @Inject
-  public UpdateSubmissionAdminNotes(SubmissionDao submissionDao) {
+  public UpdateVideoSubmissionAdminNotes(VideoSubmissionDao submissionDao) {
     this.submissionDao = submissionDao;
   }
 

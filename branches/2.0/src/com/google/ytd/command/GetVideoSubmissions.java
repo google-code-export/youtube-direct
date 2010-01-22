@@ -8,20 +8,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
-import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
-public class GetSubmissions extends Command {
-  private static final Logger LOG = Logger.getLogger(GetSubmissions.class.getName());
+public class GetVideoSubmissions extends Command {
+  private static final Logger LOG = Logger.getLogger(GetVideoSubmissions.class.getName());
 
-  private SubmissionDao submissionDao = null;
+  private VideoSubmissionDao submissionDao = null;
 
   @Inject
   private Util util;
 
   @Inject
-  public GetSubmissions(SubmissionDao submissionDao) {
+  public GetVideoSubmissions(VideoSubmissionDao submissionDao) {
     this.submissionDao = submissionDao;
   }
 

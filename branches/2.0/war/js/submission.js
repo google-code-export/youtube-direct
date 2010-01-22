@@ -578,7 +578,7 @@ admin.sub.showDetails = function(entryId) {
   mainDiv.find('#adminNotes').html(submission.adminNotes);
   
   mainDiv.find('#saveAdminNotes').click(function() {
-    var command = 'UPDATE_SUBMISSION_ADMIN_NOTES';
+    var command = 'UPDATE_VIDEO_SUBMISSION_ADMIN_NOTES';
     var params = {};
     params.id = submission.id;
     params.adminNotes = mainDiv.find('#adminNotes').val();
@@ -639,7 +639,7 @@ admin.sub.previewVideo = function(entryId) {
 admin.sub.getAllSubmissions = function(callback) {
   var messageElement = admin.showMessage("Loading submissions...");
   
-  var command = 'GET_SUBMISSIONS';
+  var command = 'GET_VIDEO_SUBMISSIONS';
   var params = {};
   params.sortBy = admin.sub.sortBy;
   params.sortOrder = admin.sub.sortOrder;
@@ -672,7 +672,7 @@ admin.sub.getAllSubmissions = function(callback) {
 admin.sub.updateSubmissionStatus = function(entry) {  
   var messageElement = admin.showMessage("Updating submission status...");
   
-  var command = 'UPDATE_SUBMISSION_STATUS';
+  var command = 'UPDATE_VIDEO_SUBMISSION_STATUS';
   var params = {};
   params.id = entry.id;
   params.status = entry.status;

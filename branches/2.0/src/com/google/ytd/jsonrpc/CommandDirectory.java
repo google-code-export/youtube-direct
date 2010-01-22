@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.ytd.command.Command;
-import com.google.ytd.command.GetSubmissions;
+import com.google.ytd.command.GetVideoSubmissions;
 
 @Singleton
 public class CommandDirectory {
@@ -24,7 +24,7 @@ public class CommandDirectory {
   }
 
   private void initCommandMapping() {
-    add("ytd.getSubmissions", GetSubmissions.class);
+    add("ytd.getSubmissions", GetVideoSubmissions.class);
   }
 
   public void add(String method, Class<? extends Command> command) {
