@@ -64,4 +64,8 @@ public class PhotoSubmission {
   public Date getCreated() {
     return created;
   }
+
+  public Long getAssignmentId() {
+    return assignmentId;
+  }
 }
