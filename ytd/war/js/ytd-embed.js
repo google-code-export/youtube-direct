@@ -64,25 +64,39 @@ Ytd.prototype.ready = function() {
 };
 
 Ytd.prototype.embed = function() {
-	var iframeElement = document.createElement('iframe');
-	iframeElement.width = this.width + 'px';
-	iframeElement.height = this.height + 'px';
-	iframeElement.style.border = '0px solid gray';
-	iframeElement.scrolling = 'no';
-	iframeElement.frameBorder = '0';
+  var loadingElement = document.createElement('div');
+  loadingElement.innerHTML = 'Loading... please wait.';
+  
+  var iframeElement = document.createElement('iframe');
+  iframeElement.width = this.width + 'px';
+  iframeElement.height = this.height + 'px';
+  iframeElement.style.border = '0px solid gray';
+  iframeElement.scrolling = 'no';
+  iframeElement.frameBorder = '0';
+  
+  var hideLoadingFunction = function () {
+    loadingElement.style.display = 'none';
+  };
+  
+  if (iframeElement.addEventListener) {
+    iframeElement.addEventListener('load', hideLoadingFunction, false); 
+  } else if (iframeElement.attachEvent) {
+    iframeElement.attachEvent('onload', hideLoadingFunction);
+  }
 
-	this.articleUrl = this.articleUrl || document.location.href;
-	// remove hash link
-	this.articleUrl = this.articleUrl.replace(/#.+$/, '');	
-	
-	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
-	    + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height + 
-	    '&sessionId=' + this.sessionId;
-	iframeElement.src = iframeUrl;
-	
-	var iframeContainer = document.getElementById(this.ytdContainer);
-	iframeContainer.innerHTML = '';
-	iframeContainer.appendChild(iframeElement);
+  this.articleUrl = this.articleUrl || document.location.href;
+  // remove hash link
+  this.articleUrl = this.articleUrl.replace(/#.+$/, '');  
+  
+  var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
+      + '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height + 
+      '&sessionId=' + this.sessionId;
+  iframeElement.src = iframeUrl;
+  
+  var iframeContainer = document.getElementById(this.ytdContainer);
+  iframeContainer.innerHTML = '';
+  iframeContainer.appendChild(loadingElement);
+  iframeContainer.appendChild(iframeElement);
 };
 
 function getSelfUrl() {
