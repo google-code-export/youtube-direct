@@ -20,7 +20,7 @@ public class PhotoSubmission {
   private String id = null;
 
   @Persistent
-  private String name = null;
+  private String email = null;
 
   @Persistent
   private Long assignmentId = null;
@@ -37,16 +37,21 @@ public class PhotoSubmission {
   @Persistent
   Date created = null;
 
-  public PhotoSubmission(Long assignmentId, String name, byte[] content, String contentType) {
+  public PhotoSubmission(Long assignmentId, String email, byte[] content, String contentType) {
     this.assignmentId = assignmentId;
     this.content = new Blob(content);
     this.contentType = contentType;
     this.size = content.length;
     this.created = new Date();
+    this.email = email;
   }
 
   public String getId() {
     return id;
+  }
+
+  public String getEmail() {
+    return email;
   }
 
   public Blob getContent() {
