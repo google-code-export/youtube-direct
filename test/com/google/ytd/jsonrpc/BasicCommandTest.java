@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.ytd.command.GetSubmissionsCommand;
+import com.google.ytd.command.GetSubmissions;
 import com.google.ytd.dao.SubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 
@@ -38,7 +38,7 @@ public class BasicCommandTest{
       will(returnValue(submissions));
     }});
 
-    GetSubmissionsCommand command = new GetSubmissionsCommand(manager);
+    GetSubmissions command = new GetSubmissions(manager);
     Map<String,String> params = new HashMap<String,String>();
     params.put("sortBy", "created");
     params.put("sortOrder", "desc");

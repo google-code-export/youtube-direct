@@ -12,17 +12,17 @@ import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
 
-public class NewAssignmentCommand extends Command{
+public class NewAssignment extends Command{
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao = null;
 
-  private static final Logger LOG = Logger.getLogger(NewAssignmentCommand.class.getName());
+  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
 
   @Inject
   private Util util;
 
   @Inject
-  public NewAssignmentCommand(AssignmentDao assignmentDao, AdminConfigDao adminConfigDao) {
+  public NewAssignment(AssignmentDao assignmentDao, AdminConfigDao adminConfigDao) {
     this.assignmentDao = assignmentDao;
     this.adminConfigDao = adminConfigDao;
   }

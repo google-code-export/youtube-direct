@@ -177,7 +177,7 @@ admin.sub.initSubmissionGrid = function() {
     if (typeof (submission[cellname]) != 'undefined') {
       submission[cellname] = value;
     }
-    admin.sub.updateSubmission(submission);
+    admin.sub.updateSubmissionStatus(submission);
   };  
   
   grid.onSortCol = function(colType, columnIndex, sortOrder) {    
@@ -572,14 +572,30 @@ admin.sub.showDetails = function(entryId) {
         submission.status = 'SPAM';
         break;        
     }
-    admin.sub.updateSubmission(submission);
+    admin.sub.updateSubmissionStatus(submission);
   });    
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);
   
   mainDiv.find('#saveAdminNotes').click(function() {
-    submission.adminNotes = mainDiv.find('#adminNotes').val();
-    admin.sub.updateSubmission(submission);
+    var command = 'UPDATE_SUBMISSION_ADMIN_NOTES';
+    var params = {};
+    params.id = submission.id;
+    params.adminNotes = mainDiv.find('#adminNotes').val();
+    
+    var jsonRpcCallback = function(jsonStr) {
+      try {
+        var json = JSON.parse(jsonStr);
+        if (!json.error) {
+          //TODO(austinchau) fix admin.showError to display error without xhr obj
+          //admin.showError(xhr, messageElement);
+        }
+      } catch(exception) {
+        // json parse exception
+      }
+    } 
+    
+    jsonrpc.makeRequest(command, params, jsonRpcCallback);
   });
   
   mainDiv.find('#download').click(function() {
@@ -597,24 +613,7 @@ admin.sub.downloadVideo = function(submission) {
 admin.sub.deleteEntry = function(entryId) {
   if (confirm("Delete this entry?")) {
     var messageElement = admin.showMessage("Deleting submission...");
-    
-    var url = '/admin/DeleteSubmission?id=' + entryId;
-    var ajaxCall = {};
-    ajaxCall.cache = false;
-    ajaxCall.type = 'GET';
-    ajaxCall.url = url;
-    ajaxCall.dataType = 'text';
-    ajaxCall.error = function(xhr, text, error) {
-      admin.showError(xhr, messageElement);
-    };
-    ajaxCall.success = function(res) {
-      admin.showMessage("Submission deleted.", messageElement);
-      admin.sub.refreshGrid();
-    };
-    
-    admin.showMessage("Deleting submission...");
-    jQuery.ajax(ajaxCall);
-  }
+  }  
 };
 
 admin.sub.previewVideo = function(entryId) {
@@ -640,51 +639,60 @@ admin.sub.previewVideo = function(entryId) {
 admin.sub.getAllSubmissions = function(callback) {
   var messageElement = admin.showMessage("Loading submissions...");
   
-  var url = '/admin/GetAllSubmissions?sortby=' + admin.sub.sortBy + '&sortorder=' +  admin.sub.sortOrder + 
-      '&pageindex=' + admin.sub.pageIndex + '&pagesize=' + admin.sub.pageSize;
+  var command = 'GET_SUBMISSIONS';
+  var params = {};
+  params.sortBy = admin.sub.sortBy;
+  params.sortOrder = admin.sub.sortOrder;
+  params.pageIndex = admin.sub.pageIndex;
+  params.pageSize = admin.sub.pageSize;
+  params.filterType = admin.sub.filterType;
   
-  if (admin.sub.filterType != 'ALL') {
-    url += '&filtertype=' + admin.sub.filterType;
-  }
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        admin.showMessage("Submissions loaded.", messageElement);
+        admin.sub.total = json.totalSize;
+        console.log(admin.sub.total);
+        var entries = json.result;
+        admin.sub.submissions = entries.concat([]);
+        callback(entries);            
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
   
-  var ajaxCall = {};
-  ajaxCall.cache = false;
-  ajaxCall.type = 'GET';
-  ajaxCall.url = url;
-  ajaxCall.dataType = 'json';
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(result) {
-    admin.showMessage("Submissions loaded.", messageElement);
-    admin.sub.total = result.total;
-    var entries = result.entries;
-    admin.sub.submissions = entries.concat([]);
-    callback(entries);
-  };
-  
-  jQuery.ajax(ajaxCall);
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
 };
 
-admin.sub.updateSubmission = function(entry) {
-  var messageElement = admin.showMessage("Updating submission...");
+admin.sub.updateSubmissionStatus = function(entry) {  
+  var messageElement = admin.showMessage("Updating submission status...");
   
-  var url = '/admin/UpdateSubmission';
-  var ajaxCall = {};
-  ajaxCall.type = 'POST';
-  ajaxCall.url = url;
-  ajaxCall.data = JSON.stringify(entry);
-  ajaxCall.cache = false;
-  ajaxCall.processData = false;
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(res) {
-    admin.showMessage("Submission updated.", messageElement);
-    admin.sub.refreshGrid();
-  };
+  var command = 'UPDATE_SUBMISSION_STATUS';
+  var params = {};
+  params.id = entry.id;
+  params.status = entry.status;
   
-  jQuery.ajax(ajaxCall);
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        admin.showMessage("Submission status updated.", messageElement);
+        admin.sub.refreshGrid();       
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);   
 };
 
 admin.sub.getVideoHTML = function(videoId, width, height) {
