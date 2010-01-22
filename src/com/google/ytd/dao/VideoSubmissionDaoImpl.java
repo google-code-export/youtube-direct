@@ -17,8 +17,8 @@ import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
 
 @Singleton
-public class SubmissionDaoImpl implements SubmissionDao {
-  private static final Logger LOG = Logger.getLogger(SubmissionDaoImpl.class.getName());
+public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
+  private static final Logger LOG = Logger.getLogger(VideoSubmissionDaoImpl.class.getName());
 
   private PersistenceManagerFactory pmf = null;
 
@@ -30,7 +30,7 @@ public class SubmissionDaoImpl implements SubmissionDao {
   private AdminConfigDao adminConfigDao;
 
   @Inject
-  public SubmissionDaoImpl(PersistenceManagerFactory pmf) {
+  public VideoSubmissionDaoImpl(PersistenceManagerFactory pmf) {
     this.pmf = pmf;
   }
 

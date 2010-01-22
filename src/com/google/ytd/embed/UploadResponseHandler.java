@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
@@ -53,7 +53,7 @@ public class UploadResponseHandler extends HttpServlet {
   @Inject
   private YouTubeApiHelper youTubeApiHelper;
   @Inject
-  private SubmissionDao submissionDao;
+  private VideoSubmissionDao submissionDao;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
   @Inject

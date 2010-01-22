@@ -16,7 +16,7 @@ import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AssignmentDao;
-import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.model.VideoSubmission;
@@ -27,12 +27,12 @@ import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
-public class UpdateSubmissionStatus extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdateSubmissionStatus.class.getName());
+public class UpdateVideoSubmissionStatus extends Command {
+  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionStatus.class.getName());
 
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao = null;
-  private SubmissionDao submissionDao = null;
+  private VideoSubmissionDao submissionDao = null;
 
   @Inject
   private Util util;
@@ -44,7 +44,7 @@ public class UpdateSubmissionStatus extends Command {
   private YouTubeApiHelper youTubeApiHelper;
 
   @Inject
-  public UpdateSubmissionStatus(AssignmentDao assignmentDao, SubmissionDao submissionDao,
+  public UpdateVideoSubmissionStatus(AssignmentDao assignmentDao, VideoSubmissionDao submissionDao,
       AdminConfigDao adminConfigDao) {
     this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;

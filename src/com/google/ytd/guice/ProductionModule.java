@@ -10,8 +10,8 @@ import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AdminConfigDaoImpl;
 import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.AssignmentDaoImpl;
-import com.google.ytd.dao.SubmissionDao;
-import com.google.ytd.dao.SubmissionDaoImpl;
+import com.google.ytd.dao.VideoSubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDaoImpl;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.UserAuthTokenDaoImpl;
 
@@ -20,7 +20,7 @@ public class ProductionModule extends AbstractModule {
   protected void configure() {
     bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);
     bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
-    bind(SubmissionDao.class).to(SubmissionDaoImpl.class);
+    bind(VideoSubmissionDao.class).to(VideoSubmissionDaoImpl.class);
     bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
   }
 

@@ -15,8 +15,8 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.ytd.command.GetSubmissions;
-import com.google.ytd.dao.SubmissionDao;
+import com.google.ytd.command.GetVideoSubmissions;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 
 public class BasicCommandTest {
@@ -32,7 +32,7 @@ public class BasicCommandTest {
     submissions.add(videoSubmission);
 
     JUnit4Mockery mockery = new JUnit4Mockery();
-    final SubmissionDao manager = mockery.mock(SubmissionDao.class);
+    final VideoSubmissionDao manager = mockery.mock(VideoSubmissionDao.class);
     mockery.checking(new Expectations() {
       {
         oneOf(manager).getSubmissions(with("created"), with("desc"), with("all"));
@@ -40,7 +40,7 @@ public class BasicCommandTest {
       }
     });
 
-    GetSubmissions command = new GetSubmissions(manager);
+    GetVideoSubmissions command = new GetVideoSubmissions(manager);
     Map<String, String> params = new HashMap<String, String>();
     params.put("sortBy", "created");
     params.put("sortOrder", "desc");
