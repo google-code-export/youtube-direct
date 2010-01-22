@@ -43,106 +43,106 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Util {
-  private static final Logger log = Logger.getLogger(Util.class.getName());
-  private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
+	private static final Logger log = Logger.getLogger(Util.class.getName());
+	private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
-  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-      .setDateFormat(DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
-      .create();
+	public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(
+			DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter()).create();
 
-  private static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
-    public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
-      return serialize(text, type, context);
-    }
+	private static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
+		public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
+			return serialize(text, type, context);
+		}
 
-    public Text fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
-      return deserialize(json, type, context);
-    }
+		public Text fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
+			return deserialize(json, type, context);
+		}
 
-    public JsonElement serialize(Text text, Type type, JsonSerializationContext context) {
-      return new JsonPrimitive(text.getValue());
-    }
+		public JsonElement serialize(Text text, Type type, JsonSerializationContext context) {
+			return new JsonPrimitive(text.getValue());
+		}
 
-    public Text deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
-      try {
-        return new Text(json.getAsString());
-      } catch (JsonParseException e) {
-        // TODO: This is kind of a hacky way of reporting back a parse exception.
-        return new Text(e.toString());
-      }
-    }
-  }
+		public Text deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+			try {
+				return new Text(json.getAsString());
+			} catch (JsonParseException e) {
+				// TODO: This is kind of a hacky way of reporting back a parse
+				// exception.
+				return new Text(e.toString());
+			}
+		}
+	}
 
-  private static Util util = null;
+	private static Util util = null;
 
-  public static Util get() {
-    if (util == null) {
-      return new Util();
-    } else {
-      return util;
-    }
-  }
+	public static Util get() {
+		if (util == null) {
+			return new Util();
+		} else {
+			return util;
+		}
+	}
 
-  public String getPostBody(HttpServletRequest req) throws IOException {
-    InputStream is = req.getInputStream();
+	public String getPostBody(HttpServletRequest req) throws IOException {
+		InputStream is = req.getInputStream();
 
-    StringBuffer body = new StringBuffer();
-    String line = null;
-    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-    while ((line = br.readLine()) != null) {
-      body.append(line);
-      body.append("\n");
-    }
-    return body.toString();
-  }
+		StringBuffer body = new StringBuffer();
+		String line = null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		while ((line = br.readLine()) != null) {
+			body.append(line);
+			body.append("\n");
+		}
+		return body.toString();
+	}
 
-  public String getSelfUrl(HttpServletRequest request) {
-    StringBuffer url = new StringBuffer();
+	public String getSelfUrl(HttpServletRequest request) {
+		StringBuffer url = new StringBuffer();
 
-    url.append(request.getRequestURL());
-    String queryString = request.getQueryString();
-    if (!isNullOrEmpty(queryString)) {
-      url.append("?");
-      url.append(queryString);
-    }
+		url.append(request.getRequestURL());
+		String queryString = request.getQueryString();
+		if (!isNullOrEmpty(queryString)) {
+			url.append("?");
+			url.append(queryString);
+		}
 
-    return url.toString();
-  }
+		return url.toString();
+	}
 
-  public boolean isNullOrEmpty(String input) {
-    if (input == null || input.length() <= 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+	public boolean isNullOrEmpty(String input) {
+		if (input == null || input.length() <= 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-  public String toJson(Object o) {
-    return GSON.toJson(o);
-  }
+	public String toJson(Object o) {
+		return GSON.toJson(o);
+	}
 
-  /**
-   * Sorts a list and then performs a join into one large string, using the
-   * delimeter specified.
-   *
-   * @param strings
-   *          The list of strings to sort and join.
-   * @param delimeter
-   *          The delimeter string to insert in between each string in the list.
-   * @return A string consisting of a sorted list of strings, joined with
-   *         delimeter.
-   */
-  public String sortedJoin(List<String> strings, String delimeter) {
-    Collections.sort(strings);
+	/**
+	 * Sorts a list and then performs a join into one large string, using the
+	 * delimeter specified.
+	 * 
+	 * @param strings
+	 *          The list of strings to sort and join.
+	 * @param delimeter
+	 *          The delimeter string to insert in between each string in the list.
+	 * @return A string consisting of a sorted list of strings, joined with
+	 *         delimeter.
+	 */
+	public String sortedJoin(List<String> strings, String delimeter) {
+		Collections.sort(strings);
 
-    StringBuffer tempBuffer = new StringBuffer();
-    for (int i = 0; i < strings.size(); i++) {
-      tempBuffer.append(strings.get(i));
-      if (i < strings.size() - 1) {
-        tempBuffer.append(delimeter);
-      }
-    }
+		StringBuffer tempBuffer = new StringBuffer();
+		for (int i = 0; i < strings.size(); i++) {
+			tempBuffer.append(strings.get(i));
+			if (i < strings.size() - 1) {
+				tempBuffer.append(delimeter);
+			}
+		}
 
-    return tempBuffer.toString();
-  }
+		return tempBuffer.toString();
+	}
 }

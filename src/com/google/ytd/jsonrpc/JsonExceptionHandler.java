@@ -13,30 +13,30 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class JsonExceptionHandler {
-  private static final Logger LOG = Logger.getLogger(JsonExceptionHandler.class.getName());
+	private static final Logger LOG = Logger.getLogger(JsonExceptionHandler.class.getName());
 
-  public void send(HttpServletResponse resp, Throwable e) throws IOException {
-    LOG.log(Level.SEVERE, e.getMessage(), e);
-    JSONObject json = new JSONObject();
-    try {
-      json.put("error", e.getClass().getName() + ": " + e.getMessage());
-    } catch (JSONException e1) {
-      throw new RuntimeException();
-    } finally {
-      resp.getWriter().write(json.toString());
-    }
-  }
+	public void send(HttpServletResponse resp, Throwable e) throws IOException {
+		LOG.log(Level.SEVERE, e.getMessage(), e);
+		JSONObject json = new JSONObject();
+		try {
+			json.put("error", e.getClass().getName() + ": " + e.getMessage());
+		} catch (JSONException e1) {
+			throw new RuntimeException();
+		} finally {
+			resp.getWriter().write(json.toString());
+		}
+	}
 
-  public void send(HttpServletResponse resp, String message) throws IOException {
-    Exception e = new Exception(message);
-    LOG.log(Level.SEVERE, e.getMessage(), e);
-    JSONObject json = new JSONObject();
-    try {
-      json.put("error", e.getMessage());
-    } catch (JSONException e1) {
-      throw new RuntimeException();
-    } finally {
-      resp.getWriter().write(json.toString());
-    }
-  }
+	public void send(HttpServletResponse resp, String message) throws IOException {
+		Exception e = new Exception(message);
+		LOG.log(Level.SEVERE, e.getMessage(), e);
+		JSONObject json = new JSONObject();
+		try {
+			json.put("error", e.getMessage());
+		} catch (JSONException e1) {
+			throw new RuntimeException();
+		} finally {
+			resp.getWriter().write(json.toString());
+		}
+	}
 }

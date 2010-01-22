@@ -31,38 +31,38 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class UserSession {
 
-  @PrimaryKey
-  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private String id = null;
+	@PrimaryKey
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private String id = null;
 
-  @Persistent(serialized = "true", defaultFetchGroup="true")
-  private Map<String, String> metaDataMap = null;  
-  
-  public UserSession() {
-    this.metaDataMap = new HashMap<String, String>();
-  }  
-  
-  public void setId(String id) {
-    this.id = id;
-  }
+	@Persistent(serialized = "true", defaultFetchGroup = "true")
+	private Map<String, String> metaDataMap = null;
 
-  public String getId() {
-    return id;
-  }  
-  
-  public Map<String, String> getMetaDataMap() {
-    if (this.metaDataMap == null) {      
-      this.metaDataMap = new HashMap<String, String>();
-    }
-    return metaDataMap;
-  }
-  
-  public void addMetaData(String key, String value) {
-    getMetaDataMap().put(key, value);
-  }
-  
-  public String getMetaData(String key) {
-    return getMetaDataMap().get(key);
-  }
+	public UserSession() {
+		this.metaDataMap = new HashMap<String, String>();
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public Map<String, String> getMetaDataMap() {
+		if (this.metaDataMap == null) {
+			this.metaDataMap = new HashMap<String, String>();
+		}
+		return metaDataMap;
+	}
+
+	public void addMetaData(String key, String value) {
+		getMetaDataMap().put(key, value);
+	}
+
+	public String getMetaData(String key) {
+		return getMetaDataMap().get(key);
+	}
 }

@@ -33,22 +33,22 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class GetAdminConfig extends HttpServlet {
-  private static final Logger log = Logger.getLogger(GetAdminConfig.class.getName());
-  @Inject
-  private Util util;
-  @Inject
-  private AdminConfigDao adminConfigDao;
+	private static final Logger log = Logger.getLogger(GetAdminConfig.class.getName());
+	@Inject
+	private Util util;
+	@Inject
+	private AdminConfigDao adminConfigDao;
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    if (adminConfig != null) {
-      resp.setContentType("text/javascript");
-      resp.getWriter().println(util.toJson(adminConfig));
-    } else {
-      log.warning("Couldn't retrieve an AdminConfig instance.");
-      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't retrieve AdminConfig");
-    }
-  }
+		if (adminConfig != null) {
+			resp.setContentType("text/javascript");
+			resp.getWriter().println(util.toJson(adminConfig));
+		} else {
+			log.warning("Couldn't retrieve an AdminConfig instance.");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't retrieve AdminConfig");
+		}
+	}
 }

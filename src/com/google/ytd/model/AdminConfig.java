@@ -32,269 +32,268 @@ import com.google.gson.annotations.Expose;
  */
 @PersistenceCapable(detachable = "true")
 public class AdminConfig implements Serializable {
-  //CONSTANTS
-  private static final String CACHE_KEY = "adminconfig";
-  
-  
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Long id;
-  
-  @Expose
-  @Persistent
-  private String developerKey;
-  
-  @Expose
-  @Persistent
-  private String clientId;
-  
-  @Expose
-  @Persistent
-  private String youTubeUsername;
-  
-  @Expose
-  @Persistent
-  private String youTubeAuthSubToken;
-  
-  @Expose
-  @Persistent
-  private String defaultTag;
+	// CONSTANTS
+	private static final String CACHE_KEY = "adminconfig";
 
-  @Expose
-  @Persistent
-  private Date updated;
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Long id;
 
-  public enum ModerationModeType {
-    MOD_REQUIRED, NO_MOD
-  }
-  
-  @Expose
-  @Persistent
-  private int moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();  
+	@Expose
+	@Persistent
+	private String developerKey;
 
-  public enum BrandingModeType {
-    ON, OFF
-  }
-  
-  @Expose
-  @Persistent
-  private int brandingMode = BrandingModeType.ON.ordinal();    
-  
-  public enum SubmissionModeType {
-    NEW_OR_EXISTING, NEW_ONLY
-  }
-  
-  @Expose
-  @Persistent
-  private int submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();     
-  
-  @Expose
-  @Persistent
-  private String loginInstruction;
-  
-  @Expose
-  @Persistent
-  private String postSubmitMessage;
+	@Expose
+	@Persistent
+	private String clientId;
 
-  @Expose
-  @Persistent
-  private String linkBackText;
+	@Expose
+	@Persistent
+	private String youTubeUsername;
 
-  @Expose
-  @Persistent
-  private boolean moderationEmail;
-  
-  @Expose
-  @Persistent
-  private String approvalEmailText;
+	@Expose
+	@Persistent
+	private String youTubeAuthSubToken;
 
-  @Expose
-  @Persistent
-  private String rejectionEmailText;
+	@Expose
+	@Persistent
+	private String defaultTag;
 
-  @Expose
-  @Persistent
-  private String fromAddress;
+	@Expose
+	@Persistent
+	private Date updated;
 
-  @Expose
-  @Persistent
-  private String newSubmissionAddress;
-  
-  public AdminConfig() {
-    // Fetch default values from appengine-web.xml system props
-    clientId = System.getProperty("com.google.ytd.YTClientID", "");
-    developerKey = System.getProperty("com.google.ytd.YTDeveloperKey", "");  
-    defaultTag = System.getProperty("com.google.ytd.BrandingTag", "");
-    linkBackText = System.getProperty("com.google.ytd.LinkBackText", "");
-    
-    moderationEmail = false;
-    approvalEmailText = System.getProperty("com.google.ytd.ApprovalEmailText", "");
-    rejectionEmailText = System.getProperty("com.google.ytd.RejectionEmailText", "");
-    fromAddress = System.getProperty("com.google.ytd.FromAddress", "");
-    newSubmissionAddress = System.getProperty("com.google.ytd.NewSubmissionAddress", "");
-    
-    moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
-    brandingMode = BrandingModeType.ON.ordinal();
-    submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
-    
-    loginInstruction = "Please login to your YouTube account to submit a video.<br/><br/>" +
-    		"Use of this tool is governed by the " +
-    		"<a href='terms.html' target='_blank'>terms of service</a>.";
-    
-    postSubmitMessage = "Thank you for your submission.";
-    
-    setUpdated(new Date());
-  }
-  
-  public String getNewSubmissionAddress() {
-    return newSubmissionAddress;
-  }
+	public enum ModerationModeType {
+		MOD_REQUIRED, NO_MOD
+	}
 
-  public void setNewSubmissionAddress(String newSubmissionAddress) {
-    this.newSubmissionAddress = newSubmissionAddress;
-  }
-  
-  public String getFromAddress() {
-    return fromAddress;
-  }
+	@Expose
+	@Persistent
+	private int moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
 
-  public void setFromAddress(String fromAddress) {
-    this.fromAddress = fromAddress;
-  }
-  
-  public String getRejectionEmailText() {
-    try {
-      return URLDecoder.decode(rejectionEmailText, "utf-8");
-    } catch (UnsupportedEncodingException e) {
-      return rejectionEmailText;
-    }
-  }
+	public enum BrandingModeType {
+		ON, OFF
+	}
 
-  public void setRejectionEmailText(String rejectionEmailText) {
-    this.rejectionEmailText = rejectionEmailText;
-  }
-  
-  public boolean isModerationEmail() {
-    return moderationEmail;
-  }
+	@Expose
+	@Persistent
+	private int brandingMode = BrandingModeType.ON.ordinal();
 
-  public void setModerationEmail(boolean moderationEmail) {
-    this.moderationEmail = moderationEmail;
-  }
+	public enum SubmissionModeType {
+		NEW_OR_EXISTING, NEW_ONLY
+	}
 
-  public String getApprovalEmailText() {
-    try {
-      return URLDecoder.decode(approvalEmailText, "utf-8");
-    } catch (UnsupportedEncodingException e) {
-      return approvalEmailText;
-    }
-  }
+	@Expose
+	@Persistent
+	private int submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
 
-  public void setApprovalEmailText(String moderationEmailText) {
-    this.approvalEmailText = moderationEmailText;
-  }
-  
-  public String getLinkBackText() {
-    return linkBackText;
-  }
+	@Expose
+	@Persistent
+	private String loginInstruction;
 
-  public void setLinkBackText(String linkBackText) {
-    this.linkBackText = linkBackText;
-  }
-  
-  public Long getId() {
-    return id;
-  }
+	@Expose
+	@Persistent
+	private String postSubmitMessage;
 
-  public String getDeveloperKey() {
-    return developerKey;
-  }
+	@Expose
+	@Persistent
+	private String linkBackText;
 
-  public void setDeveloperKey(String developerKey) {
-    this.developerKey = developerKey;
-  }
+	@Expose
+	@Persistent
+	private boolean moderationEmail;
 
-  public String getClientId() {
-    return clientId;
-  }
+	@Expose
+	@Persistent
+	private String approvalEmailText;
 
-  public void setClientId(String clientId) {
-    this.clientId = clientId;
-  }
-  
-  public String getYouTubeUsername() {
-    return youTubeUsername;
-  }
-  
-  public void setYouTubeUsername(String youTubeUsername) {
-    this.youTubeUsername = youTubeUsername;
-  }
-  
-  public String getYouTubeAuthSubToken() {
-    return youTubeAuthSubToken;
-  }
-  
-  public void setYouTubeAuthSubToken(String youTubeAuthSubToken) {
-    this.youTubeAuthSubToken = youTubeAuthSubToken;
-  }
-  
-  public String getDefaultTag() {
-    return defaultTag;
-  }
-  
-  public void setDefaultTag(String defaultTag) {
-    this.defaultTag = defaultTag;
-  }
+	@Expose
+	@Persistent
+	private String rejectionEmailText;
 
-  public void setModerationMode(int moderationMode) {
-    this.moderationMode = moderationMode;
-  }
+	@Expose
+	@Persistent
+	private String fromAddress;
 
-  public int getModerationMode() {
-    return moderationMode;
-  }
+	@Expose
+	@Persistent
+	private String newSubmissionAddress;
 
-  public void setBrandingMode(int brandingMode) {
-    this.brandingMode = brandingMode;
-  }
+	public AdminConfig() {
+		// Fetch default values from appengine-web.xml system props
+		clientId = System.getProperty("com.google.ytd.YTClientID", "");
+		developerKey = System.getProperty("com.google.ytd.YTDeveloperKey", "");
+		defaultTag = System.getProperty("com.google.ytd.BrandingTag", "");
+		linkBackText = System.getProperty("com.google.ytd.LinkBackText", "");
 
-  public int getBrandingMode() {
-    return brandingMode;
-  }
+		moderationEmail = false;
+		approvalEmailText = System.getProperty("com.google.ytd.ApprovalEmailText", "");
+		rejectionEmailText = System.getProperty("com.google.ytd.RejectionEmailText", "");
+		fromAddress = System.getProperty("com.google.ytd.FromAddress", "");
+		newSubmissionAddress = System.getProperty("com.google.ytd.NewSubmissionAddress", "");
 
-  public void setSubmissionMode(int submissionMode) {
-    this.submissionMode = submissionMode;
-  }
+		moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
+		brandingMode = BrandingModeType.ON.ordinal();
+		submissionMode = SubmissionModeType.NEW_OR_EXISTING.ordinal();
 
-  public int getSubmissionMode() {
-    return submissionMode;
-  }
+		loginInstruction = "Please login to your YouTube account to submit a video.<br/><br/>"
+				+ "Use of this tool is governed by the "
+				+ "<a href='terms.html' target='_blank'>terms of service</a>.";
 
-  public void setLoginInstruction(String loginInstruction) {
-    this.loginInstruction = loginInstruction;
-  }
+		postSubmitMessage = "Thank you for your submission.";
 
-  public String getLoginInstruction() {
-    return loginInstruction;
-  }
+		setUpdated(new Date());
+	}
 
-  public void setUpdated(Date updated) {
-    this.updated = updated;
-  }
+	public String getNewSubmissionAddress() {
+		return newSubmissionAddress;
+	}
 
-  public Date getUpdated() {
-    return updated;
-  }
+	public void setNewSubmissionAddress(String newSubmissionAddress) {
+		this.newSubmissionAddress = newSubmissionAddress;
+	}
 
-  public String getPostSubmitMessage() {
-    return postSubmitMessage;
-  }
+	public String getFromAddress() {
+		return fromAddress;
+	}
 
-  public void setPostSubmitMessage(String postSubmitMessage) {
-    this.postSubmitMessage = postSubmitMessage;
-  }
-  
-  public static Object getCacheKey() {
-    return CACHE_KEY;
-  }
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
+	}
+
+	public String getRejectionEmailText() {
+		try {
+			return URLDecoder.decode(rejectionEmailText, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			return rejectionEmailText;
+		}
+	}
+
+	public void setRejectionEmailText(String rejectionEmailText) {
+		this.rejectionEmailText = rejectionEmailText;
+	}
+
+	public boolean isModerationEmail() {
+		return moderationEmail;
+	}
+
+	public void setModerationEmail(boolean moderationEmail) {
+		this.moderationEmail = moderationEmail;
+	}
+
+	public String getApprovalEmailText() {
+		try {
+			return URLDecoder.decode(approvalEmailText, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			return approvalEmailText;
+		}
+	}
+
+	public void setApprovalEmailText(String moderationEmailText) {
+		this.approvalEmailText = moderationEmailText;
+	}
+
+	public String getLinkBackText() {
+		return linkBackText;
+	}
+
+	public void setLinkBackText(String linkBackText) {
+		this.linkBackText = linkBackText;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getDeveloperKey() {
+		return developerKey;
+	}
+
+	public void setDeveloperKey(String developerKey) {
+		this.developerKey = developerKey;
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getYouTubeUsername() {
+		return youTubeUsername;
+	}
+
+	public void setYouTubeUsername(String youTubeUsername) {
+		this.youTubeUsername = youTubeUsername;
+	}
+
+	public String getYouTubeAuthSubToken() {
+		return youTubeAuthSubToken;
+	}
+
+	public void setYouTubeAuthSubToken(String youTubeAuthSubToken) {
+		this.youTubeAuthSubToken = youTubeAuthSubToken;
+	}
+
+	public String getDefaultTag() {
+		return defaultTag;
+	}
+
+	public void setDefaultTag(String defaultTag) {
+		this.defaultTag = defaultTag;
+	}
+
+	public void setModerationMode(int moderationMode) {
+		this.moderationMode = moderationMode;
+	}
+
+	public int getModerationMode() {
+		return moderationMode;
+	}
+
+	public void setBrandingMode(int brandingMode) {
+		this.brandingMode = brandingMode;
+	}
+
+	public int getBrandingMode() {
+		return brandingMode;
+	}
+
+	public void setSubmissionMode(int submissionMode) {
+		this.submissionMode = submissionMode;
+	}
+
+	public int getSubmissionMode() {
+		return submissionMode;
+	}
+
+	public void setLoginInstruction(String loginInstruction) {
+		this.loginInstruction = loginInstruction;
+	}
+
+	public String getLoginInstruction() {
+		return loginInstruction;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public String getPostSubmitMessage() {
+		return postSubmitMessage;
+	}
+
+	public void setPostSubmitMessage(String postSubmitMessage) {
+		this.postSubmitMessage = postSubmitMessage;
+	}
+
+	public static Object getCacheKey() {
+		return CACHE_KEY;
+	}
 }

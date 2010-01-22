@@ -37,55 +37,56 @@ import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
 
 /**
- * Servlet responsible for saving updates to the AdminConfig singleton, based on JSON input.
+ * Servlet responsible for saving updates to the AdminConfig singleton, based on
+ * JSON input.
  */
 @Singleton
 public class PersistAdminConfig extends HttpServlet {
-  private static final Logger log = Logger.getLogger(PersistAdminConfig.class.getName());
-  @Inject
-  private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
-  @Inject
-  private AdminConfigDao adminConfigDao;
+	private static final Logger log = Logger.getLogger(PersistAdminConfig.class.getName());
+	@Inject
+	private Util util;
+	@Inject
+	private PersistenceManagerFactory pmf;
+	@Inject
+	private AdminConfigDao adminConfigDao;
 
-  @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PersistenceManager pm = pmf.getPersistenceManager();
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		PersistenceManager pm = pmf.getPersistenceManager();
 
-    String json = util.getPostBody(req);
+		String json = util.getPostBody(req);
 
-    AdminConfig jsonObj = util.GSON.fromJson(json, AdminConfig.class);
+		AdminConfig jsonObj = util.GSON.fromJson(json, AdminConfig.class);
 
-    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+		AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    adminConfig.setClientId(jsonObj.getClientId());
-    adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());
-    adminConfig.setDefaultTag(jsonObj.getDefaultTag());
-    adminConfig.setLinkBackText(jsonObj.getLinkBackText());
-    adminConfig.setModerationMode(jsonObj.getModerationMode());
-    adminConfig.setBrandingMode(jsonObj.getBrandingMode());
-    adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());
-    adminConfig.setNewSubmissionAddress(jsonObj.getNewSubmissionAddress());
-    adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
-    adminConfig.setPostSubmitMessage(jsonObj.getPostSubmitMessage());
-    adminConfig.setModerationEmail(jsonObj.isModerationEmail());
-    adminConfig.setFromAddress(jsonObj.getFromAddress());
-    adminConfig.setApprovalEmailText(jsonObj.getApprovalEmailText());
-    adminConfig.setRejectionEmailText(jsonObj.getRejectionEmailText());
-    adminConfig.setUpdated(new Date());
+		adminConfig.setClientId(jsonObj.getClientId());
+		adminConfig.setDeveloperKey(jsonObj.getDeveloperKey());
+		adminConfig.setDefaultTag(jsonObj.getDefaultTag());
+		adminConfig.setLinkBackText(jsonObj.getLinkBackText());
+		adminConfig.setModerationMode(jsonObj.getModerationMode());
+		adminConfig.setBrandingMode(jsonObj.getBrandingMode());
+		adminConfig.setSubmissionMode(jsonObj.getSubmissionMode());
+		adminConfig.setNewSubmissionAddress(jsonObj.getNewSubmissionAddress());
+		adminConfig.setLoginInstruction(jsonObj.getLoginInstruction());
+		adminConfig.setPostSubmitMessage(jsonObj.getPostSubmitMessage());
+		adminConfig.setModerationEmail(jsonObj.isModerationEmail());
+		adminConfig.setFromAddress(jsonObj.getFromAddress());
+		adminConfig.setApprovalEmailText(jsonObj.getApprovalEmailText());
+		adminConfig.setRejectionEmailText(jsonObj.getRejectionEmailText());
+		adminConfig.setUpdated(new Date());
 
-    pm.makePersistent(adminConfig);
-    pm.close();
-    
-    try {
-      Cache cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.EMPTY_MAP);
-      cache.remove(AdminConfig.getCacheKey());
-    } catch (CacheException e) {
-      log.log(Level.WARNING, "", e);
-    }
+		pm.makePersistent(adminConfig);
+		pm.close();
 
-    resp.setContentType("text/javascript");
-    resp.getWriter().println(util.GSON.toJson(adminConfig));
-  }
+		try {
+			Cache cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.EMPTY_MAP);
+			cache.remove(AdminConfig.getCacheKey());
+		} catch (CacheException e) {
+			log.log(Level.WARNING, "", e);
+		}
+
+		resp.setContentType("text/javascript");
+		resp.getWriter().println(util.GSON.toJson(adminConfig));
+	}
 }

@@ -39,89 +39,89 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class UserSessionManager {
-  private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
+	private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
 
-  @Inject
-  private Util util;
-  @Inject
-  private PmfUtil pmfUtil;
-  @Inject
-  private PersistenceManagerFactory pmf;
+	@Inject
+	private Util util;
+	@Inject
+	private PmfUtil pmfUtil;
+	@Inject
+	private PersistenceManagerFactory pmf;
 
-  public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
-    Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
-    // cookie lives for a year
-    cookie.setMaxAge(31536000);
-    response.addCookie(cookie);
-  }
+	public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
+		Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
+		// cookie lives for a year
+		cookie.setMaxAge(31536000);
+		response.addCookie(cookie);
+	}
 
-  public void destroySessionIdCookie(HttpServletResponse response) {
-    Cookie cookie = new Cookie(USER_SESSION_ID_NAME, "");
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
-  }
+	public void destroySessionIdCookie(HttpServletResponse response) {
+		Cookie cookie = new Cookie(USER_SESSION_ID_NAME, "");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
+	}
 
-  public boolean isSessionValid(UserSession session) {
+	public boolean isSessionValid(UserSession session) {
 
-    boolean valid = true;
+		boolean valid = true;
 
-    String authSubToken = session.getMetaData("authSubToken");
+		String authSubToken = session.getMetaData("authSubToken");
 
-    if (authSubToken != null) {
+		if (authSubToken != null) {
 
-      try {
-        AuthSubUtil.getTokenInfo(authSubToken, null);
-      } catch (AuthenticationException e) {
-        valid = false;
-      } catch (IOException e) {
-        valid = false;
-      } catch (GeneralSecurityException e) {
-        valid = false;
-      }
-    } else {
-      valid = false;
+			try {
+				AuthSubUtil.getTokenInfo(authSubToken, null);
+			} catch (AuthenticationException e) {
+				valid = false;
+			} catch (IOException e) {
+				valid = false;
+			} catch (GeneralSecurityException e) {
+				valid = false;
+			}
+		} else {
+			valid = false;
 
-    }
-    return valid;
-  }
+		}
+		return valid;
+	}
 
-  public UserSession save(UserSession session) {
-    return (UserSession) pmfUtil.persistJdo(session);
-  }
+	public UserSession save(UserSession session) {
+		return (UserSession) pmfUtil.persistJdo(session);
+	}
 
-  public void delete(UserSession session) {
-    pmfUtil.removeJdo(session);
-  }
+	public void delete(UserSession session) {
+		pmfUtil.removeJdo(session);
+	}
 
-  public UserSession getUserSession(HttpServletRequest request) {
+	public UserSession getUserSession(HttpServletRequest request) {
 
-    UserSession userSession = null;
+		UserSession userSession = null;
 
-    Cookie[] cookies = request.getCookies();
+		Cookie[] cookies = request.getCookies();
 
-    if (cookies != null) {
-      for (Cookie cookie : cookies) {
-        if (USER_SESSION_ID_NAME.equals(cookie.getName())) {
-          String sessionId = cookie.getValue();
-          PersistenceManager pm = pmf.getPersistenceManager();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (USER_SESSION_ID_NAME.equals(cookie.getName())) {
+					String sessionId = cookie.getValue();
+					PersistenceManager pm = pmf.getPersistenceManager();
 
-          String filters = "id == id_";
-          Query query = pm.newQuery(UserSession.class, filters);
-          query.declareParameters("String id_");
-          List<UserSession> list = (List<UserSession>) query
-              .executeWithArray(new Object[] { sessionId });
+					String filters = "id == id_";
+					Query query = pm.newQuery(UserSession.class, filters);
+					query.declareParameters("String id_");
+					List<UserSession> list = (List<UserSession>) query
+							.executeWithArray(new Object[] { sessionId });
 
-          if (list.size() > 0) {
-            userSession = list.get(0);
-            userSession = pm.detachCopy(userSession);
-          }
+					if (list.size() > 0) {
+						userSession = list.get(0);
+						userSession = pm.detachCopy(userSession);
+					}
 
-          pm.close();
-        }
-      }
-    }
+					pm.close();
+				}
+			}
+		}
 
-    return userSession;
-  }
+		return userSession;
+	}
 
 }

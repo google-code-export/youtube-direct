@@ -14,18 +14,18 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class EmbedJspForwarder extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(EmbedJspForwarder.class.getName());
-  @Inject
-  private PersistenceManagerFactory pmf = null;
+	private static final Logger LOG = Logger.getLogger(EmbedJspForwarder.class.getName());
+	@Inject
+	private PersistenceManagerFactory pmf = null;
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    try {
-      getServletContext().setAttribute("pmf", pmf);
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		try {
+			getServletContext().setAttribute("pmf", pmf);
 
-      getServletContext().getRequestDispatcher("/embed.jsp").forward(req, resp);
-    } catch (ServletException e) {
-      e.printStackTrace();
-    }
-  }
+			getServletContext().getRequestDispatcher("/embed.jsp").forward(req, resp);
+		} catch (ServletException e) {
+			e.printStackTrace();
+		}
+	}
 }

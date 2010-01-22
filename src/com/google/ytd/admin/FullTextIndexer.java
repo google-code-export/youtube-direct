@@ -41,82 +41,82 @@ import com.google.ytd.util.Util;
 
 /**
  * Servlet to handle full text indexing of datastore properties.
- *
+ * 
  * Not currently used, but may be in the future.
  */
 @Singleton
 public class FullTextIndexer extends HttpServlet {
-  @Inject
-  private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
+	@Inject
+	private Util util;
+	@Inject
+	private PersistenceManagerFactory pmf;
 
-  private static final Logger log = Logger.getLogger(FullTextIndexer.class.getName());
+	private static final Logger log = Logger.getLogger(FullTextIndexer.class.getName());
 
-  private static Compass compass;
-  private static CompassGps compassGps;
+	private static Compass compass;
+	private static CompassGps compassGps;
 
-  public FullTextIndexer() {
-    compass = new CompassConfiguration().setConnection("gae://index").setSetting(
-        CompassEnvironment.ExecutorManager.EXECUTOR_MANAGER_TYPE, "disabled").addScan(
-        "com.google.ytd/model").buildCompass();
+	public FullTextIndexer() {
+		compass = new CompassConfiguration().setConnection("gae://index").setSetting(
+				CompassEnvironment.ExecutorManager.EXECUTOR_MANAGER_TYPE, "disabled").addScan(
+				"com.google.ytd/model").buildCompass();
 
-    compassGps = new SingleCompassGps(compass);
-    Jdo2GpsDevice gpsDevice = new Jdo2GpsDevice("appengine", pmf);
-    gpsDevice.setIgnoreMirrorExceptions(true);
-    gpsDevice.setMirrorDataChanges(true);
-    compassGps.addGpsDevice(gpsDevice);
-    compassGps.start();
-    compassGps.index();
-  }
+		compassGps = new SingleCompassGps(compass);
+		Jdo2GpsDevice gpsDevice = new Jdo2GpsDevice("appengine", pmf);
+		gpsDevice.setIgnoreMirrorExceptions(true);
+		gpsDevice.setMirrorDataChanges(true);
+		compassGps.addGpsDevice(gpsDevice);
+		compassGps.start();
+		compassGps.index();
+	}
 
-  public void reIndex() {
-    compassGps.index();
-  }
+	public void reIndex() {
+		compassGps.index();
+	}
 
-  public Compass getCompass() {
-    return compass;
-  }
+	public Compass getCompass() {
+		return compass;
+	}
 
-  public void addIndex(Object object, Class indexClass) {
-    compass.getSearchEngineIndexManager().releaseLocks();
-    CompassIndexSession indexSession = compass.openIndexSession();
-    indexSession.save(object);
-    indexSession.close();
-  }
+	public void addIndex(Object object, Class indexClass) {
+		compass.getSearchEngineIndexManager().releaseLocks();
+		CompassIndexSession indexSession = compass.openIndexSession();
+		indexSession.save(object);
+		indexSession.close();
+	}
 
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-    String query = req.getParameter("q");
+		String query = req.getParameter("q");
 
-    CompassSearchSession search = getCompass().openSearchSession();
+		CompassSearchSession search = getCompass().openSearchSession();
 
-    CompassHits hits = search.find(query);
+		CompassHits hits = search.find(query);
 
-    for (int i = 0; i < hits.length(); i++) {
-      VideoSubmission entry = (VideoSubmission) hits.data(i);
-      Resource resource = hits.resource(i);
-      log.warning("title = " + entry.getVideoTitle());
-      log.warning("tags = " + entry.getVideoTags());
-    }
+		for (int i = 0; i < hits.length(); i++) {
+			VideoSubmission entry = (VideoSubmission) hits.data(i);
+			Resource resource = hits.resource(i);
+			log.warning("title = " + entry.getVideoTitle());
+			log.warning("tags = " + entry.getVideoTags());
+		}
 
-    search.close();
+		search.close();
 
-    resp.getWriter().print("size: " + hits.length());
-  }
+		resp.getWriter().print("size: " + hits.length());
+	}
 
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    log.warning("task invoked!");
-  }
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		log.warning("task invoked!");
+	}
 
-  /*
-   * public void testTaskQueue() { Queue queue = QueueFactory.getDefaultQueue();
-   *
-   * TaskOptions taskOptions = TaskOptions.Builder.withDefaults();
-   *
-   * taskOptions = taskOptions.url("/test"); taskOptions =
-   * taskOptions.method(Method.POST);
-   *
-   * queue.add(taskOptions); }
-   */
+	/*
+	 * public void testTaskQueue() { Queue queue = QueueFactory.getDefaultQueue();
+	 * 
+	 * TaskOptions taskOptions = TaskOptions.Builder.withDefaults();
+	 * 
+	 * taskOptions = taskOptions.url("/test"); taskOptions =
+	 * taskOptions.method(Method.POST);
+	 * 
+	 * queue.add(taskOptions); }
+	 */
 }

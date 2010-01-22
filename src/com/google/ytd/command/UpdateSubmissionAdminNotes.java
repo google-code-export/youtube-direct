@@ -12,8 +12,7 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
 public class UpdateSubmissionAdminNotes extends Command {
-	private static final Logger LOG = Logger
-			.getLogger(UpdateSubmissionAdminNotes.class.getName());
+	private static final Logger LOG = Logger.getLogger(UpdateSubmissionAdminNotes.class.getName());
 
 	private SubmissionDao submissionDao = null;
 

@@ -16,17 +16,17 @@ import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.UserAuthTokenDaoImpl;
 
 public class ProductionModule extends AbstractModule {
-  @Override
-  protected void configure() {
-    bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);
-    bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
-    bind(SubmissionDao.class).to(SubmissionDaoImpl.class);
-    bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
-  }
+	@Override
+	protected void configure() {
+		bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);
+		bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
+		bind(SubmissionDao.class).to(SubmissionDaoImpl.class);
+		bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
+	}
 
-  @Provides
-  @Singleton
-  PersistenceManagerFactory providePmf() {
-    return JDOHelper.getPersistenceManagerFactory("transactions-optional");
-  }
+	@Provides
+	@Singleton
+	PersistenceManagerFactory providePmf() {
+		return JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	}
 }
