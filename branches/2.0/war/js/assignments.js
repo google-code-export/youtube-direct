@@ -560,52 +560,57 @@ admin.assign.showAssignmentCreate = function() {
 admin.assign.getAllAssignments = function(callback) {
   var messageElement = admin.showMessage("Loading assignments...");
   
-  var url = '/admin/GetAllAssignments?sortby=' + admin.assign.sortBy + '&sortorder=' +  
-      admin.assign.sortOrder + '&pageindex=' + admin.assign.pageIndex + '&pagesize=' + 
-      admin.assign.pageSize;
-
-  if (admin.assign.filterType != 'ALL') {
-    url += '&filtertype=' + admin.assign.filterType;
-  }  
+  var command = 'GET_ASSIGNMENTS';
+  var params = {};
+  params.sortBy = admin.assign.sortBy;
+  params.sortOrder = admin.assign.sortOrder;
+  params.pageIndex = admin.assign.pageIndex;
+  params.pageSize = admin.assign.pageSize;
+  params.filterType = admin.assign.filterType;
   
-  var ajaxCall = {};
-  ajaxCall.cache = false;
-  ajaxCall.type = 'GET';
-  ajaxCall.url = url;
-  ajaxCall.dataType = 'json';
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(result) {
-    admin.showMessage("Assignments loaded.", messageElement);
-    admin.assign.total = result.total;
-    var entries = result.entries                  
-    admin.assign.assignments = entries.concat([]);
-    callback(entries);        
-  };
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        admin.showMessage("Assignments loaded.", messageElement);
+        admin.assign.total = json.totalSize;
+        var entries = json.result;
+        admin.assign.assignments = entries.concat([]);
+        callback(entries);            
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
   
-  jQuery.ajax(ajaxCall);
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);
 };
 
 admin.assign.updateAssignment = function(entry) {
-  var messageElement = admin.showMessage("Updating assignment...");
+  var messageElement = admin.showMessage("Loading assignments...");
   
-  var url = '/admin/UpdateAssignment';
-  var ajaxCall = {};
-  ajaxCall.type = 'POST';
-  ajaxCall.url = url;
-  ajaxCall.data = JSON.stringify(entry);
-  ajaxCall.cache = false;
-  ajaxCall.processData = false;
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(res) {
-    admin.showMessage("Assignment updated.", messageElement);
-    admin.assign.refreshGrid();
-  };
-
-  jQuery.ajax(ajaxCall);
+  var command = 'UPDATE_ASSIGNMENT';
+  var params = entry;
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        admin.showMessage("Assignment updated.", messageElement);
+        admin.assign.refreshGrid();       
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);    
 };
 
 admin.assign.getPlaylistHTML = function(playlistId, width, height) {

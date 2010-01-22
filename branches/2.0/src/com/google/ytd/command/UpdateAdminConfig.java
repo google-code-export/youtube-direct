@@ -9,21 +9,18 @@ import org.json.JSONObject;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
-import com.google.ytd.model.AdminConfig.BrandingModeType;
-import com.google.ytd.model.AdminConfig.ModerationModeType;
-import com.google.ytd.model.AdminConfig.SubmissionModeType;
 import com.google.ytd.util.Util;
 
-public class UpdateAdminConfigCommand extends Command {
+public class UpdateAdminConfig extends Command {
 	private AdminConfigDao adminConfigDao = null;
 
-	private static final Logger LOG = Logger.getLogger(UpdateAdminConfigCommand.class.getName());
+	private static final Logger LOG = Logger.getLogger(UpdateAdminConfig.class.getName());
 
 	@Inject
 	private Util util;
 
 	@Inject
-	public UpdateAdminConfigCommand(AdminConfigDao adminConfigDao) {
+	public UpdateAdminConfig(AdminConfigDao adminConfigDao) {
 		this.adminConfigDao = adminConfigDao;
 	}
 
@@ -65,17 +62,15 @@ public class UpdateAdminConfigCommand extends Command {
 		}
 
 		if (!util.isNullOrEmpty(moderationMode)) {
-			adminConfig.setModerationMode(ModerationModeType.valueOf(moderationMode.toUpperCase())
-					.ordinal());
+			adminConfig.setModerationMode(Integer.parseInt(moderationMode));
 		}
 
 		if (!util.isNullOrEmpty(brandingMode)) {
-			adminConfig.setBrandingMode(BrandingModeType.valueOf(brandingMode.toUpperCase()).ordinal());
+			adminConfig.setBrandingMode(Integer.parseInt(brandingMode));
 		}
 
 		if (!util.isNullOrEmpty(submissionMode)) {
-			adminConfig.setSubmissionMode(SubmissionModeType.valueOf(submissionMode.toUpperCase())
-					.ordinal());
+			adminConfig.setSubmissionMode(Integer.parseInt(submissionMode));
 		}
 
 		if (!util.isNullOrEmpty(newSubmissionAddress)) {

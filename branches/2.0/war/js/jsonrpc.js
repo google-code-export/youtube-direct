@@ -28,7 +28,6 @@ jsonrpc.makeRequest = function(command, params, callback) {
   var ajaxCall = {};
   ajaxCall.type = 'POST';
   ajaxCall.url = JSON_RPC_URL + '?cachebust=' + new Date().getTime();
-  alert(JSON.stringify(postData));
   ajaxCall.data = JSON.stringify(postData);
   ajaxCall.cache = false;
   ajaxCall.processData = false;

@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.ytd.command.Command;
-import com.google.ytd.command.GetSubmissionsCommand;
+import com.google.ytd.command.GetSubmissions;
 
 @Singleton
 public class CommandDirectory {
@@ -24,7 +24,7 @@ public class CommandDirectory {
   }
 
   private void initCommandMapping() {
-    add("ytd.getSubmissions", GetSubmissionsCommand.class);
+    add("ytd.getSubmissions", GetSubmissions.class);
   }
 
   public void add(String method, Class<? extends Command> command) {

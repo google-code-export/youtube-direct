@@ -49,7 +49,7 @@ admin.config.init = function() {
   });
   
   saveButton.click(function() {
-    admin.config.persistAdminConfig();
+    admin.config.updateAdminConfig();
   });
   
   jQuery('#authenticateButton').click(function() {
@@ -78,23 +78,27 @@ admin.config.toggleModerationEmailTextDiv = function(isVisible) {
 admin.config.getAdminConfig = function(callback) {
   var messageElement = admin.showMessage("Loading configuration...");
   
-  var ajaxCall = {};
-  ajaxCall.type = 'GET';
-  ajaxCall.url = '/admin/GetAdminConfig';
-  ajaxCall.dataType = 'json'; // expecting back
-  ajaxCall.processData = false;
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(res) {
-    admin.showMessage("Configuration loaded.", messageElement);
-    callback(res);
-  };
-
-  jQuery.ajax(ajaxCall);     
+  var command = 'GET_ADMIN_CONFIG';
+  var params = {};
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        callback(json.result);
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
 };
 
-admin.config.persistAdminConfig = function() {
+admin.config.updateAdminConfig = function() {
   var messageElement = admin.showMessage("Saving configuration...");
   
   var developerKey = jQuery('#developerKey').val();   
@@ -112,34 +116,37 @@ admin.config.persistAdminConfig = function() {
   var approvalEmailText = escape(jQuery('#approvalEmailText').val());
   var rejectionEmailText = escape(jQuery('#rejectionEmailText').val());
   
-  var jsonObj = {};
-  jsonObj.developerKey = developerKey;
-  jsonObj.clientId = clientId;
-  jsonObj.defaultTag = defaultTag;
-  jsonObj.linkBackText = linkBackText;
-  jsonObj.moderationMode = moderationMode;
-  jsonObj.newSubmissionAddress = newSubmissionAddress;
-  jsonObj.brandingMode = brandingMode;  
-  jsonObj.submissionMode = submissionMode;  
-  jsonObj.loginInstruction = loginInstruction;
-  jsonObj.postSubmitMessage = postSubmitMessage;
-  jsonObj.moderationEmail = moderationEmail;
-  jsonObj.fromAddress = fromAddress;
-  jsonObj.approvalEmailText = approvalEmailText;
-  jsonObj.rejectionEmailText = rejectionEmailText;
+  var params = {};
+  params.developerKey = developerKey;
+  params.clientId = clientId;
+  params.defaultTag = defaultTag;
+  params.linkBackText = linkBackText;
+  params.moderationMode = moderationMode;
+  params.newSubmissionAddress = newSubmissionAddress;
+  params.brandingMode = brandingMode;  
+  params.submissionMode = submissionMode;  
+  params.loginInstruction = loginInstruction;
+  params.postSubmitMessage = postSubmitMessage;
+  params.moderationEmail = moderationEmail;
+  params.fromAddress = fromAddress;
+  params.approvalEmailText = approvalEmailText;
+  params.rejectionEmailText = rejectionEmailText;
+
+  var command = 'UPDATE_ADMIN_CONFIG';
   
-  var ajaxCall = {};
-  ajaxCall.type = 'POST';
-  ajaxCall.url = '/admin/PersistAdminConfig';
-  ajaxCall.data = JSON.stringify(jsonObj);
-  ajaxCall.dataType = 'json'; // expecting back
-  ajaxCall.processData = false;
-  ajaxCall.error = function(xhr, text, error) {
-    admin.showError(xhr, messageElement);
-  };
-  ajaxCall.success = function(res) {
-    admin.showMessage("Configuration saved.", messageElement);
-  };
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        //TODO(austinchau) fix admin.showError to display error without xhr obj
+        //admin.showError(xhr, messageElement);
+      } else {
+        callback(json.result);
+      }
+    } catch(exception) {
+      // json parse exception
+    }
+  } 
   
-  jQuery.ajax(ajaxCall);    
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);
 };
