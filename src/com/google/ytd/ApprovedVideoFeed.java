@@ -40,90 +40,90 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class ApprovedVideoFeed extends HttpServlet {
-	private static final Logger log = Logger.getLogger(ApprovedVideoFeed.class.getName());
+  private static final Logger log = Logger.getLogger(ApprovedVideoFeed.class.getName());
 
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		String sortBy = "created";
-		String sortOrder = "desc";
-		int pageIndex = 1;
-		int pageSize = 10;
-		int filterType = 1; // approved
-		long assignmentId = -1;
+    String sortBy = "created";
+    String sortOrder = "desc";
+    int pageIndex = 1;
+    int pageSize = 10;
+    int filterType = 1; // approved
+    long assignmentId = -1;
 
-		if (req.getParameter("id") != null) {
-			assignmentId = Long.parseLong(req.getParameter("id"));
-		}
+    if (req.getParameter("id") != null) {
+      assignmentId = Long.parseLong(req.getParameter("id"));
+    }
 
-		if (req.getParameter("sortby") != null) {
-			sortBy = req.getParameter("sortby");
-		}
+    if (req.getParameter("sortby") != null) {
+      sortBy = req.getParameter("sortby");
+    }
 
-		if (req.getParameter("sortorder") != null) {
-			sortOrder = req.getParameter("sortorder");
-		}
+    if (req.getParameter("sortorder") != null) {
+      sortOrder = req.getParameter("sortorder");
+    }
 
-		if (req.getParameter("pageindex") != null) {
-			pageIndex = Integer.parseInt(req.getParameter("pageindex"));
-		}
+    if (req.getParameter("pageindex") != null) {
+      pageIndex = Integer.parseInt(req.getParameter("pageindex"));
+    }
 
-		if (req.getParameter("pagesize") != null) {
-			pageSize = Integer.parseInt(req.getParameter("pagesize"));
-		}
+    if (req.getParameter("pagesize") != null) {
+      pageSize = Integer.parseInt(req.getParameter("pagesize"));
+    }
 
-		if (req.getParameter("filtertype") != null) {
-			filterType = Integer.parseInt(req.getParameter("filtertype"));
-		}
+    if (req.getParameter("filtertype") != null) {
+      filterType = Integer.parseInt(req.getParameter("filtertype"));
+    }
 
-		PersistenceManager pm = pmf.getPersistenceManager();
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			Query query = pm.newQuery(VideoSubmission.class);
+    try {
+      Query query = pm.newQuery(VideoSubmission.class);
 
-			query.declareImports("import java.util.Date");
-			query.setOrdering(sortBy + " " + sortOrder);
-			query.declareParameters("long assignmentId_");
+      query.declareImports("import java.util.Date");
+      query.setOrdering(sortBy + " " + sortOrder);
+      query.declareParameters("long assignmentId_");
 
-			String filters = "assignmentId == assignmentId_";
+      String filters = "assignmentId == assignmentId_";
 
-			if (filterType > -1) {
-				filters += "&& status == " + filterType;
-			}
+      if (filterType > -1) {
+        filters += "&& status == " + filterType;
+      }
 
-			query.setFilter(filters);
+      query.setFilter(filters);
 
-			List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute(assignmentId);
+      List<VideoSubmission> videoEntries = (List<VideoSubmission>) query.execute(assignmentId);
 
-			int totalSize = videoEntries.size();
-			int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
-			int startIndex = (pageIndex - 1) * pageSize; // inclusive
-			int endIndex = -1; // exclusive
+      int totalSize = videoEntries.size();
+      int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
+      int startIndex = (pageIndex - 1) * pageSize; // inclusive
+      int endIndex = -1; // exclusive
 
-			if (pageIndex < totalPages) {
-				endIndex = startIndex + pageSize;
-			} else {
-				if (pageIndex == totalPages && totalSize % pageSize == 0) {
-					endIndex = startIndex + pageSize;
-				} else {
-					endIndex = startIndex + (totalSize % pageSize);
-				}
-			}
+      if (pageIndex < totalPages) {
+        endIndex = startIndex + pageSize;
+      } else {
+        if (pageIndex == totalPages && totalSize % pageSize == 0) {
+          endIndex = startIndex + pageSize;
+        } else {
+          endIndex = startIndex + (totalSize % pageSize);
+        }
+      }
 
-			String json = null;
-			List returnList = videoEntries.subList(startIndex, endIndex);
-			json = util.toJson(returnList);
-			json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
+      String json = null;
+      List returnList = videoEntries.subList(startIndex, endIndex);
+      json = util.toJson(returnList);
+      json = "{\"total\": \"" + totalSize + "\", \"entries\": " + json + "}";
 
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(json);
-		} finally {
-			pm.close();
-		}
-	}
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(json);
+    } finally {
+      pm.close();
+    }
+  }
 }

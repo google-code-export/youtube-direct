@@ -44,98 +44,98 @@ import com.google.ytd.youtube.YouTubeApiHelper;
  */
 @Singleton
 public class UploadResponseHandler extends HttpServlet {
-	private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
+  private static final Logger log = Logger.getLogger(UploadResponseHandler.class.getName());
 
-	@Inject
-	private EmailUtil emailUtil;
-	@Inject
-	private UserSessionManager userSessionManager;
-	@Inject
-	private YouTubeApiHelper youTubeApiHelper;
-	@Inject
-	private SubmissionDao submissionDao;
-	@Inject
-	private UserAuthTokenDao userAuthTokenDao;
-	@Inject
-	private AdminConfigDao adminConfigDao;
+  @Inject
+  private EmailUtil emailUtil;
+  @Inject
+  private UserSessionManager userSessionManager;
+  @Inject
+  private YouTubeApiHelper youTubeApiHelper;
+  @Inject
+  private SubmissionDao submissionDao;
+  @Inject
+  private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		String videoId = req.getParameter("id");
-		String status = req.getParameter("status");
+    String videoId = req.getParameter("id");
+    String status = req.getParameter("status");
 
-		UserSession userSession = userSessionManager.getUserSession(req);
+    UserSession userSession = userSessionManager.getUserSession(req);
 
-		if (status.equals("200")) {
-			String authSubToken = userSession.getMetaData("authSubToken");
-			String articleUrl = userSession.getMetaData("articleUrl");
-			String assignmentId = userSession.getMetaData("assignmentId");
-			String videoTitle = userSession.getMetaData("videoTitle");
-			String videoDescription = userSession.getMetaData("videoDescription");
-			String youTubeName = userSession.getMetaData("youTubeName");
-			String email = userSession.getMetaData("email");
-			String videoTags = userSession.getMetaData("videoTags");
-			String videoLocation = userSession.getMetaData("videoLocation");
-			String videoDate = userSession.getMetaData("videoDate");
+    if (status.equals("200")) {
+      String authSubToken = userSession.getMetaData("authSubToken");
+      String articleUrl = userSession.getMetaData("articleUrl");
+      String assignmentId = userSession.getMetaData("assignmentId");
+      String videoTitle = userSession.getMetaData("videoTitle");
+      String videoDescription = userSession.getMetaData("videoDescription");
+      String youTubeName = userSession.getMetaData("youTubeName");
+      String email = userSession.getMetaData("email");
+      String videoTags = userSession.getMetaData("videoTags");
+      String videoLocation = userSession.getMetaData("videoLocation");
+      String videoDate = userSession.getMetaData("videoDate");
 
-			log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
-					+ "for assignment id '%s'...", videoId, assignmentId));
+      log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
+          + "for assignment id '%s'...", videoId, assignmentId));
 
-			// VideoSubmission submission = new
-			// VideoSubmission(Long.parseLong(assignmentId));
+      // VideoSubmission submission = new
+      // VideoSubmission(Long.parseLong(assignmentId));
 
-			VideoSubmission submission = submissionDao.newSubmission(Long.parseLong(assignmentId));
+      VideoSubmission submission = submissionDao.newSubmission(Long.parseLong(assignmentId));
 
-			submission.setArticleUrl(articleUrl);
-			submission.setVideoId(videoId);
-			submission.setVideoTitle(videoTitle);
-			submission.setVideoDescription(videoDescription);
-			submission.setVideoTags(videoTags);
-			submission.setVideoLocation(videoLocation);
-			submission.setVideoDate(videoDate);
-			submission.setYouTubeName(youTubeName);
-			submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);
-			submission.setNotifyEmail(email);
+      submission.setArticleUrl(articleUrl);
+      submission.setVideoId(videoId);
+      submission.setVideoTitle(videoTitle);
+      submission.setVideoDescription(videoDescription);
+      submission.setVideoTags(videoTags);
+      submission.setVideoLocation(videoLocation);
+      submission.setVideoDate(videoDate);
+      submission.setYouTubeName(youTubeName);
+      submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);
+      submission.setNotifyEmail(email);
 
-			userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
+      userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-			AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-			youTubeApiHelper.setToken(adminConfig.getYouTubeAuthSubToken());
+      youTubeApiHelper.setToken(adminConfig.getYouTubeAuthSubToken());
 
-			if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
-				// NO_MOD is set, auto approve all submission
-				// TODO: This isn't enough, as the normal approval flow (adding the
-				// branding, tags, emails,
-				// etc.) isn't taking place.
-				submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
-				youTubeApiHelper.updateModeration(videoId, true);
-			} else {
-				youTubeApiHelper.updateModeration(videoId, false);
-			}
+      if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
+        // NO_MOD is set, auto approve all submission
+        // TODO: This isn't enough, as the normal approval flow (adding the
+        // branding, tags, emails,
+        // etc.) isn't taking place.
+        submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
+        youTubeApiHelper.updateModeration(videoId, true);
+      } else {
+        youTubeApiHelper.updateModeration(videoId, false);
+      }
 
-			submission = submissionDao.save(submission);
+      submission = submissionDao.save(submission);
 
-			log.fine("...VideoSubmission persisted.");
+      log.fine("...VideoSubmission persisted.");
 
-			emailUtil.sendNewSubmissionEmail(submission);
+      emailUtil.sendNewSubmissionEmail(submission);
 
-			try {
-				JSONObject responseJsonObj = new JSONObject();
-				responseJsonObj.put("videoId", videoId);
-				responseJsonObj.put("status", status);
-				resp.setContentType("text/html");
-				resp.getWriter().println(responseJsonObj.toString());
-			} catch (JSONException e) {
-				log.warning(e.toString());
-				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-			}
-		} else {
-			String code = req.getParameter("code");
-			log.warning(String.format("Upload request for user with session id '%s' failed with "
-					+ "status '%s' and code '%s'.", userSession.getId(), status, code));
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, code);
-		}
-	}
+      try {
+        JSONObject responseJsonObj = new JSONObject();
+        responseJsonObj.put("videoId", videoId);
+        responseJsonObj.put("status", status);
+        resp.setContentType("text/html");
+        resp.getWriter().println(responseJsonObj.toString());
+      } catch (JSONException e) {
+        log.warning(e.toString());
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+      }
+    } else {
+      String code = req.getParameter("code");
+      log.warning(String.format("Upload request for user with session id '%s' failed with "
+          + "status '%s' and code '%s'.", userSession.getId(), status, code));
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, code);
+    }
+  }
 }

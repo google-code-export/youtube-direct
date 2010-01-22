@@ -12,48 +12,48 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
 
 public class UpdateAssignment extends Command {
-	private AssignmentDao assignmentDao = null;
+  private AssignmentDao assignmentDao = null;
 
-	private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
+  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
 
-	@Inject
-	private Util util;
+  @Inject
+  private Util util;
 
-	@Inject
-	public UpdateAssignment(AssignmentDao assignmentDao) {
-		this.assignmentDao = assignmentDao;
-	}
+  @Inject
+  public UpdateAssignment(AssignmentDao assignmentDao) {
+    this.assignmentDao = assignmentDao;
+  }
 
-	@Override
-	public JSONObject execute() throws JSONException {
-		LOG.info(this.toString());
-		JSONObject json = new JSONObject();
+  @Override
+  public JSONObject execute() throws JSONException {
+    LOG.info(this.toString());
+    JSONObject json = new JSONObject();
 
-		String id = getParam("id");
+    String id = getParam("id");
 
-		if (util.isNullOrEmpty(id)) {
-			throw new IllegalArgumentException("Missing required param: id");
-		}
+    if (util.isNullOrEmpty(id)) {
+      throw new IllegalArgumentException("Missing required param: id");
+    }
 
-		Assignment assignment = assignmentDao.getAssignmentById(id);
+    Assignment assignment = assignmentDao.getAssignmentById(id);
 
-		String status = getParam("status");
-		String description = getParam("description");
-		String category = getParam("category");
+    String status = getParam("status");
+    String description = getParam("description");
+    String category = getParam("category");
 
-		if (!util.isNullOrEmpty(status)) {
-			assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
-		}
-		if (!util.isNullOrEmpty(description)) {
-			assignment.setDescription(description);
-		}
+    if (!util.isNullOrEmpty(status)) {
+      assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
+    }
+    if (!util.isNullOrEmpty(description)) {
+      assignment.setDescription(description);
+    }
 
-		if (!util.isNullOrEmpty(category)) {
-			assignment.setCategory(category);
-		}
+    if (!util.isNullOrEmpty(category)) {
+      assignment.setCategory(category);
+    }
 
-		assignment = assignmentDao.save(assignment);
+    assignment = assignmentDao.save(assignment);
 
-		return json;
-	}
+    return json;
+  }
 }

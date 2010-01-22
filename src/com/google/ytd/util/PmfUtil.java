@@ -8,39 +8,39 @@ import javax.jdo.PersistenceManagerFactory;
 import com.google.inject.Inject;
 
 public class PmfUtil {
-	private static final Logger log = Logger.getLogger(PmfUtil.class.getName());
+  private static final Logger log = Logger.getLogger(PmfUtil.class.getName());
 
-	private PersistenceManagerFactory pmf = null;
+  private PersistenceManagerFactory pmf = null;
 
-	@Inject
-	public PmfUtil(PersistenceManagerFactory pmf) {
-		this.pmf = pmf;
-	}
+  @Inject
+  public PmfUtil(PersistenceManagerFactory pmf) {
+    this.pmf = pmf;
+  }
 
-	public PersistenceManagerFactory getPmf() {
-		return pmf;
-	}
+  public PersistenceManagerFactory getPmf() {
+    return pmf;
+  }
 
-	public Object persistJdo(Object entry) {
-		PersistenceManager pm = pmf.getPersistenceManager();
+  public Object persistJdo(Object entry) {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			entry = pm.makePersistent(entry);
-			entry = pm.detachCopy(entry);
-		} finally {
-			pm.close();
-		}
+    try {
+      entry = pm.makePersistent(entry);
+      entry = pm.detachCopy(entry);
+    } finally {
+      pm.close();
+    }
 
-		return entry;
-	}
+    return entry;
+  }
 
-	public void removeJdo(Object entry) {
-		PersistenceManager pm = pmf.getPersistenceManager();
+  public void removeJdo(Object entry) {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			pm.deletePersistent(entry);
-		} finally {
-			pm.close();
-		}
-	}
+    try {
+      pm.deletePersistent(entry);
+    } finally {
+      pm.close();
+    }
+  }
 }

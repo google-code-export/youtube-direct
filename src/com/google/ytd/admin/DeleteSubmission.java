@@ -37,37 +37,37 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class DeleteSubmission extends HttpServlet {
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
 
-	private static final Logger log = Logger.getLogger(DeleteSubmission.class.getName());
+  private static final Logger log = Logger.getLogger(DeleteSubmission.class.getName());
 
-	@Override
-	@SuppressWarnings("cast")
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		PersistenceManager pm = pmf.getPersistenceManager();
+  @Override
+  @SuppressWarnings("cast")
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			String id = req.getParameter("id");
-			if (util.isNullOrEmpty(id)) {
-				throw new IllegalArgumentException("'id' parameter is null or empty.");
-			}
+    try {
+      String id = req.getParameter("id");
+      if (util.isNullOrEmpty(id)) {
+        throw new IllegalArgumentException("'id' parameter is null or empty.");
+      }
 
-			log.info(String.format("Deleting VideoSubmission with id '%s'.", id));
-			VideoSubmission entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
-			pm.deletePersistent(entry);
+      log.info(String.format("Deleting VideoSubmission with id '%s'.", id));
+      VideoSubmission entry = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
+      pm.deletePersistent(entry);
 
-			// Response content is effectively ignored. Anything with a 200 OK should
-			// be fine.
-			resp.setContentType("text/plain");
-			resp.getWriter().print(String.format("Deleted VideoSubmission with id '%s'", id));
-		} catch (IllegalArgumentException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} finally {
-			pm.close();
-		}
-	}
+      // Response content is effectively ignored. Anything with a 200 OK should
+      // be fine.
+      resp.setContentType("text/plain");
+      resp.getWriter().print(String.format("Deleted VideoSubmission with id '%s'", id));
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } finally {
+      pm.close();
+    }
+  }
 }

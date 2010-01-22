@@ -41,58 +41,58 @@ import com.google.ytd.youtube.YouTubeApiHelper;
  */
 @Singleton
 public class NewAssignment extends HttpServlet {
-	private static final Logger log = Logger.getLogger(NewAssignment.class.getName());
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
-	@Inject
-	private YouTubeApiHelper apiManager;
-	@Inject
-	private AdminConfigDao adminConfigDao;
-	@Inject
-	private AssignmentDao assignmentDao;
+  private static final Logger log = Logger.getLogger(NewAssignment.class.getName());
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiHelper apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
+  @Inject
+  private AssignmentDao assignmentDao;
 
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		PersistenceManager pm = pmf.getPersistenceManager();
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    PersistenceManager pm = pmf.getPersistenceManager();
 
-		try {
-			String json = util.getPostBody(req);
-			if (util.isNullOrEmpty(json)) {
-				throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
-			}
+    try {
+      String json = util.getPostBody(req);
+      if (util.isNullOrEmpty(json)) {
+        throw new IllegalArgumentException("No JSON data found in HTTP POST request.");
+      }
 
-			AdminConfig adminConfig = adminConfigDao.getAdminConfig();
-			if (util.isNullOrEmpty(adminConfig.getClientId())
-					|| util.isNullOrEmpty(adminConfig.getDeveloperKey())
-					|| util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {
-				throw new IllegalArgumentException("Unable to create new assignment. "
-						+ "Please configure all YouTube API settings first.");
-			}
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+      if (util.isNullOrEmpty(adminConfig.getClientId())
+          || util.isNullOrEmpty(adminConfig.getDeveloperKey())
+          || util.isNullOrEmpty(adminConfig.getYouTubeAuthSubToken())) {
+        throw new IllegalArgumentException("Unable to create new assignment. "
+            + "Please configure all YouTube API settings first.");
+      }
 
-			Assignment jsonObj = util.GSON.fromJson(json, Assignment.class);
+      Assignment jsonObj = util.GSON.fromJson(json, Assignment.class);
 
-			Assignment assignment = new Assignment();
-			assignment.setStatus(jsonObj.getStatus());
-			assignment.setDescription(jsonObj.getDescription());
-			assignment.setCategory(jsonObj.getCategory());
+      Assignment assignment = new Assignment();
+      assignment.setStatus(jsonObj.getStatus());
+      assignment.setDescription(jsonObj.getDescription());
+      assignment.setCategory(jsonObj.getCategory());
 
-			assignment = assignmentDao.newAssignment(assignment);
+      assignment = assignmentDao.newAssignment(assignment);
 
-			log.info(String.format("Added assignment id %d to the datastore.", assignment.getId()));
+      log.info(String.format("Added assignment id %d to the datastore.", assignment.getId()));
 
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(util.toJson(assignment));
-		} catch (JsonParseException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} finally {
-			pm.close();
-		}
-	}
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(util.toJson(assignment));
+    } catch (JsonParseException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    } finally {
+      pm.close();
+    }
+  }
 
 }

@@ -42,64 +42,64 @@ import com.google.ytd.youtube.YouTubeApiHelper;
  */
 @Singleton
 public class MobileAuthSub extends HttpServlet {
-	private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
-	private static final String AUTH_SUB_FORMAT = "https://www.google.com/accounts/AuthSubRequest?"
-			+ "next=%s&scope=http://gdata.youtube.com&session=1&secure=0&nomobile=1";
-	private static final String REDIRECT_FORMAT = "%s://authsub/%s/%s";
-	@Inject
-	private Util util;
-	@Inject
-	private PersistenceManagerFactory pmf;
-	@Inject
-	private YouTubeApiHelper apiManager;
+  private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
+  private static final String AUTH_SUB_FORMAT = "https://www.google.com/accounts/AuthSubRequest?"
+      + "next=%s&scope=http://gdata.youtube.com&session=1&secure=0&nomobile=1";
+  private static final String REDIRECT_FORMAT = "%s://authsub/%s/%s";
+  @Inject
+  private Util util;
+  @Inject
+  private PersistenceManagerFactory pmf;
+  @Inject
+  private YouTubeApiHelper apiManager;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		try {
-			// We need to know what the redirection protocol will be whether this is
-			// an initial request
-			// or a response back from the AuthSub flow.
-			String protocol = req.getParameter("protocol");
-			if (util.isNullOrEmpty(protocol)) {
-				throw new IllegalArgumentException("'protocol' parameter is null or empty.");
-			}
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    try {
+      // We need to know what the redirection protocol will be whether this is
+      // an initial request
+      // or a response back from the AuthSub flow.
+      String protocol = req.getParameter("protocol");
+      if (util.isNullOrEmpty(protocol)) {
+        throw new IllegalArgumentException("'protocol' parameter is null or empty.");
+      }
 
-			String token = req.getParameter("token");
+      String token = req.getParameter("token");
 
-			if (util.isNullOrEmpty(token)) {
-				// If there is no token URL parameter, start the AuthSub request flow.
-				resp.sendRedirect(String.format(AUTH_SUB_FORMAT, util.getSelfUrl(req)));
-			} else {
-				String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+      if (util.isNullOrEmpty(token)) {
+        // If there is no token URL parameter, start the AuthSub request flow.
+        resp.sendRedirect(String.format(AUTH_SUB_FORMAT, util.getSelfUrl(req)));
+      } else {
+        String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-				// Test the token to make sure it's valid, and get the username it
-				// corresponds to.
-				apiManager.setToken(sessionToken);
+        // Test the token to make sure it's valid, and get the username it
+        // corresponds to.
+        apiManager.setToken(sessionToken);
 
-				String youTubeName = apiManager.getCurrentUsername();
-				if (util.isNullOrEmpty(youTubeName)) {
-					// TODO: Throw a better Exception class here.
-					throw new IllegalArgumentException("Unable to retrieve a YouTube username for the "
-							+ "authenticated user.");
-				}
+        String youTubeName = apiManager.getCurrentUsername();
+        if (util.isNullOrEmpty(youTubeName)) {
+          // TODO: Throw a better Exception class here.
+          throw new IllegalArgumentException("Unable to retrieve a YouTube username for the "
+              + "authenticated user.");
+        }
 
-				// Redirect to the custom URL scheme, which would presumably be handled
-				// by an application
-				// on the mobile phone.
-				resp.sendRedirect(String.format(REDIRECT_FORMAT, protocol, youTubeName, sessionToken));
-			}
-		} catch (AuthenticationException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (GeneralSecurityException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} catch (ServiceException e) {
-			log.log(Level.WARNING, "", e);
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		}
-	}
+        // Redirect to the custom URL scheme, which would presumably be handled
+        // by an application
+        // on the mobile phone.
+        resp.sendRedirect(String.format(REDIRECT_FORMAT, protocol, youTubeName, sessionToken));
+      }
+    } catch (AuthenticationException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (GeneralSecurityException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+  }
 }

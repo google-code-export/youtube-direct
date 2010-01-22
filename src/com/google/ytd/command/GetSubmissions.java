@@ -13,53 +13,53 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
 public class GetSubmissions extends Command {
-	private static final Logger LOG = Logger.getLogger(GetSubmissions.class.getName());
+  private static final Logger LOG = Logger.getLogger(GetSubmissions.class.getName());
 
-	private SubmissionDao submissionDao = null;
+  private SubmissionDao submissionDao = null;
 
-	@Inject
-	private Util util;
+  @Inject
+  private Util util;
 
-	@Inject
-	public GetSubmissions(SubmissionDao submissionDao) {
-		this.submissionDao = submissionDao;
-	}
+  @Inject
+  public GetSubmissions(SubmissionDao submissionDao) {
+    this.submissionDao = submissionDao;
+  }
 
-	@Override
-	public JSONObject execute() throws JSONException {
-		LOG.info(this.toString());
-		JSONObject json = new JSONObject();
-		List<VideoSubmission> submissions = null;
+  @Override
+  public JSONObject execute() throws JSONException {
+    LOG.info(this.toString());
+    JSONObject json = new JSONObject();
+    List<VideoSubmission> submissions = null;
 
-		// TODO(austinchau) Add params validation, preferably something more
-		// structured and reusable
-		// across all commands
-		String sortBy = getParam("sortBy");
-		String sortOrder = getParam("sortOrder");
-		String filterType = getParam("filterType");
-		int pageIndex = Integer.parseInt(getParam("pageIndex"));
-		int pageSize = Integer.parseInt(getParam("pageSize"));
+    // TODO(austinchau) Add params validation, preferably something more
+    // structured and reusable
+    // across all commands
+    String sortBy = getParam("sortBy");
+    String sortOrder = getParam("sortOrder");
+    String filterType = getParam("filterType");
+    int pageIndex = Integer.parseInt(getParam("pageIndex"));
+    int pageSize = Integer.parseInt(getParam("pageSize"));
 
-		submissions = submissionDao.getSubmissions(sortBy, sortOrder, filterType);
-		int totalSize = submissions.size();
-		int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
-		int startIndex = (pageIndex - 1) * pageSize; // inclusive
-		int endIndex = -1; // exclusive
+    submissions = submissionDao.getSubmissions(sortBy, sortOrder, filterType);
+    int totalSize = submissions.size();
+    int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
+    int startIndex = (pageIndex - 1) * pageSize; // inclusive
+    int endIndex = -1; // exclusive
 
-		if (pageIndex < totalPages) {
-			endIndex = startIndex + pageSize;
-		} else {
-			if (pageIndex == totalPages && totalSize % pageSize == 0) {
-				endIndex = startIndex + pageSize;
-			} else {
-				endIndex = startIndex + (totalSize % pageSize);
-			}
-		}
+    if (pageIndex < totalPages) {
+      endIndex = startIndex + pageSize;
+    } else {
+      if (pageIndex == totalPages && totalSize % pageSize == 0) {
+        endIndex = startIndex + pageSize;
+      } else {
+        endIndex = startIndex + (totalSize % pageSize);
+      }
+    }
 
-		submissions = submissions.subList(startIndex, endIndex);
-		json.put("totalSize", totalSize);
-		json.put("totalPages", totalPages);
-		json.put("result", new JSONArray(util.toJson(submissions)));
-		return json;
-	}
+    submissions = submissions.subList(startIndex, endIndex);
+    json.put("totalSize", totalSize);
+    json.put("totalPages", totalPages);
+    json.put("result", new JSONArray(util.toJson(submissions)));
+    return json;
+  }
 }

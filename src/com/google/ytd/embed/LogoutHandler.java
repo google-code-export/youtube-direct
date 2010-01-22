@@ -31,30 +31,30 @@ import com.google.ytd.model.UserSession;
  */
 @Singleton
 public class LogoutHandler extends HttpServlet {
-	private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
-	@Inject
-	private UserSessionManager userSessionManager;
+  private static final Logger log = Logger.getLogger(LogoutHandler.class.getName());
+  @Inject
+  private UserSessionManager userSessionManager;
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		UserSession userSession = userSessionManager.getUserSession(req);
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    UserSession userSession = userSessionManager.getUserSession(req);
 
-		// Don't revoke the AuthSub token, since that's needed for branding the
-		// video after moderation.
-		// If the user wants to revoke their token, they can do it from youtube.com.
+    // Don't revoke the AuthSub token, since that's needed for branding the
+    // video after moderation.
+    // If the user wants to revoke their token, they can do it from youtube.com.
 
-		// Remove local cookie.
-		userSessionManager.destroySessionIdCookie(resp);
+    // Remove local cookie.
+    userSessionManager.destroySessionIdCookie(resp);
 
-		// Get the original URL to redirect.
-		String redirectUrl = userSession.getMetaData("selfUrl");
+    // Get the original URL to redirect.
+    String redirectUrl = userSession.getMetaData("selfUrl");
 
-		log.info(redirectUrl);
+    log.info(redirectUrl);
 
-		// Remove the session entry.
-		userSessionManager.delete(userSession);
+    // Remove the session entry.
+    userSessionManager.delete(userSession);
 
-		// Send the redirect to our original URL.
-		resp.sendRedirect(redirectUrl);
-	}
+    // Send the redirect to our original URL.
+    resp.sendRedirect(redirectUrl);
+  }
 }

@@ -13,22 +13,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 public class OperationDeserializer implements JsonDeserializer<Map<String, String>> {
-	@Override
-	public Map<String, String> deserialize(JsonElement json, Type type,
-			JsonDeserializationContext context) throws JsonParseException {
-		Set<Entry<String, JsonElement>> entries = json.getAsJsonObject().entrySet();
+  @Override
+  public Map<String, String> deserialize(JsonElement json, Type type,
+      JsonDeserializationContext context) throws JsonParseException {
+    Set<Entry<String, JsonElement>> entries = json.getAsJsonObject().entrySet();
 
-		Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new HashMap<String, String>();
 
-		Iterator<Entry<String, JsonElement>> iterator = entries.iterator();
+    Iterator<Entry<String, JsonElement>> iterator = entries.iterator();
 
-		while (iterator.hasNext()) {
-			Entry<String, JsonElement> entry = iterator.next();
-			String key = entry.getKey();
-			JsonElement value = entry.getValue();
-			map.put(key, value.getAsString());
-		}
+    while (iterator.hasNext()) {
+      Entry<String, JsonElement> entry = iterator.next();
+      String key = entry.getKey();
+      JsonElement value = entry.getValue();
+      map.put(key, value.getAsString());
+    }
 
-		return map;
-	}
+    return map;
+  }
 }
