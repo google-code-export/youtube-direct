@@ -28,44 +28,44 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class UserAuthToken {
 
-  @PrimaryKey
-  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private String id = null;
+	@PrimaryKey
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private String id = null;
 
-  @Persistent
-  private String youtubeName;
-  
-  @Persistent
-  private String authSubToken;
-  
-  public UserAuthToken() {
-    this.youtubeName = "";
-    this.authSubToken = "";
-  }
-  
-  public UserAuthToken(String youtubeName, String authSubToken) {
-    this.youtubeName = youtubeName;
-    this.authSubToken = authSubToken;
-  }
+	@Persistent
+	private String youtubeName;
 
-  public String getId() {
-    return id;
-  }
-  
-  public String getYoutubeName() {
-    return youtubeName;
-  }
+	@Persistent
+	private String authSubToken;
 
-  public void setYoutubeName(String youtubeName) {
-    this.youtubeName = youtubeName;
-  }
+	public UserAuthToken() {
+		this.youtubeName = "";
+		this.authSubToken = "";
+	}
 
-  public String getAuthSubToken() {
-    return authSubToken;
-  }
+	public UserAuthToken(String youtubeName, String authSubToken) {
+		this.youtubeName = youtubeName;
+		this.authSubToken = authSubToken;
+	}
 
-  public void setAuthSubToken(String authSubToken) {
-    this.authSubToken = authSubToken;
-  }
+	public String getId() {
+		return id;
+	}
+
+	public String getYoutubeName() {
+		return youtubeName;
+	}
+
+	public void setYoutubeName(String youtubeName) {
+		this.youtubeName = youtubeName;
+	}
+
+	public String getAuthSubToken() {
+		return authSubToken;
+	}
+
+	public void setAuthSubToken(String authSubToken) {
+		this.authSubToken = authSubToken;
+	}
 }

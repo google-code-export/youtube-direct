@@ -12,49 +12,50 @@ import com.google.ytd.model.Assignment;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
 
-public class NewAssignment extends Command{
-  private AssignmentDao assignmentDao = null;
-  private AdminConfigDao adminConfigDao = null;
+public class NewAssignment extends Command {
+	private AssignmentDao assignmentDao = null;
+	private AdminConfigDao adminConfigDao = null;
 
-  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
+	private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
 
-  @Inject
-  private Util util;
+	@Inject
+	private Util util;
 
-  @Inject
-  public NewAssignment(AssignmentDao assignmentDao, AdminConfigDao adminConfigDao) {
-    this.assignmentDao = assignmentDao;
-    this.adminConfigDao = adminConfigDao;
-  }
-  @Override
-  public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
-    JSONObject json = new JSONObject();
-    String status = getParam("status");
-    String description = getParam("description");
-    String category = getParam("category");
+	@Inject
+	public NewAssignment(AssignmentDao assignmentDao, AdminConfigDao adminConfigDao) {
+		this.assignmentDao = assignmentDao;
+		this.adminConfigDao = adminConfigDao;
+	}
 
-    if (util.isNullOrEmpty(description)) {
-      throw new IllegalArgumentException("Missing required param: description");
-    }
-    if (util.isNullOrEmpty(status)) {
-      throw new IllegalArgumentException("Missing required param: status");
-    }
+	@Override
+	public JSONObject execute() throws JSONException {
+		LOG.info(this.toString());
+		JSONObject json = new JSONObject();
+		String status = getParam("status");
+		String description = getParam("description");
+		String category = getParam("category");
 
-    if (util.isNullOrEmpty(category)) {
-      throw new IllegalArgumentException("Missing required param: category");
-    }
+		if (util.isNullOrEmpty(description)) {
+			throw new IllegalArgumentException("Missing required param: description");
+		}
+		if (util.isNullOrEmpty(status)) {
+			throw new IllegalArgumentException("Missing required param: status");
+		}
 
-    Assignment assignment = new Assignment();
-    assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
-    assignment.setDescription(description);
-    assignment.setCategory(category.toUpperCase());
+		if (util.isNullOrEmpty(category)) {
+			throw new IllegalArgumentException("Missing required param: category");
+		}
 
-    assignment = assignmentDao.newAssignment(assignment);
+		Assignment assignment = new Assignment();
+		assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
+		assignment.setDescription(description);
+		assignment.setCategory(category.toUpperCase());
 
-    json.put("id", assignment.getId());
-    json.put("playlistId", assignment.getPlaylistId());
+		assignment = assignmentDao.newAssignment(assignment);
 
-    return json;
-  }
+		json.put("id", assignment.getId());
+		json.put("playlistId", assignment.getPlaylistId());
+
+		return json;
+	}
 }

@@ -21,98 +21,98 @@ import com.google.ytd.model.VideoSubmission.ModerationStatus;
 
 @Singleton
 public class EmailUtil {
-  private static final Logger log = Logger.getLogger(EmailUtil.class.getName());
-  @Inject
-  private AdminConfigDao adminConfigDao;
+	private static final Logger log = Logger.getLogger(EmailUtil.class.getName());
+	@Inject
+	private AdminConfigDao adminConfigDao;
 
-  @Inject
-  private Util util;
+	@Inject
+	private Util util;
 
-  public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
-    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+	public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
+		AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    String address = adminConfig.getNewSubmissionAddress();
-    if (!util.isNullOrEmpty(address)) {
-      try {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-        Message msg = new MimeMessage(session);
+		String address = adminConfig.getNewSubmissionAddress();
+		if (!util.isNullOrEmpty(address)) {
+			try {
+				Properties props = new Properties();
+				Session session = Session.getDefaultInstance(props, null);
+				Message msg = new MimeMessage(session);
 
-        msg.setFrom(new InternetAddress(address, address));
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
+				msg.setFrom(new InternetAddress(address, address));
+				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
 
-        msg.setSubject(String.format("New submission for assignment id %d",
-                videoSubmission.getAssignmentId()));
+				msg.setSubject(String.format("New submission for assignment id %d", videoSubmission
+						.getAssignmentId()));
 
-        msg.setText(String.format("Video %s was submitted by YouTube user %s in response to " +
-                "assignment id %d.", videoSubmission.getWatchUrl(),
-                videoSubmission.getYouTubeName(), videoSubmission.getAssignmentId()));
+				msg.setText(String.format("Video %s was submitted by YouTube user %s in response to "
+						+ "assignment id %d.", videoSubmission.getWatchUrl(), videoSubmission.getYouTubeName(),
+						videoSubmission.getAssignmentId()));
 
-        Transport.send(msg);
-      } catch (UnsupportedEncodingException e) {
-        log.log(Level.WARNING, "", e);
-      } catch (MessagingException e) {
-        log.log(Level.WARNING, "", e);
-      }
-    }
-  }
+				Transport.send(msg);
+			} catch (UnsupportedEncodingException e) {
+				log.log(Level.WARNING, "", e);
+			} catch (MessagingException e) {
+				log.log(Level.WARNING, "", e);
+			}
+		}
+	}
 
-  public void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
-    try {
-      String toAddress = entry.getNotifyEmail();
-      if (util.isNullOrEmpty(toAddress)) {
-        throw new IllegalArgumentException("No destination email address in VideoSubmission.");
-      }
+	public void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
+		try {
+			String toAddress = entry.getNotifyEmail();
+			if (util.isNullOrEmpty(toAddress)) {
+				throw new IllegalArgumentException("No destination email address in VideoSubmission.");
+			}
 
-      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+			AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-      String body;
-      switch (status) {
-        case APPROVED:
-          body = adminConfig.getApprovalEmailText();
-        break;
+			String body;
+			switch (status) {
+			case APPROVED:
+				body = adminConfig.getApprovalEmailText();
+				break;
 
-        case REJECTED:
-          body = adminConfig.getRejectionEmailText();
-        break;
+			case REJECTED:
+				body = adminConfig.getRejectionEmailText();
+				break;
 
-        default:
-          throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
-                status.toString()));
-      }
-      if (util.isNullOrEmpty(body)) {
-        throw new IllegalArgumentException("No email body found in configuration.");
-      }
+			default:
+				throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
+						status.toString()));
+			}
+			if (util.isNullOrEmpty(body)) {
+				throw new IllegalArgumentException("No email body found in configuration.");
+			}
 
-      String fromAddress = adminConfig.getFromAddress();
-      if (util.isNullOrEmpty(fromAddress)) {
-        throw new IllegalArgumentException("No from address found in configuration.");
-      }
+			String fromAddress = adminConfig.getFromAddress();
+			if (util.isNullOrEmpty(fromAddress)) {
+				throw new IllegalArgumentException("No from address found in configuration.");
+			}
 
-      body = body.replace("ARTICLE_URL", entry.getArticleUrl());
-      body = body.replace("YOUTUBE_URL", entry.getWatchUrl());
+			body = body.replace("ARTICLE_URL", entry.getArticleUrl());
+			body = body.replace("YOUTUBE_URL", entry.getWatchUrl());
 
-      Properties props = new Properties();
-      Session session = Session.getDefaultInstance(props, null);
-      Message msg = new MimeMessage(session);
+			Properties props = new Properties();
+			Session session = Session.getDefaultInstance(props, null);
+			Message msg = new MimeMessage(session);
 
-      msg.setFrom(new InternetAddress(fromAddress, fromAddress));
-      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
+			msg.setFrom(new InternetAddress(fromAddress, fromAddress));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
 
-      msg.setSubject("Your Recent Video Submission");
+			msg.setSubject("Your Recent Video Submission");
 
-      msg.setText(body);
+			msg.setText(body);
 
-      Transport.send(msg);
+			Transport.send(msg);
 
-      log.info(String.format("Sent %s notification email for status %s", toAddress,
-              status.toString()));
-    } catch(IllegalArgumentException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (UnsupportedEncodingException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (MessagingException e) {
-      log.log(Level.WARNING, "", e);
-    }
-  }
+			log.info(String.format("Sent %s notification email for status %s", toAddress, status
+					.toString()));
+		} catch (IllegalArgumentException e) {
+			log.log(Level.WARNING, "", e);
+		} catch (UnsupportedEncodingException e) {
+			log.log(Level.WARNING, "", e);
+		} catch (MessagingException e) {
+			log.log(Level.WARNING, "", e);
+		}
+	}
 }

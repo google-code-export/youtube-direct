@@ -19,35 +19,37 @@ import com.google.ytd.command.GetSubmissions;
 import com.google.ytd.dao.SubmissionDao;
 import com.google.ytd.model.VideoSubmission;
 
-public class BasicCommandTest{
-  @Before
-  public void setUp() {
-  }
+public class BasicCommandTest {
+	@Before
+	public void setUp() {
+	}
 
-  @Test
-  public void testGetSubmissions() throws JSONException {
-    final VideoSubmission videoSubmission = new VideoSubmission(1l);
-    videoSubmission.setArticleUrl("blah");
-    final List<VideoSubmission> submissions = new ArrayList<VideoSubmission>();
-    submissions.add(videoSubmission);
+	@Test
+	public void testGetSubmissions() throws JSONException {
+		final VideoSubmission videoSubmission = new VideoSubmission(1l);
+		videoSubmission.setArticleUrl("blah");
+		final List<VideoSubmission> submissions = new ArrayList<VideoSubmission>();
+		submissions.add(videoSubmission);
 
-    JUnit4Mockery mockery = new JUnit4Mockery();
-    final SubmissionDao manager = mockery.mock(SubmissionDao.class);
-    mockery.checking(new Expectations() {{
-      oneOf(manager).getSubmissions(with("created"), with("desc"), with("all"));
-      will(returnValue(submissions));
-    }});
+		JUnit4Mockery mockery = new JUnit4Mockery();
+		final SubmissionDao manager = mockery.mock(SubmissionDao.class);
+		mockery.checking(new Expectations() {
+			{
+				oneOf(manager).getSubmissions(with("created"), with("desc"), with("all"));
+				will(returnValue(submissions));
+			}
+		});
 
-    GetSubmissions command = new GetSubmissions(manager);
-    Map<String,String> params = new HashMap<String,String>();
-    params.put("sortBy", "created");
-    params.put("sortOrder", "desc");
-    params.put("filterType", "all");
-    params.put("pageIndex", "1");
-    params.put("pageSize", "10");
-    command.setParams(params);
-    JSONObject response = command.execute();
-    assertNotNull("JSONObject is null", response);
-    assertTrue("result length is zero", response.getInt("totalPages") > 0);
-  }
+		GetSubmissions command = new GetSubmissions(manager);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("sortBy", "created");
+		params.put("sortOrder", "desc");
+		params.put("filterType", "all");
+		params.put("pageIndex", "1");
+		params.put("pageSize", "10");
+		command.setParams(params);
+		JSONObject response = command.execute();
+		assertNotNull("JSONObject is null", response);
+		assertTrue("result length is zero", response.getInt("totalPages") > 0);
+	}
 }

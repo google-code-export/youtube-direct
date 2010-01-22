@@ -40,71 +40,72 @@ import com.google.ytd.youtube.YouTubeApiHelper;
  */
 @Singleton
 public class AuthSubHandler extends HttpServlet {
-  private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
+	private static final Logger log = Logger.getLogger(AuthSubHandler.class.getName());
 
-  @Inject
-  private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
-  @Inject
-  private UserSessionManager userSessionManager;
-  @Inject
-  private YouTubeApiHelper apiManager;
-  @Inject
-  private UserAuthTokenDao userAuthTokenDao;
+	@Inject
+	private Util util;
+	@Inject
+	private PersistenceManagerFactory pmf;
+	@Inject
+	private UserSessionManager userSessionManager;
+	@Inject
+	private YouTubeApiHelper apiManager;
+	@Inject
+	private UserAuthTokenDao userAuthTokenDao;
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
 
-    try {
-      if (token == null) {
-        throw new IllegalArgumentException(String.format("Could not retrieve token from "
-            + "AuthSub response. request.getQueryString() => %s", request.getQueryString()));
-      }
+		try {
+			if (token == null) {
+				throw new IllegalArgumentException(String.format("Could not retrieve token from "
+						+ "AuthSub response. request.getQueryString() => %s", request.getQueryString()));
+			}
 
-      String articleUrl = request.getParameter("articleUrl");
-      if (util.isNullOrEmpty(articleUrl)) {
-        throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
-      }
+			String articleUrl = request.getParameter("articleUrl");
+			if (util.isNullOrEmpty(articleUrl)) {
+				throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
+			}
 
-      String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
+			String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-      UserSession userSession = userSessionManager.getUserSession(request);
+			UserSession userSession = userSessionManager.getUserSession(request);
 
-      if (userSession == null) {
-        // TODO: Throw a better Exception class here.
-        throw new IllegalArgumentException("No user session found.");
-      }
+			if (userSession == null) {
+				// TODO: Throw a better Exception class here.
+				throw new IllegalArgumentException("No user session found.");
+			}
 
-      //userSession.setAuthSubToken(authSubToken);
-      userSession.addMetaData("authSubToken", authSubToken);
+			// userSession.setAuthSubToken(authSubToken);
+			userSession.addMetaData("authSubToken", authSubToken);
 
-      apiManager.setToken(authSubToken);
+			apiManager.setToken(authSubToken);
 
-      String youTubeName = apiManager.getCurrentUsername();
-      if (util.isNullOrEmpty(youTubeName)) {
-        // TODO: Throw a better Exception class here.
-        throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
-            + "the authenticated user.");
-      }
-      userSession.addMetaData("youTubeName", youTubeName);
-      userSessionManager.save(userSession);
+			String youTubeName = apiManager.getCurrentUsername();
+			if (util.isNullOrEmpty(youTubeName)) {
+				// TODO: Throw a better Exception class here.
+				throw new IllegalArgumentException("Unable to retrieve a YouTube username for "
+						+ "the authenticated user.");
+			}
+			userSession.addMetaData("youTubeName", youTubeName);
+			userSessionManager.save(userSession);
 
-      // Create or update the UserAuthToken entry, which maps a username to an AuthSub token.
-      userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
+			// Create or update the UserAuthToken entry, which maps a username to an
+			// AuthSub token.
+			userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-      response.sendRedirect(articleUrl + "#return");
-    } catch (ServiceException e) {
-      log.log(Level.WARNING, "", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (IllegalArgumentException e) {
-      log.log(Level.WARNING, "", e);
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-    } catch (GeneralSecurityException e) {
-      log.log(Level.WARNING, "", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Security error while " +
-      		"retrieving session token.");
-    }
-  }
+			response.sendRedirect(articleUrl + "#return");
+		} catch (ServiceException e) {
+			log.log(Level.WARNING, "", e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+		} catch (IllegalArgumentException e) {
+			log.log(Level.WARNING, "", e);
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+		} catch (GeneralSecurityException e) {
+			log.log(Level.WARNING, "", e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Security error while "
+					+ "retrieving session token.");
+		}
+	}
 }
