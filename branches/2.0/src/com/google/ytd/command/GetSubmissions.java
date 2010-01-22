@@ -32,8 +32,7 @@ public class GetSubmissions extends Command {
     List<VideoSubmission> submissions = null;
 
     // TODO(austinchau) Add params validation, preferably something more
-    // structured and reusable
-    // across all commands
+    // structured and reusable across all commands
     String sortBy = getParam("sortBy");
     String sortOrder = getParam("sortOrder");
     String filterType = getParam("filterType");
