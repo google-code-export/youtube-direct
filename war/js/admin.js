@@ -26,7 +26,7 @@ jQuery(document).ready( function() {
 admin.init = function() {
   admin.sub.init(); // from submission.js	
   admin.assign.init(); // from assignments.js
-	admin.config.init(); //from configuration.js
+  admin.config.init(); //from configuration.js
 };
 
 admin.showMessage = function(message, elementToHide, displaySeconds) {
