@@ -49,7 +49,7 @@ public class NewAssignment extends Command {
     Assignment assignment = new Assignment();
     assignment.setStatus(AssignmentStatus.valueOf(status.toUpperCase()));
     assignment.setDescription(description);
-    assignment.setCategory(category.toUpperCase());
+    assignment.setCategory(category);
 
     assignment = assignmentDao.newAssignment(assignment);
 
