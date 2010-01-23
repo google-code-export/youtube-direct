@@ -239,7 +239,6 @@ function getUploadToken() {
           + getSelfUrl() + '/UploadResponseHandler';
       initiateUpload();
     }
-
   };
   clearMessage();
   showProcessing('Uploading ...');

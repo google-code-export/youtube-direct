@@ -4,6 +4,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
 	<!-- BEGIN Guice config -->
 	<filter>
     <filter-name>guiceFilter</filter-name>

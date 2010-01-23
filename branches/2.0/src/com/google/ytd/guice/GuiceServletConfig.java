@@ -47,13 +47,22 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
         serve("/logout").with(LogoutHandler.class);
+        serve("/ApprovedVideoFeed").with(ApprovedVideoFeed.class);
+        serve("/UploadResponseHandler").with(UploadResponseHandler.class);
+        serve("/GetUploadToken").with(GetUploadToken.class);
+        serve("/AuthsubHandler").with(AuthSubHandler.class);
+        serve("/LogoutHandler").with(LogoutHandler.class);
+        serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
+
+        // Map mobile servlet handlers
+        String mobileDir = "/mobile";
+        serve(mobileDir + "/MobileAuthSub").with(MobileAuthSub.class);
+        serve(mobileDir + "/PersistMobileSubmission").with(PersistMobileSubmission.class);
       }
 
       private void initV1Binding() {
         String adminDir = "/admin";
         String cronDir = "/cron";
-        String mobileDir = "/mobile";
-
         // Map admin servlet handlers
         serve(adminDir + "/GetAllSubmissions").with(GetAllSubmissions.class);
         serve(adminDir + "/PersistAuthSubToken").with(PersistAuthSubToken.class);
@@ -69,21 +78,9 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         // serve(adminDir + "/test").with(FullTextIndexer.class);
         // Map cron jobs servlet handlers
         serve(cronDir + "/SyncMetadata").with(SyncMetadata.class);
-        // Map mobile servlet handlers
-        serve(mobileDir + "/MobileAuthSub").with(MobileAuthSub.class);
-        serve(mobileDir + "/PersistMobileSubmission").with(PersistMobileSubmission.class);
-        // Map frontend servlet handlers
-        serve("/ApprovedVideoFeed").with(ApprovedVideoFeed.class);
-        serve("/UploadResponseHandler").with(UploadResponseHandler.class);
-        serve("/GetUploadToken").with(GetUploadToken.class);
-        serve("/AuthsubHandler").with(AuthSubHandler.class);
-        serve("/LogoutHandler").with(LogoutHandler.class);
-        serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
       }
-
     };
 
     return Guice.createInjector(Stage.DEVELOPMENT, servletModule, new ProductionModule());
   }
-
 }
