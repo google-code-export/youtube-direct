@@ -16,6 +16,7 @@ import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AssignmentDao;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
@@ -33,6 +34,7 @@ public class UpdateVideoSubmissionStatus extends Command {
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao = null;
   private VideoSubmissionDao submissionDao = null;
+  private UserAuthTokenDao userAuthTokenDao = null;
 
   @Inject
   private Util util;
@@ -41,14 +43,15 @@ public class UpdateVideoSubmissionStatus extends Command {
   private EmailUtil emailUtil;
 
   @Inject
-  private YouTubeApiHelper youTubeApiHelper;
+  private YouTubeApiHelper adminYouTubeApi;
 
   @Inject
   public UpdateVideoSubmissionStatus(AssignmentDao assignmentDao, VideoSubmissionDao submissionDao,
-      AdminConfigDao adminConfigDao) {
+      AdminConfigDao adminConfigDao, UserAuthTokenDao userAuthTokenDao) {
     this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;
     this.adminConfigDao = adminConfigDao;
+    this.userAuthTokenDao = userAuthTokenDao;
   }
 
   @Override
@@ -77,13 +80,12 @@ public class UpdateVideoSubmissionStatus extends Command {
     if (newStatus == currentStatus) {
       return json;
     } else {
-
       // Set the YouTubeApiHelper with the admin auth token
       String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
       if (util.isNullOrEmpty(token)) {
         throw new IllegalStateException("No AuthSub token found in admin config.");
       } else {
-        youTubeApiHelper.setToken(token);
+        adminYouTubeApi.setToken(token);
       }
 
       switch (newStatus) {
@@ -119,7 +121,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     if (util.isNullOrEmpty(token)) {
       LOG.warning(String.format("No AuthSub token found in admin config."));
     } else {
-      youTubeApiHelper.setToken(token);
+      adminYouTubeApi.setToken(token);
     }
 
     // TODO: Handle removing the branding if a video goes from APPROVED to
@@ -156,16 +158,13 @@ public class UpdateVideoSubmissionStatus extends Command {
 
       // Flip the moderation bit to approved for new upload
       if (submission.getVideoSource() == VideoSource.NEW_UPLOAD) {
-        youTubeApiHelper.updateModeration(submission.getVideoId(), true);
+        adminYouTubeApi.updateModeration(submission.getVideoId(), true);
       }
     }
 
-    LOG.info(submission.isInPlaylist() + " is ...");
     // Add video to YouTube playlist if it isn't in it already.
     if (!submission.isInPlaylist()) {
-      LOG.info("not in playlist");
       if (addToPlaylist(submission)) {
-        LOG.info("added to playlist");
         submission.setIsInPlaylist(true);
         submission = submissionDao.save(submission);
       }
@@ -208,7 +207,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // due to too many videos, and prevent continuously trying to add the same
     // video to the same
     // full playlist.
-    return youTubeApiHelper.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
+    return adminYouTubeApi.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
   }
 
   /**
@@ -238,7 +237,7 @@ public class UpdateVideoSubmissionStatus extends Command {
       return false;
     }
 
-    return youTubeApiHelper.removeVideoFromPlaylist(playlistId, videoSubmission.getVideoId());
+    return adminYouTubeApi.removeVideoFromPlaylist(playlistId, videoSubmission.getVideoId());
   }
 
   /**
@@ -260,11 +259,16 @@ public class UpdateVideoSubmissionStatus extends Command {
    */
   private VideoEntry updateVideoDescription(VideoSubmission videoSubmission, String prependText,
       String newTag) {
+
+    YouTubeApiHelper userYouTubeApi = new YouTubeApiHelper(adminConfigDao);
+    userYouTubeApi.setToken(userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName())
+        .getAuthSubToken());
+
     String videoId = videoSubmission.getVideoId();
     LOG.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
         videoSubmission.getId(), videoId));
 
-    VideoEntry videoEntry = youTubeApiHelper.getUploadsVideoEntry(videoId);
+    VideoEntry videoEntry = userYouTubeApi.getUploadsVideoEntry(videoId);
     if (videoEntry == null) {
       LOG.warning(String.format("Couldn't get video with id '%s' in the uploads feed of user "
           + "'%s'. Perhaps the AuthSub token has been revoked?", videoId, videoSubmission

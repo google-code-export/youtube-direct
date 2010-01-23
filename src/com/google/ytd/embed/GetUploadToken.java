@@ -63,7 +63,7 @@ public class GetUploadToken extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiHelper apiManager;
+  private YouTubeApiHelper youTubeApi;
   @Inject
   private AssignmentDao assignmentDao;
 
@@ -166,9 +166,9 @@ public class GetUploadToken extends HttpServlet {
       userSession.addMetaData("email", email);
       userSessionManager.save(userSession);
 
-      apiManager.setToken(authSubToken);
+      youTubeApi.setToken(authSubToken);
 
-      FormUploadToken token = apiManager.getFormUploadToken(newEntry);
+      FormUploadToken token = youTubeApi.getFormUploadToken(newEntry);
       if (token == null) {
         throw new IllegalArgumentException("Upload token returned from YouTube API is null. "
             + "Please make sure that all request parameters are valid.");

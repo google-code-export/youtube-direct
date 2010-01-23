@@ -372,11 +372,11 @@ public class VideoSubmission implements Serializable {
     return adminNotes;
   }
 
-  public String getYoutubeState() {
+  public String getYouTubeState() {
     return youTubeState;
   }
 
-  public void setYoutubeState(String youtubeState) {
+  public void setYouTubeState(String youtubeState) {
     this.youTubeState = youtubeState;
   }
 }

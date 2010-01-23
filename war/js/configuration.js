@@ -76,7 +76,7 @@ admin.config.toggleModerationEmailTextDiv = function(isVisible) {
 }
 
 admin.config.getAdminConfig = function(callback) {
-  var messageElement = admin.showMessage("Loading configuration...");
+  var messageElement = admin.showMessage('Loading configuration...');
   
   var command = 'GET_ADMIN_CONFIG';
   var params = {};
@@ -88,6 +88,7 @@ admin.config.getAdminConfig = function(callback) {
         //TODO(austinchau) fix admin.showError to display error without xhr obj
         //admin.showError(xhr, messageElement);
       } else {
+        var messageElement = admin.showMessage('configuration... loaded');
         callback(json.result);
       }
     } catch(exception) {
@@ -141,6 +142,7 @@ admin.config.updateAdminConfig = function() {
         //TODO(austinchau) fix admin.showError to display error without xhr obj
         //admin.showError(xhr, messageElement);
       } else {
+        admin.showMessage("Configuration updated.", messageElement);
         callback(json.result);
       }
     } catch(exception) {
