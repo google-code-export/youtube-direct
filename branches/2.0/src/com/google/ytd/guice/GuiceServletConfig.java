@@ -8,18 +8,7 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.google.ytd.ApprovedVideoFeed;
-import com.google.ytd.admin.DeleteSubmission;
-import com.google.ytd.admin.GetAdminConfig;
-import com.google.ytd.admin.GetAllAssignments;
-import com.google.ytd.admin.GetAllSubmissions;
-import com.google.ytd.admin.InsightDownloadRedirect;
-import com.google.ytd.admin.NewAssignment;
-import com.google.ytd.admin.PersistAdminConfig;
-import com.google.ytd.admin.PersistAuthSubToken;
 import com.google.ytd.admin.SyncMetadata;
-import com.google.ytd.admin.UpdateAssignment;
-import com.google.ytd.admin.UpdateSubmission;
-import com.google.ytd.admin.VideoDownloadRedirect;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -37,10 +26,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
     ServletModule servletModule = new ServletModule() {
       @Override
       protected void configureServlets() {
-        // TODO(austinchau) Remove V1 binding when fully migrated to V2 jsonrpc
-        // style
-        initV1Binding();
-
         // Single entry point for all jsonrpc requests
         serve("/jsonrpc").with(JsonRpcProcessor.class);
 
@@ -58,25 +43,9 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         String mobileDir = "/mobile";
         serve(mobileDir + "/MobileAuthSub").with(MobileAuthSub.class);
         serve(mobileDir + "/PersistMobileSubmission").with(PersistMobileSubmission.class);
-      }
 
-      private void initV1Binding() {
-        String adminDir = "/admin";
-        String cronDir = "/cron";
-        // Map admin servlet handlers
-        serve(adminDir + "/GetAllSubmissions").with(GetAllSubmissions.class);
-        serve(adminDir + "/PersistAuthSubToken").with(PersistAuthSubToken.class);
-        serve(adminDir + "/InsightDownloadRedirect").with(InsightDownloadRedirect.class);
-        serve(adminDir + "/VideoDownloadRedirect").with(VideoDownloadRedirect.class);
-        serve(adminDir + "/GetAdminConfig").with(GetAdminConfig.class);
-        serve(adminDir + "/PersistAdminConfig").with(PersistAdminConfig.class);
-        serve(adminDir + "/UpdateSubmission").with(UpdateSubmission.class);
-        serve(adminDir + "/DeleteSubmission").with(DeleteSubmission.class);
-        serve(adminDir + "/NewAssignment").with(NewAssignment.class);
-        serve(adminDir + "/UpdateAssignment").with(UpdateAssignment.class);
-        serve(adminDir + "/GetAllAssignments").with(GetAllAssignments.class);
-        // serve(adminDir + "/test").with(FullTextIndexer.class);
         // Map cron jobs servlet handlers
+        String cronDir = "/cron";
         serve(cronDir + "/SyncMetadata").with(SyncMetadata.class);
       }
     };
