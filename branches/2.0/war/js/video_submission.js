@@ -656,7 +656,6 @@ admin.sub.getAllSubmissions = function(callback) {
       } else {
         admin.showMessage("Submissions loaded.", messageElement);
         admin.sub.total = json.totalSize;
-        console.log(admin.sub.total);
         var entries = json.result;
         admin.sub.submissions = entries.concat([]);
         callback(entries);            

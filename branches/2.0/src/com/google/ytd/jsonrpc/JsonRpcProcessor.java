@@ -43,6 +43,7 @@ public class JsonRpcProcessor extends HttpServlet {
       if (jsonRpcRequest != null) {
         String method = jsonRpcRequest.getMethod();
         if (method != null) {
+          LOG.info("processing method " + method);
           Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
           Command command = injector.getInstance(commandClass);
           command.setParams(jsonRpcRequest.getParams());

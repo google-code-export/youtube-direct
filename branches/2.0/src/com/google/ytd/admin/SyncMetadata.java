@@ -117,7 +117,7 @@ public class SyncMetadata extends HttpServlet {
             if (videoEntry == null) {
               // The video must have been deleted...
               log.info(String.format("Unable to find YouTube video id '%s'.", videoId));
-              videoSubmission.setYoutubeState("NOT_FOUND");
+              videoSubmission.setYouTubeState("NOT_FOUND");
             }
           }
         }
@@ -150,10 +150,10 @@ public class SyncMetadata extends HttpServlet {
             } else {
               stateValue = state.getState().toString();
             }
-            if (!stateValue.equals(videoSubmission.getYoutubeState())) {
+            if (!stateValue.equals(videoSubmission.getYouTubeState())) {
               log.info(String.format("YouTube state differs: '%s' (local) vs. '%s' (YT).",
-                  videoSubmission.getYoutubeState(), stateValue));
-              videoSubmission.setYoutubeState(stateValue);
+                  videoSubmission.getYouTubeState(), stateValue));
+              videoSubmission.setYouTubeState(stateValue);
               videoSubmission.setUpdated(now);
             }
 
