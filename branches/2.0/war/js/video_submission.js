@@ -589,6 +589,9 @@ admin.sub.showDetails = function(entryId) {
         if (!json.error) {
           //TODO(austinchau) fix admin.showError to display error without xhr obj
           //admin.showError(xhr, messageElement);
+        } else {
+          submission.adminNotes = params.adminNotes;
+          alert('Notes are save.');
         }
       } catch(exception) {
         // json parse exception
