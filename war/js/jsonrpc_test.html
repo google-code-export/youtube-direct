@@ -11,7 +11,16 @@ jQuery(document).ready(function() {
     var command = jQuery('#command').val();
     var params = JSON.parse(jQuery('#params').html());
     jsonrpc.makeRequest(command, params, function(data) {
-      jQuery('#returnJson').html(data);
+      try {
+	      var json = JSON.parse(data);
+	      if (!json.error) {
+	        jQuery('#returnJson').html(data);
+	      } else {
+	        jQuery('#returnJson').html(json.error);
+	      }
+      } catch (exception) {
+        jQuery('#returnJson').html('json parse exception: ' + data);
+      }
     }); 
   });
 });
@@ -21,7 +30,7 @@ jQuery(document).ready(function() {
 </style>
 <body>
 
-command: <input id="command" type="text" value="GET_SUBMISSIONS"></input>
+command: <input id="command" type="text" value="GET_VIDEO_SUBMISSIONS"></input>
 <br><br>
 input params:<br>
 <textarea id="params" cols="40" rows="5">{"sortBy": "created", "sortOrder": "desc", "filterType": "all", "pageIndex": "1", "pageSize": "10"}</textarea>
