@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd.admin;
+package com.google.ytd.youtube;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -34,7 +34,6 @@ import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * AuthSub redirection flow to persist the token belonging to the admin YouTube
@@ -48,7 +47,7 @@ public class PersistAuthSubToken extends HttpServlet {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private YouTubeApiHelper apiManager;
+  private YouTubeApiHelper youtubeApi;
   @Inject
   private AdminConfigDao adminConfigDao;
 
@@ -65,9 +64,9 @@ public class PersistAuthSubToken extends HttpServlet {
 
       String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
 
-      apiManager.setToken(sessionToken);
+      youtubeApi.setToken(sessionToken);
 
-      String youTubeName = apiManager.getCurrentUsername();
+      String youTubeName = youtubeApi.getCurrentUsername();
       if (util.isNullOrEmpty(youTubeName)) {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("Unable to retrieve a YouTube username for "

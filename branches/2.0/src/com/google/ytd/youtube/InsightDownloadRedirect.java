@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd.admin;
+package com.google.ytd.youtube;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -29,7 +29,6 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that retrieves the Insight download link for a video and redirects

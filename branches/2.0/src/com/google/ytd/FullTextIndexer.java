@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd.admin;
+package com.google.ytd;
 
 import java.io.IOException;
 import java.util.logging.Logger;

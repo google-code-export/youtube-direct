@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd.admin;
+package com.google.ytd.youtube;
 
 import java.io.IOException;
 
