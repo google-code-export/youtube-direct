@@ -8,8 +8,6 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.google.ytd.ApprovedVideoFeed;
-import com.google.ytd.admin.PersistAuthSubToken;
-import com.google.ytd.admin.SyncMetadata;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -18,6 +16,8 @@ import com.google.ytd.embed.UploadResponseHandler;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
+import com.google.ytd.youtube.PersistAuthSubToken;
+import com.google.ytd.youtube.SyncMetadata;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
   private static final Logger LOG = Logger.getLogger(GuiceServletConfig.class.getName());

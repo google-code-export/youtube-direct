@@ -30,8 +30,8 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.admin.PersistAuthSubToken;
 import com.google.ytd.util.Util;
+import com.google.ytd.youtube.PersistAuthSubToken;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**

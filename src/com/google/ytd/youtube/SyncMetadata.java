@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.ytd.admin;
+package com.google.ytd.youtube;
 
 import java.io.IOException;
 import java.util.Date;
@@ -37,7 +37,6 @@ import com.google.inject.Singleton;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that syncs metadata from YouTube with the local datastore.
