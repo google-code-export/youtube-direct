@@ -12,7 +12,8 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
 public class UpdateVideoSubmissionAdminNotes extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionAdminNotes.class.getName());
+  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionAdminNotes.class
+      .getName());
 
   private VideoSubmissionDao submissionDao = null;
 
@@ -35,7 +36,8 @@ public class UpdateVideoSubmissionAdminNotes extends Command {
       throw new IllegalArgumentException("Missing required param: id");
     }
     if (util.isNullOrEmpty(adminNotes)) {
-      throw new IllegalArgumentException("Missing required param: adminNotes");
+      // Essentially emptying the admin notes
+      adminNotes = "";
     }
 
     VideoSubmission submission = submissionDao.getSubmissionById(id);

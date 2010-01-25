@@ -8,6 +8,7 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.google.ytd.ApprovedVideoFeed;
+import com.google.ytd.admin.PersistAuthSubToken;
 import com.google.ytd.admin.SyncMetadata;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
@@ -38,6 +39,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/AuthsubHandler").with(AuthSubHandler.class);
         serve("/LogoutHandler").with(LogoutHandler.class);
         serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
+        serve("/admin/PersistAuthSubToken").with(PersistAuthSubToken.class);
 
         // Map mobile servlet handlers
         String mobileDir = "/mobile";
