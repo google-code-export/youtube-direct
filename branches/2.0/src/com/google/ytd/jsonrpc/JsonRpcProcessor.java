@@ -50,7 +50,6 @@ public class JsonRpcProcessor extends HttpServlet {
 
           try {
             JSONObject json = command.execute();
-            // json.put("error", "null");
             resp.setContentType("application/json");
             resp.getWriter().write(json.toString());
           } catch (JSONException e) {
