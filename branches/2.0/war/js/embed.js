@@ -119,17 +119,17 @@ function existingVideoMainInit() {
         case 'true':
           jQuery('#existingVideoMain').css('display', 'none');
           // Show post submission message.
-          jQuery('#postSubmitMessage').css('display', 'block');
-          jQuery('#submitButton').get(0).disabled = false;
-          jQuery('#cancelSubmitButton').get(0).disabled = false;             
+          jQuery('#postSubmitMessage').css('display', 'block');            
           break;
         case 'false':
           if (res.message) {
             showMessage(res.message);
           } else {          
             showMessage("Submit error incurred on server.")
-          }      
+          }  
       }
+      jQuery('#submitButton').get(0).disabled = false;
+      jQuery('#cancelSubmitButton').get(0).disabled = false;       
     };
     clearMessage();
     showProcessing('Submitting ...');
@@ -224,6 +224,8 @@ function getUploadToken() {
   ajaxCall.error = function(xhr, text, error) {
     clearProcessing(); 
     showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
+    jQuery('#uploadButton').get(0).disabled = false;
+    jQuery('#cancelUploadButton').get(0).disabled = false;      
   };
   ajaxCall.success = function(res) {
     var uploadToken = res.uploadToken;
