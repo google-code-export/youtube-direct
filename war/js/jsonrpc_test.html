@@ -13,11 +13,7 @@ jQuery(document).ready(function() {
     jsonrpc.makeRequest(command, params, function(data) {
       try {
 	      var json = JSON.parse(data);
-	      if (!json.error) {
-	        jQuery('#returnJson').html(data);
-	      } else {
-	        jQuery('#returnJson').html(json.error);
-	      }
+	      jQuery('#returnJson').html(data);
       } catch (exception) {
         jQuery('#returnJson').html('json parse exception: ' + data);
       }
