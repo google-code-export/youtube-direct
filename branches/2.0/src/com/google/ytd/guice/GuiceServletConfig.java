@@ -7,7 +7,6 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
-import com.google.ytd.ApprovedVideoFeed;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -33,7 +32,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
         serve("/logout").with(LogoutHandler.class);
-        serve("/ApprovedVideoFeed").with(ApprovedVideoFeed.class);
         serve("/UploadResponseHandler").with(UploadResponseHandler.class);
         serve("/GetUploadToken").with(GetUploadToken.class);
         serve("/AuthsubHandler").with(AuthSubHandler.class);
