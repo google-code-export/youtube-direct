@@ -36,7 +36,8 @@ admin.showMessage = function(message, elementToHide, displaySeconds) {
 };
 
 // errorObj may be a XHR object returned from an AJAX call, or a string.
-admin.showError = function(errorObj, elementToHide) {
+admin.showError = function(errorString, elementToHide) {
+  /*
   var errorString = '';
   
   if (errorObj.responseText) {
@@ -65,6 +66,7 @@ admin.showError = function(errorObj, elementToHide) {
   } catch (e) {
     // Ignore parse exceptions, as we'll just use the original errorString.
   }
+  */  
   
   return admin.showSomething(errorString, 'error', elementToHide, 10);
 };

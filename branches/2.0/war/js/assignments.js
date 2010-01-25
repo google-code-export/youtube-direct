@@ -538,15 +538,14 @@ admin.assign.showAssignmentCreate = function() {
       try {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
-          //TODO(austinchau) fix admin.showError to display error without xhr obj
-          //admin.showError(xhr, messageElement);
-        } else {
           admin.showMessage("Assignment created.", messageElement);
           admin.assign.pageIndex = 1;
-          admin.assign.refreshGrid();            
+          admin.assign.refreshGrid();
+        } else {
+          admin.showError(json.error, messageElement);
         }
       } catch(exception) {
-        // json parse exception
+        admin.showError(jsonStr, messageElement);
       }
     } 
     
@@ -572,17 +571,16 @@ admin.assign.getAllAssignments = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         admin.showMessage("Assignments loaded.", messageElement);
         admin.assign.total = json.totalSize;
         var entries = json.result;
         admin.assign.assignments = entries.concat([]);
-        callback(entries);            
+        callback(entries);  
+      } else {
+        admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);
     }
   } 
   
@@ -599,14 +597,13 @@ admin.assign.updateAssignment = function(entry) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         admin.showMessage("Assignment updated.", messageElement);
-        admin.assign.refreshGrid();       
+        admin.assign.refreshGrid();
+      } else {
+        admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);  
     }
   } 
   

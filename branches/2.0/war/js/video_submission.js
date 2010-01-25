@@ -428,7 +428,7 @@ admin.sub.getTotalPage = function() {
 };
 
 admin.sub.refreshGrid = function() {
-  admin.sub.getAllSubmissions( function(entries) {
+  admin.sub.getAllSubmissions(function(entries) {
     
     admin.sub.refreshGridUI(entries);
     
@@ -587,14 +587,13 @@ admin.sub.showDetails = function(entryId) {
       try {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
-          //TODO(austinchau) fix admin.showError to display error without xhr obj
-          //admin.showError(xhr, messageElement);
-        } else {
           submission.adminNotes = params.adminNotes;
           alert('Notes are save.');
+        } else {
+          admin.showError(json.error, messageElement);
         }
       } catch(exception) {
-        // json parse exception
+        admin.showError(jsonStr, messageElement);
       }
     } 
     
@@ -654,17 +653,16 @@ admin.sub.getAllSubmissions = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         admin.showMessage("Submissions loaded.", messageElement);
         admin.sub.total = json.totalSize;
         var entries = json.result;
         admin.sub.submissions = entries.concat([]);
-        callback(entries);            
+        callback(entries);          
+      } else {
+        admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);
     }
   } 
   
@@ -683,14 +681,13 @@ admin.sub.updateSubmissionStatus = function(entry) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         admin.showMessage("Submission status updated.", messageElement);
-        admin.sub.refreshGrid();       
+        admin.sub.refreshGrid();
+      } else {         
+        admin.showError(json.error, messageElement);      
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);
     }
   } 
   

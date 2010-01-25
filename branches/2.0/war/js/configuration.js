@@ -85,14 +85,13 @@ admin.config.getAdminConfig = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         var messageElement = admin.showMessage('configuration... loaded');
         callback(json.result);
+      } else {
+        admin.showError(json.error, messageElement);
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);
     }
   } 
   
@@ -139,14 +138,12 @@ admin.config.updateAdminConfig = function() {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        //TODO(austinchau) fix admin.showError to display error without xhr obj
-        //admin.showError(xhr, messageElement);
-      } else {
         admin.showMessage("Configuration updated.", messageElement);
-        callback(json.result);
+      } else {
+        admin.showError(json.error, messageElement);
       }
     } catch(exception) {
-      // json parse exception
+      admin.showError(jsonStr, messageElement);
     }
   } 
   

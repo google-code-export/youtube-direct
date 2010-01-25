@@ -19,7 +19,7 @@ public class JsonExceptionHandler {
     LOG.log(Level.SEVERE, e.getMessage(), e);
     JSONObject json = new JSONObject();
     try {
-      json.put("error", e.getClass().getName() + ": " + e.getMessage());
+      json.put("error", e.getClass().getName() + " - " + e.getMessage());
     } catch (JSONException e1) {
       throw new RuntimeException();
     } finally {
