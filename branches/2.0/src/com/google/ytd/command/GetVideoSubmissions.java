@@ -33,11 +33,31 @@ public class GetVideoSubmissions extends Command {
 
     // TODO(austinchau) Add params validation, preferably something more
     // structured and reusable across all commands
+
     String sortBy = getParam("sortBy");
     String sortOrder = getParam("sortOrder");
     String filterType = getParam("filterType");
-    int pageIndex = Integer.parseInt(getParam("pageIndex"));
-    int pageSize = Integer.parseInt(getParam("pageSize"));
+    String pageIndexString = getParam("pageIndex");
+    String pageSizeString = getParam("pageSize");
+
+    if (util.isNullOrEmpty(sortBy)) {
+      throw new IllegalArgumentException("Missing required param: sortBy");
+    }
+    if (util.isNullOrEmpty(sortOrder)) {
+      throw new IllegalArgumentException("Missing required param: sortOrder");
+    }
+    if (util.isNullOrEmpty(filterType)) {
+      throw new IllegalArgumentException("Missing required param: filterType");
+    }
+    if (util.isNullOrEmpty(pageIndexString)) {
+      throw new IllegalArgumentException("Missing required param: pageIndex");
+    }
+    if (util.isNullOrEmpty(pageSizeString)) {
+      throw new IllegalArgumentException("Missing required param: pageSize");
+    }
+
+    int pageIndex = Integer.parseInt(pageIndexString);
+    int pageSize = Integer.parseInt(pageSizeString);
 
     submissions = submissionDao.getSubmissions(sortBy, sortOrder, filterType);
     int totalSize = submissions.size();
