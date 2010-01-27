@@ -85,7 +85,7 @@ admin.config.getAdminConfig = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        var messageElement = admin.showMessage('configuration... loaded');
+        admin.showMessage('Configuration loaded.', messageElement);
         callback(json.result);
       } else {
         admin.showError(json.error, messageElement);
@@ -138,7 +138,7 @@ admin.config.updateAdminConfig = function() {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Configuration updated.", messageElement);
+        admin.showMessage("Configuration saved.", messageElement);
       } else {
         admin.showError(json.error, messageElement);
       }
