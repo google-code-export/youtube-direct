@@ -42,9 +42,9 @@ import com.google.ytd.model.UserSession;
 import com.google.ytd.model.Assignment.AssignmentStatus;
 
 /**
- * Class responsible for submitting metadata about a new video to the YouTube API server. It gets
- * back a unique token that can be used to upload a video. This token is returned as part of a
- * JSON response.
+ * Class responsible for submitting metadata about a new video to the YouTube
+ * API server. It gets back a unique token that can be used to upload a video.
+ * This token is returned as part of a JSON response.
  */
 public class GetUploadToken extends HttpServlet {
   private static final Logger log = Logger.getLogger(GetUploadToken.class.getName());
@@ -52,7 +52,7 @@ public class GetUploadToken extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String json = Util.getPostBody(req);
-    
+
     try {
       JSONObject jsonObj = new JSONObject(json);
 
@@ -77,7 +77,7 @@ public class GetUploadToken extends HttpServlet {
         throw new IllegalArgumentException("No user session found.");
       }
       String authSubToken = userSession.getMetaData("authSubToken");
-      String assignmentId = userSession.getMetaData("assignmentId");            
+      String assignmentId = userSession.getMetaData("assignmentId");
 
       Assignment assignment = Util.getAssignmentById(assignmentId);
       if (assignment == null) {
@@ -103,6 +103,7 @@ public class GetUploadToken extends HttpServlet {
       mg.getTitle().setPlainTextContent(title);
 
       mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME, assignment.getCategory()));
+      log.info("category=" + assignment.getCategory());
 
       mg.setKeywords(new MediaKeywords());
 
@@ -123,24 +124,27 @@ public class GetUploadToken extends HttpServlet {
 
       // TODO: Move this to a config or constant.
       mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, "ytd"));
-      
-      // Maximum size of a developer tag is 25 characters, and we prepend 2 characters.
+
+      // Maximum size of a developer tag is 25 characters, and we prepend 2
+      // characters.
       if (assignmentId.length() <= 23) {
-        // Minimum size of a developer tag is 3 characters, so always append 2 characters.
+        // Minimum size of a developer tag is 3 characters, so always append 2
+        // characters.
         String assignmentIdTag = String.format("A-%s", assignmentId);
-        
-        // Use a developer tag to make it easy for developers to query for all videos uploaded for
+
+        // Use a developer tag to make it easy for developers to query for all
+        // videos uploaded for
         // a given assignment.
         mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, assignmentIdTag));
       } else {
-        log.warning(String.format("Assignment id '%s' is longer than 25 characters, and can't be " +
-                "used as a developer tag.", assignmentId));
+        log.warning(String.format("Assignment id '%s' is longer than 25 characters, and can't be "
+            + "used as a developer tag.", assignmentId));
       }
 
-      userSession.addMetaData("videoTitle", title);      
+      userSession.addMetaData("videoTitle", title);
       userSession.addMetaData("videoDescription", description);
       userSession.addMetaData("videoLocation", location);
-      userSession.addMetaData("videoDate", date);         
+      userSession.addMetaData("videoDate", date);
       userSession.addMetaData("videoTags", sortedTags);
       userSession.addMetaData("email", email);
       UserSessionManager.save(userSession);
@@ -151,8 +155,8 @@ public class GetUploadToken extends HttpServlet {
 
       FormUploadToken token = apiManager.getFormUploadToken(newEntry);
       if (token == null) {
-        throw new IllegalArgumentException("Upload token returned from YouTube API is null. " +
-        		"Please make sure that all request parameters are valid.");
+        throw new IllegalArgumentException("Upload token returned from YouTube API is null. "
+            + "Please make sure that all request parameters are valid.");
       }
 
       String uploadToken = token.getToken();
