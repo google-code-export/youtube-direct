@@ -588,7 +588,7 @@ admin.assign.getAllAssignments = function(callback) {
 };
 
 admin.assign.updateAssignment = function(entry) {
-  var messageElement = admin.showMessage("Loading assignments...");
+  var messageElement = admin.showMessage("Updating assignment...");
   
   var command = 'UPDATE_ASSIGNMENT';
   var params = entry;
