@@ -25,6 +25,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Blob;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -118,6 +119,10 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String newSubmissionAddress;
+  
+  @Expose
+  @Persistent
+  private Blob privateKeyBytes;
 
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
@@ -295,5 +300,17 @@ public class AdminConfig implements Serializable {
 
   public static Object getCacheKey() {
     return CACHE_KEY;
+  }
+
+  public byte[] getPrivateKeyBytes() {
+    if (privateKeyBytes == null) {
+      return null;
+    } else {
+      return privateKeyBytes.getBytes();
+    }
+  }
+
+  public void setPrivateKeyBytes(byte[] privateKeyBytes) {
+    this.privateKeyBytes = new Blob(privateKeyBytes);
   }
 }

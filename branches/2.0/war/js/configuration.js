@@ -33,6 +33,7 @@ admin.config.init = function() {
     jQuery('#fromAddress').val(data.fromAddress);
     jQuery('#approvalEmailText').val(unescape(data.approvalEmailText));
     jQuery('#rejectionEmailText').val(unescape(data.rejectionEmailText));
+    jQuery('#privateKeyBytes').val(data.privateKeyBytes);
     
     if (data.moderationEmail) {
       jQuery('#moderationEmail').attr('checked', true);
@@ -115,6 +116,8 @@ admin.config.updateAdminConfig = function() {
   var fromAddress = jQuery('#fromAddress').val();
   var approvalEmailText = escape(jQuery('#approvalEmailText').val());
   var rejectionEmailText = escape(jQuery('#rejectionEmailText').val());
+  // We don't want to escape() this, as we'll be converting the base 64 value into a byte[].
+  var privateKeyBytes = jQuery('#privateKeyBytes').val();
   
   var params = {};
   params.developerKey = developerKey;
@@ -131,6 +134,7 @@ admin.config.updateAdminConfig = function() {
   params.fromAddress = fromAddress;
   params.approvalEmailText = approvalEmailText;
   params.rejectionEmailText = rejectionEmailText;
+  params.privateKeyBytes = privateKeyBytes;
 
   var command = 'UPDATE_ADMIN_CONFIG';
   

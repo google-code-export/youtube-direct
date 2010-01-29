@@ -1,11 +1,14 @@
 package com.google.ytd.command;
 
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.appengine.repackaged.com.google.common.util.Base64;
+import com.google.appengine.repackaged.com.google.common.util.Base64DecoderException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.AdminConfig;
@@ -42,6 +45,7 @@ public class UpdateAdminConfig extends Command {
     String fromAddress = getParam("fromAddress");
     String approvalEmailText = getParam("approvalEmailText");
     String rejectionEmailText = getParam("rejectionEmailText");
+    String privateKeyBytes = getParam("privateKeyBytes");
 
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
@@ -100,6 +104,19 @@ public class UpdateAdminConfig extends Command {
 
     if (!util.isNullOrEmpty(rejectionEmailText)) {
       adminConfig.setRejectionEmailText(rejectionEmailText);
+    }
+    
+    if (!util.isNullOrEmpty(privateKeyBytes)) {
+      privateKeyBytes = privateKeyBytes.replace("-----BEGIN PRIVATE KEY-----", "");
+      privateKeyBytes = privateKeyBytes.replace("-----END PRIVATE KEY-----", "");
+      privateKeyBytes = privateKeyBytes.replace("\n", "");
+      
+      try {
+        adminConfig.setPrivateKeyBytes(Base64.decode(privateKeyBytes));
+      } catch (Base64DecoderException e) {
+        LOG.log(Level.WARNING, "", e);
+        adminConfig.setPrivateKeyBytes(new byte[0]);
+      }
     }
 
     adminConfig.setUpdated(new Date());

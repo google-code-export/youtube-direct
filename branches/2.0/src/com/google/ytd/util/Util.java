@@ -26,7 +26,10 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.repackaged.com.google.common.util.Base64;
+import com.google.appengine.repackaged.com.google.common.util.Base64DecoderException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -46,8 +49,9 @@ public class Util {
   private static final Logger log = Logger.getLogger(Util.class.getName());
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
-  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(
-      DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter()).create();
+  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+      .setDateFormat(DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
+      .registerTypeAdapter(Blob.class, new BlobToStringAdapter()).create();
 
   private static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
     public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
@@ -69,6 +73,32 @@ public class Util {
         // TODO: This is kind of a hacky way of reporting back a parse
         // exception.
         return new Text(e.toString());
+      }
+    }
+  }
+  
+  private static class BlobToStringAdapter implements JsonSerializer<Blob>, JsonDeserializer<Blob> {
+    public JsonElement toJson(Blob blob, Type type, JsonSerializationContext context) {
+      return serialize(blob, type, context);
+    }
+
+    public Blob fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
+      return deserialize(json, type, context);
+    }
+
+    public JsonElement serialize(Blob blob, Type type, JsonSerializationContext context) {
+      return new JsonPrimitive(Base64.encode(blob.getBytes()));
+    }
+
+    public Blob deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+      try {
+        return new Blob(Base64.decode(json.getAsString()));
+      } catch (JsonParseException e) {
+        // TODO: This is kind of a hacky way of reporting back a parse exception.
+        return new Blob(e.toString().getBytes());
+      } catch (Base64DecoderException e) {
+        // TODO: This is kind of a hacky way of reporting back a parse exception.
+        return new Blob(e.toString().getBytes());
       }
     }
   }

@@ -17,6 +17,7 @@ package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -30,6 +31,7 @@ import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
@@ -47,6 +49,8 @@ public class UserSessionManager {
   private PmfUtil pmfUtil;
   @Inject
   private PersistenceManagerFactory pmf;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
@@ -68,9 +72,9 @@ public class UserSessionManager {
     String authSubToken = session.getMetaData("authSubToken");
 
     if (authSubToken != null) {
-
       try {
-        AuthSubUtil.getTokenInfo(authSubToken, null);
+        PrivateKey privateKey = adminConfigDao.getPrivateKey();
+        AuthSubUtil.getTokenInfo(authSubToken, privateKey);
       } catch (AuthenticationException e) {
         valid = false;
       } catch (IOException e) {
