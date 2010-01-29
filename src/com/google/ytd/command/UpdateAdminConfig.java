@@ -49,19 +49,19 @@ public class UpdateAdminConfig extends Command {
 
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    if (!util.isNullOrEmpty(clientId)) {
+    if (clientId != null) {
       adminConfig.setClientId(clientId);
     }
 
-    if (!util.isNullOrEmpty(developerKey)) {
+    if (developerKey != null) {
       adminConfig.setDeveloperKey(developerKey);
     }
 
-    if (!util.isNullOrEmpty(defaultTag)) {
+    if (defaultTag != null) {
       adminConfig.setDefaultTag(defaultTag);
     }
 
-    if (!util.isNullOrEmpty(linkBackText)) {
+    if (linkBackText != null) {
       adminConfig.setLinkBackText(linkBackText);
     }
 
@@ -77,36 +77,36 @@ public class UpdateAdminConfig extends Command {
       adminConfig.setSubmissionMode(Integer.parseInt(submissionMode));
     }
 
-    if (!util.isNullOrEmpty(newSubmissionAddress)) {
+    if (newSubmissionAddress != null) {
       adminConfig.setNewSubmissionAddress(newSubmissionAddress);
     }
 
-    if (!util.isNullOrEmpty(loginInstruction)) {
+    if (loginInstruction != null) {
       adminConfig.setLoginInstruction(loginInstruction);
     }
 
-    if (!util.isNullOrEmpty(postSubmitMessage)) {
+    if (postSubmitMessage != null) {
       adminConfig.setPostSubmitMessage(postSubmitMessage);
     }
 
-    if (!util.isNullOrEmpty(moderationEmail)) {
+    if (moderationEmail != null) {
       boolean isModerationEmailOn = moderationEmail.toLowerCase().equals("true");
       adminConfig.setModerationEmail(isModerationEmailOn);
     }
 
-    if (!util.isNullOrEmpty(fromAddress)) {
+    if (fromAddress != null) {
       adminConfig.setFromAddress(fromAddress);
     }
 
-    if (!util.isNullOrEmpty(approvalEmailText)) {
+    if (approvalEmailText != null) {
       adminConfig.setApprovalEmailText(approvalEmailText);
     }
 
-    if (!util.isNullOrEmpty(rejectionEmailText)) {
+    if (rejectionEmailText != null) {
       adminConfig.setRejectionEmailText(rejectionEmailText);
     }
     
-    if (!util.isNullOrEmpty(privateKeyBytes)) {
+    if (privateKeyBytes != null) {
       privateKeyBytes = privateKeyBytes.replace("-----BEGIN PRIVATE KEY-----", "");
       privateKeyBytes = privateKeyBytes.replace("-----END PRIVATE KEY-----", "");
       privateKeyBytes = privateKeyBytes.replace("\n", "");
