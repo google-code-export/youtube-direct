@@ -63,8 +63,6 @@ public class YouTubeApiHelper {
   private Util util;
 
   private YouTubeService service = null;
-  
-  @Inject
   private AdminConfigDao adminConfigDao;
   
   private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
