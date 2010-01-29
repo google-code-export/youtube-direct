@@ -18,6 +18,7 @@ package com.google.ytd.youtube;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +63,10 @@ public class YouTubeApiHelper {
   private Util util;
 
   private YouTubeService service = null;
+  
+  @Inject
+  private AdminConfigDao adminConfigDao;
+  
   private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
 
   // CONSTANTS
@@ -90,9 +95,10 @@ public class YouTubeApiHelper {
   @Inject
   public YouTubeApiHelper(AdminConfigDao adminConfigDao) {
     this.util = Util.get();
-
-    String clientId = adminConfigDao.getAdminConfig().getClientId();
-    String developerKey = adminConfigDao.getAdminConfig().getDeveloperKey();
+    this.adminConfigDao = adminConfigDao;
+    
+    String clientId = this.adminConfigDao.getAdminConfig().getClientId();
+    String developerKey = this.adminConfigDao.getAdminConfig().getDeveloperKey();
 
     if (util.isNullOrEmpty(clientId)) {
       log.warning("clientId settings property is null or empty.");
@@ -121,7 +127,12 @@ public class YouTubeApiHelper {
    *          The token to use.
    */
   public void setToken(String token) {
-    service.setAuthSubToken(token);
+    PrivateKey privateKey = adminConfigDao.getPrivateKey();
+    if (privateKey == null) {
+      service.setAuthSubToken(token);
+    } else {
+      service.setAuthSubToken(token, privateKey);
+    }
   }
 
   /**

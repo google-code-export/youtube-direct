@@ -17,6 +17,7 @@ package com.google.ytd.mobile;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +31,7 @@ import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.PersistAuthSubToken;
 import com.google.ytd.youtube.YouTubeApiHelper;
@@ -52,6 +54,8 @@ public class MobileAuthSub extends HttpServlet {
   private PersistenceManagerFactory pmf;
   @Inject
   private YouTubeApiHelper apiManager;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -70,7 +74,8 @@ public class MobileAuthSub extends HttpServlet {
         // If there is no token URL parameter, start the AuthSub request flow.
         resp.sendRedirect(String.format(AUTH_SUB_FORMAT, util.getSelfUrl(req)));
       } else {
-        String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+        PrivateKey privateKey = adminConfigDao.getPrivateKey();
+        String sessionToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
         // Test the token to make sure it's valid, and get the username it
         // corresponds to.

@@ -17,6 +17,7 @@ package com.google.ytd.youtube;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +63,8 @@ public class PersistAuthSubToken extends HttpServlet {
             + "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
       }
 
-      String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+      PrivateKey privateKey = adminConfigDao.getPrivateKey();
+      String sessionToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
       youtubeApi.setToken(sessionToken);
 

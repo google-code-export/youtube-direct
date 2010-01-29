@@ -31,6 +31,11 @@ limitations under the License.
       <input class="configureInput" id="clientId" type="text"/>
       <img class="tip" src="/questionmark.png" title="Use any unqiue string, e.g. 'yourcompany-youtube-direct'"></img>
     </div>
+    <div class="clear">
+      <label for="privateKeyBytes" class="configureLabel">Private Key Certificate: </label>
+      <textarea cols="50" rows="10" id="privateKeyBytes"></textarea>
+      <img class="tip" src="/questionmark.png" title="Optional private key certificate data. Unless you're using secure AuthSub and have uploaded a security certificate to https://www.google.com/accounts/ManageDomains, leave blank."></img>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Video Branding Settings</legend>

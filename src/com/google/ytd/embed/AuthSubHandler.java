@@ -17,6 +17,7 @@ package com.google.ytd.embed;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.util.Util;
@@ -52,6 +54,8 @@ public class AuthSubHandler extends HttpServlet {
   private YouTubeApiHelper apiManager;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -68,7 +72,8 @@ public class AuthSubHandler extends HttpServlet {
         throw new IllegalArgumentException("'articleUrl' parameter is null or empty.");
       }
 
-      String authSubToken = AuthSubUtil.exchangeForSessionToken(token, null);
+      PrivateKey privateKey = adminConfigDao.getPrivateKey();
+      String authSubToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
       UserSession userSession = userSessionManager.getUserSession(request);
 

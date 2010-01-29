@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,7 @@ import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.util.Util;
 
@@ -40,10 +42,12 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class Authenticator {
-
   private Util util;
   @Inject
   private PersistenceManagerFactory pmf;
+
+  @Inject
+  private AdminConfigDao adminConfigDao;
 
   private UserSessionManager userSessionManager;
 
@@ -59,11 +63,12 @@ public class Authenticator {
 
   @Inject
   public Authenticator(HttpServletRequest req, HttpServletResponse resp,
-      UserSessionManager userSessionManager, Util util) {
+      UserSessionManager userSessionManager, Util util, AdminConfigDao adminConfigDao) {
     this.userSessionManager = userSessionManager;
     this.request = req;
     this.response = resp;
     this.util = util;
+    this.adminConfigDao = adminConfigDao;
     this.userSession = userSessionManager.getUserSession(request);
 
     String assignmentId = request.getParameter("assignmentId");
@@ -123,7 +128,8 @@ public class Authenticator {
 
   public boolean isTokenValid(String token) {
     try {
-      AuthSubUtil.getTokenInfo(token, null);
+      PrivateKey privateKey = adminConfigDao.getPrivateKey();
+      AuthSubUtil.getTokenInfo(token, privateKey);
     } catch (AuthenticationException e) {
       return false;
     } catch (IOException e) {
@@ -170,7 +176,8 @@ public class Authenticator {
     nextUrl.append("?articleUrl=");
     nextUrl.append(articleUrl);
 
-    loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, false, true);
+    boolean secure = adminConfigDao.getPrivateKey() != null;
+    loginUrl = AuthSubUtil.getRequestUrl(nextUrl.toString(), SCOPE, secure, true);
 
     return loginUrl;
   }
