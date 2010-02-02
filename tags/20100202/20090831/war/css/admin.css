@@ -1,0 +1,36 @@
+body {
+	margin: 10px;
+	font-size: 11px;
+	font-family: arial;
+	text-align: center;
+}
+
+#videoDisplay {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+#authSection {
+	text-align: left;
+	font-size: 13px;
+}
+
+#tabs {
+	width: 1200px;
+}
+
+#assignments {
+	height: 600px;
+	text-align: left;
+}
+
+#moderate {
+	height: 600px;
+	text-align: left;
+}
+
+#configure {
+	height: 600px;
+	text-align: left;
+}
