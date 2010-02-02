@@ -3,6 +3,10 @@
 
 =Release Notes=
 
+===20100202===
+  * Added a "Loading... please wait." message while the content from the embed.jsp iframe is initialized.
+  * Removed the SyncMetadata cron job, in favor of retrieving fresh metadata on demand when a video is accessed in the admin panel.
+
 ===20091113===
   * Fixes to support scenarios in which the App Engine domain doesn't match the host page domain, and third-party cookies are disabled in the user's browser.
 
