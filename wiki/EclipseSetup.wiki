@@ -2,6 +2,8 @@
 
 YTD is source-controlled, built and deployed using Eclipse and its plugins. If you already have Eclipse installed, please go to the next section to install plugins. If not, please first install [http://www.eclipse.org/downloads/ Eclipse IDE for Java EE Developers].
 
+Please make sure, especially if you are on Windows, that you have a JDK installed, not just a JRE. The latest [http://java.sun.com/javase/downloads/index.jsp Java 6 JDK from Sun] should be fine. If you're first installing a JDK, you also need to configure Eclipse to use it. This is done in Window -> Preferences -> Java -> Istalled JREs. You may need to "Add" the path to your JDK if it isn't listed there (something like C:\Program Files\Java\jdk1.6.X if you are on Windows).
+
 ===Install the Google App Engine plugin===
 
 You can install the Google Plugin for Eclipse using the Software Update feature of Eclipse.
