@@ -57,7 +57,7 @@
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
 <script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
-
+<script type="text/javascript" src="/js/jsonrpc.js"></script>
 <script type="text/javascript" src="/js/embed.js"></script>
 
 </head>

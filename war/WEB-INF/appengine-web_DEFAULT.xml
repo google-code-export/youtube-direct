@@ -21,6 +21,7 @@
     <property name="com.google.ytd.YTClientID" value=""/>
     <property name="com.google.ytd.BrandingTag" value=""/>
     <property name="com.google.ytd.LinkBackText" value=""/>
+    <property name="appengine.orm.disable.duplicate.pmf.exception" value="false"/>
     
 	</system-properties>
 	
