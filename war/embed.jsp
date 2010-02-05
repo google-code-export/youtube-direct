@@ -13,7 +13,9 @@
 <%@ page import="java.net.URLDecoder"%>
 <%@ page import="javax.jdo.PersistenceManagerFactory"%>
 <%@ page import="javax.servlet.http.HttpServletRequest"%>
-<%@ page import="javax.servlet.http.HttpServletResponse"%>
+<%@ page import="javax.servlet.http.HttpServletResponse"%><%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
 
 <%	
 	final HttpServletRequest req = request;
@@ -37,6 +39,8 @@
 	Util util = injector.getInstance(Util.class);
 	UserSessionManager userSessionManager = injector.getInstance(UserSessionManager.class);
 	Authenticator authenticator = injector.getInstance(Authenticator.class);
+	
+	BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -109,7 +113,16 @@
 	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />	
 	<%
 		}
-	%> 	
+	%>
+	
+	<%    
+    if (adminConfigDao.allowPhotoSubmission()) {   
+  %>  
+  <br><br>
+  <input id="photoButton" class="askButton" type="button" value="Submit an existing photo" /> 
+  <%
+    }
+  %>  
 	
 	</div>
 </div>
@@ -188,6 +201,60 @@
     authorized by the owner to make the content publicly available on YouTube, and that it otherwise
     complies with the YouTube Terms of Service located at
     <a href="http://www.youtube.com/t/terms">http://www.youtube.com/t/terms</a>.
+  </div>
+</div>
+
+<div id="photoMain">
+  <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
+    <div class="smallRed">* required</div>
+    <br>  
+    <label class="required" for="title">Photo Title:</label>
+    <br>
+    <div>
+      <input class="inputBox" type="text" name="title" id="title" />
+    </div>
+    <br>
+    <label class="required" for="description">Photo Description:</label>
+    <br>
+    <div>
+      <textarea class="inputBox" name="description" id="description"></textarea>
+    </div>
+    <br>
+    <label for="date">Date:</label>
+    <br>
+    <div>
+      <input class="inputBox" type="text" name="date" id="uploadDate" />
+    </div>
+    <br> 
+    <label for="location">Location:</label>
+    <br>
+    <div>
+      <input class="inputBox" type="text" name="location" id="uploadLocation" />
+    </div>
+    <br>
+    <label class="required" for="uploadEmail">Your Email: </label>
+    <div>
+      <input class="inputBox" id="uploadEmail" name="uploadEmail" type="text" />
+    </div>
+    <br>
+    <br>
+    <label class="required" for="file1">Select File: </label>
+    <div>
+      <input id="file1" name="file1" type="file" />
+    </div>
+    <br>
+    <br>
+    <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=6Le99goAAAAAABYfpbzUptcgAi0Q79s2ybGLsAxt"></script>
+    <br>
+    <div align="center">
+      <input id="uploadButton" class="actionButton" type="submit" value="Upload" />
+      <input id="cancelUploadButton" class="actionButton" type="button" value="Cancel" />
+    </div>
+  </form>
+  <br>
+  <div id="youTubeTOS">
+    By clicking 'Upload,' you certify that you own all rights to the content or that you are
+    authorized by the owner to make the content publicly available on this site.
   </div>
 </div>
 </div>

@@ -9,7 +9,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.blobstore.BlobKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class PhotoSubmission {
@@ -26,24 +26,34 @@ public class PhotoSubmission {
   private Long assignmentId = null;
 
   @Persistent
-  private Blob content = null;
-
-  @Persistent
-  private int size = 0;
-
-  @Persistent
-  String contentType = null;
+  private BlobKey blobKey = null;
 
   @Persistent
   Date created = null;
+  
+  @Persistent
+  private String title = null;
+  
+  @Persistent
+  private String description = null;
+  
+  @Persistent
+  private String location = null;
+  
+  @Persistent
+  private String batchId = null;
 
-  public PhotoSubmission(Long assignmentId, String email, byte[] content, String contentType) {
+  public PhotoSubmission(Long assignmentId, BlobKey blobKey, String batchId, String email,
+      String title, String description, String location) {
     this.assignmentId = assignmentId;
-    this.content = new Blob(content);
-    this.contentType = contentType;
-    this.size = content.length;
-    this.created = new Date();
+    this.blobKey = blobKey;
+    this.batchId = batchId;
     this.email = email;
+    this.title = title;
+    this.description = description;
+    this.location = location;
+    
+    this.created = new Date();
   }
 
   public String getId() {
@@ -54,23 +64,31 @@ public class PhotoSubmission {
     return email;
   }
 
-  public Blob getContent() {
-    return content;
+  public Long getAssignmentId() {
+    return assignmentId;
   }
 
-  public int getSize() {
-    return size;
+  public BlobKey getBlobKey() {
+    return blobKey;
   }
-
-  public String getContentType() {
-    return contentType;
+  
+  public String getBatchId() {
+    return batchId;
   }
 
   public Date getCreated() {
     return created;
   }
 
-  public Long getAssignmentId() {
-    return assignmentId;
+  public String getTitle() {
+    return title;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getLocation() {
+    return location;
   }
 }

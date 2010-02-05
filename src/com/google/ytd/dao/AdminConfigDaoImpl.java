@@ -66,6 +66,11 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     return uploadOnly;
   }
   
+  public boolean allowPhotoSubmission() {
+    //TODO: Add some logic here.
+    return true;
+  }
+  
   public PrivateKey getPrivateKey() {
     byte[] privateKeyBytes = getAdminConfig().getPrivateKeyBytes();
     if (privateKeyBytes != null && privateKeyBytes.length > 0) {

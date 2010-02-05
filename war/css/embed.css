@@ -34,6 +34,10 @@ body {
   display: none;
   clear: right;
 }
+#photoMain {
+  display: none;
+  clear: right;
+}
 #submissionAsk {
   display: none;
   clear: right;
