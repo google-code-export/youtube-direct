@@ -8,6 +8,7 @@ public interface AdminConfigDao {
   public AdminConfig getAdminConfig();
 
   public boolean isUploadOnly();
+  public boolean allowPhotoSubmission();
   public PrivateKey getPrivateKey();
 
   public AdminConfig save(AdminConfig adminConfig);

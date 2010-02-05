@@ -43,6 +43,10 @@ function init() {
       existingVideoMainInit();
     });
     
+    jQuery('#photoButton').click(function(event) {
+    	jQuery('#submissionAsk').css('display', 'none');
+    	photoMainInit();
+    });
   } else {
     // show YouTube instruction
     jQuery('#loginInstruction').css('display', 'block');
@@ -56,23 +60,51 @@ function highlightRequired() {
   });  
 }
 
-function isRequiredFilled(sectionId) {    
-  var ret = true;
-  
+function isRequiredFilled(sectionId) {
   var elements = jQuery('#' + sectionId + ' .required');
-  for (var i=0; i<elements.length; i++) {
+  for (var i = 0; i < elements.length; i++) {
     var e = jQuery(elements.get(i));
-    var inputId = e.attr('for');    
-    var input = jQuery('#' + inputId);
+    var inputId = e.attr('for');
+    var input = jQuery('#' + sectionId).find('#' + inputId);
     var value = input.val();
     
-    if (jQuery.trim(value) == '') {      
-      ret = false;
-      break;
+    if (jQuery.trim(value) == '') {  
+      return false;
     }
   }
   
-  return ret;
+  return true;
+}
+
+function photoMainInit() {
+	var photoMain = jQuery('#photoMain');
+	
+	photoMain.css('display', 'block');
+	
+  photoMain.find('#uploadButton').click(function(event) {
+    if (!isRequiredFilled('photoMain')) {
+      showMessage('Please fill in all required field(s).');
+      //return false;
+    }
+    
+    // Disable buttons during submission.
+    photoMain.find('#submitButton').disabled = true;
+    photoMain.find('#cancelSubmitButton').disabled = true;    
+    
+    showProcessing('Uploading photo...');
+    
+    initiateUpload(jQuery('#photoUploadForm'));
+
+    return false;
+  });
+
+  photoMain.find('#cancelUploadButton').click(function(event) {
+    clearMessage();
+    jQuery('#submissionAsk').css('display', 'block');
+    jQuery('#photoMain').css('display', 'none');
+  });      
+  
+  photoMain.find("#submitDate").datepicker();
 }
 
 function existingVideoMainInit() {
@@ -239,7 +271,7 @@ function getUploadToken() {
       jQuery('#token').val(uploadToken);
       jQuery('#uploadForm').get(0).action = uploadUrl + '?nexturl='
           + getSelfUrl() + '/UploadResponseHandler';
-      initiateUpload();
+      initiateUpload(jQuery('#uploadForm'));
     }
   };
   clearMessage();
@@ -247,8 +279,7 @@ function getUploadToken() {
   jQuery.ajax(ajaxCall);
 }
 
-function initiateUpload() {
-
+function initiateUpload(uploadForm) {
   var iframeName = 'hiddenIframe';
   var iframeId = iframeName;
 
@@ -258,15 +289,15 @@ function initiateUpload() {
   hiddenIframe.id = iframeId;
   hiddenIframe.name = iframeName;
 
-  jQuery('#uploadForm').get(0).target = iframeName;
+  uploadForm.attr('target', iframeName);
 
   var callback = function() {
-    //showMessage('Upload completed!');
-    jQuery('#uploadButton').get(0).disabled = false;
-    jQuery('#cancelUploadButton').get(0).disabled = false;
-    jQuery('#postSubmitMessage').css('display', 'block');
+  	uploadForm.find('#uploadButton').disabled = false;
+  	uploadForm.find('#cancelUploadButton').disabled = false;
+  	jQuery('#postSubmitMessage').css('display', 'block');
     clearProcessing();
     jQuery('#uploaderMain').css('display', 'none');
+    jQuery('#photoMain').css('display', 'none');
 
     // if I care about the iframe content
     /*
@@ -302,7 +333,7 @@ function initiateUpload() {
   jQuery(document.body).append(hiddenIframe);
 
   // submit the upload form!  
-  jQuery('#uploadForm').get(0).submit();
+  uploadForm.submit();
 }
 
 function getUrlParams() {
