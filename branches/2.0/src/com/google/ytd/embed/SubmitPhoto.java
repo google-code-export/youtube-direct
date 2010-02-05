@@ -16,7 +16,6 @@
 package com.google.ytd.embed;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -31,17 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.UserAuthTokenDao;
-import com.google.ytd.guice.ProductionModule;
 import com.google.ytd.model.PhotoSubmission;
-import com.google.ytd.model.UserSession;
-import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Servlet that handles the submission of photos. It creates a new PhotoSubmission object 
@@ -62,8 +54,7 @@ public class SubmitPhoto extends HttpServlet {
           "transactions-optional");
       PmfUtil pmfUtil = new PmfUtil(pmf);
       
-      // TODO: Pass in assignmentId in emebed.jsp
-      String assignmentId = "13";//req.getParameter("assignmentId");
+      String assignmentId = req.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
         throw new IllegalArgumentException("'assignmentId' is null or empty.");
       }
@@ -112,95 +103,5 @@ public class SubmitPhoto extends HttpServlet {
     } finally {
       
     }
-    
-    
-    /*try {
-      JSONObject jsonObj = new JSONObject(json);
-
-      String videoId = jsonObj.getString("videoId");
-      String location = jsonObj.getString("location");
-      String date = jsonObj.getString("date");
-      String email = jsonObj.getString("email");
-
-      // Only check for required parameters 'videoId'.
-      if (util.isNullOrEmpty(videoId)) {
-        throw new IllegalArgumentException("'videoId' parameter is null or empty.");
-      }
-
-      // Grab user session meta data
-      UserSession userSession = userSessionManager.getUserSession(req);
-      String youTubeName = userSession.getMetaData("youTubeName");
-      String authSubToken = userSession.getMetaData("authSubToken");
-      String assignmentId = userSession.getMetaData("assignmentId");
-      String articleUrl = userSession.getMetaData("articleUrl");
-
-      apiManager.setToken(authSubToken);
-
-      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
-
-      if (videoEntry == null) {
-        JSONObject responseJsonObj = new JSONObject();
-        responseJsonObj.put("success", "false");
-        responseJsonObj.put("message", "Cannot find this video in your account.");
-
-        resp.setContentType("text/javascript");
-        resp.getWriter().println(responseJsonObj.toString());
-      } else {
-        String title = videoEntry.getTitle().getPlainText();
-        String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
-
-        List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-        String sortedTags = util.sortedJoin(tags, ",");
-
-        long viewCount = -1;
-
-        YtStatistics stats = videoEntry.getStatistics();
-        if (stats != null) {
-          viewCount = stats.getViewCount();
-        }
-
-        VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
-
-        submission.setArticleUrl(articleUrl);
-        submission.setVideoId(videoId);
-        submission.setVideoTitle(title);
-        submission.setVideoDescription(description);
-        submission.setVideoTags(sortedTags);
-        submission.setVideoLocation(location);
-        submission.setVideoDate(date);
-        submission.setYouTubeName(youTubeName);
-
-        userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
-
-        submission.setViewCount(viewCount);
-        submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
-        submission.setNotifyEmail(email);
-
-        AdminConfig adminConfig = adminConfigDao.getAdminConfig();
-        if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
-          // NO_MOD is set, auto approve all submission
-          // TODO: This isn't enough, as the normal approval flow (adding the
-          // branding, tags, emails,
-          // etc.) isn't taking place.
-          submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
-        }
-
-        pmfUtil.persistJdo(submission);
-
-        emailUtil.sendNewSubmissionEmail(submission);
-
-        JSONObject responseJsonObj = new JSONObject();
-        responseJsonObj.put("success", "true");
-
-        resp.setContentType("text/javascript");
-        resp.getWriter().println(responseJsonObj.toString());
-      }
-    } catch (IllegalArgumentException e) {
-      log.log(Level.FINE, "", e);
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-    } catch (JSONException e) {
-      log.log(Level.WARNING, "", e);
-      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    }*/
   }
 }

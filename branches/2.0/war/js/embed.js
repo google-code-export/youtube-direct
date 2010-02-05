@@ -79,6 +79,11 @@ function isRequiredFilled(sectionId) {
 function photoMainInit() {
 	var photoMain = jQuery('#photoMain');
 	
+  var photoUploadForm = jQuery('#photoUploadForm');
+  var assignmentIdElement = jQuery("<input type='hidden' name='assignmentId' value='" +
+  				window.URL_PARAMS['assignmentId'] +"' />");
+  photoUploadForm.append(assignmentIdElement);
+	
 	photoMain.css('display', 'block');
 	
   photoMain.find('#uploadButton').click(function(event) {
@@ -93,7 +98,9 @@ function photoMainInit() {
     
     showProcessing('Uploading photo...');
     
-    initiateUpload(jQuery('#photoUploadForm'));
+
+    
+    initiateUpload(photoUploadForm);
 
     return false;
   });
