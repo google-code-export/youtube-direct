@@ -43,10 +43,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         String mobileDir = "/mobile";
         serve(mobileDir + "/MobileAuthSub").with(MobileAuthSub.class);
         serve(mobileDir + "/PersistMobileSubmission").with(PersistMobileSubmission.class);
-
-        // Map cron jobs servlet handlers
-        String cronDir = "/cron";
-        serve(cronDir + "/SyncMetadata").with(SyncMetadata.class);
       }
     };
 

@@ -76,31 +76,51 @@ function isRequiredFilled(sectionId) {
   return true;
 }
 
-function photoMainInit() {
+function validateCaptcha() {
+  var params = {};
+  params.challenge = jQuery('#recaptcha_challenge_field').val();
+  params.response = jQuery('#recaptcha_response_field').val();
+
+  jsonrpc.makeRequest('VALIDATE_CAPTCHA', params, function(data) {
+  	var json = JSON.parse(data);
+  	
+  	if (json.success == 'true') {
+  		startPhotoUpload();
+    } else {
+    	showMessage('An error occurred when validating the reCAPTCHA.');
+    }
+  });
+}
+
+function startPhotoUpload() {
 	var photoMain = jQuery('#photoMain');
 	
+  // Disable buttons during submission.
+  photoMain.find('#submitButton').disabled = true;
+  photoMain.find('#cancelSubmitButton').disabled = true;    
+  
+  showProcessing('Uploading photo...');
+  
   var photoUploadForm = jQuery('#photoUploadForm');
   var assignmentIdElement = jQuery("<input type='hidden' name='assignmentId' value='" +
   				window.URL_PARAMS['assignmentId'] +"' />");
   photoUploadForm.append(assignmentIdElement);
-	
+  
+  initiateUpload(photoUploadForm);
+}
+
+function photoMainInit() {
+	var photoMain = jQuery('#photoMain');
+
 	photoMain.css('display', 'block');
 	
   photoMain.find('#uploadButton').click(function(event) {
     if (!isRequiredFilled('photoMain')) {
       showMessage('Please fill in all required field(s).');
-      //return false;
+      return false;
     }
     
-    // Disable buttons during submission.
-    photoMain.find('#submitButton').disabled = true;
-    photoMain.find('#cancelSubmitButton').disabled = true;    
-    
-    showProcessing('Uploading photo...');
-    
-
-    
-    initiateUpload(photoUploadForm);
+    validateCaptcha();
 
     return false;
   });

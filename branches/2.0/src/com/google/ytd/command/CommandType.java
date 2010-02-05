@@ -16,7 +16,9 @@ public enum CommandType {
   GET_ADMIN_CONFIG(
       GetAdminConfig.class),
   UPDATE_ADMIN_CONFIG(
-      UpdateAdminConfig.class);
+      UpdateAdminConfig.class),
+  VALIDATE_CAPTCHA(
+      ValidateCaptcha.class);
 
   private Class<? extends Command> clazz = null;
 
