@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.ytd.model.PhotoSubmission;
 
 public interface PhotoSubmissionDao {
-  public List<PhotoSubmission> getAllPhotoSubmissionsById(String assignmentId);
+  public PhotoSubmission getPhotoSubmissionById(String batchId);
 
-  public PhotoSubmission getPhotoSubmission(String photoId);
+  public List<PhotoSubmission> getPhotoSubmissions(String sortBy, String sortOrder);
 }
