@@ -17,6 +17,8 @@ public enum CommandType {
       GetAdminConfig.class),
   UPDATE_ADMIN_CONFIG(
       UpdateAdminConfig.class),
+  GET_PHOTO_SUBMISSIONS(
+      GetPhotoSubmissions.class),
   VALIDATE_CAPTCHA(
       ValidateCaptcha.class);
 

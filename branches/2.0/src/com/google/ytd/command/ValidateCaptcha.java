@@ -16,13 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.appengine.repackaged.com.google.common.base.Log;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.AssignmentDao;
-import com.google.ytd.model.Assignment;
-import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
 
 @RequestScoped
@@ -31,14 +27,13 @@ public class ValidateCaptcha extends Command {
 
   private static final String CAPTCHA_VALIDATE_URL = "http://api-verify.recaptcha.net/verify";
   private static final String CAPTCHA_SUCCESS_RESPONSE = "true";
-  
+
   @Inject
   private Util util;
 
   @Inject
   AdminConfigDao adminConfigDao;
-  
-  @Inject
+
   HttpServletRequest request;
 
   @Inject
@@ -64,34 +59,34 @@ public class ValidateCaptcha extends Command {
     if (util.isNullOrEmpty(response)) {
       throw new IllegalArgumentException("Missing required param: 'response'");
     }
-    
+
     try {
       URL url = new URL(CAPTCHA_VALIDATE_URL);
-      HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setDoOutput(true);
       connection.setRequestMethod("POST");
 
       OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
       String postBody = String.format("challenge=%s&response=%s&remoteip=%s&privatekey=%s",
           challenge, response, remoteIp, privateKey);
-      
+
       LOG.info(String.format("POSTing '%s' to '%s'.", postBody, CAPTCHA_VALIDATE_URL));
-      
+
       writer.write(postBody);
       writer.close();
 
       if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-            connection.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection
+            .getInputStream()));
         String line = reader.readLine().trim();
         if (line.equals(CAPTCHA_SUCCESS_RESPONSE)) {
           json.put("success", CAPTCHA_SUCCESS_RESPONSE);
         }
       } else {
-        LOG.warning(String.format("Response code %d returned from %s.",
-            connection.getResponseCode(), CAPTCHA_VALIDATE_URL));
+        LOG.warning(String.format("Response code %d returned from %s.", connection
+            .getResponseCode(), CAPTCHA_VALIDATE_URL));
       }
-    } catch(MalformedURLException e) {
+    } catch (MalformedURLException e) {
       LOG.log(Level.WARNING, "", e);
     } catch (ProtocolException e) {
       LOG.log(Level.WARNING, "", e);

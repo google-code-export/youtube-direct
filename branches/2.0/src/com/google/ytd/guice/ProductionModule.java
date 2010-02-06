@@ -10,10 +10,12 @@ import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AdminConfigDaoImpl;
 import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.AssignmentDaoImpl;
-import com.google.ytd.dao.VideoSubmissionDao;
-import com.google.ytd.dao.VideoSubmissionDaoImpl;
+import com.google.ytd.dao.PhotoSubmissionDao;
+import com.google.ytd.dao.PhotoSubmissionDaoImpl;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.UserAuthTokenDaoImpl;
+import com.google.ytd.dao.VideoSubmissionDao;
+import com.google.ytd.dao.VideoSubmissionDaoImpl;
 
 public class ProductionModule extends AbstractModule {
   @Override
@@ -22,6 +24,7 @@ public class ProductionModule extends AbstractModule {
     bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
     bind(VideoSubmissionDao.class).to(VideoSubmissionDaoImpl.class);
     bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
+    bind(PhotoSubmissionDao.class).to(PhotoSubmissionDaoImpl.class);
   }
 
   @Provides
