@@ -18,7 +18,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
   private PersistenceManagerFactory pmf;
 
   @Override
-  public PhotoSubmission getPhotoSubmissionById(String batchId) {
+  public PhotoSubmission getPhotoSubmissionsById(String batchId) {
     PersistenceManager pm = pmf.getPersistenceManager();
     List<PhotoSubmission> submissions = null;
     PhotoSubmission submission = null;
