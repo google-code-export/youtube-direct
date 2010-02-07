@@ -36,9 +36,9 @@ import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
 
 /**
- * Servlet that handles the submission of photos. It creates a new PhotoSubmission object 
- * and saves it to the datastore. The response needs to be a 30x redirect, as per the
- * BlobStore API.
+ * Servlet that handles the submission of photos. It creates a new
+ * PhotoSubmission object and saves it to the datastore. The response needs to
+ * be a 30x redirect, as per the BlobStore API.
  */
 @Singleton
 public class SubmitPhoto extends HttpServlet {
@@ -48,60 +48,60 @@ public class SubmitPhoto extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
       Util util = Util.get();
-      
+
       // Create a new PMF because unfortunately we don't have access to the Guice version.
-      PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory(
-          "transactions-optional");
+      PersistenceManagerFactory pmf = JDOHelper
+          .getPersistenceManagerFactory("transactions-optional");
       PmfUtil pmfUtil = new PmfUtil(pmf);
-      
+
       String assignmentId = req.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
         throw new IllegalArgumentException("'assignmentId' is null or empty.");
       }
-      
+
       String title = req.getParameter("title");
       if (util.isNullOrEmpty(title)) {
         throw new IllegalArgumentException("'title' is null or empty.");
       }
-      
+
       String description = req.getParameter("description");
       if (util.isNullOrEmpty(description)) {
         throw new IllegalArgumentException("'description' is null or empty.");
       }
-      
+
       String location = req.getParameter("location");
-      
+
       String email = req.getParameter("uploadEmail");
       if (util.isNullOrEmpty(email)) {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
-      
+
       String batchId = null;
-      
+
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      
+
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
         log.info(String.format("Processing file form element '%s'.", entry.getKey()));
-        
+
         BlobKey blobKey = entry.getValue();
-        
+
         // Use the String representation of the first image's BlobKey as a unique id for the
         // batch of multiple uploads.
         if (batchId == null) {
-          batchId = blobKey.toString();
+          batchId = blobKey.getKeyString();
         }
-        
+
         PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
             blobKey, batchId, email, title, description, location);
-        
+
         pmfUtil.persistJdo(photoSubmission);
       }
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
-      
+
     }
   }
 }
