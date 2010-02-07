@@ -50,7 +50,7 @@ public class GetPhotoSubmissions extends Command {
     }
 
     submissions = photoSubmissionDao.getPhotoSubmissions(sortBy, sortOrder);
-
+    LOG.info("" + util.toJson(submissions));
     json.put("result", new JSONArray(util.toJson(submissions)));
 
     return json;

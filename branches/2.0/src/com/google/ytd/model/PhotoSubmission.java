@@ -10,6 +10,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.gson.annotations.Expose;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class PhotoSubmission {
@@ -17,30 +18,38 @@ public class PhotoSubmission {
   @PrimaryKey
   @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+  @Expose
   private String id = null;
 
   @Persistent
+  @Expose
   private String email = null;
 
   @Persistent
+  @Expose
   private Long assignmentId = null;
 
   @Persistent
   private BlobKey blobKey = null;
 
   @Persistent
+  @Expose
   Date created = null;
-  
+
   @Persistent
+  @Expose
   private String title = null;
-  
+
   @Persistent
+  @Expose
   private String description = null;
-  
+
   @Persistent
+  @Expose
   private String location = null;
-  
+
   @Persistent
+  @Expose
   private String batchId = null;
 
   public PhotoSubmission(Long assignmentId, BlobKey blobKey, String batchId, String email,
@@ -52,7 +61,7 @@ public class PhotoSubmission {
     this.title = title;
     this.description = description;
     this.location = location;
-    
+
     this.created = new Date();
   }
 
@@ -71,7 +80,7 @@ public class PhotoSubmission {
   public BlobKey getBlobKey() {
     return blobKey;
   }
-  
+
   public String getBatchId() {
     return batchId;
   }

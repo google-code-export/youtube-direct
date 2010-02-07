@@ -20,7 +20,9 @@ public enum CommandType {
   GET_PHOTO_SUBMISSIONS(
       GetPhotoSubmissions.class),
   VALIDATE_CAPTCHA(
-      ValidateCaptcha.class);
+      ValidateCaptcha.class),
+  DELETE_STUFF(
+      DeleteStuff.class);
 
   private Class<? extends Command> clazz = null;
 

@@ -7,7 +7,6 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.inject.Inject;
-import com.google.ytd.model.Assignment;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.util.Util;
 
@@ -46,7 +45,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     List<PhotoSubmission> submissions = null;
 
     try {
-      Query query = pm.newQuery(Assignment.class);
+      Query query = pm.newQuery(PhotoSubmission.class);
       query.declareImports("import java.util.Date");
       query.setOrdering(sortBy + " " + sortOrder);
 
