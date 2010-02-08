@@ -1,7 +1,5 @@
 package com.google.ytd.model;
 
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -14,9 +12,8 @@ import com.google.gson.annotations.Expose;
 public class PhotoEntry {
 
   @PrimaryKey
-  @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   @Expose
+  // The blob key string is the unique id of PhotoEntry
   private String id = null;
 
   @Persistent
@@ -43,9 +40,10 @@ public class PhotoEntry {
   private ModerationStatus status;
 
   public PhotoEntry(String submissionId, BlobKey blobKey) {
-    this.submissionId = submissionId;
     this.blobKey = blobKey;
-    this.imageUrl = getImageUrl();
+    this.id = blobKey.getKeyString();
+    this.submissionId = submissionId;
+    this.imageUrl = "/image?id=" + this.id;
     this.status = ModerationStatus.UNREVIEWED;
   }
 
@@ -70,7 +68,7 @@ public class PhotoEntry {
   }
 
   public String getImageUrl() {
-    return "/image?id=" + blobKey.getKeyString();
+    return imageUrl;
   }
 
 }
