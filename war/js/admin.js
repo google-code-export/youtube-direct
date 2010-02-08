@@ -24,7 +24,8 @@ jQuery(document).ready( function() {
 });
 
 admin.init = function() {
-  admin.sub.init(); // from submission.js	
+  admin.sub.init(); // from video_submission.js	
+  admin.photo.init(); // from photo_submission.js   
   admin.assign.init(); // from assignments.js
   admin.config.init(); //from configuration.js
 };

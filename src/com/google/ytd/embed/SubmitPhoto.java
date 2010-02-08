@@ -77,12 +77,15 @@ public class SubmitPhoto extends HttpServlet {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
 
+      // TODO grab articleUrl from UserSessionManager (which needs some modification since UserSessionManager is loaded with Guice and this class cannot be used from Guice)
+      String articleUrl = "";
+
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
 
       // PhotoSubmission represents the meta data of a set of photo entries     
-      PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId), email,
-          title, description, location, blobs.entrySet().size());
+      PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
+          articleUrl, email, title, description, location, blobs.entrySet().size());
       pmfUtil.persistJdo(photoSubmission);
       String submissionId = photoSubmission.getId();
 
