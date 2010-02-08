@@ -27,6 +27,10 @@ public class PhotoEntry {
   @Persistent
   private BlobKey blobKey = null;
 
+  @Persistent
+  @Expose
+  private String imageUrl = null;
+
   public enum ModerationStatus {
     UNREVIEWED,
     APPROVED,
@@ -41,6 +45,7 @@ public class PhotoEntry {
   public PhotoEntry(String submissionId, BlobKey blobKey) {
     this.submissionId = submissionId;
     this.blobKey = blobKey;
+    this.imageUrl = getImageUrl();
     this.status = ModerationStatus.UNREVIEWED;
   }
 
@@ -62,6 +67,10 @@ public class PhotoEntry {
 
   public ModerationStatus getStatus() {
     return status;
+  }
+
+  public String getImageUrl() {
+    return "/image?id=" + blobKey.getKeyString();
   }
 
 }
