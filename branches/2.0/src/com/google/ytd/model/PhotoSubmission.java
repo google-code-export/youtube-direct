@@ -37,6 +37,10 @@ public class PhotoSubmission {
 
   @Persistent
   @Expose
+  private String articleUrl = null;
+
+  @Persistent
+  @Expose
   private String title = null;
 
   @Persistent
@@ -51,9 +55,14 @@ public class PhotoSubmission {
   @Expose
   private int numberOfPhotos = 0;
 
-  public PhotoSubmission(Long assignmentId, String email, String title, String description,
-      String location, int numberOfPhotos) {
+  @Persistent
+  @Expose
+  private String adminNotes = null;
+
+  public PhotoSubmission(Long assignmentId, String articleUrl, String email, String title,
+      String description, String location, int numberOfPhotos) {
     this.assignmentId = assignmentId;
+    this.articleUrl = articleUrl;
     this.email = email;
     this.title = title;
     this.description = description;
@@ -96,5 +105,21 @@ public class PhotoSubmission {
 
   public int getNumberOfPhotos() {
     return numberOfPhotos;
+  }
+
+  public void setArticleUrl(String articleUrl) {
+    this.articleUrl = articleUrl;
+  }
+
+  public String getArticleUrl() {
+    return articleUrl;
+  }
+
+  public void setAdminNotes(String adminNotes) {
+    this.adminNotes = adminNotes;
+  }
+
+  public String getAdminNotes() {
+    return adminNotes;
   }
 }

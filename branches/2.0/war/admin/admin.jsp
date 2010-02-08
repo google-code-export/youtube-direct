@@ -43,7 +43,8 @@ limitations under the License.
 <script type="text/javascript" src="/js/jsonrpc.js"></script>
 <script type="text/javascript" src="/js/admin.js"></script>
 <script type="text/javascript" src="/js/video_submission.js"></script>
-<script type="text/javascript" src="/js/assignments.js"></script>
+<script type="text/javascript" src="/js/photo_submission.js"></script>
+<script type="text/javascript" src="/js/assignment.js"></script>
 <script type="text/javascript" src="/js/configuration.js"></script>
 
 </head>
@@ -80,17 +81,22 @@ limitations under the License.
 <div align="left"><h1>YouTube Direct Admin</h1></div>
 <div id="tabs">
 	<ul>
-		<li><a href="#videoSubmissions">Video Submissions</a></li>		
-		<li><a href="#assignments">Assignments</a></li>
+		<li><a href="#videoSubmission">Video Submission</a></li>	
+		<li><a href="#photoSubmission">Photo Submission</a></li>	
+		<li><a href="#assignment">Assignment</a></li>
 		<li><a href="#configuration">Configuration</a></li>
 	</ul>
 	
-	<div id="videoSubmissions">
+	<div id="videoSubmission">
 		<%@include file="video_submission.jsp" %> 
 	</div>
 	
-	<div id="assignments">
-		<%@include file="assignments.jsp" %> 
+  <div id="photoSubmission">
+    <%@include file="photo_submission.jsp" %> 
+  </div>	
+	
+	<div id="assignment">
+		<%@include file="assignment.jsp" %> 
 	</div>
 		
 	<div id="configuration">

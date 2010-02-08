@@ -614,7 +614,7 @@ admin.sub.downloadVideo = function(submission) {
 
 admin.sub.deleteEntry = function(entryId) {
   if (confirm("Delete this entry?")) {
-    var messageElement = admin.showMessage("Deleting submission...");
+    var messageElement = admin.showMessage("Deleting video submission...");
   }  
 };
 
@@ -639,7 +639,7 @@ admin.sub.previewVideo = function(entryId) {
 };
 
 admin.sub.getAllSubmissions = function(callback) {
-  var messageElement = admin.showMessage("Loading submissions...");
+  var messageElement = admin.showMessage("Loading video submission...");
   
   var command = 'GET_VIDEO_SUBMISSIONS';
   var params = {};
@@ -653,7 +653,7 @@ admin.sub.getAllSubmissions = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Submissions loaded.", messageElement);
+        admin.showMessage("Video submission loaded.", messageElement);
         admin.sub.total = json.totalSize;
         var entries = json.result;
         admin.sub.submissions = entries.concat([]);
@@ -670,7 +670,7 @@ admin.sub.getAllSubmissions = function(callback) {
 };
 
 admin.sub.updateSubmissionStatus = function(entry) {  
-  var messageElement = admin.showMessage("Updating submission status...");
+  var messageElement = admin.showMessage("Updating video submission status...");
   
   var command = 'UPDATE_VIDEO_SUBMISSION_STATUS';
   var params = {};
@@ -681,7 +681,7 @@ admin.sub.updateSubmissionStatus = function(entry) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Submission status updated.", messageElement);
+        admin.showMessage("Video submission status updated.", messageElement);
         admin.sub.refreshGrid();
       } else {         
         admin.showError(json.error, messageElement);      

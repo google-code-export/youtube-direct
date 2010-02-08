@@ -18,15 +18,21 @@ body {
 #tabs {
 }
 
-#assignments {
+#assignment {
 	height: 700px;
 	text-align: left;
 }
 
-#videoSubmissions {
+#videoSubmission {
 	height: 700px;
 	text-align: left;
 }
+
+#photoSubmission {
+  height: 700px;
+  text-align: left;
+}
+
 
 #configuration {
 	text-align: left;
@@ -37,6 +43,12 @@ body {
 	font-family: arial;
 }
 
+#photoDetailsTemplate {
+  font-size: 12px;
+  font-family: arial;
+}
+
+
 #assignmentCreateTemplate {
 	font-size: 11px;
 	font-family: arial;	
@@ -44,6 +56,10 @@ body {
 
 #submissionControlPanel {
 	text-align: left;	
+}
+
+#photoControlPanel {
+  text-align: left; 
 }
 
 #assignmentControlPanel {
