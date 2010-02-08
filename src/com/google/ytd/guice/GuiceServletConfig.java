@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import com.google.ytd.ServeImage;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -16,7 +17,6 @@ import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
 import com.google.ytd.youtube.PersistAuthSubToken;
-import com.google.ytd.youtube.SyncMetadata;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
   private static final Logger LOG = Logger.getLogger(GuiceServletConfig.class.getName());
@@ -28,6 +28,9 @@ public class GuiceServletConfig extends GuiceServletContextListener {
       protected void configureServlets() {
         // Single entry point for all jsonrpc requests
         serve("/jsonrpc").with(JsonRpcProcessor.class);
+
+        // Serve images from blobservice
+        serve("/image").with(ServeImage.class);
 
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
