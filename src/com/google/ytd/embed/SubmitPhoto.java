@@ -31,6 +31,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Singleton;
+import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.util.PmfUtil;
 import com.google.ytd.util.Util;
@@ -76,26 +77,20 @@ public class SubmitPhoto extends HttpServlet {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
 
-      String batchId = null;
-
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+
+      // PhotoSubmission represents the meta data of a set of photo entries     
+      PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId), email,
+          title, description, location, blobs.entrySet().size());
+      pmfUtil.persistJdo(photoSubmission);
+      String submissionId = photoSubmission.getId();
+
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
         log.info(String.format("Processing file form element '%s'.", entry.getKey()));
-
         BlobKey blobKey = entry.getValue();
-
-        // Use the String representation of the first image's BlobKey as a unique id for the
-        // batch of multiple uploads.
-        if (batchId == null) {
-          batchId = blobKey.getKeyString();
-        }
-
-        PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-            blobKey, batchId, email, title, description, location);
-
-        pmfUtil.persistJdo(photoSubmission);
+        PhotoEntry photo = new PhotoEntry(submissionId, blobKey);
+        pmfUtil.persistJdo(photo);
       }
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);

@@ -9,7 +9,7 @@
 jQuery(document).ready(function() {  
   jQuery('#submit').click(function() {
     var command = jQuery('#command').val();
-    var params = JSON.parse(jQuery('#params').html());
+    var params = JSON.parse(jQuery('#params').val());
     jsonrpc.makeRequest(command, params, function(data) {
       try {
 	      var json = JSON.parse(data);
@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
 command: <input id="command" type="text" value="GET_VIDEO_SUBMISSIONS"></input>
 <br><br>
 input params:<br>
-<textarea id="params" cols="40" rows="5">{"sortBy": "created", "sortOrder": "desc", "filterType": "all", "pageIndex": "1", "pageSize": "10"}</textarea>
+<input style="width: 100%;" id="params" value='{"sortBy": "created", "sortOrder": "desc", "filterType": "all", "pageIndex": "1", "pageSize": "10"}' />
 <br><br>
 <input id="submit" type="button" value="submit request"/>
 <br><br>

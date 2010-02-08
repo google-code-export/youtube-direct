@@ -49,8 +49,30 @@ public class GetPhotoSubmissions extends Command {
       throw new IllegalArgumentException("Missing required param: pageSize");
     }
 
+    int pageIndex = Integer.parseInt(pageIndexString);
+    int pageSize = Integer.parseInt(pageSizeString);
+
     submissions = photoSubmissionDao.getPhotoSubmissions(sortBy, sortOrder);
-    LOG.info("" + util.toJson(submissions));
+
+    int totalSize = submissions.size();
+    int totalPages = (int) Math.ceil(((double) totalSize / (double) pageSize));
+    int startIndex = (pageIndex - 1) * pageSize; // inclusive
+    int endIndex = -1; // exclusive
+
+    if (pageIndex < totalPages) {
+      endIndex = startIndex + pageSize;
+    } else {
+      if (pageIndex == totalPages && totalSize % pageSize == 0) {
+        endIndex = startIndex + pageSize;
+      } else {
+        endIndex = startIndex + (totalSize % pageSize);
+      }
+    }
+
+    submissions = submissions.subList(startIndex, endIndex);
+    json.put("totalSize", totalSize);
+    json.put("totalPages", totalPages);
+
     json.put("result", new JSONArray(util.toJson(submissions)));
 
     return json;

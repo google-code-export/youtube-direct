@@ -39,7 +39,7 @@ public class DeleteStuff extends Command {
       Query query = pm.newQuery(Class.forName(className));
       query.deletePersistentAll();
     } catch (ClassNotFoundException e) {
-      throw new IllegalArgumentException(className + " is not valid.");
+      throw new IllegalArgumentException(className + " must be a valid fully-qualified class.");
     } finally {
       pm.close();
     }

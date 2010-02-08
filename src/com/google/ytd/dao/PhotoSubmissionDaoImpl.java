@@ -7,6 +7,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.inject.Inject;
+import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.util.Util;
 
@@ -15,29 +16,6 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
   private Util util;
   @Inject
   private PersistenceManagerFactory pmf;
-
-  @Override
-  public PhotoSubmission getPhotoSubmissionsById(String batchId) {
-    PersistenceManager pm = pmf.getPersistenceManager();
-    List<PhotoSubmission> submissions = null;
-    PhotoSubmission submission = null;
-
-    try {
-      Query query = pm.newQuery(PhotoSubmission.class);
-      query.declareParameters("String batchId_");
-      String filters = "batchId == batchId_";
-      query.setFilter(filters);
-
-      submissions = (List<PhotoSubmission>) query.execute(batchId);
-      if (submissions.size() > 0) {
-        submission = submissions.get(0);
-      }
-    } finally {
-      pm.close();
-    }
-
-    return submission;
-  }
 
   @Override
   public List<PhotoSubmission> getPhotoSubmissions(String sortBy, String sortOrder) {
@@ -56,6 +34,47 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     }
 
     return submissions;
+  }
+
+  @Override
+  public List<PhotoEntry> getAllPhotos(String submissionId) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    List<PhotoEntry> photos = null;
+
+    try {
+      Query query = pm.newQuery(PhotoEntry.class);
+
+      photos = (List<PhotoEntry>) query.execute();
+      photos = (List<PhotoEntry>) pm.detachCopyAll(photos);
+    } finally {
+      pm.close();
+    }
+
+    return photos;
+  }
+
+  @Override
+  public PhotoSubmission save(PhotoSubmission submission) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      pm.makePersistent(submission);
+      submission = pm.detachCopy(submission);
+    } finally {
+      pm.close();
+    }
+    return submission;
+  }
+
+  @Override
+  public PhotoEntry save(PhotoEntry photo) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      pm.makePersistent(photo);
+      photo = pm.detachCopy(photo);
+    } finally {
+      pm.close();
+    }
+    return photo;
   }
 
 }
