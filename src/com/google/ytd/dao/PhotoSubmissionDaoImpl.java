@@ -43,8 +43,10 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     try {
       Query query = pm.newQuery(PhotoEntry.class);
-
-      photos = (List<PhotoEntry>) query.execute();
+      query.declareParameters("String submissionId_");
+      String filters = "submissionId == submissionId_";
+      query.setFilter(filters);
+      photos = (List<PhotoEntry>) query.execute(submissionId);
       photos = (List<PhotoEntry>) pm.detachCopyAll(photos);
     } finally {
       pm.close();
