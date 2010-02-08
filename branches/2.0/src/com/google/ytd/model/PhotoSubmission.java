@@ -9,9 +9,11 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gson.annotations.Expose;
 
+/*
+ * Represents the meta grouping of a set of photo entries.
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class PhotoSubmission {
 
@@ -28,9 +30,6 @@ public class PhotoSubmission {
   @Persistent
   @Expose
   private Long assignmentId = null;
-
-  @Persistent
-  private BlobKey blobKey = null;
 
   @Persistent
   @Expose
@@ -50,18 +49,16 @@ public class PhotoSubmission {
 
   @Persistent
   @Expose
-  private String batchId = null;
+  private int numberOfPhotos = 0;
 
-  public PhotoSubmission(Long assignmentId, BlobKey blobKey, String batchId, String email,
-      String title, String description, String location) {
+  public PhotoSubmission(Long assignmentId, String email, String title, String description,
+      String location, int numberOfPhotos) {
     this.assignmentId = assignmentId;
-    this.blobKey = blobKey;
-    this.batchId = batchId;
     this.email = email;
     this.title = title;
     this.description = description;
     this.location = location;
-
+    this.numberOfPhotos = numberOfPhotos;
     this.created = new Date();
   }
 
@@ -75,14 +72,6 @@ public class PhotoSubmission {
 
   public Long getAssignmentId() {
     return assignmentId;
-  }
-
-  public BlobKey getBlobKey() {
-    return blobKey;
-  }
-
-  public String getBatchId() {
-    return batchId;
   }
 
   public Date getCreated() {
@@ -99,5 +88,13 @@ public class PhotoSubmission {
 
   public String getLocation() {
     return location;
+  }
+
+  public void setNumberOfPhotos(int numberOfPhotos) {
+    this.numberOfPhotos = numberOfPhotos;
+  }
+
+  public int getNumberOfPhotos() {
+    return numberOfPhotos;
   }
 }
