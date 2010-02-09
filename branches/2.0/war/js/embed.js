@@ -87,8 +87,9 @@ function processFileElements(section) {
 	
 	if (emptyFileElements.length < fileElements.length) {
 		for (var i = 0; i < emptyFileElements.length; i++) {
-			emptyFileElements[i].unbind();
-			emptyFileElements[i].remove();
+			var emptyFileElement = jQuery(emptyFileElements[i]);
+			emptyFileElement.unbind();
+			jQuery('#wrapper-' + emptyFileElement.get(0).id).remove();
 		}
 		
 		return true;
@@ -180,9 +181,9 @@ function addFileElement() {
 	if (fileElementCount < 5) {
 		var fileElementId = 'file' + fileElementCount;
 	
-		siblingElement.before('<br><br><label for="' + fileElementId + 
-					'">Select File: </label><input type="file" name="' + fileElementId + '" id="' +
-					fileElementId + '" onChange="addFileElement()" />');
+		siblingElement.before('<div class="upload" id="wrapper-' + fileElementId + '"><label for="' +
+						fileElementId + '">Select File: </label><input type="file" name="' + fileElementId +
+						'" id="' + fileElementId + '" onChange="addFileElement()" /></div>');
 	}					
 }
 

@@ -104,4 +104,7 @@ div[align="center"] input[value="Login"] {
   background: #f00;
   font-size: 11px;  
 }
-
+.upload {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
