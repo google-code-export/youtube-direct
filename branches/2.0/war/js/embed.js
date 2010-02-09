@@ -44,10 +44,11 @@ function init() {
     	jQuery('#submissionAsk').css('display', 'none');
     	photoMainInit();
     });
+    
+    addFileElement();
   } else {
     // show YouTube instruction
     jQuery('#loginInstruction').css('display', 'block');
-    
   }
 }
 
@@ -168,8 +169,6 @@ function photoMainInit() {
   });      
   
   photoMain.find("#submitDate").datepicker();
-  
-  addFileElement();
 }
 
 function addFileElement() {

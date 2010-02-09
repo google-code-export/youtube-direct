@@ -237,8 +237,6 @@
     </div>
     <input id="assignmentId" name="assignmentId" type="hidden" value="<%=request.getParameter("assignmentId")%>"/>
     <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
-    <br>
-    <br>
     <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=6Le99goAAAAAABYfpbzUptcgAi0Q79s2ybGLsAxt"></script>
     <br>
     <div align="center">
