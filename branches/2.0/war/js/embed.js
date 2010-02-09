@@ -18,9 +18,6 @@ jQuery(document).ready( function() {
 });
 
 function init() {
-  
-  window.URL_PARAMS = getUrlParams();   
-  
   // Hide post submission message.
   jQuery('#postSubmitMessage').css('display', 'none');
   
@@ -370,26 +367,6 @@ function initiateUpload(uploadForm) {
 
   // submit the upload form!  
   uploadForm.submit();
-}
-
-function getUrlParams() {
-  var args = new Object();
-  var params = window.location.href.split('?');
-
-  if (params.length > 1) {
-    params = params[1];
-    var pairs = params.split("&");
-    for ( var i = 0; i < pairs.length; i++) {
-      var pos = pairs[i].indexOf('=');
-      if (pos == -1)
-        continue;
-      var argname = pairs[i].substring(0, pos);
-      var value = pairs[i].substring(pos + 1);
-      value = value.replace(/\+/g, " ");
-      args[argname] = value;
-    }
-  }
-  return args;
 }
 
 function getVideoId(url) {
