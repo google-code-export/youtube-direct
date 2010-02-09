@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.ytd.guice.ProductionModule;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.util.PmfUtil;
@@ -43,18 +44,22 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class SubmitPhoto extends HttpServlet {
-  private static final Logger log = Logger.getLogger(SubmitPhoto.class.getName());
+  private static final Logger LOG = Logger.getLogger(SubmitPhoto.class.getName());
+
+  private Injector injector = null;
+  private Util util = null;
+  private PmfUtil pmfUtil = null;
+  private UserSessionManager userSessionManager = null;
+
+  public SubmitPhoto() {
+    injector = Guice.createInjector(new ProductionModule());
+    util = injector.getInstance(Util.class);
+    pmfUtil = injector.getInstance(PmfUtil.class);
+  }
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
-      Util util = Util.get();
-
-      // Create a new PMF because unfortunately we don't have access to the Guice version.
-      PersistenceManagerFactory pmf = JDOHelper
-          .getPersistenceManagerFactory("transactions-optional");
-      PmfUtil pmfUtil = new PmfUtil(pmf);
-
       String assignmentId = req.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
         throw new IllegalArgumentException("'assignmentId' is null or empty.");
@@ -70,15 +75,17 @@ public class SubmitPhoto extends HttpServlet {
         throw new IllegalArgumentException("'description' is null or empty.");
       }
 
-      String location = req.getParameter("location");
+      String articleUrl = req.getParameter("articleUrl");
+      if (util.isNullOrEmpty(articleUrl)) {
+        throw new IllegalArgumentException("'articleUrl' is null or empty.");
+      }
 
       String email = req.getParameter("uploadEmail");
       if (util.isNullOrEmpty(email)) {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
 
-      // TODO grab articleUrl from UserSessionManager (which needs some modification since UserSessionManager is loaded with Guice and this class cannot be used from Guice)
-      String articleUrl = "";
+      String location = req.getParameter("location");
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
@@ -90,13 +97,13 @@ public class SubmitPhoto extends HttpServlet {
       String submissionId = photoSubmission.getId();
 
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
-        log.info(String.format("Processing file form element '%s'.", entry.getKey()));
+        LOG.info(String.format("Processing file form element '%s'.", entry.getKey()));
         BlobKey blobKey = entry.getValue();
         PhotoEntry photo = new PhotoEntry(submissionId, blobKey);
         pmfUtil.persistJdo(photo);
       }
     } catch (IllegalArgumentException e) {
-      log.log(Level.WARNING, "", e);
+      LOG.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
 

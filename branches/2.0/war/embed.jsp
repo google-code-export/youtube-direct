@@ -27,10 +27,10 @@
 		      bind(PersistenceManagerFactory.class).toInstance(
 		          (PersistenceManagerFactory) getServletContext().getAttribute("pmf"));
 		      bind(HttpServletRequest.class).toInstance(req);
-		      bind(HttpServletResponse.class).toInstance(resp);
-		      
+		      bind(HttpServletResponse.class).toInstance(resp);		
+		      bind(BlobstoreService.class).toInstance(BlobstoreServiceFactory.getBlobstoreService());		      
 	        bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);	 
-		      bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);	    	 
+		      bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);		      
 	      }
 	    });
 	
@@ -38,9 +38,8 @@
 	AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 	Util util = injector.getInstance(Util.class);
 	UserSessionManager userSessionManager = injector.getInstance(UserSessionManager.class);
-	Authenticator authenticator = injector.getInstance(Authenticator.class);
-	
-	BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+	Authenticator authenticator = injector.getInstance(Authenticator.class);	
+	BlobstoreService blobstoreService = injector.getInstance(BlobstoreService.class); 
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -119,7 +118,7 @@
     if (adminConfigDao.allowPhotoSubmission()) {   
   %>  
   <br><br>
-  <input id="photoButton" class="askButton" type="button" value="Submit an existing photo" /> 
+  <input id="photoButton" class="askButton" type="button" value="Submit photo(s)" /> 
   <%
     }
   %>  
@@ -242,6 +241,7 @@
     <div>
       <input id="file1" name="file1" type="file" />
     </div>
+    <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
     <br>
     <br>
     <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=6Le99goAAAAAABYfpbzUptcgAi0Q79s2ybGLsAxt"></script>
