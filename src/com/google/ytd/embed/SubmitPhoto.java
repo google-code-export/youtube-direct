@@ -49,7 +49,6 @@ public class SubmitPhoto extends HttpServlet {
   private Injector injector = null;
   private Util util = null;
   private PmfUtil pmfUtil = null;
-  private UserSessionManager userSessionManager = null;
 
   public SubmitPhoto() {
     injector = Guice.createInjector(new ProductionModule());

@@ -235,12 +235,6 @@
     <div>
       <input class="inputBox" id="uploadEmail" name="uploadEmail" type="text" />
     </div>
-    <br>
-    <br>
-    <label class="required" for="file">Select File: </label>
-    <div>
-      <input id="file" name="file1" type="file" multiple=""/>
-    </div>
     <input id="assignmentId" name="assignmentId" type="hidden" value="<%=request.getParameter("assignmentId")%>"/>
     <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
     <br>
