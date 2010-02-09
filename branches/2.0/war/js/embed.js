@@ -73,6 +73,30 @@ function isRequiredFilled(sectionId) {
   return true;
 }
 
+function processFileElements(section) {
+	var emptyFileElements = [];
+	var fileElements = section.find('input[type="file"]');
+	
+	for (var i = 0; i < fileElements.length; i++) {
+		var fileElement = jQuery(fileElements.get(i));
+		
+		if (fileElement.val() == '') {
+			emptyFileElements.push(fileElement);
+		}
+	}
+	
+	if (emptyFileElements.length < fileElements.length) {
+		for (var i = 0; i < emptyFileElements.length; i++) {
+			emptyFileElements[i].unbind();
+			emptyFileElements[i].remove();
+		}
+		
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function validateCaptcha() {
 	var photoMain = jQuery('#photoMain');
 	
@@ -126,6 +150,11 @@ function photoMainInit() {
       return false;
     }
     
+    if (!processFileElements(jQuery('#photoMain'))) {
+      showMessage('Please select at least one file to upload.');
+      return false;
+    }
+    
     validateCaptcha();
 
     return false;
@@ -138,6 +167,23 @@ function photoMainInit() {
   });      
   
   photoMain.find("#submitDate").datepicker();
+  
+  addFileElement();
+}
+
+function addFileElement() {
+	var photoUploadForm = jQuery('#photoUploadForm');
+	var siblingElement = photoUploadForm.find('#assignmentId');
+	
+	var fileElementCount = photoUploadForm.find('input[type="file"]').length;
+	
+	if (fileElementCount < 5) {
+		var fileElementId = 'file' + fileElementCount;
+	
+		siblingElement.before('<br><br><label for="' + fileElementId + 
+					'">Select File: </label><input type="file" name="' + fileElementId + '" id="' +
+					fileElementId + '" onChange="addFileElement()" />');
+	}					
 }
 
 function existingVideoMainInit() {
