@@ -170,6 +170,22 @@ admin.photo.initGridModels = function(grid) {
     sorttype : 'string'
   });
 
+  grid.colNames.push('Article');
+  grid.colModel.push( {
+    name : 'articleUrl',
+    index : 'articleUrl',
+    width : 50,
+    formatter : function(cellvalue, options, rowObject) {
+      var link = '';    
+      if (cellvalue) { 
+        link = '<a title="' + cellvalue + '" href="' + cellvalue + '" target="_blank">link</a>';
+      }
+      return link;
+    },
+    align : 'center',
+    sorttype : 'string'
+  });  
+  
   grid.colNames.push('Email');
   grid.colModel.push( {
     name : 'notifyEmail',
