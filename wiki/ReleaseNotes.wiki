@@ -1,5 +1,5 @@
 #summary Release notes for milestone releases.
-#labels Featured
+#labels Deprecated
 
 =Release Notes=
 
