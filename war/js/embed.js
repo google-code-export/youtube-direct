@@ -77,6 +77,12 @@ function isRequiredFilled(sectionId) {
 }
 
 function validateCaptcha() {
+	var photoMain = jQuery('#photoMain');
+	
+  // Disable buttons during submission.
+  photoMain.find('#submitButton').disabled = true;
+  photoMain.find('#cancelSubmitButton').disabled = true;    
+  
   var params = {};
   params.challenge = jQuery('#recaptcha_challenge_field').val();
   params.response = jQuery('#recaptcha_response_field').val();
@@ -84,20 +90,26 @@ function validateCaptcha() {
   jsonrpc.makeRequest('VALIDATE_CAPTCHA', params, function(data) {
   	var json = JSON.parse(data);
   	
-  	if (json.success == 'true') {
+  	if (json.result == 'true') {
   		startPhotoUpload();
     } else {
-    	showMessage('An error occurred when validating the reCAPTCHA.');
+    	photoMain.find('#submitButton').disabled = false;
+    	photoMain.find('#cancelSubmitButton').disabled = false;
+    	
+    	Recaptcha.reload();
+    	
+    	if (json.result == 'false') {
+    		showMessage('Incorrect word verification. Please try again.');
+    	} else {
+    		showMessage('An error occurred while contacting the word verification server. ' +
+    						'Please try again later.');
+    	}
     }
   });
 }
 
 function startPhotoUpload() {
 	var photoMain = jQuery('#photoMain');
-	
-  // Disable buttons during submission.
-  photoMain.find('#submitButton').disabled = true;
-  photoMain.find('#cancelSubmitButton').disabled = true;    
   
   showProcessing('Uploading photo...');
 
@@ -110,6 +122,8 @@ function photoMainInit() {
 	photoMain.css('display', 'block');
 	
   photoMain.find('#uploadButton').click(function(event) {
+  	clearMessage();
+  	
     if (!isRequiredFilled('photoMain')) {
       showMessage('Please fill in all required field(s).');
       return false;
