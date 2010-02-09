@@ -19,7 +19,7 @@ admin.photo = admin.photo || {};
 
 // user current setting
 admin.photo.total = 0; // size of current working set
-admin.photo.photomissions = []; // current working set
+admin.photo.submissions = []; // current working set
 admin.photo.sortBy = 'created';
 admin.photo.sortOrder = 'desc';
 admin.photo.pageIndex = 1; 
@@ -75,13 +75,13 @@ admin.photo.filterByText = function() {
   
   var regex = new RegExp(text, 'i');
 
-  for ( var i = 0; i < admin.photo.photomissions.length; i++) {
-    var entry = admin.photo.photomissions[i];
+  for ( var i = 0; i < admin.photo.submissions.length; i++) {
+    var entry = admin.photo.submissions[i];
 
     var title = entry.title;
     var description = entry.description;
 
-    if (regex.test(title) || regex.test(description) || regex.test(tags)) {
+    if (regex.test(title) || regex.test(description)) {
       matches.push(entry);
     }
   }
@@ -241,8 +241,8 @@ admin.photo.padZero = function(value) {
 admin.photo.getSubmission = function(id) {
   var ret = null;
 
-  for ( var i = 0; i < admin.photo.photomissions.length; i++) {
-    var submission = admin.photo.photomissions[i];
+  for ( var i = 0; i < admin.photo.submissions.length; i++) {
+    var submission = admin.photo.submissions[i];
     if (submission.id == id) {
       ret = submission;
       break;
@@ -330,22 +330,28 @@ admin.photo.showDetails = function(entryId) {
   mainDiv.find('#articleUrl').html(articleLink);  
   
   mainDiv.find('#location').html(
-      submission.location?submission.location:'N/A');
-  
+      submission.location?submission.location:'N/A');  
   
   // Grab photo entries
   admin.photo.getAllPhotos(submission.id, function(entries) {
-    console.log(entries);
-    
     var photoHtml = [];
+    
+    var photosDiv = mainDiv.find('#photos');
     
     for (var i=0; i<entries.length; i++) {
       var entry = entries[i];
       var imageUrl = entry.imageUrl;
-      console.log(imageUrl);
-      photoHtml.push('<img src="' + imageUrl + '"/><br>');
+      
+      var img = jQuery('<img/>');
+      img.attr('src', imageUrl);      
+      
+      img.click(function() {
+        
+      });          
+      
+      photosDiv.append(img);
+      photosDiv.append('<br>');
     }
-    mainDiv.find('#photos').html(photoHtml.join(''));
   });  
   
   var moderationStatus = -1;
@@ -422,7 +428,7 @@ admin.photo.getAllPhotos = function(submissionId, callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Photo enntries loaded.", messageElement);
+        admin.showMessage("Photo entries loaded.", messageElement);
         var entries = json.result;
         callback(entries);          
       } else {
@@ -454,7 +460,7 @@ admin.photo.getAllSubmissions = function(callback) {
         admin.showMessage("Photo submission loaded.", messageElement);
         admin.photo.total = json.totalSize;
         var entries = json.result;
-        admin.photo.photomissions = entries.concat([]);
+        admin.photo.submissions = entries.concat([]);
         callback(entries);          
       } else {
         admin.showError(json.error, messageElement);          
@@ -514,3 +520,34 @@ admin.photo.getVideoHTML = function(videoId, width, height) {
 
   return html.join('');
 };
+
+admin.photo.imageResize = function(image) {  
+    var max = 100;
+    var w_ = image.width;
+    var h_ = image.height;
+
+    if (w_ > max || h_ > max) {
+      var wRatio = w_ / max;
+
+      var hRatio = h_ / max;
+
+      var ratio = Math.max(wRatio, hRatio);
+
+      var w = Math.round(w_ / ratio);
+      var h = Math.round(h_ / ratio);
+      
+      image.width = w;
+      image.height = h;
+      image.style.width = w;
+      image.style.height = h;
+      
+      image.style.pixelHeight = h;
+      //image.offsetHeight = h;
+      
+      image.style.pixelWidth = w;
+      //image.offsetWidth = w;
+    
+    };    
+    
+    return image;
+}
