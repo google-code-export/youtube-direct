@@ -26,7 +26,6 @@ public class ValidateCaptcha extends Command {
   private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
 
   private static final String CAPTCHA_VALIDATE_URL = "http://api-verify.recaptcha.net/verify";
-  private static final String CAPTCHA_SUCCESS_RESPONSE = "true";
 
   @Inject
   private Util util;
@@ -79,9 +78,9 @@ public class ValidateCaptcha extends Command {
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection
             .getInputStream()));
         String line = reader.readLine().trim();
-        if (line.equals(CAPTCHA_SUCCESS_RESPONSE)) {
-          json.put("success", CAPTCHA_SUCCESS_RESPONSE);
-        }
+        
+        // line will be 'true' if this was a success, or 'false' otherwise.
+        json.put("result", line);
       } else {
         LOG.warning(String.format("Response code %d returned from %s.", connection
             .getResponseCode(), CAPTCHA_VALIDATE_URL));
