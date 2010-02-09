@@ -25,7 +25,7 @@ public class PhotoSubmission {
 
   @Persistent
   @Expose
-  private String email = null;
+  private String notifyEmail = null;
 
   @Persistent
   @Expose
@@ -63,7 +63,7 @@ public class PhotoSubmission {
       String description, String location, int numberOfPhotos) {
     this.assignmentId = assignmentId;
     this.articleUrl = articleUrl;
-    this.email = email;
+    this.notifyEmail = email;
     this.title = title;
     this.description = description;
     this.location = location;
@@ -75,8 +75,8 @@ public class PhotoSubmission {
     return id;
   }
 
-  public String getEmail() {
-    return email;
+  public String getNotifyEmail() {
+    return notifyEmail;
   }
 
   public Long getAssignmentId() {

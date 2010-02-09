@@ -42,15 +42,19 @@ import com.google.ytd.util.Util;
 @Singleton
 public class UserSessionManager {
   private static final String USER_SESSION_ID_NAME = "YTD_SESSION_ID";
+  private Util util = null;
+  private PmfUtil pmfUtil = null;
+  private PersistenceManagerFactory pmf = null;
+  private AdminConfigDao adminConfigDao = null;
 
   @Inject
-  private Util util;
-  @Inject
-  private PmfUtil pmfUtil;
-  @Inject
-  private PersistenceManagerFactory pmf;
-  @Inject
-  private AdminConfigDao adminConfigDao;
+  public UserSessionManager(PersistenceManagerFactory pmf, AdminConfigDao adminConfigDao,
+      Util util, PmfUtil pmfUtil) {
+    this.pmf = pmf;
+    this.adminConfigDao = adminConfigDao;
+    this.util = util;
+    this.pmfUtil = pmfUtil;
+  }
 
   public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
