@@ -100,13 +100,8 @@ function startPhotoUpload() {
   photoMain.find('#cancelSubmitButton').disabled = true;    
   
   showProcessing('Uploading photo...');
-  
-  var photoUploadForm = jQuery('#photoUploadForm');
-  var assignmentIdElement = jQuery("<input type='hidden' name='assignmentId' value='" +
-  				window.URL_PARAMS['assignmentId'] +"' />");
-  photoUploadForm.append(assignmentIdElement);
-  
-  initiateUpload(photoUploadForm);
+
+  initiateUpload(jQuery('#photoUploadForm'));
 }
 
 function photoMainInit() {
