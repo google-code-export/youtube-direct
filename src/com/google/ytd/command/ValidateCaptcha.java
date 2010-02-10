@@ -23,14 +23,13 @@ import com.google.ytd.util.Util;
 
 @RequestScoped
 public class ValidateCaptcha extends Command {
-  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
+  private static final Logger LOG = Logger.getLogger(ValidateCaptcha.class.getName());
 
   private static final String CAPTCHA_VALIDATE_URL = "http://api-verify.recaptcha.net/verify";
 
   @Inject
   private Util util;
 
-  @Inject
   AdminConfigDao adminConfigDao;
 
   HttpServletRequest request;
@@ -78,7 +77,7 @@ public class ValidateCaptcha extends Command {
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection
             .getInputStream()));
         String line = reader.readLine().trim();
-        
+
         // line will be 'true' if this was a success, or 'false' otherwise.
         json.put("result", line);
       } else {
