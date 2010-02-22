@@ -16,6 +16,7 @@
 package com.google.ytd.embed;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -39,8 +42,7 @@ import com.google.ytd.util.Util;
 
 /**
  * Servlet that handles the submission of photos. It creates a new
- * PhotoSubmission object and saves it to the datastore. The response needs to
- * be a 30x redirect, as per the BlobStore API.
+ * PhotoSubmission object and saves it to the datastore.
  */
 @Singleton
 public class SubmitPhoto extends HttpServlet {
@@ -88,24 +90,52 @@ public class SubmitPhoto extends HttpServlet {
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+      
+      BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
 
-      // PhotoSubmission represents the meta data of a set of photo entries     
-      PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-          articleUrl, email, title, description, location, blobs.entrySet().size());
-      pmfUtil.persistJdo(photoSubmission);
-      String submissionId = photoSubmission.getId();
-
+      ArrayList<BlobKey> validSubmissionKeys = new ArrayList<BlobKey>();
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
-        LOG.info(String.format("Processing file form element '%s'.", entry.getKey()));
         BlobKey blobKey = entry.getValue();
-        PhotoEntry photo = new PhotoEntry(submissionId, blobKey);
-        pmfUtil.persistJdo(photo);
+        
+        BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+        String contentType = blobInfo.getContentType().toLowerCase();
+        long size = blobInfo.getSize();
+        
+        if (!contentType.startsWith("image/")) {
+          blobstoreService.delete(blobKey);
+          LOG.warning(String.format("Uploaded file has content type '%s'; skipping.", contentType));
+          continue;
+        }
+        
+        //TODO: Move this to config setting.
+        if ((size > 5 * 1024 * 1024) || (size == 0)) {
+          blobstoreService.delete(blobKey);
+          LOG.warning(String.format("Uploaded file is %d bytes; skipping.", size));
+          continue;
+        }
+        
+        validSubmissionKeys.add(blobKey);
+      }
+      
+      if (validSubmissionKeys.size() > 0) {
+        // PhotoSubmission represents the meta data of a set of photo entries     
+        PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
+            articleUrl, email, title, description, location, validSubmissionKeys.size());
+        pmfUtil.persistJdo(photoSubmission);
+        String submissionId = photoSubmission.getId();
+        
+        for (BlobKey blobKey : validSubmissionKeys) {
+          PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey);
+          pmfUtil.persistJdo(photoEntry);
+        }
+      } else {
+        LOG.warning("No valid photos found in upload.");
       }
     } catch (IllegalArgumentException e) {
       LOG.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
-
+      //TODO: Do something here, though it's effectively ignored by the uploader iframe.
     }
   }
 }
