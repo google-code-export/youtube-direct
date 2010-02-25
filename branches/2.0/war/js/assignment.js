@@ -504,7 +504,7 @@ admin.assign.showAssignmentCreate = function() {
   var dialogOptions = {};
   dialogOptions.title = "Create New Assignment";
   dialogOptions.width = 300;
-  dialogOptions.height = 300;
+  dialogOptions.height = 350;
   
   jQuery.ui.dialog.defaults.bgiframe = true; 
   
@@ -529,6 +529,7 @@ admin.assign.showAssignmentCreate = function() {
     var command = 'NEW_ASSIGNMENT';
     var params = {};
     params.description = div.find('#assignmentDescription').val();
+    params.title = div.find('#playlistTitle').val();
     params.category = div.find('#assignmentCategories').get(0).
         options[div.find('#assignmentCategories').attr('selectedIndex')].value;
     params.status = div.find('#assignmentStatusType').get(0).
@@ -547,7 +548,7 @@ admin.assign.showAssignmentCreate = function() {
         	admin.assign.pageIndex = 1;
         	admin.assign.refreshGrid();
         } else {
-          admin.showError(json.error, messageElement);
+          admin.showError("Could not create a new assignment: " + json.error, messageElement);
         }
       } catch(exception) {
         admin.showError(jsonStr, messageElement);

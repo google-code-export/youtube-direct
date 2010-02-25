@@ -115,7 +115,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
    * com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment
    * )
    */
-  public Assignment newAssignment(Assignment assignment) {
+  public Assignment newAssignment(Assignment assignment, String playlistTitle) {
     PersistenceManager pm = pmf.getPersistenceManager();
     try {
       assignment = pm.makePersistent(assignment);
@@ -125,8 +125,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
             + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
       } else {
         youTubeApiHelper.setToken(token);
-        String playlistTitle = String.format("Playlist #%d %s", assignment.getId(), assignment
-            .getDescription());
 
         String playlistId = youTubeApiHelper.createPlaylist(playlistTitle, assignment
             .getDescription());
