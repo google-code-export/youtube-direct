@@ -312,20 +312,25 @@ admin.assign.getSelfUrl = function() {
 admin.assign.showEmbedCode = function(id) {  
   var entry = admin.assign.getAssignment(id);   
   jQuery.ui.dialog.defaults.bgiframe = true;
-  
+
   var code = [];
   code.push('<script type="text/javascript" src="' + admin.assign.getSelfUrl() 
       + '/js/ytd-embed.js"></script>\n');
   code.push('<script type="text/javascript">\n');
-  code.push('window.onload = function() {\n');   
+  code.push('var ytdInitFunction = function() {\n');
   code.push('  var ytd = new Ytd();\n');
   code.push('  ytd.setAssignmentId("' + entry.id + '");\n');
-  code.push('  ytd.setCallToAction("callToActionId");\n');  
+  code.push('  ytd.setCallToAction("callToActionId");\n');
   code.push('  var containerWidth = 350;\n');
   code.push('  var containerHeight = 550;\n');
-  code.push('  ytd.setYtdContainer("ytdContainer", containerWidth, containerHeight);\n');   
+  code.push('  ytd.setYtdContainer("ytdContainer", containerWidth, containerHeight);\n');
   code.push('  ytd.ready();\n');
-  code.push('};\n');  
+  code.push('};\n');
+  code.push('if (window.addEventListener) {\n');
+  code.push('  window.addEventListener("load", ytdInitFunction, false);\n');
+  code.push('} else if (window.attachEvent) {\n');
+  code.push('  window.attachEvent("onload", ytdInitFunction);\n');
+  code.push('}\n');
   code.push('</script>\n');
   code.push('<a id="callToActionId" href="javascript:void(0);"><img src="' 
       + admin.assign.getSelfUrl() + '/calltoaction.png"/></a>\n');  
@@ -343,11 +348,10 @@ admin.assign.showEmbedCode = function(id) {
   
   var dialogOptions = {};
   dialogOptions.title = 'Embed Code';
-  dialogOptions.width = 400;
-  dialogOptions.height = 270;  
+  dialogOptions.width = 550;
+  dialogOptions.height = 400;  
    
   textarea.dialog(dialogOptions);
-
 };
 
 admin.assign.showPlaylistCode = function(id) {  

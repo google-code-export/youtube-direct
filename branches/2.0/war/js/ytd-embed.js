@@ -69,7 +69,6 @@ Ytd.prototype.embed = function() {
 	iframeElement.width = this.width + 'px';
 	iframeElement.height = this.height + 'px';
 	iframeElement.style.border = '0px solid gray';
-	iframeElement.scrolling = 'no';
 	iframeElement.frameBorder = '0';
 
 	var hideLoadingFunction = function () {
