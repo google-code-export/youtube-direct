@@ -49,6 +49,10 @@ limitations under the License.
 	  	<option value="ARCHIVE">ARCHIVE</option>
 	  </select>  
 		<br><br>
+		
+		<div>Title</div>
+		<input type="text" size="40" id="playlistTitle"/>
+		<br><br>
 			  		
 		<div>Description</div>
 		<textarea cols="40" rows="5" id="assignmentDescription"></textarea>		
