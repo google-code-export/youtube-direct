@@ -85,6 +85,7 @@ public class YouTubeApiHelper {
       + "</yt:moderationStatus></entry>";
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
+  private static final String CLIENT_ID_PREFIX = "ytd20-";
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -99,8 +100,11 @@ public class YouTubeApiHelper {
     String developerKey = this.adminConfigDao.getAdminConfig().getDeveloperKey();
 
     if (util.isNullOrEmpty(clientId)) {
+      clientId = "";
       log.warning("clientId settings property is null or empty.");
     }
+    
+    clientId = CLIENT_ID_PREFIX + clientId;
 
     if (util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
@@ -112,10 +116,11 @@ public class YouTubeApiHelper {
 
   public YouTubeApiHelper(String clientId) {
     if (util.isNullOrEmpty(clientId)) {
+      clientId = "";
       log.warning("clientId parameter is null or empty.");
     }
 
-    service = new YouTubeService(clientId);
+    service = new YouTubeService(CLIENT_ID_PREFIX + clientId);
   }
 
   /**
