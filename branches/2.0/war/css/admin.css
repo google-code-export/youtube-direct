@@ -151,7 +151,8 @@ fieldset legend {
 #messageList {
   font-size: 14px;
   font-weight: bold;
-  text-align: center;
+  text-align: right;
+  padding-right: 15px;
 }
 
 .messageListWrapper {
