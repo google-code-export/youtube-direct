@@ -54,31 +54,31 @@ limitations under the License.
   <div id="messageList"></div>
 </div>
 <div align="center">
+<div align="left"><h1>YouTube Direct Admin</h1>
 <div id="authSection">
-	<%
-	  UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
-		if (user != null) {
-	%>
-	<p><b><%=user.getNickname()%></b> [ <a
-		href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a>
-	]</p>
-	<script type="text/javascript">
-	window.isLoggedIn = true;
-	</script> <%
-	   } else {
-	 %>
-	<p>[ <a
-		href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
-	]</p>
-	<script type="text/javascript">
-	window.isLoggedIn = false;
-	</script> <%
-	   }
-	 %>
+  <%
+    UserService userService = UserServiceFactory.getUserService();
+    User user = userService.getCurrentUser();
+    if (user != null) {
+  %>
+  <p><b><%=user.getNickname()%></b> [ <a
+    href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a>
+  ]</p>
+  <script type="text/javascript">
+  window.isLoggedIn = true;
+  </script> <%
+     } else {
+   %>
+  <p>[ <a
+    href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
+  ]</p>
+  <script type="text/javascript">
+  window.isLoggedIn = false;
+  </script> <%
+     }
+   %>
 </div>
-<br>
-<div align="left"><h1>YouTube Direct Admin</h1></div>
+</div>
 <div id="tabs">
 	<ul>
 		<li><a href="#videoSubmission">Video Submission</a></li>	
