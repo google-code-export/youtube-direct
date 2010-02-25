@@ -103,6 +103,22 @@ limitations under the License.
         <img class="tip" src="/questionmark.png" title="Body of rejection emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
       </div>
     </div>
+    <div class="clear">
+      <label for="photoSubmissionEnabled" class="configureLabel">Photo Submissions:</label>
+      <input type="checkbox" id="photoSubmissionEnabled">Enabled</input>
+      <img class="tip" src="/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
+    </div>
+    <div id="maxPhotoSizeMbDiv" class="clear">
+      <label for="maxPhotoSizeMb" class="configureLabel">Max. Photo Size (MB):</label>
+      <select class="configureInput" id="maxPhotoSizeMb">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5" selected="selected">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+      <img class="tip" src="/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Submissions Widget Settings</legend>
