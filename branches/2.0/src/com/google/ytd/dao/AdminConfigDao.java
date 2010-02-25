@@ -10,6 +10,7 @@ public interface AdminConfigDao {
   public boolean isUploadOnly();
   public boolean allowPhotoSubmission();
   public PrivateKey getPrivateKey();
+  public long getMaxPhotoSize();
 
   public AdminConfig save(AdminConfig adminConfig);
 }

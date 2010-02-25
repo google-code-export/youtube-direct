@@ -123,6 +123,14 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private Blob privateKeyBytes;
+  
+  @Expose
+  @Persistent
+  private Integer maxPhotoSizeMb;
+  
+  @Expose
+  @Persistent
+  private Boolean photoSubmissionEnabled;
 
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
@@ -146,6 +154,9 @@ public class AdminConfig implements Serializable {
         + "<a href='terms.html' target='_blank'>terms of service</a>.";
 
     postSubmitMessage = "Thank you for your submission.";
+    
+    maxPhotoSizeMb = 10;
+    photoSubmissionEnabled = false;
 
     setUpdated(new Date());
   }
@@ -312,5 +323,29 @@ public class AdminConfig implements Serializable {
 
   public void setPrivateKeyBytes(byte[] privateKeyBytes) {
     this.privateKeyBytes = new Blob(privateKeyBytes);
+  }
+
+  public int getMaxPhotoSizeMb() {
+    if (maxPhotoSizeMb == null) {
+      maxPhotoSizeMb = 10;
+    }
+    
+    return maxPhotoSizeMb;
+  }
+
+  public void setMaxPhotoSizeMb(int maxPhotoSizeMb) {
+    this.maxPhotoSizeMb = maxPhotoSizeMb;
+  }
+
+  public Boolean getPhotoSubmissionEnabled() {
+    if (photoSubmissionEnabled == null) {
+      photoSubmissionEnabled = false;
+    }
+    
+    return photoSubmissionEnabled;
+  }
+
+  public void setPhotoSubmissionEnabled(Boolean photoSubmissionEnabled) {
+    this.photoSubmissionEnabled = photoSubmissionEnabled;
   }
 }
