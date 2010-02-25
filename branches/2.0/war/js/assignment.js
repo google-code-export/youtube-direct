@@ -538,9 +538,14 @@ admin.assign.showAssignmentCreate = function() {
       try {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
-          admin.showMessage("Assignment created.", messageElement);
-          admin.assign.pageIndex = 1;
-          admin.assign.refreshGrid();
+        	if (json.playlistId) {
+        		admin.showMessage("Assignment created.", messageElement);
+        	} else {
+        		admin.showError("Could not create a YouTube playlist for the new assignment. " +
+        				"Please check your YouTube API Settings in the Configuration tab.", messageElement);
+        	}
+        	admin.assign.pageIndex = 1;
+        	admin.assign.refreshGrid();
         } else {
           admin.showError(json.error, messageElement);
         }
