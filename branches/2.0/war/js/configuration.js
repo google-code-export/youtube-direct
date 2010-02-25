@@ -34,18 +34,27 @@ admin.config.init = function() {
     jQuery('#approvalEmailText').val(unescape(data.approvalEmailText));
     jQuery('#rejectionEmailText').val(unescape(data.rejectionEmailText));
     jQuery('#privateKeyBytes').val(data.privateKeyBytes);
+    jQuery('#maxPhotoSizeMb').val(data.maxPhotoSizeMb);
     
     if (data.moderationEmail) {
       jQuery('#moderationEmail').attr('checked', true);
-      admin.config.toggleModerationEmailTextDiv(true);
+      admin.config.toggleDiv(jQuery('#moderationEmailTextDiv'), true);
     } else {
       jQuery('#moderationEmail').attr('checked', false);
-      admin.config.toggleModerationEmailTextDiv(false);
+      admin.config.toggleDiv(jQuery('#moderationEmailTextDiv'), false);
     }
     
     if (data.youTubeAuthSubToken && data.youTubeUsername) {
       jQuery('#youTubeUsername').html("Authenticated as <a href='http://youtube.com/" + data.youTubeUsername + "'>" + data.youTubeUsername + "</a>");
       jQuery('#authenticateButton').val("Re-Authenticate");
+    }
+    
+    if (data.photoSubmissionEnabled) {
+    	jQuery('#photoSubmissionEnabled').attr('checked', true);
+    	admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'), true);
+    } else {
+    	jQuery('#photoSubmissionEnabled').attr('checked', false);
+    	admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'), false);
     }
   });
   
@@ -62,18 +71,22 @@ admin.config.init = function() {
   });
   
   jQuery('#moderationEmail').click(function() {
-    admin.config.toggleModerationEmailTextDiv();
+    admin.config.toggleDiv(jQuery('#moderationEmailTextDiv'));
+  });
+  
+  jQuery('#photoSubmissionEnabled').click(function() {
+    admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'));
   });
 };
 
-admin.config.toggleModerationEmailTextDiv = function(isVisible) {
+admin.config.toggleDiv = function(divObject, isVisible) {
   if (isVisible == null) {
-    isVisible = jQuery('#moderationEmailTextDiv').css("display") == "none" ? true : false;
+    isVisible = divObject.css("display") == "none" ? true : false;
   }
   
-  var displayStyle = isVisible ? 'inline' : 'none';
+  var displayStyle = isVisible ? 'block' : 'none';
   
-  jQuery('#moderationEmailTextDiv').css("display", displayStyle);
+  divObject.css("display", displayStyle);
 }
 
 admin.config.getAdminConfig = function(callback) {
@@ -118,6 +131,8 @@ admin.config.updateAdminConfig = function() {
   var rejectionEmailText = escape(jQuery('#rejectionEmailText').val());
   // We don't want to escape() this, as we'll be converting the base 64 value into a byte[].
   var privateKeyBytes = jQuery('#privateKeyBytes').val();
+  var photoSubmissionEnabled = jQuery('#photoSubmissionEnabled').attr('checked');
+  var maxPhotoSizeMb = jQuery('#maxPhotoSizeMb').val();
   
   var params = {};
   params.developerKey = developerKey;
@@ -135,6 +150,8 @@ admin.config.updateAdminConfig = function() {
   params.approvalEmailText = approvalEmailText;
   params.rejectionEmailText = rejectionEmailText;
   params.privateKeyBytes = privateKeyBytes;
+  params.photoSubmissionEnabled = photoSubmissionEnabled;
+  params.maxPhotoSizeMb = maxPhotoSizeMb;
 
   var command = 'UPDATE_ADMIN_CONFIG';
   

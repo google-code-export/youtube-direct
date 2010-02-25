@@ -46,6 +46,8 @@ public class UpdateAdminConfig extends Command {
     String approvalEmailText = getParam("approvalEmailText");
     String rejectionEmailText = getParam("rejectionEmailText");
     String privateKeyBytes = getParam("privateKeyBytes");
+    String maxPhotoSizeMb = getParam("maxPhotoSizeMb");
+    String photoSubmissionEnabled = getParam("photoSubmissionEnabled");
 
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
@@ -117,6 +119,14 @@ public class UpdateAdminConfig extends Command {
         LOG.log(Level.WARNING, "", e);
         adminConfig.setPrivateKeyBytes(new byte[0]);
       }
+    }
+    
+    if (maxPhotoSizeMb != null) {
+      adminConfig.setMaxPhotoSizeMb(Integer.parseInt(maxPhotoSizeMb));
+    }
+    
+    if (photoSubmissionEnabled != null) {
+      adminConfig.setPhotoSubmissionEnabled(photoSubmissionEnabled.equals("true"));
     }
 
     adminConfig.setUpdated(new Date());
