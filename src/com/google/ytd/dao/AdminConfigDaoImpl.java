@@ -67,8 +67,11 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
   }
   
   public boolean allowPhotoSubmission() {
-    //TODO: Add some logic here.
-    return true;
+    return getAdminConfig().getPhotoSubmissionEnabled();
+  }
+  
+  public long getMaxPhotoSize() {
+    return getAdminConfig().getMaxPhotoSizeMb() * 1024 * 1024;
   }
   
   public PrivateKey getPrivateKey() {

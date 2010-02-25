@@ -34,6 +34,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.guice.ProductionModule;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
@@ -51,11 +52,13 @@ public class SubmitPhoto extends HttpServlet {
   private Injector injector = null;
   private Util util = null;
   private PmfUtil pmfUtil = null;
+  private AdminConfigDao adminConfigDao;
 
   public SubmitPhoto() {
     injector = Guice.createInjector(new ProductionModule());
     util = injector.getInstance(Util.class);
     pmfUtil = injector.getInstance(PmfUtil.class);
+    adminConfigDao = injector.getInstance(AdminConfigDao.class);
   }
 
   @Override
@@ -92,6 +95,8 @@ public class SubmitPhoto extends HttpServlet {
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
       
       BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+      
+      long maxPhotoSize = adminConfigDao.getMaxPhotoSize();
 
       ArrayList<BlobKey> validSubmissionKeys = new ArrayList<BlobKey>();
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
@@ -107,8 +112,7 @@ public class SubmitPhoto extends HttpServlet {
           continue;
         }
         
-        //TODO: Move this to config setting.
-        if ((size > 5 * 1024 * 1024) || (size == 0)) {
+        if ((size > maxPhotoSize) || (size == 0)) {
           blobstoreService.delete(blobKey);
           LOG.warning(String.format("Uploaded file is %d bytes; skipping.", size));
           continue;
