@@ -155,7 +155,7 @@ admin.sub.initSubmissionGrid = function() {
         entryId + '") value="delete" />';
     jQuery('#submissionGrid').setCell(rowid, 'delete', deleteButton);
     
-    var detailsButton = '<input type="button" onclick=admin.sub.showDetails("' + 
+    var detailsButton = '<input type="button" onclick=admin.sub.fetchDetails("' + 
     entryId + '") value="details" />';
     jQuery('#submissionGrid').setCell(rowid, 'details', detailsButton);     
     
@@ -479,14 +479,36 @@ admin.sub.refreshGrid = function() {
 
 admin.sub.refreshGridUI = function(entries) {
   var jqGrid = jQuery('#submissionGrid').clearGridData();
-  for ( var i = 0; i < entries.length; i++) {
+  for (var i = 0; i < entries.length; i++) {
     jqGrid.addRowData(i + 1, entries[i]);
   }
 };
 
-admin.sub.showDetails = function(entryId) {
-  var submission = admin.sub.getSubmission(entryId);
-  
+admin.sub.fetchDetails = function(entryId) {
+  var messageElement = admin.showMessage("Loading video details...");
+
+  var command = 'GET_VIDEO_DETAILS';
+  var params = {};
+  params.submissionId = entryId;
+
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        admin.showMessage("Video details loaded.", messageElement);
+        admin.sub.showDetails(JSON.parse(json.videoSubmission));
+      } else {
+        admin.showError(json.error, messageElement);          
+      }
+    } catch(exception) {
+      admin.showError(jsonStr, messageElement);
+    }
+  }
+
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
+};
+
+admin.sub.showDetails = function(submission) {
   var mainDiv = jQuery('#submissionDetailsTemplate').clone();   
   
   var videoWidth = 255;
@@ -588,7 +610,6 @@ admin.sub.showDetails = function(entryId) {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
           submission.adminNotes = params.adminNotes;
-          alert('Notes are save.');
         } else {
           admin.showError(json.error, messageElement);
         }
@@ -619,7 +640,6 @@ admin.sub.deleteEntry = function(entryId) {
 };
 
 admin.sub.previewVideo = function(entryId) {
-  
   var submission = admin.sub.getSubmission(entryId);
   var videoId = submission.videoId;
   var title = submission.videoTitle;
@@ -639,7 +659,7 @@ admin.sub.previewVideo = function(entryId) {
 };
 
 admin.sub.getAllSubmissions = function(callback) {
-  var messageElement = admin.showMessage("Loading video submission...");
+  var messageElement = admin.showMessage("Loading video submissions...");
   
   var command = 'GET_VIDEO_SUBMISSIONS';
   var params = {};
@@ -653,7 +673,7 @@ admin.sub.getAllSubmissions = function(callback) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Video submission loaded.", messageElement);
+        admin.showMessage("Video submissions loaded.", messageElement);
         admin.sub.total = json.totalSize;
         var entries = json.result;
         admin.sub.submissions = entries.concat([]);

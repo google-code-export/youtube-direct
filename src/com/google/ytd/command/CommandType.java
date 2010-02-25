@@ -23,6 +23,8 @@ public enum CommandType {
       GetAllPhotoEntries.class),
   VALIDATE_CAPTCHA(
       ValidateCaptcha.class),
+  GET_VIDEO_DETAILS(
+      GetVideoDetails.class),
   DELETE_STUFF(
       DeleteStuff.class);
 
