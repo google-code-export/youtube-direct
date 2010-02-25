@@ -62,12 +62,25 @@ Ytd.prototype.ready = function() {
 };
 
 Ytd.prototype.embed = function() {
+  var loadingElement = document.createElement('div');
+  loadingElement.innerHTML = 'Loading... please wait.';
+  
 	var iframeElement = document.createElement('iframe');
 	iframeElement.width = this.width + 'px';
 	iframeElement.height = this.height + 'px';
 	iframeElement.style.border = '0px solid gray';
 	iframeElement.scrolling = 'no';
 	iframeElement.frameBorder = '0';
+
+	var hideLoadingFunction = function () {
+    loadingElement.style.display = 'none';
+  };
+  
+  if (iframeElement.addEventListener) {
+    iframeElement.addEventListener('load', hideLoadingFunction, false); 
+  } else if (iframeElement.attachEvent) {
+    iframeElement.attachEvent('onload', hideLoadingFunction);
+  }
 
 	this.articleUrl = this.articleUrl || document.location.href;
 	// remove hash link
@@ -79,6 +92,7 @@ Ytd.prototype.embed = function() {
 	
 	var iframeContainer = document.getElementById(this.ytdContainer);
 	iframeContainer.innerHTML = '';
+  iframeContainer.appendChild(loadingElement);
 	iframeContainer.appendChild(iframeElement);
 };
 
