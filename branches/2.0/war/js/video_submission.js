@@ -539,9 +539,9 @@ admin.sub.showDetails = function(submission) {
   mainDiv.find('#youTubeName').html(creatorInfo);  
   
   mainDiv.find('#videoId').html(
-      '<a target="_blank" href="http://www.youtube.com/watch?v=' + 
+      '<a target="_blank" href="http://www.youtube.com/watch#v=' + 
       submission.videoId + '">' + 
-      submission.videoId + '</a>');   
+      submission.videoId + '</a>');
   mainDiv.find('#youTubeState').html(submission.youTubeState);
   
   mainDiv.find('#videoTitle').html(submission.videoTitle);
