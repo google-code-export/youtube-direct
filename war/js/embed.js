@@ -196,19 +196,25 @@ function existingVideoMainInit() {
       event.preventDefault();
       showMessage('Please fill in all required field(s).');
       return;
-    }        
-    
+    }
+
+    var jsonObj = {};
+    var url = jQuery('#videoUrl').val();
+    jsonObj.videoId = getVideoId(url);
+    if (jsonObj.videoId == null) {
+      event.preventDefault();
+      showMessage('Please enter a valid video URL.');
+      return;
+    }
+
     // disable buttons during submitting
     jQuery('#submitButton').get(0).disabled = true;
-    jQuery('#cancelSubmitButton').get(0).disabled = true;    
-    
-    var url = jQuery('#videoUrl').val();   
+    jQuery('#cancelSubmitButton').get(0).disabled = true;
+
     var location = jQuery('#submitLocation').val();  
     var date = jQuery('#submitDate').val();
     var email = jQuery('#submitEmail').val();
 
-    var jsonObj = {};
-    jsonObj.videoId = getVideoId(url);
     jsonObj.location = location;
     jsonObj.date = date;
     jsonObj.email = email;
@@ -223,7 +229,7 @@ function existingVideoMainInit() {
     ajaxCall.processData = false;
     ajaxCall.error = function(xhr, text, error) {
       clearProcessing();
-      showMessage('Submit existing video incurred an error: ' + xhr.statusText);
+      showMessage('Sorry, your video submission failed: ' + xhr.statusText);
     };
     ajaxCall.success = function(res) {
       clearProcessing();
@@ -238,7 +244,7 @@ function existingVideoMainInit() {
           if (res.message) {
             showMessage(res.message);
           } else {          
-            showMessage("Submit error incurred on server.")
+            showMessage("Sorry, your video submission failed.")
           }  
       }
       jQuery('#submitButton').get(0).disabled = false;
@@ -440,7 +446,12 @@ function getUrlParams() {
 }
 
 function getVideoId(url) {
-  return url.replace('http://www.youtube.com/watch?v=', '');
+	var matches = url.match(/v=(.{11})/i);
+	if (matches && matches.length > 1) {
+		return matches[1];
+  } else {
+  	return null;
+  }
 }
 
 function getSelfUrl() {

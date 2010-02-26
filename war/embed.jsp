@@ -138,7 +138,7 @@
 	<label class="required" for="videoUrl">Video URL:</label>	
 	<br>
 	<div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
-	<span class="tip">Example: http://www.youtube.com/watch?v=A7y7NafWXeM</span><br>
+	<span class="tip">Example: http://www.youtube.com/watch#v=A7y7NafWXeM</span><br>
 	<br> 
 	<label for="date">Date:</label>
 	<br>
