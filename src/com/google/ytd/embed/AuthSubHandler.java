@@ -21,7 +21,6 @@ import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,8 +45,6 @@ public class AuthSubHandler extends HttpServlet {
 
   @Inject
   private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
@@ -96,11 +93,10 @@ public class AuthSubHandler extends HttpServlet {
       userSession.addMetaData("youTubeName", youTubeName);
       userSessionManager.save(userSession);
 
-      // Create or update the UserAuthToken entry, which maps a username to an
-      // AuthSub token.
+      // Create or update the UserAuthToken entry, which maps a username to an AuthSub token.
       userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 
-      response.sendRedirect(articleUrl + "#return");
+      response.sendRedirect(articleUrl + "#return-sessionId-" + userSession.getId());
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
