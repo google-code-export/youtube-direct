@@ -333,7 +333,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'status',
     width : 100,
     edittype : 'select',
-    editable : true,
+    editable : false,
     editoptions : {
       value : 'UNREVIEWED:UNREVIEWED;APPROVED:APPROVED;REJECTED:REJECTED;SPAM:SPAM'
     },
@@ -594,6 +594,14 @@ admin.sub.showDetails = function(submission) {
         submission.status = 'SPAM';
         break;        
     }
+    
+    if (submission.status == 'APPROVED' && submission.youTubeState != 'OKAY') {
+      if (!confirm("This video's state is '" + submission.youTubeState + 
+      				"'. It may not be available on YouTube. Are you sure you want to approve it?")) {
+        return;
+      }  
+    }
+    
     admin.sub.updateSubmissionStatus(submission);
   });    
   
