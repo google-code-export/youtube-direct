@@ -28,11 +28,11 @@ admin.config.init = function() {
     jQuery('#moderationMode').val(data.moderationMode);
     jQuery('#newSubmissionAddress').val(data.newSubmissionAddress);
     jQuery('#brandingMode').val(data.brandingMode);
-    jQuery('#loginInstruction').val(unescape(data.loginInstruction));
-    jQuery('#postSubmitMessage').val(unescape(data.postSubmitMessage));
+    jQuery('#loginInstruction').val(data.loginInstruction);
+    jQuery('#postSubmitMessage').val(data.postSubmitMessage);
     jQuery('#fromAddress').val(data.fromAddress);
-    jQuery('#approvalEmailText').val(unescape(data.approvalEmailText));
-    jQuery('#rejectionEmailText').val(unescape(data.rejectionEmailText));
+    jQuery('#approvalEmailText').val(data.approvalEmailText);
+    jQuery('#rejectionEmailText').val(data.rejectionEmailText);
     jQuery('#privateKeyBytes').val(data.privateKeyBytes);
     jQuery('#maxPhotoSizeMb').val(data.maxPhotoSizeMb);
     
@@ -123,13 +123,12 @@ admin.config.updateAdminConfig = function() {
   var newSubmissionAddress = jQuery('#newSubmissionAddress').val();
   var brandingMode = jQuery('#brandingMode').val();
   var submissionMode = jQuery('#submissionMode').val();
-  var loginInstruction = escape(jQuery('#loginInstruction').val());
-  var postSubmitMessage = escape(jQuery('#postSubmitMessage').val());
+  var loginInstruction = jQuery('#loginInstruction').val();
+  var postSubmitMessage = jQuery('#postSubmitMessage').val();
   var moderationEmail = jQuery('#moderationEmail').attr('checked');
   var fromAddress = jQuery('#fromAddress').val();
-  var approvalEmailText = escape(jQuery('#approvalEmailText').val());
-  var rejectionEmailText = escape(jQuery('#rejectionEmailText').val());
-  // We don't want to escape() this, as we'll be converting the base 64 value into a byte[].
+  var approvalEmailText = jQuery('#approvalEmailText').val();
+  var rejectionEmailText = jQuery('#rejectionEmailText').val();
   var privateKeyBytes = jQuery('#privateKeyBytes').val();
   var photoSubmissionEnabled = jQuery('#photoSubmissionEnabled').attr('checked');
   var maxPhotoSizeMb = jQuery('#maxPhotoSizeMb').val();

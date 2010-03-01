@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ page import="com.google.inject.Guice"%>
 <%@ page import="com.google.inject.Injector"%>
 <%@ page import="com.google.inject.AbstractModule"%>
@@ -19,7 +20,7 @@
 
 <%	
 	final HttpServletRequest req = request;
-	final HttpServletResponse resp = response;	
+	final HttpServletResponse resp = response;
 
 	Injector injector = Guice.createInjector(
 	    new AbstractModule() {
@@ -86,7 +87,7 @@
 
 <div align="center">
 	<div id="loginInstruction" >			
-		<%=URLDecoder.decode(adminConfig.getLoginInstruction(), "UTF-8") %>		
+		<%= adminConfig.getLoginInstruction() %>		
   </div>		
 	<br>
 		<%
@@ -128,7 +129,7 @@
 
 <div align="center">
   <div id="postSubmitMessage">      
-    <%=URLDecoder.decode(adminConfig.getPostSubmitMessage(), "UTF-8")%>   
+    <%= adminConfig.getPostSubmitMessage() %>   
   </div>
 </div>
 
