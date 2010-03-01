@@ -39,9 +39,30 @@ admin.assign.init = function() {
   });    
   
   jQuery('#assignmentCreateButton').click(function() {
-    admin.assign.showAssignmentCreate();
+  	admin.assign.loadYouTubeCategories();
   });
+};
+
+admin.assign.loadYouTubeCategories = function() {
+  var messageElement = admin.showMessage("Loading YouTube categories...");
+
+  var command = 'GET_YOUTUBE_CATEGORIES';
+
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        admin.showMessage("YouTube categories loaded.", messageElement);
+        admin.assign.showAssignmentCreate(json.categories);
+      } else {
+        admin.showError(json.error, messageElement);  
+      }
+    } catch(exception) {
+      admin.showError(jsonStr, messageElement);  
+    }
+  }
   
+  jsonrpc.makeRequest(command, {}, jsonRpcCallback);
 };
 
 admin.assign.initAssignmentFilters = function() {
@@ -57,7 +78,7 @@ admin.assign.setupLabelFilter = function(label) {
     
     // reset all label colors
     var labels = jQuery('#assignmentFilters a.filter');
-    for(var i=0; i<labels.length; i++) {    
+    for(var i = 0; i < labels.length; i++) {    
       var label_ = jQuery(labels[i]);     
       label_.css('background', 'white');
       label_.css('color', '#black');
@@ -220,30 +241,13 @@ admin.assign.initGridModels = function(grid) {
     editoptions: {rows:'3', cols: '30'},
     editrules: {required: true}
   });
-  
-  var optionFormattedString = (function(list) {    
-    var ret = '';
-    var categories = list.split(',');        
-    for (var i=0; i < categories.length; i++) {
-      var category = categories[i];
-      ret += category + ':' + category;      
-      if (i + 1 < categories.length) {
-        ret += ';';
-      }
-    }
-    return ret;
-  })(admin.assign.ytCategories);
-  
+
   grid.colNames.push('Category');
   grid.colModel.push( {
     name : 'category',
     index : 'category',
     width : 100,
-    edittype : 'select',
-    editable : true,
-    editoptions : {
-      value : optionFormattedString
-    },
+    editable : false,
     sorttype : 'string',
     sortable: true
   });    
@@ -401,7 +405,6 @@ admin.assign.showPlaylistCode = function(id) {
   dialogOptions.height = 270;  
    
   textarea.dialog(dialogOptions);
-
 };
 
 
@@ -428,7 +431,7 @@ admin.assign.padZero = function(value) {
 admin.assign.getAssignment = function(id) {
   var ret = null;
 
-  for ( var i = 0; i < admin.assign.assignments.length; i++) {
+  for (var i = 0; i < admin.assign.assignments.length; i++) {
     var assignment = admin.assign.assignments[i];
     if (assignment.id == id) {
       ret = assignment;
@@ -504,7 +507,7 @@ admin.assign.refreshGridUI = function(entries) {
   }
 };
 
-admin.assign.showAssignmentCreate = function() {
+admin.assign.showAssignmentCreate = function(categories) {
   var dialogOptions = {};
   dialogOptions.title = "Create New Assignment";
   dialogOptions.width = 300;
@@ -514,14 +517,16 @@ admin.assign.showAssignmentCreate = function() {
   
   var div = jQuery('#assignmentCreateTemplate').clone();  
   
-  var categorySelector = div.find('#assignmentCategories');
-  
-  var categories = admin.assign.ytCategories.split(',');  
-  
-  for (var i=0; i < categories.length; i++) {
+  var categorySelector = div.find('#assignmentCategories'); 
+
+  for (var i = 0; i < categories.length; i++) {
     var category = categories[i];
-    categorySelector.append('<option value="' + category + '">' + category + '</option>');    
-  }  
+    if (category == 'News') {
+    	categorySelector.append('<option value="News" selected="selected">News</option>');
+    } else {
+    	categorySelector.append(jQuery.sprintf('<option value="%s">%s</option>', category, category));
+    }
+  }
 
   div.find('#createCancelButton').click(function() {
     div.dialog('destroy');
@@ -617,7 +622,7 @@ admin.assign.updateAssignment = function(entry) {
     }
   } 
   
-  jsonrpc.makeRequest(command, params, jsonRpcCallback);    
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);
 };
 
 admin.assign.getPlaylistHTML = function(playlistId, width, height) {
