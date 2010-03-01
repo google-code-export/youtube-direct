@@ -19,28 +19,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.cache.Cache;
-import javax.cache.CacheException;
-import javax.cache.CacheManager;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.google.appengine.api.memcache.stdimpl.GCacheFactory;
 import com.google.gdata.client.Service.GDataRequest;
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.PlainTextConstruct;
@@ -68,7 +49,6 @@ public class YouTubeApiHelper {
   private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
 
   // CONSTANTS
-  private static final String CATEGORIES_CACHE_KEY = "categories";
   private static final String ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/videos/%s";
   private static final String UPLOADS_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
       + "users/%s/uploads/%s";
@@ -406,72 +386,5 @@ public class YouTubeApiHelper {
     }
 
     return null;
-  }
-
-  @SuppressWarnings("unchecked")
-  public static List<String> getCategoryCodes() {
-    List<String> categories;
-    Cache cache = null;
-
-    try {
-      Map cachedProperties = new HashMap();
-      cachedProperties.put(GCacheFactory.EXPIRATION_DELTA, 60 * 60 * 24);
-      cache = CacheManager.getInstance().getCacheFactory().createCache(cachedProperties);
-      List<String> cachedCategories = (List<String>) cache.get(CATEGORIES_CACHE_KEY);
-
-      if (cachedCategories != null) {
-        return cachedCategories;
-      }
-    } catch (CacheException e) {
-      log.log(Level.WARNING, "", e);
-    }
-
-    categories = new ArrayList<String>();
-
-    try {
-      URL url = new URL("http://gdata.youtube.com/schemas/2007/categories.cat");
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document xmlDocument = docBuilder.parse(url.openStream());
-
-      NodeList nodes = xmlDocument.getElementsByTagName("atom:category");
-      for (int i = 0; i < nodes.getLength(); i++) {
-        Node node = nodes.item(i);
-
-        boolean isAssignable = false;
-        NodeList childNodes = node.getChildNodes();
-        for (int j = 0; j < childNodes.getLength(); j++) {
-          Node childNode = childNodes.item(j);
-          if (childNode.getNodeName().equals("yt:assignable")) {
-            isAssignable = true;
-          }
-        }
-
-        if (isAssignable) {
-          NamedNodeMap attributes = node.getAttributes();
-          Node termNode = attributes.getNamedItem("term");
-
-          if (termNode != null) {
-            categories.add(termNode.getTextContent());
-          }
-        }
-      }
-
-      Collections.sort(categories);
-
-      if (cache != null) {
-        cache.put(CATEGORIES_CACHE_KEY, categories);
-      }
-    } catch (MalformedURLException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (ParserConfigurationException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (IOException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (SAXException e) {
-      log.log(Level.WARNING, "", e);
-    }
-
-    return categories;
   }
 }

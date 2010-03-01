@@ -25,6 +25,8 @@ public enum CommandType {
       ValidateCaptcha.class),
   GET_VIDEO_DETAILS(
       GetVideoDetails.class),
+  GET_YOUTUBE_CATEGORIES(
+      GetYouTubeCategories.class),
   DELETE_STUFF(
       DeleteStuff.class);
 
