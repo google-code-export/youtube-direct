@@ -16,8 +16,6 @@
 package com.google.ytd.model;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -178,11 +176,7 @@ public class AdminConfig implements Serializable {
   }
 
   public String getRejectionEmailText() {
-    try {
-      return URLDecoder.decode(rejectionEmailText, "utf-8");
-    } catch (UnsupportedEncodingException e) {
-      return rejectionEmailText;
-    }
+    return rejectionEmailText;
   }
 
   public void setRejectionEmailText(String rejectionEmailText) {
@@ -198,11 +192,7 @@ public class AdminConfig implements Serializable {
   }
 
   public String getApprovalEmailText() {
-    try {
-      return URLDecoder.decode(approvalEmailText, "utf-8");
-    } catch (UnsupportedEncodingException e) {
-      return approvalEmailText;
-    }
+    return approvalEmailText;
   }
 
   public void setApprovalEmailText(String moderationEmailText) {
