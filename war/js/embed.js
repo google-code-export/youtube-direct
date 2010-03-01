@@ -446,7 +446,7 @@ function getUrlParams() {
 }
 
 function getVideoId(url) {
-	var matches = url.match(/v=(.{11})/i);
+	var matches = url.match(/\Wv=(.{11})/i);
 	if (matches && matches.length > 1) {
 		return matches[1];
   } else {
