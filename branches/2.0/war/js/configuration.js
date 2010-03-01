@@ -17,24 +17,20 @@
 var admin = admin || {};
 admin.config = admin.config || {};
 
+// A list of parameters that map 1:1 between the JSON parameter names and the form ids.
+admin.config.BASIC_PARAMS = ['developerKey', 'clientId', 'defaultTag', 'linkBackText',
+                             'moderationMode', 'newSubmissionAddress', 'brandingMode',
+                             'loginInstruction', 'postSubmitMessage', 'fromAddress',
+                             'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes', 
+                             'maxPhotoSizeMb'];
+
 admin.config.init = function() {
   var saveButton = jQuery('#saveButton');     
   
   admin.config.getAdminConfig(function(data) {
-    jQuery('#developerKey').val(data.developerKey);
-    jQuery('#clientId').val(data.clientId);
-    jQuery('#defaultTag').val(data.defaultTag);
-    jQuery('#linkBackText').val(data.linkBackText);
-    jQuery('#moderationMode').val(data.moderationMode);
-    jQuery('#newSubmissionAddress').val(data.newSubmissionAddress);
-    jQuery('#brandingMode').val(data.brandingMode);
-    jQuery('#loginInstruction').val(data.loginInstruction);
-    jQuery('#postSubmitMessage').val(data.postSubmitMessage);
-    jQuery('#fromAddress').val(data.fromAddress);
-    jQuery('#approvalEmailText').val(data.approvalEmailText);
-    jQuery('#rejectionEmailText').val(data.rejectionEmailText);
-    jQuery('#privateKeyBytes').val(data.privateKeyBytes);
-    jQuery('#maxPhotoSizeMb').val(data.maxPhotoSizeMb);
+  	jQuery.each(admin.config.BASIC_PARAMS, function(i, param) {
+  		jQuery('#' + param).val(data[param]);
+  	});
     
     if (data.moderationEmail) {
       jQuery('#moderationEmail').attr('checked', true);
@@ -45,7 +41,9 @@ admin.config.init = function() {
     }
     
     if (data.youTubeAuthSubToken && data.youTubeUsername) {
-      jQuery('#youTubeUsername').html("Authenticated as <a href='http://youtube.com/" + data.youTubeUsername + "'>" + data.youTubeUsername + "</a>");
+      jQuery('#youTubeUsername').html(jQuery.sprintf(
+      				'Authenticated as <a href="http://youtube.com/%s">%s</a>', data.youTubeUsername,
+      				data.youTubeUsername));
       jQuery('#authenticateButton').val("Re-Authenticate");
     }
     
@@ -66,8 +64,8 @@ admin.config.init = function() {
     // Hardcode http:// rather than allowing for https:// to ensure that we can get by with
     // registering http://APP.appspot.com/ as the prefix for AuthSub requests in the Google
     // Manage Your Domain pages.
-    var nextUrl = "http://" + window.location.host + "/admin/PersistAuthSubToken";
-    window.location = "https://www.google.com/accounts/AuthSubRequest?next=" + nextUrl + "&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0";
+    var nextUrl = jQuery.sprintf('http://%s/admin/PersistAuthSubToken', window.location.host);
+    window.location = jQuery.sprintf('https://www.google.com/accounts/AuthSubRequest?next=%s&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0', nextUrl);
   });
   
   jQuery('#moderationEmail').click(function() {
@@ -114,46 +112,17 @@ admin.config.getAdminConfig = function(callback) {
 
 admin.config.updateAdminConfig = function() {
   var messageElement = admin.showMessage("Saving configuration...");
-  
-  var developerKey = jQuery('#developerKey').val();   
-  var clientId = jQuery('#clientId').val();
-  var defaultTag = jQuery('#defaultTag').val();
-  var linkBackText = jQuery('#linkBackText').val();
-  var moderationMode = jQuery('#moderationMode').val();
-  var newSubmissionAddress = jQuery('#newSubmissionAddress').val();
-  var brandingMode = jQuery('#brandingMode').val();
-  var submissionMode = jQuery('#submissionMode').val();
-  var loginInstruction = jQuery('#loginInstruction').val();
-  var postSubmitMessage = jQuery('#postSubmitMessage').val();
-  var moderationEmail = jQuery('#moderationEmail').attr('checked');
-  var fromAddress = jQuery('#fromAddress').val();
-  var approvalEmailText = jQuery('#approvalEmailText').val();
-  var rejectionEmailText = jQuery('#rejectionEmailText').val();
-  var privateKeyBytes = jQuery('#privateKeyBytes').val();
-  var photoSubmissionEnabled = jQuery('#photoSubmissionEnabled').attr('checked');
-  var maxPhotoSizeMb = jQuery('#maxPhotoSizeMb').val();
-  
+
   var params = {};
-  params.developerKey = developerKey;
-  params.clientId = clientId;
-  params.defaultTag = defaultTag;
-  params.linkBackText = linkBackText;
-  params.moderationMode = moderationMode;
-  params.newSubmissionAddress = newSubmissionAddress;
-  params.brandingMode = brandingMode;  
-  params.submissionMode = submissionMode;  
-  params.loginInstruction = loginInstruction;
-  params.postSubmitMessage = postSubmitMessage;
-  params.moderationEmail = moderationEmail;
-  params.fromAddress = fromAddress;
-  params.approvalEmailText = approvalEmailText;
-  params.rejectionEmailText = rejectionEmailText;
-  params.privateKeyBytes = privateKeyBytes;
-  params.photoSubmissionEnabled = photoSubmissionEnabled;
-  params.maxPhotoSizeMb = maxPhotoSizeMb;
+	jQuery.each(admin.config.BASIC_PARAMS, function(i, param) {
+		params[param] = jQuery('#' + param).val();
+	});
+  
+	params.moderationEmail = jQuery('#moderationEmail').attr('checked');
+	params.photoSubmissionEnabled = jQuery('#photoSubmissionEnabled').attr('checked');
 
   var command = 'UPDATE_ADMIN_CONFIG';
-  
+
   var jsonRpcCallback = function(jsonStr) {
     try {
       var json = JSON.parse(jsonStr);
@@ -166,6 +135,6 @@ admin.config.updateAdminConfig = function() {
       admin.showError(jsonStr, messageElement);
     }
   } 
-  
+
   jsonrpc.makeRequest(command, params, jsonRpcCallback);
 };
