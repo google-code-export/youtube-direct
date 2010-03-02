@@ -103,7 +103,7 @@ admin.config.getAdminConfig = function(callback) {
         admin.showError(json.error, messageElement);
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
@@ -132,7 +132,7 @@ admin.config.updateAdminConfig = function() {
         admin.showError(json.error, messageElement);
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
 

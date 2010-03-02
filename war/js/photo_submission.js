@@ -423,7 +423,7 @@ admin.photo.showDetails = function(entryId) {
           admin.showError(json.error, messageElement);
         }
       } catch(exception) {
-        admin.showError(jsonStr, messageElement);
+      	admin.showError('Request failed: ' + exception, messageElement);
       }
     } 
     
@@ -451,7 +451,7 @@ admin.photo.getAllPhotos = function(submissionId, callback) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
@@ -482,7 +482,7 @@ admin.photo.getAllSubmissions = function(callback) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
@@ -507,7 +507,7 @@ admin.photo.updateSubmissionStatus = function(entry) {
         admin.showError(json.error, messageElement);      
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
