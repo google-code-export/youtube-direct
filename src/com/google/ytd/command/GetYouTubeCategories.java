@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 import com.google.appengine.api.memcache.stdimpl.GCacheFactory;
 
 public class GetYouTubeCategories extends Command {
-  private static final Logger LOG = Logger.getLogger(GetPhotoSubmissions.class.getName());
+  private static final Logger LOG = Logger.getLogger(GetYouTubeCategories.class.getName());
 
   private static final String CATEGORIES_CACHE_KEY = "categories";
   private static final String CATEGORIES_URL =
