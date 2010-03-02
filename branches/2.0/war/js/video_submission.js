@@ -501,7 +501,7 @@ admin.sub.fetchDetails = function(entryId) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+      admin.showError('Request failed: ' + exception, messageElement);
     }
   }
 
@@ -622,7 +622,7 @@ admin.sub.showDetails = function(submission) {
           admin.showError(json.error, messageElement);
         }
       } catch(exception) {
-        admin.showError(jsonStr, messageElement);
+      	admin.showError('Request failed: ' + exception, messageElement);
       }
     } 
     
@@ -690,7 +690,7 @@ admin.sub.getAllSubmissions = function(callback) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
@@ -715,7 +715,7 @@ admin.sub.updateSubmissionStatus = function(entry) {
         admin.showError(json.error, messageElement);      
       }
     } catch(exception) {
-      admin.showError(jsonStr, messageElement);
+    	admin.showError('Request failed: ' + exception, messageElement);
     }
   } 
   
