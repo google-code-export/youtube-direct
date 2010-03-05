@@ -93,4 +93,4 @@ The admin API is based on the JSON-RPC protocol format. It is essentially a REST
 
 ==Tools:==
 
- * Interactive API console is availble on [http://YOUR_APP_ID.appspot.com/js/jsonrpc_test.html http://YOUR_APP_ID.appspot.com/js/jsonrpc_test.html]
+ * Interactive API console is available on *http://YOUR_APP_ID.appspot.com/js/jsonrpc_test.html*
