@@ -213,7 +213,7 @@ public class YouTubeApiManager {
       bufferedReader.close();
       
       String responseBody = builder.toString();
-      log.warning(responseBody);
+      log.info("Response to captions request: " + responseBody);
       if (responseBody.contains(CAPTION_FAILURE_TAG)) {
         return false;
       }
