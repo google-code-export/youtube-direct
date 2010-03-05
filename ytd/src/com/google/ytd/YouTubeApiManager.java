@@ -15,7 +15,9 @@
 
 package com.google.ytd;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -79,6 +81,9 @@ public class YouTubeApiManager {
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
   private static final String IP_ADDRESS_HEADER = "X-GData-IP";
+  private static final String  CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
+  		"videos/%s/captions";
+  private static final String CAPTION_FAILURE_TAG = "invalidFormat";
   
 
   /**
@@ -187,6 +192,43 @@ public class YouTubeApiManager {
       log.log(Level.WARNING, "", e);
     }
   }
+  
+  public boolean addCaptions(String videoId, String captionText) {
+    String captionsUrl = String.format(CAPTION_FEED_URL_FORMAT, videoId);
+    
+    try {
+      GDataRequest request = service.createInsertRequest(new URL(captionsUrl));
+      request.getRequestStream().write(captionText.getBytes("UTF-8"));
+      request.execute();
+      
+      BufferedReader bufferedReader = new BufferedReader(
+          new InputStreamReader(request.getResponseStream()));
+      StringBuilder builder = new StringBuilder();
+      String line = null;
+
+      while ((line = bufferedReader.readLine()) != null) {
+        builder.append(line + "\n");
+      }
+      
+      bufferedReader.close();
+      
+      String responseBody = builder.toString();
+      log.warning(responseBody);
+      if (responseBody.contains(CAPTION_FAILURE_TAG)) {
+        return false;
+      }
+      
+      return true;
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return false;
+  }
 
   /**
    * Submits video metadata to YouTube to get an upload token and URL.
@@ -291,35 +333,32 @@ public class YouTubeApiManager {
   }
   
   public boolean insertVideoIntoPlaylist(String playlistId, String videoId) {
-    VideoEntry videoEntry = getVideoEntry(videoId);
+    PlaylistEntry playlistEntry = new PlaylistEntry();
+    playlistEntry.setId(videoId);
+      
+    if(getVideoInPlaylist(playlistId, videoId) != null) {
+      log.warning(String.format("Video id '%s' is already in playlist id '%s'.", videoId,
+              playlistId));
+      // Return true here, so that the video is flagged as being in the playlist.
+      return true;
+    }
     
-    if (videoEntry != null) {
-      PlaylistEntry playlistEntry = new PlaylistEntry(videoEntry);
+    try {
+      service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
       
-      if(getVideoInPlaylist(playlistId, videoId) != null) {
-        log.warning(String.format("Video id '%s' is already in playlist id '%s'.", videoId,
-                playlistId));
-        // Return true here, so that the video is flagged as being in the playlist.
-        return true;
-      }
+      log.info(String.format("Inserted video id '%s' into playlist id '%s'.", videoId,
+              playlistId));
       
-      try {
-        service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
-        
-        log.info(String.format("Inserted video id '%s' into playlist id '%s'.", videoId,
-                playlistId));
-        
-        return true;
-      } catch (MalformedURLException e) {
-        log.log(Level.WARNING, "", e);
-      } catch (IOException e) {
-        log.log(Level.WARNING, "", e);
-      } catch (ServiceException e) {
-        // This may be thrown if the video is not found, i.e. because it is not done processing.
-        // We don't need to log it at WARNING level.
-        //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
-        log.log(Level.WARNING, "", e);
-      }
+      return true;
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
+      // We don't need to log it at WARNING level.
+      //TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
+      log.log(Level.WARNING, "", e);
     }
     
     return false;

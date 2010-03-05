@@ -603,10 +603,47 @@ admin.sub.showDetails = function(submission) {
   
   mainDiv.find('#download').click(function() {
     admin.sub.downloadVideo(submission);
+  });
+  
+  mainDiv.find('#submitCaption').click(function() {
+    admin.sub.submitCaption(submission.id, mainDiv.find('#captionLanguage').val(),
+    				mainDiv.find('#captionText').val());
   });  
   
   mainDiv.dialog(dialogOptions);
 };
+
+admin.sub.submitCaption = function(id, captionLanguage, captionText) {
+  var url = '/admin/AddCaptions';
+  
+  var params = {};
+  params.id = id;
+  params.captionLanguage = captionLanguage;
+  params.captionText = captionText;
+  
+  console.log(params);
+  
+  var ajaxCall = {};
+  ajaxCall.type = 'POST';
+  ajaxCall.url = url;
+  ajaxCall.data = params;
+  ajaxCall.cache = false;
+  ajaxCall.success = function(res) {
+  	if (res.indexOf('true') != -1) {
+  		admin.sub.showLoading(false);
+  		admin.sub.refreshGrid();
+  	} else {
+  		admin.sub.showLoading(true, 'An error occurred while setting captions.');
+  	}
+  };
+  
+  ajaxCall.error = function() {
+  	admin.sub.showLoading(true, 'An error occurred while setting captions.');
+  }
+
+  admin.sub.showLoading(true, 'Adding captions...');
+  jQuery.ajax(ajaxCall);
+}
 
 admin.sub.downloadVideo = function(submission) {
   document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 

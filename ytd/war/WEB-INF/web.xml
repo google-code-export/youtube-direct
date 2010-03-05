@@ -86,6 +86,15 @@
     <servlet-name>DeleteSubmission</servlet-name>
     <url-pattern>/admin/DeleteSubmission</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>AddCaptions</servlet-name>
+    <servlet-class>com.google.ytd.admin.AddCaptions</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddCaptions</servlet-name>
+    <url-pattern>/admin/AddCaptions</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>NewAssignment</servlet-name>
