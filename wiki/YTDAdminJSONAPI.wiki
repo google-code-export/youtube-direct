@@ -87,10 +87,10 @@ The admin API is based on the JSON-RPC protocol format. It is essentially a REST
 
 ===GET_ADMIN_CONFIG===
 
-*This command returns all the admin configuration properties
+ * This command returns all the admin configuration properties
 
 *No params are needed*
 
 ==Tools:==
 
- * Interactive API console is available on *http://YOUR_APP_ID.appspot.com/js/jsonrpc_test.html*
+ * Interactive API console is available on *http://YOUR_APP_ID.appspot.com/js/jsonrpc_test.html
