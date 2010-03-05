@@ -71,5 +71,36 @@ limitations under the License.
 					<input id="saveAdminNotes" type="button" value="Save Notes"/>	
 	  		</td>	  		
 	  	</tr>
-	  </table>	  	  		
+	  </table>
+	  <div id="captionsDiv">
+	   <h3>Video Captions (optional)</h3>
+	   <div>
+	     Please select the caption language, paste in the caption text in a 
+	     <a href="http://code.google.com/apis/youtube/2.0/developers_guide_protocol_captions.html#Supported_Caption_File_Formats">supported format</a>
+	     and encoded as UTF-8, and then submit the captions. Any previous captions for that language will be overwritten.
+	   </div>
+	   <textarea id="captionText" rows="10" cols="80"></textarea>
+	   <br>
+	   <label for="captionLanguage">Caption Language: </label>
+	   <select id="captionLanguage">
+	     <!-- The values should be 2 letter IS 639-2 codes: http://www.loc.gov/standards/iso639-2/php/code_list.php -->
+<option value="ar">Arabic</option>
+<option value="de">German</option>
+<option value="en">English</option>
+<option value="es">Spanish</option>
+<option value="fa">Persian</option>
+<option value="fr">French</option>
+<option value="he">Hebrew</option>
+<option value="hi">Hindi</option>
+<option value="id">Indonesian</option>
+<option value="it">Italian</option>
+<option value="ja">Japanese</option>
+<option value="ku">Kurdish</option>
+<option value="nl">Dutch</option>
+<option value="ru">Russian</option>
+<option value="tr">Turkish</option>
+<option value="zh">Chinese</option>
+	   </select>
+	   <input type="button" id="submitCaption" value="Submit Captions"></input>
+	  </div>
 	</div>
