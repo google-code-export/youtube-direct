@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary JSON API for YTD Admin in YTD v2.0
 
 *NOTE:* This feature is only available in YTD 2.0 branch. YTD v2.0 is still under active development and is not yet stable.
 
