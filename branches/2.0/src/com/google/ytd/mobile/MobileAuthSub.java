@@ -21,7 +21,6 @@ import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,13 +44,11 @@ import com.google.ytd.youtube.YouTubeApiHelper;
 @Singleton
 public class MobileAuthSub extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
-  private static final String AUTH_SUB_FORMAT = "https://www.google.com/accounts/AuthSubRequest?"
-      + "next=%s&scope=http://gdata.youtube.com&session=1&secure=0&nomobile=1";
   private static final String REDIRECT_FORMAT = "%s://authsub/%s/%s";
+  private static final String SCOPE = "http://gdata.youtube.com";
+  
   @Inject
   private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private YouTubeApiHelper apiManager;
   @Inject
@@ -61,8 +58,7 @@ public class MobileAuthSub extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
       // We need to know what the redirection protocol will be whether this is
-      // an initial request
-      // or a response back from the AuthSub flow.
+      // an initial request or a response back from the AuthSub flow.
       String protocol = req.getParameter("protocol");
       if (util.isNullOrEmpty(protocol)) {
         throw new IllegalArgumentException("'protocol' parameter is null or empty.");
@@ -72,13 +68,14 @@ public class MobileAuthSub extends HttpServlet {
 
       if (util.isNullOrEmpty(token)) {
         // If there is no token URL parameter, start the AuthSub request flow.
-        resp.sendRedirect(String.format(AUTH_SUB_FORMAT, util.getSelfUrl(req)));
+        boolean secure = adminConfigDao.getPrivateKey() != null;
+        String authSubUrl = AuthSubUtil.getRequestUrl(util.getSelfUrl(req), SCOPE, secure, true);
+        resp.sendRedirect(authSubUrl);
       } else {
         PrivateKey privateKey = adminConfigDao.getPrivateKey();
         String sessionToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
-        // Test the token to make sure it's valid, and get the username it
-        // corresponds to.
+        // Test the token to make sure it's valid, and get the username it corresponds to.
         apiManager.setToken(sessionToken);
 
         String youTubeName = apiManager.getCurrentUsername();
@@ -89,8 +86,7 @@ public class MobileAuthSub extends HttpServlet {
         }
 
         // Redirect to the custom URL scheme, which would presumably be handled
-        // by an application
-        // on the mobile phone.
+        // by an application on the mobile phone.
         resp.sendRedirect(String.format(REDIRECT_FORMAT, protocol, youTubeName, sessionToken));
       }
     } catch (AuthenticationException e) {
