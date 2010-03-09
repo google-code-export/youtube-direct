@@ -3,6 +3,11 @@
 
 =Release Notes=
 
+===20100309===
+  * Modified the code that inserts videos into playlists. It should be more reliable for newly-uploaded videos that are not yet in YouTube's search index.
+  * Changed the method that parses YouTube video ids from YouTube URLs to accommodate upcoming [http://apiblog.youtube.com/2010/03/upcoming-change-to-youtube-video-page.html changes].
+  * There is basic support for adding captioning to submitted videos, via the "details" interface in the video submission tab. More information about the format for the captioning data can be found in the [http://code.google.com/apis/youtube/2.0/developers_guide_protocol_captions.html YouTube API developer's guide].
+
 ===20100202===
   * Added a "Loading... please wait." message while the content from the embed.jsp iframe is initialized.
   * Removed the SyncMetadata cron job, in favor of retrieving fresh metadata on demand when a video is accessed in the admin panel.
