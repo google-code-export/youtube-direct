@@ -510,7 +510,7 @@ admin.assign.refreshGridUI = function(entries) {
 admin.assign.showAssignmentCreate = function(categories) {
   var dialogOptions = {};
   dialogOptions.title = "Create New Assignment";
-  dialogOptions.width = 300;
+  dialogOptions.width = 400;
   dialogOptions.height = 350;
   
   jQuery.ui.dialog.defaults.bgiframe = true; 

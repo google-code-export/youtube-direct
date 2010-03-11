@@ -15,22 +15,31 @@
 
 package com.google.ytd.youtube;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gdata.client.Service.GDataRequest;
+import com.google.gdata.client.Service.GDataRequest.RequestType;
 import com.google.gdata.client.youtube.YouTubeService;
+import com.google.gdata.data.Link;
 import com.google.gdata.data.PlainTextConstruct;
+import com.google.gdata.data.youtube.CaptionTrackEntry;
+import com.google.gdata.data.youtube.CaptionTrackFeed;
 import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.PlaylistEntry;
 import com.google.gdata.data.youtube.PlaylistFeed;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.util.ContentType;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
@@ -66,6 +75,8 @@ public class YouTubeApiHelper {
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
   private static final String CLIENT_ID_PREFIX = "ytd20-";
+  private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
+  		"videos/%s/captions";
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -238,6 +249,59 @@ public class YouTubeApiHelper {
 
     return makeVideoEntryRequest(entryUrl);
   }
+  
+  public Map<String, String> getCaptions(String videoId) {
+    String feedUrl = String.format(CAPTION_FEED_URL_FORMAT, videoId);
+    try {
+      CaptionTrackFeed captionTrackFeed = service.getFeed(new URL(feedUrl), CaptionTrackFeed.class);
+      
+      HashMap<String, String> languageToUrl = new HashMap<String, String>();
+      for (CaptionTrackEntry captionTrackEntry : captionTrackFeed.getEntries()) {
+        String languageCode = captionTrackEntry.getLanguageCode();
+        Link link = captionTrackEntry.getLink("edit-media", "application/vnd.youtube.timedtext");
+        if (link != null) {
+          languageToUrl.put(languageCode, link.getHref());
+        }
+      }
+      
+      return languageToUrl;
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return null;
+  }
+  
+  public String getCaptionTrack(String url) {
+    try {
+      GDataRequest request = service.createRequest(RequestType.QUERY, new URL(url),
+          ContentType.TEXT_PLAIN);
+      request.execute();
+      
+      BufferedReader reader = new BufferedReader(new InputStreamReader(
+          request.getResponseStream()));
+      StringBuilder builder = new StringBuilder();
+      String line;
+      
+      while ((line = reader.readLine()) != null) {
+        builder.append(line).append("\n");
+      }
+      
+      return builder.toString();
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return null;
+  }
 
   /**
    * Gets a YouTube video entry given a specific video id. Constructs the entry
@@ -256,11 +320,9 @@ public class YouTubeApiHelper {
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
     } catch (ServiceException e) {
-      // This may be thrown if the video is not found, i.e. because it is not
-      // done processing.
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
       // We don't need to log it at WARNING level.
-      // TODO: Propogate AuthenticationExceptions so the calling code can
-      // invalidate the token.
+      // TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
       log.log(Level.INFO, "", e);
     }
 
