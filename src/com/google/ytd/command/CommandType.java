@@ -27,6 +27,10 @@ public enum CommandType {
       GetVideoDetails.class),
   GET_YOUTUBE_CATEGORIES(
       GetYouTubeCategories.class),
+  GET_YOUTUBE_CAPTIONS(
+      GetYouTubeCaptions.class),
+  GET_YOUTUBE_CAPTION_TRACK(
+      GetYouTubeCaptionTrack.class),
   DELETE_STUFF(
       DeleteStuff.class);
 
