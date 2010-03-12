@@ -51,6 +51,7 @@ public class GetYouTubeCaptions extends Command {
     if (languageToUrl != null) {
       json.put("captions", languageToUrl);
       json.put("authSubToken", authSubToken);
+      json.put("videoId", videoSubmission.getVideoId());
     } else {
       throw new IllegalArgumentException("Unable to retrieve caption information for the video.");
     }

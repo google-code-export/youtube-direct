@@ -865,29 +865,39 @@ admin.sub.showCaptionInfo = function(json) {
   var dialogOptions = {};
   dialogOptions.title = "Edit Captions";
   dialogOptions.width = 650;
-  dialogOptions.height = 400;
+  dialogOptions.height = 450;
   
   var languageSelect = dialogDiv.find('#languageSelect');
   
   var options = [];
   for (var languageCode in json.captions) {
-  	options.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', languageCode,
-  					languageCode, admin.sub.languageMap[languageCode]));
+  	options.push(jQuery.sprintf('<!-- %s --><option id="%s" value="%s">%s</option>',
+  					admin.sub.languageMap[languageCode], languageCode, languageCode,
+  					admin.sub.languageMap[languageCode]));
   }
   if (options.length > 0) {
+  	options.sort();
   	languageSelect.append('<optgroup id="existingLanguages" label="Exisiting Languages">' +
-  					options.join('') + '</optgroup>');
+  					options.join('\n') + '</optgroup>');
   }
   
   options = [];
   for (var languageCode in admin.sub.languageMap) {
   	if (json.captions[languageCode] == null) {
-  		options.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', languageCode,
-  						languageCode, admin.sub.languageMap[languageCode]));
+  		options.push(jQuery.sprintf('<!-- %s --><option id="%s" value="%s">%s</option>',
+  						admin.sub.languageMap[languageCode], languageCode, languageCode,
+  						admin.sub.languageMap[languageCode]));
   	}
   }
+  options.sort();
   languageSelect.append('<optgroup id="availableLanguages" label="Available Languages">' +
-  				options.join('') + '</optgroup>');
+  				options.join('\n') + '</optgroup>');
+  
+  // Select the first item in the available languages list, if there is one.
+  var selectedLanguageCode = dialogDiv.find('#availableLanguages').children().val();
+  if (selectedLanguageCode) {
+  	dialogDiv.find('#' + selectedLanguageCode).attr('selected', 'selected');
+  }
   
   languageSelect.change(function() {
   	var selectedLanguageCode = languageSelect.val();
@@ -918,6 +928,41 @@ admin.sub.showCaptionInfo = function(json) {
   	  
   	  jsonrpc.makeRequest(command, params, jsonRpcCallback);
   	}
+  });
+  
+  dialogDiv.find('#saveCaption').click(function() {
+  	var selectedLanguageCode = languageSelect.val();
+  	
+		var messageElement = admin.showMessage("Saving " +
+						admin.sub.languageMap[selectedLanguageCode] + " caption track...");
+		
+	  var command = 'UPDATE_YOUTUBE_CAPTION_TRACK';
+	  var params = {};
+	  params.videoId = json.videoId;
+	  params.authSubToken = json.authSubToken;
+	  params.captionTrack = dialogDiv.find('#captionTrack').val();
+	  params.languageCode = selectedLanguageCode;
+	  
+	  var jsonRpcCallback = function(jsonStr) {
+	    try {
+	      var json = JSON.parse(jsonStr);
+	      if (!json.error) {
+	      	if (json.success) {
+	      		admin.showMessage("Caption track saved.", messageElement);
+	      		dialogDiv.dialog('close');
+	      	} else {
+	      		admin.showError("The format of your caption track is invalid. Please revise the" +
+	      				" caption track to activate it.", messageElement);
+	      	}
+	      } else {
+	        admin.showError(json.error, messageElement);
+	      }
+	    } catch(exception) {
+	    	admin.showError('Request failed: ' + exception, messageElement);
+	    }
+	  }
+	  
+	  jsonrpc.makeRequest(command, params, jsonRpcCallback);
   });
 
   dialogDiv.dialog(dialogOptions);
