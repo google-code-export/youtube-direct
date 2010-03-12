@@ -166,3 +166,11 @@ fieldset legend {
 .error {
   color: red;
 }
+
+#captionTrack {
+  margin: 5px;
+}
+
+#captionInfo {
+  margin-left: 50px;
+}

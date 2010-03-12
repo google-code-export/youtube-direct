@@ -77,6 +77,7 @@ public class YouTubeApiHelper {
   private static final String CLIENT_ID_PREFIX = "ytd20-";
   private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
   		"videos/%s/captions";
+private static final String CAPTION_FAILURE_TAG = "invalidFormat";
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -301,6 +302,45 @@ public class YouTubeApiHelper {
     }
     
     return null;
+  }
+  
+  /**
+   * Creates or updates a video caption track. Explicitly throw exceptions so that the calling code
+   * knows whether a failure occurred due to a YouTube API issue or due to a bad captions track.
+   * 
+   * @param videoId The video id of the YouTube video to update.
+   * @param captionTrack The UTF-8 caption track data.
+   * @return true if the caption track update was successful; false otherwise.
+   * @throws MalformedURLException
+   * @throws IOException
+   * @throws ServiceException
+   */
+  public boolean updateCaptionTrack(String videoId, String captionTrack)
+  throws MalformedURLException, IOException, ServiceException {
+    String captionsUrl = String.format(CAPTION_FEED_URL_FORMAT, videoId);
+    
+    GDataRequest request = service.createInsertRequest(new URL(captionsUrl));
+    request.getRequestStream().write(captionTrack.getBytes("UTF-8"));
+    request.execute();
+
+    BufferedReader bufferedReader = new BufferedReader(
+        new InputStreamReader(request.getResponseStream()));
+    StringBuilder builder = new StringBuilder();
+    String line = null;
+
+    while ((line = bufferedReader.readLine()) != null) {
+      builder.append(line + "\n");
+    }
+
+    bufferedReader.close();
+
+    String responseBody = builder.toString();
+    log.info("Response to captions request: " + responseBody);
+    if (responseBody.contains(CAPTION_FAILURE_TAG)) {
+      return false;
+    }
+
+    return true;
   }
 
   /**

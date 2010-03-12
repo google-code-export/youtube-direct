@@ -75,6 +75,7 @@ limitations under the License.
   <div>
     <label>Choose a Caption Language: </label>
     <select id="languageSelect"></select>
+    <a id="captionInfo" target="_blank" href="http://code.google.com/apis/youtube/2.0/developers_guide_protocol_captions.html#Supported_Caption_File_Formats">Info on Caption Format</a>
   </div>
   <textarea id="captionTrack" rows="20" cols="80"></textarea>
   <input id="saveCaption" type="button" value="Save Captions"></input>
