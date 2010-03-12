@@ -871,9 +871,10 @@ admin.sub.showCaptionInfo = function(json) {
   
   var options = [];
   for (var languageCode in json.captions) {
+		var languageName = admin.sub.languageMap[languageCode] || jQuery.sprintf('Unknown (%s)',
+						languageCode);
   	options.push(jQuery.sprintf('<!-- %s --><option id="%s" value="%s">%s</option>',
-  					admin.sub.languageMap[languageCode], languageCode, languageCode,
-  					admin.sub.languageMap[languageCode]));
+  					languageName, languageCode, languageCode, languageName));
   }
   if (options.length > 0) {
   	options.sort();
@@ -884,9 +885,10 @@ admin.sub.showCaptionInfo = function(json) {
   options = [];
   for (var languageCode in admin.sub.languageMap) {
   	if (json.captions[languageCode] == null) {
+  		var languageName = admin.sub.languageMap[languageCode] || jQuery.sprintf('Unknown (%s)',
+  						languageCode);
   		options.push(jQuery.sprintf('<!-- %s --><option id="%s" value="%s">%s</option>',
-  						admin.sub.languageMap[languageCode], languageCode, languageCode,
-  						admin.sub.languageMap[languageCode]));
+  						languageName, languageCode, languageCode, languageName));
   	}
   }
   options.sort();
