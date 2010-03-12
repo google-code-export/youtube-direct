@@ -52,7 +52,8 @@ limitations under the License.
 				  <b>Video location:</b><div id="videoLocation"></div><br>			  				    			
 	  		</td>
 	  		<td align="left">	  		  					
-					<input id="download" type="button" value="download mp4"/>
+					<input id="download" type="button" value="Download Video"/>
+					<input id="captions" type="button" value="Edit Captions"/>
 	  			<div id="video"></div>
 	  			<span>Moderation status: </span>
 				  <select id="moderationStatus">
@@ -69,3 +70,12 @@ limitations under the License.
 	  	</tr>
 	  </table>	  	  		
 	</div>
+	
+<div style="display: none" id="captionsTemplate">
+  <div>
+    <label>Choose a Caption Language: </label>
+    <select id="languageSelect"></select>
+  </div>
+  <textarea id="captionTrack" rows="20" cols="80"></textarea>
+  <input id="saveCaption" type="button" value="Save Captions"></input>
+</div>
