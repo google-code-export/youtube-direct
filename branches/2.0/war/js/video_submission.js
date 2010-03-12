@@ -17,6 +17,193 @@
 var admin = admin || {};
 admin.sub = admin.sub || {};
 
+admin.sub.languageMap = {
+				"aa": "Afar",
+				"ab": "Abkhazian",
+				"ae": "Avestan",
+				"af": "Afrikaans",
+				"ak": "Akan",
+				"am": "Amharic",
+				"an": "Aragonese",
+				"ar": "Arabic",
+				"as": "Assamese",
+				"av": "Avaric",
+				"ay": "Aymara",
+				"az": "Azerbaijani",
+				"ba": "Bashkir",
+				"be": "Belarusian",
+				"bg": "Bulgarian",
+				"bh": "Bihari",
+				"bi": "Bislama",
+				"bm": "Bambara",
+				"bn": "Bengali",
+				"bo": "Tibetan",
+				"br": "Breton",
+				"bs": "Bosnian",
+				"ca": "Catalan",
+				"ce": "Chechen",
+				"ch": "Chamorro",
+				"co": "Corsican",
+				"cr": "Cree",
+				"cs": "Czech",
+				"cu": "Church Slavic",
+				"cv": "Chuvash",
+				"cy": "Welsh",
+				"da": "Danish",
+				"de": "German",
+				"dv": "Divehi",
+				"dz": "Dzongkha",
+				"ee": "Ewe",
+				"el": "Greek",
+				"en": "English",
+				"eo": "Esperanto",
+				"es": "Spanish",
+				"et": "Estonian",
+				"eu": "Basque",
+				"fa": "Persian",
+				"ff": "Fulah",
+				"fi": "Finnish",
+				"fj": "Fijian",
+				"fo": "Faroese",
+				"fr": "French",
+				"fy": "Western Frisian",
+				"ga": "Irish",
+				"gd": "Gaelic",
+				"gl": "Galician",
+				"gn": "Guarani",
+				"gu": "Gujarati",
+				"gv": "Manx",
+				"ha": "Hausa",
+				"he": "Hebrew",
+				"hi": "Hindi",
+				"ho": "Hiri Motu",
+				"hr": "Croatian",
+				"ht": "Haitian",
+				"hu": "Hungarian",
+				"hy": "Armenian",
+				"hz": "Herero",
+				"ia": "Interlingua",
+				"id": "Indonesian",
+				"ie": "Interlingue",
+				"ig": "Igbo",
+				"ii": "Sichuan Yi",
+				"ik": "Inupiaq",
+				"io": "Ido",
+				"is": "Icelandic",
+				"it": "Italian",
+				"iu": "Inuktitut",
+				"ja": "Japanese",
+				"jv": "Javanese",
+				"ka": "Georgian",
+				"kg": "Kongo",
+				"ki": "Kikuyu",
+				"kj": "Kuanyama",
+				"kk": "Kazakh",
+				"kl": "Kalaallisut",
+				"km": "Central Khmer",
+				"kn": "Kannada",
+				"ko": "Korean",
+				"kr": "Kanuri",
+				"ks": "Kashmiri",
+				"ku": "Kurdish",
+				"kv": "Komi",
+				"kw": "Cornish",
+				"ky": "Kirghiz",
+				"la": "Latin",
+				"lb": "Luxembourgish",
+				"lg": "Ganda",
+				"li": "Limburgan",
+				"ln": "Lingala",
+				"lo": "Lao",
+				"lt": "Lithuanian",
+				"lu": "Luba-Katanga",
+				"lv": "Latvian",
+				"mg": "Malagasy",
+				"mh": "Marshallese",
+				"mi": "Maori",
+				"mk": "Macedonian",
+				"ml": "Malayalam",
+				"mn": "Mongolian",
+				"mr": "Marathi",
+				"ms": "Malay",
+				"mt": "Maltese",
+				"my": "Burmese",
+				"na": "Nauru",
+				"nb": "Norwegian Bokmål",
+				"nd": "Ndebele, North",
+				"ne": "Nepali",
+				"ng": "Ndonga",
+				"nl": "Dutch",
+				"nn": "Norwegian Nynorsk",
+				"no": "Norwegian",
+				"nr": "Ndebele, South",
+				"nv": "Navajo",
+				"ny": "Chichewa",
+				"oc": "Occitan",
+				"oj": "Ojibwa",
+				"om": "Oromo",
+				"or": "Oriya",
+				"os": "Ossetian",
+				"pa": "Panjabi",
+				"pi": "Pali",
+				"pl": "Polish",
+				"ps": "Pushto",
+				"pt": "Portuguese",
+				"qu": "Quechua",
+				"rm": "Romansh",
+				"rn": "Rundi",
+				"ro": "Romanian",
+				"ru": "Russian",
+				"rw": "Kinyarwanda",
+				"sa": "Sanskrit",
+				"sc": "Sardinian",
+				"sd": "Sindhi",
+				"se": "Northern Sami",
+				"sg": "Sango",
+				"si": "Sinhala",
+				"sk": "Slovak",
+				"sl": "Slovenian",
+				"sm": "Samoan",
+				"sn": "Shona",
+				"so": "Somali",
+				"sq": "Albanian",
+				"sr": "Serbian",
+				"ss": "Swati",
+				"st": "Sotho, Southern",
+				"su": "Sundanese",
+				"sv": "Swedish",
+				"sw": "Swahili",
+				"ta": "Tamil",
+				"te": "Telugu",
+				"tg": "Tajik",
+				"th": "Thai",
+				"ti": "Tigrinya",
+				"tk": "Turkmen",
+				"tl": "Tagalog",
+				"tn": "Tswana",
+				"to": "Tonga",
+				"tr": "Turkish",
+				"ts": "Tsonga",
+				"tt": "Tatar",
+				"tw": "Twi",
+				"ty": "Tahitian",
+				"ug": "Uighur",
+				"uk": "Ukrainian",
+				"ur": "Urdu",
+				"uz": "Uzbek",
+				"ve": "Venda",
+				"vi": "Vietnamese",
+				"vo": "Volapük",
+				"wa": "Walloon",
+				"wo": "Wolof",
+				"xh": "Xhosa",
+				"yi": "Yiddish",
+				"yo": "Yoruba",
+				"za": "Zhuang",
+				"zh": "Chinese",
+				"zu": "Zulu",
+};
+
 // user current setting
 admin.sub.total = 0; // size of current working set
 admin.sub.submissions = []; // current working set
@@ -608,6 +795,8 @@ admin.sub.showDetails = function(submission) {
   mainDiv.find('#adminNotes').html(submission.adminNotes);
   
   mainDiv.find('#saveAdminNotes').click(function() {
+  	var messageElement = admin.showMessage("Saving admin notes...");
+  	
     var command = 'UPDATE_VIDEO_SUBMISSION_ADMIN_NOTES';
     var params = {};
     params.id = submission.id;
@@ -617,6 +806,7 @@ admin.sub.showDetails = function(submission) {
       try {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
+        	admin.showMessage("Admin notes saved.", messageElement);
           submission.adminNotes = params.adminNotes;
         } else {
           admin.showError(json.error, messageElement);
@@ -631,7 +821,12 @@ admin.sub.showDetails = function(submission) {
   
   mainDiv.find('#download').click(function() {
     admin.sub.downloadVideo(submission);
-  });  
+  });
+  
+  mainDiv.find('#captions').click(function() {
+  	mainDiv.dialog('close');
+  	admin.sub.loadCaptions(submission.id);
+  });
   
   mainDiv.dialog(dialogOptions);
 };
@@ -639,6 +834,93 @@ admin.sub.showDetails = function(submission) {
 admin.sub.downloadVideo = function(submission) {
   document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 
   '&username=' + submission.youTubeName;   
+};
+
+admin.sub.loadCaptions = function(submissionId) {
+	var messageElement = admin.showMessage("Loading video captions...");
+	
+  var command = 'GET_YOUTUBE_CAPTIONS';
+  var params = {};
+  params.submissionId = submissionId;
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+      	admin.showMessage("Video captions loaded.", messageElement);
+        admin.sub.showCaptionInfo(json);
+      } else {
+        admin.showError(json.error, messageElement);
+      }
+    } catch(exception) {
+    	admin.showError('Request failed: ' + exception, messageElement);
+    }
+  }
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);
+};
+
+admin.sub.showCaptionInfo = function(json) {
+  var dialogDiv = jQuery('#captionsTemplate').clone();   
+  var dialogOptions = {};
+  dialogOptions.title = "Edit Captions";
+  dialogOptions.width = 650;
+  dialogOptions.height = 400;
+  
+  var languageSelect = dialogDiv.find('#languageSelect');
+  
+  var options = [];
+  for (var languageCode in json.captions) {
+  	options.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', languageCode,
+  					languageCode, admin.sub.languageMap[languageCode]));
+  }
+  if (options.length > 0) {
+  	languageSelect.append('<optgroup id="existingLanguages" label="Exisiting Languages">' +
+  					options.join('') + '</optgroup>');
+  }
+  
+  options = [];
+  for (var languageCode in admin.sub.languageMap) {
+  	if (json.captions[languageCode] == null) {
+  		options.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', languageCode,
+  						languageCode, admin.sub.languageMap[languageCode]));
+  	}
+  }
+  languageSelect.append('<optgroup id="availableLanguages" label="Available Languages">' +
+  				options.join('') + '</optgroup>');
+  
+  languageSelect.change(function() {
+  	var selectedLanguageCode = languageSelect.val();
+  	if (json.captions[selectedLanguageCode] == null) {
+  		dialogDiv.find('#captionTrack').val('');
+  	} else {
+  		var messageElement = admin.showMessage("Loading " +
+  						admin.sub.languageMap[selectedLanguageCode] + " caption track...");
+  		
+  	  var command = 'GET_YOUTUBE_CAPTION_TRACK';
+  	  var params = {};
+  	  params.url = json.captions[selectedLanguageCode];
+  	  params.authSubToken = json.authSubToken;
+  	  
+  	  var jsonRpcCallback = function(jsonStr) {
+  	    try {
+  	      var json = JSON.parse(jsonStr);
+  	      if (!json.error) {
+  	      	admin.showMessage("Caption track loaded.", messageElement);
+  	      	dialogDiv.find('#captionTrack').val(json.captionTrack);
+  	      } else {
+  	        admin.showError(json.error, messageElement);
+  	      }
+  	    } catch(exception) {
+  	    	admin.showError('Request failed: ' + exception, messageElement);
+  	    }
+  	  }
+  	  
+  	  jsonrpc.makeRequest(command, params, jsonRpcCallback);
+  	}
+  });
+
+  dialogDiv.dialog(dialogOptions);
 };
 
 admin.sub.deleteEntry = function(entryId) {
