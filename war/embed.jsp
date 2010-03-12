@@ -117,12 +117,12 @@
 	
 	<%    
     if (adminConfigDao.allowPhotoSubmission()) {   
-  %>  
+  %>
   <br><br>
   <input id="photoButton" class="askButton" type="button" value="Submit photo(s)" /> 
   <%
     }
-  %>  
+  %>
 	
 	</div>
 </div>
@@ -204,6 +204,9 @@
   </div>
 </div>
 
+  <%    
+    if (adminConfigDao.allowPhotoSubmission()) {   
+  %>
 <div id="photoMain">
   <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
     <div class="smallRed">* required</div>
@@ -251,6 +254,9 @@
     authorized by the owner to make the content publicly available on this site.
   </div>
 </div>
+  <%
+    }
+  %>
 </div>
 </div>
 </body>
