@@ -284,7 +284,7 @@ private static final String CAPTION_FAILURE_TAG = "invalidFormat";
       request.execute();
       
       BufferedReader reader = new BufferedReader(new InputStreamReader(
-          request.getResponseStream()));
+          request.getResponseStream(), "UTF-8"));
       StringBuilder builder = new StringBuilder();
       String line;
       
