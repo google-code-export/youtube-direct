@@ -191,6 +191,22 @@ function addFileElement() {
 function existingVideoMainInit() {
   jQuery('#existingVideoMain').css('display', 'block');
   
+  var params = {};
+  params.username = jQuery('#youTubeName').val();
+
+  jsonrpc.makeRequest('GET_YOUTUBE_VIDEOS', params, function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+      	
+      } else {
+        showMessage(json.error);
+      }
+    } catch(exception) {
+    	showMessage('Request failed: ' + exception);
+    }
+  });
+  
   jQuery('#submitButton').click( function(event) {
     if (!isRequiredFilled('existingVideoMain')) {
       event.preventDefault();
