@@ -10,7 +10,6 @@ import com.google.ytd.youtube.YouTubeApiHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,26 +36,26 @@ public class GetYouTubeVideos extends Command {
     
     VideoFeed uploadsFeed = apiManager.getUploadsFeed(username);
     if (uploadsFeed != null) {
-      ArrayList<Map<String, String>> videos = new ArrayList<Map<String, String>>();
-      
+    	HashMap<String, Map<String, String>> videoIdToMetadata =
+    		new HashMap<String, Map<String, String>>();
       for (VideoEntry videoEntry : uploadsFeed.getEntries()) {
         // Videos with a yt:state tag are not playable, so skip them.
         if (videoEntry.getPublicationState() == null) {
-          HashMap<String, String> video = new HashMap<String, String>();
-          
-          video.put("videoId", videoEntry.getMediaGroup().getVideoId());
-          video.put("title", videoEntry.getMediaGroup().getTitle().getPlainTextContent());
-          video.put("videoUrl", videoEntry.getHtmlLink().getHref());
+          HashMap<String, String> metadata = new HashMap<String, String>();
+
+          metadata.put("title", videoEntry.getMediaGroup().getTitle().getPlainTextContent());
+          metadata.put("videoUrl", videoEntry.getHtmlLink().getHref());
           List<MediaThumbnail> thumbnails = videoEntry.getMediaGroup().getThumbnails();
           if (thumbnails.size() > 0) {
-            video.put("thumbnailUrl", videoEntry.getMediaGroup().getThumbnails().get(0).getUrl());
+          	metadata.put("thumbnailUrl",
+          			videoEntry.getMediaGroup().getThumbnails().get(0).getUrl());
           }
           
-          videos.add(video);
+          videoIdToMetadata.put(videoEntry.getMediaGroup().getVideoId(), metadata);
         }
       }
       
-      json.put("videos", videos);
+      json.put("videos", videoIdToMetadata);
     } else {
       json.put("error", "Unable to retrieve YouTube videos.");
     }
