@@ -108,3 +108,7 @@ div[align="center"] input[value="Login"] {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+#description {
+	font-size: 11px;
+	color: #333;
+}

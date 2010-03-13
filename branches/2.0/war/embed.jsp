@@ -139,9 +139,18 @@
 	<label class="required" for="videoUrl">Video URL:</label>	
 	<br>
 	<div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
-	<span class="tip">Example: http://www.youtube.com/watch#v=A7y7NafWXeM</span><br>
-	<div id="existingVideos">Loading your most recent videos...</div>
-	<br>
+	<div class="tip">Select a video below, or paste a YouTube video URL.</div>
+	<div id="loadingVideos">Loading your most recent videos...</div>
+	<div id="existingVideos" style="display: none;">
+		<div>
+			<select id="videosSelect"><option value="dummy">Select a Video...</option></select>
+		</div>
+		<div style="margin-top: 10px;">
+			<img id="thumbnail" src="/questionmark.png" style="display: none;">
+			<span id="description"></span>
+		</div>
+	</div>
+	<div style="clear: both; padding: 5px;"></div>
 	<label for="date">Date:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="date" id="submitDate" /></div>
