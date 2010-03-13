@@ -48,7 +48,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-<title>YAW</title>
+<title>YouTube Direct</title>
 
 <link type="text/css" href="/css/ext/themes/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 
@@ -70,7 +70,7 @@
 <div id="main">
 <%
 	if (authenticator.isLoggedIn()) {		
-%> <%= authenticator.getUserSession().getMetaData("youTubeName") %> 
+%> <span id="youTubeName"><%= authenticator.getUserSession().getMetaData("youTubeName") %></span>
 [ <a href="<%=authenticator.getLogOutUrl()%>">logout</a> ] 
 <script type="text/javascript">
 	window.isLoggedIn = true;
@@ -140,7 +140,8 @@
 	<br>
 	<div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
 	<span class="tip">Example: http://www.youtube.com/watch#v=A7y7NafWXeM</span><br>
-	<br> 
+	<div id="existingVideos">Loading your most recent videos...</div>
+	<br>
 	<label for="date">Date:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="date" id="submitDate" /></div>

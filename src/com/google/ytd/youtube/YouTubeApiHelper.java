@@ -39,6 +39,7 @@ import com.google.gdata.data.youtube.PlaylistFeed;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.data.youtube.VideoFeed;
 import com.google.gdata.util.ContentType;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
@@ -77,7 +78,9 @@ public class YouTubeApiHelper {
   private static final String CLIENT_ID_PREFIX = "ytd20-";
   private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
   		"videos/%s/captions";
-private static final String CAPTION_FAILURE_TAG = "invalidFormat";
+  private static final String CAPTION_FAILURE_TAG = "invalidFormat";
+  private static final String UPLOADS_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
+  		"users/%s/uploads?max-results=50";
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -249,6 +252,21 @@ private static final String CAPTION_FAILURE_TAG = "invalidFormat";
     String entryUrl = generateVideoEntryUrl(videoId);
 
     return makeVideoEntryRequest(entryUrl);
+  }
+  
+  public VideoFeed getUploadsFeed(String username) {
+    String url = String.format(UPLOADS_FEED_URL_FORMAT, username);
+    try {
+      return service.getFeed(new URL(url), VideoFeed.class);
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return null;
   }
   
   public Map<String, String> getCaptions(String videoId) {

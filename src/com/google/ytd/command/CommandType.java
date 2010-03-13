@@ -33,6 +33,8 @@ public enum CommandType {
       GetYouTubeCaptionTrack.class),
   UPDATE_YOUTUBE_CAPTION_TRACK(
       UpdateYouTubeCaptionTrack.class),
+  GET_YOUTUBE_VIDEOS(
+      GetYouTubeVideos.class),
   DELETE_STUFF(
       DeleteStuff.class);
 
