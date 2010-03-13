@@ -192,13 +192,13 @@ function existingVideoMainInit() {
   jQuery('#existingVideoMain').css('display', 'block');
   
   var params = {};
-  params.username = jQuery('#youTubeName').val();
+  params.username = jQuery('#youTubeName').text();
 
   jsonrpc.makeRequest('GET_YOUTUBE_VIDEOS', params, function(jsonStr) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-      	
+      	displayExistingVideos(json.videos);
       } else {
         showMessage(json.error);
       }
@@ -290,6 +290,31 @@ function existingVideoMainInit() {
   });
 
   jQuery("#submitDate").datepicker();  
+}
+
+function displayExistingVideos(videos) {
+	var existingVideosDiv = jQuery('#existingVideos');
+	
+	var options = [];
+	for (var videoId in videos) {
+		options.push('<option value="' + videoId + '">' + videos[videoId].title + '</option>');
+	}
+	
+	var videosSelect = jQuery('<select id="videosSelect" size="2"/>');
+	videosSelect.append(options.join('\n'));	
+	existingVideosDiv.html(videosSelect);
+	
+	var thumbnailImg = jQuery('<img id="thumbnail"/>');
+	existingVideosDiv.append(thumbnailImg);
+	
+	var videoUrlInput = jQuery('#videoUrl');
+	
+	videosSelect.change(function() {
+		var selectedVideoId = videosSelect.val();
+		
+		thumbnailImg.attr('src', videos[selectedVideoId].thumbnailUrl);
+		videoUrlInput.val(videos[selectedVideoId].videoUrl)
+	});
 }
 
 function uploaderMainInit() {
