@@ -293,28 +293,40 @@ function existingVideoMainInit() {
 }
 
 function displayExistingVideos(videos) {
-	var existingVideosDiv = jQuery('#existingVideos');
-	
 	var options = [];
 	for (var videoId in videos) {
 		options.push('<option value="' + videoId + '">' + videos[videoId].title + '</option>');
 	}
 	
-	var videosSelect = jQuery('<select id="videosSelect" size="2"/>');
-	videosSelect.append(options.join('\n'));	
-	existingVideosDiv.html(videosSelect);
-	
-	var thumbnailImg = jQuery('<img id="thumbnail"/>');
-	existingVideosDiv.append(thumbnailImg);
+	var videosSelect = jQuery('#videosSelect');
+	videosSelect.append(options.join('\n'));
 	
 	var videoUrlInput = jQuery('#videoUrl');
+	var thumbnailImg = jQuery('#thumbnail');
+	var descriptionDiv = jQuery('#description');
 	
 	videosSelect.change(function() {
 		var selectedVideoId = videosSelect.val();
-		
-		thumbnailImg.attr('src', videos[selectedVideoId].thumbnailUrl);
-		videoUrlInput.val(videos[selectedVideoId].videoUrl)
+
+		if (videos[selectedVideoId]) {
+			descriptionDiv.html(videos[selectedVideoId].description);
+			videoUrlInput.val(videos[selectedVideoId].videoUrl);
+			
+			if (videos[selectedVideoId].thumbnailUrl) {
+				thumbnailImg.attr('src', videos[selectedVideoId].thumbnailUrl);
+				thumbnailImg.attr('style', 'float: left; display: block; margin: 5px;');
+			} else {
+				thumbnailImg.attr('style', 'display: none');
+			}
+		} else {
+			descriptionDiv.html('');
+			videoUrlInput.val('');
+			thumbnailImg.attr('style', 'display: none');
+		}
 	});
+	
+	jQuery('#loadingVideos').attr('style', 'display: none;');
+	jQuery('#existingVideos').attr('style', 'display: block; margin-top: 7px;');
 }
 
 function uploaderMainInit() {

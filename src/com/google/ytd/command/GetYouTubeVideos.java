@@ -3,6 +3,7 @@ package com.google.ytd.command;
 import com.google.gdata.data.media.mediarss.MediaThumbnail;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.VideoFeed;
+import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.inject.Inject;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
@@ -39,16 +40,20 @@ public class GetYouTubeVideos extends Command {
     	HashMap<String, Map<String, String>> videoIdToMetadata =
     		new HashMap<String, Map<String, String>>();
       for (VideoEntry videoEntry : uploadsFeed.getEntries()) {
-        // Videos with a yt:state tag are not playable, so skip them.
-        if (videoEntry.getPublicationState() == null) {
+        if (!videoEntry.isDraft()) {
           HashMap<String, String> metadata = new HashMap<String, String>();
-
-          metadata.put("title", videoEntry.getMediaGroup().getTitle().getPlainTextContent());
+          YouTubeMediaGroup mediaGroup = videoEntry.getMediaGroup();
+          
+          metadata.put("title", mediaGroup.getTitle().getPlainTextContent());
           metadata.put("videoUrl", videoEntry.getHtmlLink().getHref());
-          List<MediaThumbnail> thumbnails = videoEntry.getMediaGroup().getThumbnails();
+          metadata.put("description", mediaGroup.getDescription().getPlainTextContent());
+          metadata.put("duration", mediaGroup.getDuration().toString());
+          metadata.put("published", videoEntry.getPublished().toUiString());
+          
+          List<MediaThumbnail> thumbnails = mediaGroup.getThumbnails();
           if (thumbnails.size() > 0) {
           	metadata.put("thumbnailUrl",
-          			videoEntry.getMediaGroup().getThumbnails().get(0).getUrl());
+          			mediaGroup.getThumbnails().get(0).getUrl());
           }
           
           videoIdToMetadata.put(videoEntry.getMediaGroup().getVideoId(), metadata);
