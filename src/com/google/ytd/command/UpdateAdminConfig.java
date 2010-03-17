@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 
 import com.google.appengine.repackaged.com.google.common.util.Base64;
@@ -15,20 +16,23 @@ import com.google.ytd.model.AdminConfig;
 import com.google.ytd.util.Util;
 
 public class UpdateAdminConfig extends Command {
-  private AdminConfigDao adminConfigDao = null;
-
   private static final Logger LOG = Logger.getLogger(UpdateAdminConfig.class.getName());
+  private static final String CLIENT_ID_PREFIX = "ytd20-";
+  
+  private AdminConfigDao adminConfigDao = null;
+  private HttpServletRequest servletRequest = null;
 
   @Inject
   private Util util;
 
   @Inject
-  public UpdateAdminConfig(AdminConfigDao adminConfigDao) {
+  public UpdateAdminConfig(HttpServletRequest servletRequest, AdminConfigDao adminConfigDao) {
     this.adminConfigDao = adminConfigDao;
+    this.servletRequest = servletRequest;
   }
 
   @Override
-  public JSONObject execute() throws JSONException {
+  public JSONObject execute() {
     LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String clientId = getParam("clientId");
@@ -48,12 +52,13 @@ public class UpdateAdminConfig extends Command {
     String privateKeyBytes = getParam("privateKeyBytes");
     String maxPhotoSizeMb = getParam("maxPhotoSizeMb");
     String photoSubmissionEnabled = getParam("photoSubmissionEnabled");
+    String recaptchaPrivateKey = getParam("recaptchaPrivateKey");
+    String recaptchaPublicKey = getParam("recaptchaPublicKey");
 
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    if (clientId != null) {
-      adminConfig.setClientId(clientId);
-    }
+    // Using the name of the App Engine server for the client id
+    adminConfig.setClientId(CLIENT_ID_PREFIX + servletRequest.getServerName());
 
     if (developerKey != null) {
       adminConfig.setDeveloperKey(developerKey);
@@ -127,6 +132,14 @@ public class UpdateAdminConfig extends Command {
     
     if (photoSubmissionEnabled != null) {
       adminConfig.setPhotoSubmissionEnabled(photoSubmissionEnabled.equals("true"));
+    }
+    
+    if (recaptchaPrivateKey != null) {
+      adminConfig.setRecaptchaPrivateKey(recaptchaPrivateKey);
+    }
+    
+    if (recaptchaPublicKey != null) {
+      adminConfig.setRecaptchaPublicKey(recaptchaPublicKey);
     }
 
     adminConfig.setUpdated(new Date());

@@ -129,6 +129,14 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private Boolean photoSubmissionEnabled;
+  
+  @Expose
+  @Persistent
+  private String recaptchaPrivateKey;
+  
+  @Expose
+  @Persistent
+  private String recaptchaPublicKey;
 
   public AdminConfig() {
     // Fetch default values from appengine-web.xml system props
@@ -136,6 +144,8 @@ public class AdminConfig implements Serializable {
     developerKey = System.getProperty("com.google.ytd.YTDeveloperKey", "");
     defaultTag = System.getProperty("com.google.ytd.BrandingTag", "");
     linkBackText = System.getProperty("com.google.ytd.LinkBackText", "");
+    recaptchaPrivateKey = System.getProperty("com.google.ytd.RecaptchaPrivateKey", "");
+    recaptchaPublicKey = System.getProperty("com.google.ytd.RecaptchaPublicKey", "");
 
     moderationEmail = false;
     approvalEmailText = System.getProperty("com.google.ytd.ApprovalEmailText", "");
@@ -337,5 +347,21 @@ public class AdminConfig implements Serializable {
 
   public void setPhotoSubmissionEnabled(Boolean photoSubmissionEnabled) {
     this.photoSubmissionEnabled = photoSubmissionEnabled;
+  }
+
+  public String getRecaptchaPrivateKey() {
+    return recaptchaPrivateKey;
+  }
+
+  public void setRecaptchaPrivateKey(String recaptchaPrivateKey) {
+    this.recaptchaPrivateKey = recaptchaPrivateKey;
+  }
+
+  public String getRecaptchaPublicKey() {
+    return recaptchaPublicKey;
+  }
+
+  public void setRecaptchaPublicKey(String recaptchaPublicKey) {
+    this.recaptchaPublicKey = recaptchaPublicKey;
   }
 }

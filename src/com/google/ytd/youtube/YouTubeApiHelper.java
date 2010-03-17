@@ -75,7 +75,6 @@ public class YouTubeApiHelper {
       + "</yt:moderationStatus></entry>";
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
-  private static final String CLIENT_ID_PREFIX = "ytd20-";
   private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
   		"videos/%s/captions";
   private static final String CAPTION_FAILURE_TAG = "invalidFormat";
@@ -98,8 +97,6 @@ public class YouTubeApiHelper {
       clientId = "";
       log.warning("clientId settings property is null or empty.");
     }
-    
-    clientId = CLIENT_ID_PREFIX + clientId;
 
     if (util.isNullOrEmpty(developerKey)) {
       log.warning("developerKey settings property is null or empty.");
@@ -115,7 +112,7 @@ public class YouTubeApiHelper {
       log.warning("clientId parameter is null or empty.");
     }
 
-    service = new YouTubeService(CLIENT_ID_PREFIX + clientId);
+    service = new YouTubeService(clientId);
   }
 
   /**

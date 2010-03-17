@@ -18,11 +18,11 @@ var admin = admin || {};
 admin.config = admin.config || {};
 
 // A list of parameters that map 1:1 between the JSON parameter names and the form ids.
-admin.config.BASIC_PARAMS = ['developerKey', 'clientId', 'defaultTag', 'linkBackText',
+admin.config.BASIC_PARAMS = ['developerKey', 'defaultTag', 'linkBackText',
                              'moderationMode', 'newSubmissionAddress', 'brandingMode',
                              'loginInstruction', 'postSubmitMessage', 'fromAddress',
                              'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes', 
-                             'maxPhotoSizeMb'];
+                             'maxPhotoSizeMb', 'recaptchaPrivateKey', 'recaptchaPublicKey'];
 
 admin.config.init = function() {
   var saveButton = jQuery('#saveButton');     
@@ -49,10 +49,10 @@ admin.config.init = function() {
     
     if (data.photoSubmissionEnabled) {
     	jQuery('#photoSubmissionEnabled').attr('checked', true);
-    	admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'), true);
+    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), true);
     } else {
     	jQuery('#photoSubmissionEnabled').attr('checked', false);
-    	admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'), false);
+    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), false);
     }
   });
   
@@ -73,7 +73,7 @@ admin.config.init = function() {
   });
   
   jQuery('#photoSubmissionEnabled').click(function() {
-    admin.config.toggleDiv(jQuery('#maxPhotoSizeMbDiv'));
+    admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'));
   });
 };
 

@@ -87,7 +87,7 @@
 
 <div align="center">
 	<div id="loginInstruction" >			
-		<%= adminConfig.getLoginInstruction() %>		
+		<%= adminConfig.getLoginInstruction() %>
   </div>		
 	<br>
 		<%
@@ -251,7 +251,7 @@
     </div>
     <input id="assignmentId" name="assignmentId" type="hidden" value="<%=request.getParameter("assignmentId")%>"/>
     <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
-    <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=6Le99goAAAAAABYfpbzUptcgAi0Q79s2ybGLsAxt"></script>
+    <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=<%= adminConfig.getRecaptchaPublicKey() %>"></script>
     <br>
     <div align="center">
       <input id="uploadButton" class="actionButton" type="submit" value="Upload" />
