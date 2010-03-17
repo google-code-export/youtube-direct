@@ -37,30 +37,34 @@ public class GetYouTubeVideos extends Command {
     
     VideoFeed uploadsFeed = apiManager.getUploadsFeed(username);
     if (uploadsFeed != null) {
-    	HashMap<String, Map<String, String>> videoIdToMetadata =
-    		new HashMap<String, Map<String, String>>();
-      for (VideoEntry videoEntry : uploadsFeed.getEntries()) {
-        if (!videoEntry.isDraft()) {
-          HashMap<String, String> metadata = new HashMap<String, String>();
-          YouTubeMediaGroup mediaGroup = videoEntry.getMediaGroup();
-          
-          metadata.put("title", mediaGroup.getTitle().getPlainTextContent());
-          metadata.put("videoUrl", videoEntry.getHtmlLink().getHref());
-          metadata.put("description", mediaGroup.getDescription().getPlainTextContent());
-          metadata.put("duration", mediaGroup.getDuration().toString());
-          metadata.put("published", videoEntry.getPublished().toUiString());
-          
-          List<MediaThumbnail> thumbnails = mediaGroup.getThumbnails();
-          if (thumbnails.size() > 0) {
-          	metadata.put("thumbnailUrl",
-          			mediaGroup.getThumbnails().get(0).getUrl());
+      if (uploadsFeed.getEntries().size() > 0) {
+        HashMap<String, Map<String, String>> videoIdToMetadata =
+          new HashMap<String, Map<String, String>>();
+        for (VideoEntry videoEntry : uploadsFeed.getEntries()) {
+          if (!videoEntry.isDraft()) {
+            HashMap<String, String> metadata = new HashMap<String, String>();
+            YouTubeMediaGroup mediaGroup = videoEntry.getMediaGroup();
+
+            metadata.put("title", mediaGroup.getTitle().getPlainTextContent());
+            metadata.put("videoUrl", videoEntry.getHtmlLink().getHref());
+            metadata.put("description", mediaGroup.getDescription().getPlainTextContent());
+            metadata.put("duration", mediaGroup.getDuration().toString());
+            metadata.put("published", videoEntry.getPublished().toUiString());
+
+            List<MediaThumbnail> thumbnails = mediaGroup.getThumbnails();
+            if (thumbnails.size() > 0) {
+              metadata.put("thumbnailUrl",
+                  mediaGroup.getThumbnails().get(0).getUrl());
+            }
+
+            videoIdToMetadata.put(videoEntry.getMediaGroup().getVideoId(), metadata);
           }
-          
-          videoIdToMetadata.put(videoEntry.getMediaGroup().getVideoId(), metadata);
         }
+
+        json.put("videos", videoIdToMetadata);
+      } else {
+        json.put("error", "There are no videos in your account; upload a new video instead.");
       }
-      
-      json.put("videos", videoIdToMetadata);
     } else {
       json.put("error", "Unable to retrieve YouTube videos.");
     }

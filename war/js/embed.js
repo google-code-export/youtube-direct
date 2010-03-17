@@ -195,6 +195,8 @@ function existingVideoMainInit() {
   params.username = jQuery('#youTubeName').text();
 
   jsonrpc.makeRequest('GET_YOUTUBE_VIDEOS', params, function(jsonStr) {
+  	jQuery('#loadingVideos').attr('style', 'display: none;');
+  	
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
@@ -325,7 +327,6 @@ function displayExistingVideos(videos) {
 		}
 	});
 	
-	jQuery('#loadingVideos').attr('style', 'display: none;');
 	jQuery('#existingVideos').attr('style', 'display: block; margin-top: 7px;');
 }
 
