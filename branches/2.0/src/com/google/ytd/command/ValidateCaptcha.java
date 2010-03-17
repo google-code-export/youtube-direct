@@ -47,8 +47,7 @@ public class ValidateCaptcha extends Command {
     String challenge = getParam("challenge");
     String response = getParam("response");
     String remoteIp = request.getRemoteAddr();
-    //TODO: Make this a AdminConfig setting
-    String privateKey = "6Le99goAAAAAAG8wa3XtBSDSjLi0WO24-38XMbYo";
+    String privateKey = adminConfigDao.getAdminConfig().getRecaptchaPrivateKey();
 
     if (util.isNullOrEmpty(challenge)) {
       throw new IllegalArgumentException("Missing required param: 'challenge'");
