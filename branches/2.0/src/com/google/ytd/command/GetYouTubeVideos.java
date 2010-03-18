@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@NonAdmin
 public class GetYouTubeVideos extends Command {
   private YouTubeApiHelper apiManager = null;
   

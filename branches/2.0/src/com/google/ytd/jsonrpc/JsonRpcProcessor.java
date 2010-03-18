@@ -1,7 +1,6 @@
 package com.google.ytd.jsonrpc;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
@@ -17,11 +18,11 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.ytd.command.Command;
 import com.google.ytd.command.CommandType;
+import com.google.ytd.command.NonAdmin;
 import com.google.ytd.util.Util;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
   @Inject
   private JsonExceptionHandler jsonExceptionHandler;
   @Inject
@@ -43,19 +44,26 @@ public class JsonRpcProcessor extends HttpServlet {
       if (jsonRpcRequest != null) {
         String method = jsonRpcRequest.getMethod();
         if (method != null) {
-          LOG.info("processing method " + method);
           Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
-          Command command = injector.getInstance(commandClass);
-          command.setParams(jsonRpcRequest.getParams());
+          
+          UserService userService = UserServiceFactory.getUserService();
+          
+          if (commandClass.isAnnotationPresent(NonAdmin.class) || userService.isUserAdmin()) {
+            Command command = injector.getInstance(commandClass);
+            command.setParams(jsonRpcRequest.getParams());
 
-          try {
-            JSONObject json = command.execute();
-            resp.setContentType("application/json");
-            resp.getWriter().write(json.toString());
-          } catch (JSONException e) {
-            jsonExceptionHandler.send(resp, e);
-          } catch (IllegalArgumentException e) {
-            jsonExceptionHandler.send(resp, e);
+            try {
+              JSONObject json = command.execute();
+              resp.setContentType("application/json");
+              resp.getWriter().write(json.toString());
+            } catch (JSONException e) {
+              jsonExceptionHandler.send(resp, e);
+            } catch (IllegalArgumentException e) {
+              jsonExceptionHandler.send(resp, e);
+            }
+          } else {
+            jsonExceptionHandler.send(resp, String.format("Non-admins can't access method '%s'.",
+                method));
           }
         }
       }

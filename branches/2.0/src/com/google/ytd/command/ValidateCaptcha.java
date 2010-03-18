@@ -22,6 +22,7 @@ import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.util.Util;
 
 @RequestScoped
+@NonAdmin
 public class ValidateCaptcha extends Command {
   private static final Logger LOG = Logger.getLogger(ValidateCaptcha.class.getName());
 
