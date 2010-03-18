@@ -37,6 +37,10 @@ public class PhotoSubmission {
 
   @Persistent
   @Expose
+  Date updated = null;  
+  
+  @Persistent
+  @Expose
   private String articleUrl = null;
 
   @Persistent
@@ -69,6 +73,7 @@ public class PhotoSubmission {
     this.location = location;
     this.numberOfPhotos = numberOfPhotos;
     this.created = new Date();
+    this.updated = this.created;
   }
 
   public String getId() {
@@ -87,6 +92,11 @@ public class PhotoSubmission {
     return created;
   }
 
+  public Date getUpdated() {
+    return updated;
+  }
+  
+  
   public String getTitle() {
     return title;
   }
@@ -121,5 +131,9 @@ public class PhotoSubmission {
 
   public String getAdminNotes() {
     return adminNotes;
+  }
+  
+  public void setUpdated(Date date) {
+    this.updated = date;
   }
 }

@@ -37,14 +37,7 @@ limitations under the License.
 	  		</td>
 	  		<td align="left">	  		  					
 	  			<div id="photos"></div>
-	  			<span>Moderation status: </span>
-				  <select id="moderationStatus">
-				  	<option value="UNREVIEW" selected>UNREVIEW</option>
-				  	<option value="APPROVED">APPROVED</option>
-				  	<option value="REJECTED">REJECTED</option>
-				  	<option value="SPAM">SPAM</option>
-				  </select>  
-					<br><br><br>							  						   			
+					<br><br>					  						   			
 					<div><b>Admin notes:</b></div>
 					<textarea cols="35" rows="5" id="adminNotes"></textarea><br>				
 					<input id="saveAdminNotes" type="button" value="Save Notes"/>	
