@@ -358,57 +358,21 @@ admin.photo.showDetails = function(entryId) {
       var entry = entries[i];
       var imageUrl = entry.imageUrl;
       
-      var img = jQuery('<img/>');
-      img.attr('src', imageUrl);      
+      var img = jQuery('<img width="100" height="100" />');
+      img.attr('src', imageUrl);
       
       img.click(function() {
         
       });          
       
       photosDiv.append(img);
-      photosDiv.append('<br>');
     }
   });  
-  
-  var moderationStatus = -1;
-  switch(submission.status) {
-    case 'UNREVIEWED':
-      moderationStatus = 0;
-      break;
-    case 'APPROVED':
-      moderationStatus = 1;
-      break;
-    case 'REJECTED':
-      moderationStatus = 2;
-      break;
-    case 'SPAM':
-      moderationStatus = 3;
-      break;      
-  }
-    
-  mainDiv.find('#moderationStatus').get(0).selectedIndex = moderationStatus;  
-  mainDiv.find('#moderationStatus').change(function() {
-    switch(mainDiv.find('#moderationStatus').get(0).selectedIndex) {
-      case 0:
-        submission.status = 'UNREVIEWED';
-        break;
-      case 1:
-        submission.status = 'APPROVED';
-        break;
-      case 2:
-        submission.status = 'REJECTED';
-        break;
-      case 3:
-        submission.status = 'SPAM';
-        break;        
-    }
-    admin.photo.updateSubmissionStatus(submission);
-  });    
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);
   
   mainDiv.find('#saveAdminNotes').click(function() {
-    var command = 'UPDATE_VIDEO_SUBMISSION_ADMIN_NOTES';
+    var command = 'UPDATE_PHOTO_SUBMISSION_ADMIN_NOTES';
     var params = {};
     params.id = submission.id;
     params.adminNotes = mainDiv.find('#adminNotes').val();

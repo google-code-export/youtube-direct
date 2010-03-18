@@ -8,9 +8,11 @@ import com.google.ytd.model.PhotoSubmission;
 public interface PhotoSubmissionDao {
   public List<PhotoSubmission> getPhotoSubmissions(String sortBy, String sortOrder);
 
-  PhotoSubmission save(PhotoSubmission submission);
+  public PhotoSubmission save(PhotoSubmission submission);
 
-  PhotoEntry save(PhotoEntry photo);
+  public PhotoEntry save(PhotoEntry photo);
+ 
+  public List<PhotoEntry> getAllPhotos(String submissionId);
 
-  List<PhotoEntry> getAllPhotos(String submissionId);
+  public PhotoSubmission getSubmissionById(String id);
 }
