@@ -15,4 +15,6 @@ public interface PhotoSubmissionDao {
   public List<PhotoEntry> getAllPhotos(String submissionId);
 
   public PhotoSubmission getSubmissionById(String id);
+
+  public PhotoEntry getPhotoEntry(String id);
 }

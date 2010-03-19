@@ -93,4 +93,18 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     return submission;
   }
 
+  @Override
+  public PhotoEntry getPhotoEntry(String id) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    PhotoEntry entry = null;
+
+    try {
+      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);
+    } finally {
+      pm.close();
+    }
+
+    return entry;
+  }  
+  
 }
