@@ -305,7 +305,7 @@ function displayExistingVideos(videos) {
 	
 	var videoUrlInput = jQuery('#videoUrl');
 	var thumbnailImg = jQuery('#thumbnail');
-	var descriptionDiv = jQuery('#description');
+	var descriptionDiv = jQuery('#existingVideoDescription');
 	
 	videosSelect.change(function() {
 		var selectedVideoId = videosSelect.val();

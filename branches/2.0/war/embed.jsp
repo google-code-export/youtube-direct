@@ -147,7 +147,7 @@
 		</div>
 		<div style="margin-top: 10px;">
 			<img id="thumbnail" src="/questionmark.png" style="display: none;">
-			<span id="description"></span>
+			<span id="existingVideoDescription"></span>
 		</div>
 	</div>
 	<div style="clear: both; padding: 5px;"></div>
