@@ -36,12 +36,11 @@ limitations under the License.
 	<table id="assignmentGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	
 	
-	<div style="display: none;" id="assignmentCreateTemplate">	
-		
+	<div style="display: none;" id="assignmentCreateTemplate">		
 	  <div>Category</div> 
 	  <select id="assignmentCategories"></select>
 	  <br><br>
-	  
+
 	  <div>Status</div>
 	  <select id="assignmentStatusType">
 	  	<option value="ACTIVE" selected>ACTIVE</option>
@@ -49,16 +48,23 @@ limitations under the License.
 	  	<option value="ARCHIVE">ARCHIVE</option>
 	  </select>  
 		<br><br>
-		
-		<div>Title</div>
+
+		<div>YouTube Playlist Title</div>
 		<input type="text" size="40" id="playlistTitle"/>
 		<br><br>
-			  		
-		<div>Description</div>
+
+		<div>YouTube Playlist Description</div>
 		<textarea cols="40" rows="5" id="assignmentDescription"></textarea>		
-		<br><br>		
+		<br><br>
+		
+		<div>Assignment-Specific Initial Message (optional)</div>
+    <textarea cols="40" rows="5" id="assignmentLoginInstruction"></textarea>   
+    <br><br>
+    
+    <div>Assignment-Specific Post-Submit Message (optional)</div>
+    <textarea cols="40" rows="5" id="assignmentPostSubmitMessage"></textarea>   
+    <br><br>
 		
 		<input id="createButton" type="button" value="Create"/>
 		<input id="createCancelButton" type="button" value="Cancel"/>
-		
 	</div>

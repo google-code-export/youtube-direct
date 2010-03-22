@@ -135,12 +135,12 @@ limitations under the License.
     <div class="clear">
       <label for="loginInstruction" class="configureLabel">Initial Message:</label>
       <textarea cols="50" rows="10" id="loginInstruction"></textarea>
-      <img class="tip" src="/questionmark.png" title="Presented to user on the initial submission screen. HTML is okay."></img>
+      <img class="tip" src="/questionmark.png" title="Presented to user on the initial submission screen. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
     </div>
     <div class="clear">
       <label for="postSubmitMessage" class="configureLabel">Post-Submit Message:</label>
       <textarea cols="50" rows="10" id="postSubmitMessage"></textarea>
-      <img class="tip" src="/questionmark.png" title="Presented to user after submitting a video. HTML is okay."></img>
+      <img class="tip" src="/questionmark.png" title="Presented to user after submitting a video. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
     </div>
   </fieldset>
   <div class="clear">

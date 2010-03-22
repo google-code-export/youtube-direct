@@ -3,7 +3,6 @@ package com.google.ytd.dao;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.List;
@@ -17,6 +16,7 @@ import javax.jdo.Query;
 
 import com.google.inject.Inject;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.model.Assignment;
 
 public class AdminConfigDaoImpl implements AdminConfigDao {
   private static final Logger LOG = Logger.getLogger(AdminConfigDaoImpl.class.getName());
@@ -103,5 +103,33 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
       pm.close();
     }
     return adminConfig;
+  }
+  
+  public String getLoginInstruction(String assignmentId) {
+    String globalInstruction = getAdminConfig().getLoginInstruction();
+    
+    AssignmentDao assignmentDao = new AssignmentDaoImpl(pmf);
+    Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
+    
+    String assignmentLoginInstruction = "";
+    if (assignment != null && assignment.getLoginInstruction() != null) {
+      assignmentLoginInstruction = assignment.getLoginInstruction();
+    }
+    
+    return globalInstruction.replace("ASSIGNMENT_MESSAGE", assignmentLoginInstruction);
+  }
+  
+  public String getPostSubmitMessage(String assignmentId) {
+    String globalPostSubmitMessage = getAdminConfig().getPostSubmitMessage();
+    
+    AssignmentDao assignmentDao = new AssignmentDaoImpl(pmf);
+    Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
+    
+    String assignmentPostSubmitMessage = "";
+    if (assignment != null && assignment.getPostSubmitMessage() != null) {
+      assignmentPostSubmitMessage = assignment.getPostSubmitMessage();
+    }
+    
+    return globalPostSubmitMessage.replace("ASSIGNMENT_MESSAGE", assignmentPostSubmitMessage);
   }
 }

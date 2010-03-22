@@ -511,7 +511,7 @@ admin.assign.showAssignmentCreate = function(categories) {
   var dialogOptions = {};
   dialogOptions.title = "Create New Assignment";
   dialogOptions.width = 400;
-  dialogOptions.height = 350;
+  dialogOptions.height = 550;
   
   jQuery.ui.dialog.defaults.bgiframe = true; 
   
@@ -539,6 +539,8 @@ admin.assign.showAssignmentCreate = function(categories) {
     var params = {};
     params.description = div.find('#assignmentDescription').val();
     params.title = div.find('#playlistTitle').val();
+    params.loginInstruction = div.find('#assignmentLoginInstruction').val();
+    params.postSubmitMessage = div.find('#assignmentPostSubmitMessage').val();
     params.category = div.find('#assignmentCategories').get(0).
         options[div.find('#assignmentCategories').attr('selectedIndex')].value;
     params.status = div.find('#assignmentStatusType').get(0).
