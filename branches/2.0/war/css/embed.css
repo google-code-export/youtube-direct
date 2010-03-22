@@ -112,3 +112,6 @@ div[align="center"] input[value="Login"] {
 	font-size: 11px;
 	color: #333;
 }
+#loadingVideos {
+  color: red;
+}
