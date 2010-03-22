@@ -35,8 +35,7 @@ limitations under the License.
 
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
-<script type="text/javascript"
-	src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.sprintf.js"></script>

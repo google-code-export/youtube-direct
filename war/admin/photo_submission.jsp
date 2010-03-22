@@ -35,7 +35,8 @@ limitations under the License.
 				  <b>Article URL:</b><div id="articleUrl"></div><br>
 				  <b>Photo location:</b><div id="location"></div><br>			  				    			
 	  		</td>
-	  		<td align="left">	  		  					
+	  		<td align="left">	  	
+	        
 	  			<div id="photos"></div>
 					<br><br>					  						   			
 					<div><b>Admin notes:</b></div>

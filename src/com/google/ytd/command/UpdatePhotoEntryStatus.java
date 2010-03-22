@@ -15,13 +15,12 @@ public class UpdatePhotoEntryStatus extends Command {
   private static final Logger LOG = Logger.getLogger(UpdatePhotoEntryStatus.class.getName());
 
   private PhotoSubmissionDao submissionDao = null;
+  private Util util = null;
 
   @Inject
-  private Util util;
-
-  @Inject
-  public UpdatePhotoEntryStatus(PhotoSubmissionDao submissionDao) {
+  public UpdatePhotoEntryStatus(PhotoSubmissionDao submissionDao, Util util) {    
     this.submissionDao = submissionDao;
+    this.util = util;
   }
 
   @Override
@@ -37,14 +36,14 @@ public class UpdatePhotoEntryStatus extends Command {
     if (util.isNullOrEmpty(status)) {
       throw new IllegalArgumentException("Missing required param: status");
     }
-     
+
     PhotoEntry entry = submissionDao.getPhotoEntry(id);
-    
+
     ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
     ModerationStatus currentStatus = entry.getStatus();
-    
+
     entry.setStatus(newStatus);
-    
+
     return json;
   }
 }

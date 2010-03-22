@@ -315,12 +315,31 @@ admin.photo.refreshGridUI = function(entries) {
   }
 };
 
+admin.photo.getImageThumb = function(entry) {
+  var img = jQuery('<img width="100" height="100"/>');
+  img.attr('src', entry.imageUrl);
+  
+  img.click(function() {
+    var bigImgOptions = {};
+    bigImgOptions.title = 'image';
+    bigImgOptions.width = '800px';
+    bigImgOptions.height = '800px';
+    
+    jQuery.ui.dialog.defaults.bgiframe = true;
+    
+    var bigImg = jQuery('<div/>');
+    bigImg.append('<img src="' + entry.imageUrl + '"/>');
+    
+    bigImg.dialog(bigImgOptions);
+  });
+  return img;  
+}
+
 admin.photo.showDetails = function(entryId) {
   var submission = admin.photo.getSubmission(entryId);
   
   var mainDiv = jQuery('#photoDetailsTemplate').clone();   
-  
-  
+    
   var dialogOptions = {};
   dialogOptions.title = submission.title;
   dialogOptions.width = 800;
@@ -352,22 +371,12 @@ admin.photo.showDetails = function(entryId) {
   admin.photo.getAllPhotos(submission.id, function(entries) {
     var photoHtml = [];
     
-    var photosDiv = mainDiv.find('#photos');
+    var photosDiv = mainDiv.find('#photos');  
     
     for (var i=0; i<entries.length; i++) {
-      var entry = entries[i];
-      var imageUrl = entry.imageUrl;
-      
-      var img = jQuery('<img width="100" height="100" />');
-      img.attr('src', imageUrl);
-      
-      img.click(function() {
-        
-      });          
-      
-      photosDiv.append(img);
+      photosDiv.append(admin.photo.getImageThumb(entries[i]));
     }
-  });  
+  });
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);
   
