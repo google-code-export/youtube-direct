@@ -316,14 +316,18 @@ admin.photo.refreshGridUI = function(entries) {
 };
 
 admin.photo.getImageThumb = function(entry) {
-  var img = jQuery('<img width="100" height="100"/>');
-  img.attr('src', entry.imageUrl);
+  var thumb = jQuery('<img width="100" height="100"/>');
+  thumb.attr('src', entry.imageUrl);
   
-  img.click(function() {
+  thumb.click(function() {
     var bigImgOptions = {};
     bigImgOptions.title = 'image';
-    bigImgOptions.width = '800px';
-    bigImgOptions.height = '800px';
+    
+    var img = new Image();
+    img.src = thumb.attr('src');
+    
+    bigImgOptions.width = img.width + 30;
+    bigImgOptions.height = img.height + 50;
     
     jQuery.ui.dialog.defaults.bgiframe = true;
     
@@ -332,7 +336,7 @@ admin.photo.getImageThumb = function(entry) {
     
     bigImg.dialog(bigImgOptions);
   });
-  return img;  
+  return thumb;  
 }
 
 admin.photo.showDetails = function(entryId) {
