@@ -134,11 +134,6 @@
 </div>
 
 <div id="existingVideoMain">
-	<div class="smallRed">* required</div>
-	<br>
-	<label class="required" for="videoUrl">Video URL:</label>	
-	<br>
-	<div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
 	<div class="tip">Select a video below, or paste a YouTube video URL.</div>
 	<div id="loadingVideos">Loading your most recent videos...</div>
 	<div id="existingVideos" style="display: none;">
@@ -151,6 +146,9 @@
 		</div>
 	</div>
 	<div style="clear: both; padding: 5px;"></div>
+	<label class="required" for="videoUrl">Video URL:</label> 
+  <br>
+  <div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
 	<label for="date">Date:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="date" id="submitDate" /></div>
@@ -170,8 +168,6 @@
 </div>
 
 <div id="uploaderMain">
-	<div class="smallRed">* required</div>
-	<br>	
 	<label class="required" for="title">Video Title:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="title" id="title" /></div>
@@ -219,8 +215,6 @@
   %>
 <div id="photoMain">
   <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
-    <div class="smallRed">* required</div>
-    <br>  
     <label class="required" for="title">Photo Title:</label>
     <br>
     <div>
