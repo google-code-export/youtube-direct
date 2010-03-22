@@ -76,6 +76,14 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private AssignmentStatus status;
+  
+  @Persistent
+  @Expose
+  private String loginInstruction;
+  
+  @Persistent
+  @Expose
+  private String postSubmitMessage;
 
   public Assignment() {
     this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
@@ -214,21 +222,19 @@ public class Assignment implements Serializable {
     this.playlistId = playlistId;
   }
 
-  /*
-   * @SuppressWarnings("unchecked") //TODO: This should probably be calculated
-   * periodically and persisted instead of dynamically. public int
-   * getSubmissionCount() { PersistenceManagerFactory pmf =
-   * Util.getPersistenceManagerFactory(); PersistenceManager pm =
-   * pmf.getPersistenceManager();
-   * 
-   * Query query = pm.newQuery(VideoSubmission.class,
-   * "assignmentId == assignmentIdParam");
-   * query.declareParameters("String assignmentIdParam"); List<VideoSubmission>
-   * submissions = (List<VideoSubmission>) query.execute(id); int size =
-   * submissions.size();
-   * 
-   * pm.close();
-   * 
-   * return size; }
-   */
+  public String getLoginInstruction() {
+    return loginInstruction;
+  }
+
+  public void setLoginInstruction(String loginInstruction) {
+    this.loginInstruction = loginInstruction;
+  }
+
+  public String getPostSubmitMessage() {
+    return postSubmitMessage;
+  }
+
+  public void setPostSubmitMessage(String postSubmitMessage) {
+    this.postSubmitMessage = postSubmitMessage;
+  }
 }

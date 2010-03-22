@@ -87,7 +87,7 @@
 
 <div align="center">
 	<div id="loginInstruction" >			
-		<%= adminConfig.getLoginInstruction() %>
+		<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
   </div>		
 	<br>
 		<%
@@ -129,7 +129,7 @@
 
 <div align="center">
   <div id="postSubmitMessage">      
-    <%= adminConfig.getPostSubmitMessage() %>   
+    <%= adminConfigDao.getPostSubmitMessage(request.getParameter("assignmentId")) %>   
   </div>
 </div>
 
