@@ -415,6 +415,7 @@ admin.photo.showDetails = function(entryId) {
     
     for (var i=0; i<entries.length; i++) {
       photosDiv.append(admin.photo.getImageThumb(entries[i]));
+      photosDiv.append('<br/>');
     }
   });
   
