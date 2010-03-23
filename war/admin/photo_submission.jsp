@@ -25,9 +25,9 @@ limitations under the License.
 	<table id="photoGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	
 	<div style="display: none;" id="photoDetailsTemplate" align="center">		  
-	  <table cellspacing="10" cellspadding="10" style="width: 90%;">
+	  <table border="0" cellspacing="0" cellspadding="0" style="width: 95%;">
 	  	<tr valign="top">
-	  		<td>
+	  		<td style="width: 300px;">
 				  <b>Assignment ID:&nbsp;</b><div id="assignmentId"></div><br>
 				  <b>Submitted on:</b><div id="created"></div><br>
 				  <b>Title:</b><div id="title"></div><br>
