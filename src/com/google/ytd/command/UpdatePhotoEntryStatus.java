@@ -27,23 +27,21 @@ public class UpdatePhotoEntryStatus extends Command {
   public JSONObject execute() throws JSONException {
     LOG.info(this.toString());
     JSONObject json = new JSONObject();
-    String id = getParam("id");
+    String idList = getParam("id");
     String status = getParam("status");
 
-    if (util.isNullOrEmpty(id)) {
+    if (util.isNullOrEmpty(idList)) {
       throw new IllegalArgumentException("Missing required param: id");
     }
     if (util.isNullOrEmpty(status)) {
       throw new IllegalArgumentException("Missing required param: status");
     }
-
-    PhotoEntry entry = submissionDao.getPhotoEntry(id);
-
-    ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
-    ModerationStatus currentStatus = entry.getStatus();
-
-    entry.setStatus(newStatus);
-
+    
+    for (String id : idList.split(",")) {
+      PhotoEntry entry = submissionDao.getPhotoEntry(id);
+      ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
+      entry.setStatus(newStatus);      
+    }
     return json;
   }
 }
