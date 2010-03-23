@@ -86,7 +86,7 @@
 <div id="processing"></div>
 
 <div align="center">
-	<div id="loginInstruction" >			
+	<div id="loginInstruction" style="display: none;">			
 		<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
   </div>		
 	<br>
@@ -101,7 +101,7 @@
 		%> 	
 </div>
 
-<div id="submissionAsk">
+<div id="submissionAsk" style="display: none;">
 	<div align="center">
 	<br><br><br><br><br><br><br>
 	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
@@ -128,12 +128,12 @@
 </div>
 
 <div align="center">
-  <div id="postSubmitMessage">      
+  <div id="postSubmitMessage" style="display: none;">      
     <%= adminConfigDao.getPostSubmitMessage(request.getParameter("assignmentId")) %>   
   </div>
 </div>
 
-<div id="existingVideoMain">
+<div id="existingVideoMain" style="display: none;">
 	<div class="tip">Select a video below, or paste a YouTube video URL.</div>
 	<div id="loadingVideos">Loading your most recent videos...</div>
 	<div id="existingVideos" style="display: none;">
@@ -168,7 +168,7 @@
 	</div>
 </div>
 
-<div id="uploaderMain">
+<div id="uploaderMain" style="display: none;">
 	<label class="required" for="title">Video Title:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="title" id="title" /></div>
@@ -214,7 +214,7 @@
   <%    
     if (adminConfigDao.allowPhotoSubmission()) {   
   %>
-<div id="photoMain">
+<div id="photoMain" style="display: none;">
   <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
     <label class="required" for="title">Photo Title:</label>
     <br>
