@@ -31,6 +31,9 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -48,6 +51,9 @@ import com.google.ytd.util.Util;
 @Singleton
 public class SubmitPhoto extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(SubmitPhoto.class.getName());
+
+  private static final int THUMBNAIL_WIDTH = 120;
+  private static final int THUMBNAIL_HEIGHT = 100;
 
   private Injector injector = null;
   private Util util = null;
@@ -93,43 +99,49 @@ public class SubmitPhoto extends HttpServlet {
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
-      
+
       BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
-      
+
       long maxPhotoSize = adminConfigDao.getMaxPhotoSize();
 
       ArrayList<BlobKey> validSubmissionKeys = new ArrayList<BlobKey>();
       for (Entry<String, BlobKey> entry : blobs.entrySet()) {
         BlobKey blobKey = entry.getValue();
-        
+
         BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
         String contentType = blobInfo.getContentType().toLowerCase();
         long size = blobInfo.getSize();
-        
+
         if (!contentType.startsWith("image/")) {
           blobstoreService.delete(blobKey);
           LOG.warning(String.format("Uploaded file has content type '%s'; skipping.", contentType));
           continue;
         }
-        
+
         if ((size > maxPhotoSize) || (size == 0)) {
           blobstoreService.delete(blobKey);
           LOG.warning(String.format("Uploaded file is %d bytes; skipping.", size));
           continue;
         }
-        
+
         validSubmissionKeys.add(blobKey);
       }
-      
+
       if (validSubmissionKeys.size() > 0) {
         // PhotoSubmission represents the meta data of a set of photo entries     
         PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
             articleUrl, email, title, description, location, validSubmissionKeys.size());
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
-        
+
         for (BlobKey blobKey : validSubmissionKeys) {
-          PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey);
+          ImagesService imagesService = ImagesServiceFactory.getImagesService();
+          Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
+          Image thumbnail = imagesService.applyTransform(ImagesServiceFactory.makeResize(
+              THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), image);
+
+          PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, image.getFormat()
+              .toString(), image.getWidth(), image.getHeight(), thumbnail.getImageData());
           pmfUtil.persistJdo(photoEntry);
         }
       } else {

@@ -36,7 +36,13 @@ limitations under the License.
 				  <b>Photo location:</b><div id="location"></div><br>			  				    			
 	  		</td>
 	  		<td align="left">	  	
-	        
+          <select id="photoStatus">
+            <option value="none" selected>[choose an action]</option>
+            <option value="APPROVED">Marked as Approved</option>
+            <option value="REJECTED">Marked as Rejected</option>
+          </select>
+          <br>
+          <br>
 	  			<div id="photos"></div>
 					<br><br>					  						   			
 					<div><b>Admin notes:</b></div>
