@@ -34,7 +34,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/image").with(ServeImage.class);
         // Serve thumbnail images binary
         serve("/thumb").with(ServeThumbnail.class);
-       
+
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
         serve("/logout").with(LogoutHandler.class);

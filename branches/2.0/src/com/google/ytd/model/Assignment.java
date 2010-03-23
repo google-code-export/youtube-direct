@@ -70,7 +70,9 @@ public class Assignment implements Serializable {
   private Date updated;
 
   public enum AssignmentStatus {
-    PENDING, ACTIVE, ARCHIVED
+    PENDING,
+    ACTIVE,
+    ARCHIVED
   }
 
   @Persistent

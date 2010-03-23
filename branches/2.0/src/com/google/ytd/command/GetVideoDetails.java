@@ -22,7 +22,7 @@ import com.google.ytd.youtube.YouTubeApiHelper;
 public class GetVideoDetails extends Command {
   private static final Logger LOG = Logger.getLogger(GetVideoSubmissions.class.getName());
   private static final long REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes, in milliseconds
-  
+
   private VideoSubmissionDao submissionDao = null;
   private YouTubeApiHelper apiManager = null;
   private UserAuthTokenDao userAuthTokenDao = null;
@@ -45,20 +45,20 @@ public class GetVideoDetails extends Command {
     if (util.isNullOrEmpty(submissionId)) {
       throw new IllegalArgumentException("Missing required param: videoId");
     }
-    
+
     LOG.info(String.format("Sync'ing metadata for submission id %s", submissionId));
-    
+
     VideoSubmission videoSubmission = submissionDao.getSubmissionById(submissionId);
     if (videoSubmission == null) {
-      throw new IllegalArgumentException(String.format("Couldn't retrieve VideoSubmission with" +
-      		" id '%s' from the datastore.", submissionId));
+      throw new IllegalArgumentException(String.format("Couldn't retrieve VideoSubmission with"
+          + " id '%s' from the datastore.", submissionId));
     }
-    
+
     Date now = new Date();
     long delta = now.getTime() - videoSubmission.getLastSynced().getTime();
     if (delta > REFRESH_INTERVAL) {
-      UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthToken(
-          videoSubmission.getYouTubeName());
+      UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthToken(videoSubmission
+          .getYouTubeName());
       apiManager.setToken(userAuthToken.getAuthSubToken());
 
       String videoId = videoSubmission.getVideoId();
@@ -70,11 +70,11 @@ public class GetVideoDetails extends Command {
         // Try an unauthenticated request to the specific user's uploads feed next.
         apiManager.setToken("");
         videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
-       
+
         if (videoEntry == null) {
           // Fall back on looking for the video in the public feed.
           videoEntry = apiManager.getVideoEntry(videoId);
-         
+
           if (videoEntry == null) {
             // The video must have been deleted...
             LOG.info(String.format("Unable to find YouTube video id '%s'.", videoId));
@@ -82,7 +82,7 @@ public class GetVideoDetails extends Command {
           }
         }
       }
-     
+
       if (videoEntry != null) {
         try {
           YtPublicationState state = videoEntry.getPublicationState();
@@ -93,7 +93,7 @@ public class GetVideoDetails extends Command {
             // uploads feed (by default), that info isn't easily exposed on the videoEntry
             // object. An alternative would be to get an instance from the public video feed
             // and check that.
-            
+
             List<YouTubeMediaRating> ratings = videoEntry.getMediaGroup().getYouTubeRatings();
             if (ratings.size() == 0) {
               stateValue = "OKAY";
@@ -109,15 +109,15 @@ public class GetVideoDetails extends Command {
           }
           if (!stateValue.equals(videoSubmission.getYouTubeState())) {
             LOG.info(String.format("YouTube state differs: '%s' (local) vs. '%s' (YT).",
-                    videoSubmission.getYouTubeState(), stateValue));
+                videoSubmission.getYouTubeState(), stateValue));
             videoSubmission.setYouTubeState(stateValue);
             videoSubmission.setUpdated(now);
           }
-          
+
           String title = videoEntry.getTitle().getPlainText();
           if (!title.equals(videoSubmission.getVideoTitle())) {
-            LOG.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).",
-                    videoSubmission.getVideoTitle(), title));
+            LOG.info(String.format("Title differs: '%s' (local) vs. '%s' (YT).", videoSubmission
+                .getVideoTitle(), title));
             videoSubmission.setVideoTitle(title);
             videoSubmission.setUpdated(now);
           }
@@ -125,7 +125,7 @@ public class GetVideoDetails extends Command {
           String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
           if (!description.equals(videoSubmission.getVideoDescription())) {
             LOG.info(String.format("Description differs: '%s' (local) vs. '%s' (YT).",
-                    videoSubmission.getVideoDescription(), description));
+                videoSubmission.getVideoDescription(), description));
             videoSubmission.setVideoDescription(description);
             videoSubmission.setUpdated(now);
           }
@@ -133,16 +133,16 @@ public class GetVideoDetails extends Command {
           List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
           String sortedTags = util.sortedJoin(tags, ",");
           if (!sortedTags.equals(videoSubmission.getVideoTags())) {
-            LOG.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).",
-                    videoSubmission.getVideoTags(), sortedTags));
+            LOG.info(String.format("Tags differs: '%s' (local) vs. '%s' (YT).", videoSubmission
+                .getVideoTags(), sortedTags));
             videoSubmission.setVideoTags(sortedTags);
             videoSubmission.setUpdated(now);
           }
         } catch (NullPointerException e) {
-          LOG.info(String.format("Couldn't get metadata for video id '%s'. It may not have been" +
-                      " accepted by YouTube.", videoId));
+          LOG.info(String.format("Couldn't get metadata for video id '%s'. It may not have been"
+              + " accepted by YouTube.", videoId));
         }
-       
+
         // Unconditionally update view count info, but don't call setUpdated() since this is an
         // auto-update.
         YtStatistics stats = videoEntry.getStatistics();

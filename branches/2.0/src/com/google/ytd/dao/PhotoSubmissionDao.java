@@ -11,7 +11,7 @@ public interface PhotoSubmissionDao {
   public PhotoSubmission save(PhotoSubmission submission);
 
   public PhotoEntry save(PhotoEntry photo);
- 
+
   public List<PhotoEntry> getAllPhotos(String submissionId);
 
   public PhotoSubmission getSubmissionById(String id);

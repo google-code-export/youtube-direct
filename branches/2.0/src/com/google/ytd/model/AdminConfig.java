@@ -63,7 +63,8 @@ public class AdminConfig implements Serializable {
   private Date updated;
 
   public enum ModerationModeType {
-    MOD_REQUIRED, NO_MOD
+    MOD_REQUIRED,
+    NO_MOD
   }
 
   @Expose
@@ -71,7 +72,8 @@ public class AdminConfig implements Serializable {
   private int moderationMode = ModerationModeType.MOD_REQUIRED.ordinal();
 
   public enum BrandingModeType {
-    ON, OFF
+    ON,
+    OFF
   }
 
   @Expose
@@ -79,7 +81,8 @@ public class AdminConfig implements Serializable {
   private int brandingMode = BrandingModeType.ON.ordinal();
 
   public enum SubmissionModeType {
-    NEW_OR_EXISTING, NEW_ONLY
+    NEW_OR_EXISTING,
+    NEW_ONLY
   }
 
   @Expose
@@ -117,23 +120,23 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String newSubmissionAddress;
-  
+
   @Expose
   @Persistent
   private Blob privateKeyBytes;
-  
+
   @Expose
   @Persistent
   private Integer maxPhotoSizeMb;
-  
+
   @Expose
   @Persistent
   private Boolean photoSubmissionEnabled;
-  
+
   @Expose
   @Persistent
   private String recaptchaPrivateKey;
-  
+
   @Expose
   @Persistent
   private String recaptchaPublicKey;
@@ -162,7 +165,7 @@ public class AdminConfig implements Serializable {
         + "<a href='terms.html' target='_blank'>terms of service</a>.";
 
     postSubmitMessage = "Thank you for your submission.";
-    
+
     maxPhotoSizeMb = 10;
     photoSubmissionEnabled = false;
 
@@ -329,7 +332,7 @@ public class AdminConfig implements Serializable {
     if (maxPhotoSizeMb == null) {
       maxPhotoSizeMb = 10;
     }
-    
+
     return maxPhotoSizeMb;
   }
 
@@ -341,7 +344,7 @@ public class AdminConfig implements Serializable {
     if (photoSubmissionEnabled == null) {
       photoSubmissionEnabled = false;
     }
-    
+
     return photoSubmissionEnabled;
   }
 

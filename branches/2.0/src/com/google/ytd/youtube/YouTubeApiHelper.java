@@ -55,7 +55,7 @@ public class YouTubeApiHelper {
 
   private YouTubeService service = null;
   private AdminConfigDao adminConfigDao;
-  
+
   private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
 
   // CONSTANTS
@@ -75,11 +75,11 @@ public class YouTubeApiHelper {
       + "</yt:moderationStatus></entry>";
   private static final String MODERATION_ACCEPTED = "accepted";
   private static final String MODERATION_REJECTED = "rejected";
-  private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
-  		"videos/%s/captions";
+  private static final String CAPTION_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
+      + "videos/%s/captions";
   private static final String CAPTION_FAILURE_TAG = "invalidFormat";
-  private static final String UPLOADS_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/" +
-  		"users/%s/uploads?max-results=50";
+  private static final String UPLOADS_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
+      + "users/%s/uploads?max-results=50";
 
   /**
    * Create a new instance of the class, initializing a YouTubeService object
@@ -89,7 +89,7 @@ public class YouTubeApiHelper {
   public YouTubeApiHelper(AdminConfigDao adminConfigDao) {
     this.util = Util.get();
     this.adminConfigDao = adminConfigDao;
-    
+
     String clientId = this.adminConfigDao.getAdminConfig().getClientId();
     String developerKey = this.adminConfigDao.getAdminConfig().getDeveloperKey();
 
@@ -250,7 +250,7 @@ public class YouTubeApiHelper {
 
     return makeVideoEntryRequest(entryUrl);
   }
-  
+
   public VideoFeed getUploadsFeed(String username) {
     String url = String.format(UPLOADS_FEED_URL_FORMAT, username);
     try {
@@ -262,15 +262,15 @@ public class YouTubeApiHelper {
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     return null;
   }
-  
+
   public Map<String, String> getCaptions(String videoId) {
     String feedUrl = String.format(CAPTION_FEED_URL_FORMAT, videoId);
     try {
       CaptionTrackFeed captionTrackFeed = service.getFeed(new URL(feedUrl), CaptionTrackFeed.class);
-      
+
       HashMap<String, String> languageToUrl = new HashMap<String, String>();
       for (CaptionTrackEntry captionTrackEntry : captionTrackFeed.getEntries()) {
         String languageCode = captionTrackEntry.getLanguageCode();
@@ -279,7 +279,7 @@ public class YouTubeApiHelper {
           languageToUrl.put(languageCode, link.getHref());
         }
       }
-      
+
       return languageToUrl;
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
@@ -288,25 +288,25 @@ public class YouTubeApiHelper {
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     return null;
   }
-  
+
   public String getCaptionTrack(String url) {
     try {
       GDataRequest request = service.createRequest(RequestType.QUERY, new URL(url),
           ContentType.TEXT_PLAIN);
       request.execute();
-      
-      BufferedReader reader = new BufferedReader(new InputStreamReader(
-          request.getResponseStream(), "UTF-8"));
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(request.getResponseStream(),
+          "UTF-8"));
       StringBuilder builder = new StringBuilder();
       String line;
-      
+
       while ((line = reader.readLine()) != null) {
         builder.append(line).append("\n");
       }
-      
+
       return builder.toString();
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
@@ -315,31 +315,34 @@ public class YouTubeApiHelper {
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     return null;
   }
-  
+
   /**
-   * Creates or updates a video caption track. Explicitly throw exceptions so that the calling code
-   * knows whether a failure occurred due to a YouTube API issue or due to a bad captions track.
+   * Creates or updates a video caption track. Explicitly throw exceptions so
+   * that the calling code knows whether a failure occurred due to a YouTube API
+   * issue or due to a bad captions track.
    * 
-   * @param videoId The video id of the YouTube video to update.
-   * @param captionTrack The UTF-8 caption track data.
+   * @param videoId
+   *          The video id of the YouTube video to update.
+   * @param captionTrack
+   *          The UTF-8 caption track data.
    * @return true if the caption track update was successful; false otherwise.
    * @throws MalformedURLException
    * @throws IOException
    * @throws ServiceException
    */
   public boolean updateCaptionTrack(String videoId, String captionTrack)
-  throws MalformedURLException, IOException, ServiceException {
+      throws MalformedURLException, IOException, ServiceException {
     String captionsUrl = String.format(CAPTION_FEED_URL_FORMAT, videoId);
-    
+
     GDataRequest request = service.createInsertRequest(new URL(captionsUrl));
     request.getRequestStream().write(captionTrack.getBytes("UTF-8"));
     request.execute();
 
-    BufferedReader bufferedReader = new BufferedReader(
-        new InputStreamReader(request.getResponseStream()));
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request
+        .getResponseStream()));
     StringBuilder builder = new StringBuilder();
     String line = null;
 

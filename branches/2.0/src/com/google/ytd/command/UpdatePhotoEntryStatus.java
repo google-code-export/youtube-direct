@@ -18,7 +18,7 @@ public class UpdatePhotoEntryStatus extends Command {
   private Util util = null;
 
   @Inject
-  public UpdatePhotoEntryStatus(PhotoSubmissionDao submissionDao, Util util) {    
+  public UpdatePhotoEntryStatus(PhotoSubmissionDao submissionDao, Util util) {
     this.submissionDao = submissionDao;
     this.util = util;
   }

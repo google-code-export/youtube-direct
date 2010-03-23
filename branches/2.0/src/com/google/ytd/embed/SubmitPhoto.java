@@ -31,6 +31,7 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
@@ -141,7 +142,7 @@ public class SubmitPhoto extends HttpServlet {
               THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), image);
 
           PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, image.getFormat()
-              .toString(), image.getWidth(), image.getHeight(), thumbnail.getImageData());
+              .toString().toLowerCase(), new Blob(thumbnail.getImageData()));
           pmfUtil.persistJdo(photoEntry);
         }
       } else {

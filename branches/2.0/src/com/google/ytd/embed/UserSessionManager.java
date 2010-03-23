@@ -114,11 +114,11 @@ public class UserSessionManager {
         }
       }
     }
-    
+
     // Fall back on checking the sessionId parameter if cookies are disabled.
     if (userSession == null) {
       String sessionId = request.getParameter("sessionId");
-      if(!util.isNullOrEmpty(sessionId)) {
+      if (!util.isNullOrEmpty(sessionId)) {
         userSession = getUserSessionById(sessionId);
       }
     }
@@ -130,7 +130,7 @@ public class UserSessionManager {
   public UserSession getUserSessionById(String id) {
     PersistenceManager pm = pmf.getPersistenceManager();
     UserSession userSession = null;
-    
+
     String filters = "id == id_";
     Query query = pm.newQuery(UserSession.class, filters);
     query.declareParameters("String id_");
@@ -142,7 +142,7 @@ public class UserSessionManager {
     }
 
     pm.close();
-    
+
     return userSession;
   }
 }

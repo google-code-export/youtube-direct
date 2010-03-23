@@ -112,7 +112,10 @@ public class VideoSubmission implements Serializable {
   private Date updated;
 
   public enum ModerationStatus {
-    UNREVIEWED, APPROVED, REJECTED, SPAM
+    UNREVIEWED,
+    APPROVED,
+    REJECTED,
+    SPAM
   }
 
   @Expose
@@ -120,7 +123,9 @@ public class VideoSubmission implements Serializable {
   private ModerationStatus status;
 
   public enum VideoSource {
-    NEW_UPLOAD, EXISTING_VIDEO, MOBILE_SUBMIT
+    NEW_UPLOAD,
+    EXISTING_VIDEO,
+    MOBILE_SUBMIT
   }
 
   @Expose

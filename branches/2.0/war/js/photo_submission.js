@@ -315,18 +315,18 @@ admin.photo.refreshGridUI = function(entries) {
   }
 };
 
-admin.photo.resizeImage = function(image, max) {
-  var w_ = image.width;
-  var h_ = image.height;
-
-  if (w_ > max || h_ > max) {
-    var wRatio = w_ / max;
-    var hRatio = h_ / max;
+admin.photo.resizeImage = function(image, max) {  
+  var width = image.width;
+  var height = image.height;
+  
+  if (width > max || height > max) {
+    var wRatio = width / max;
+    var hRatio = height / max;
     
     var ratio = Math.max(wRatio, hRatio);
 
-    var w = Math.round(w_ / ratio);
-    var h = Math.round(h_ / ratio);
+    var w = Math.round(width / ratio);
+    var h = Math.round(height / ratio);
     
     image.width = w;
     image.height = h;
@@ -344,33 +344,33 @@ admin.photo.resizeImage = function(image, max) {
 
 admin.photo.getImageThumb = function(entry) {
   var thumb = jQuery('<img/>');
-  thumb.attr('width', 100);
-  thumb.attr('height', 100);
-  thumb.attr('src', entry.imageUrl);
+  thumb.attr('src', entry.thumbnailUrl);
   
   thumb.click(function() {
-    var options = {};
-    
     var img = new Image();
-    img.src = thumb.attr('src');    
-    img = admin.photo.resizeImage(img, 800);
+    img.src = entry.imageUrl;
     
-    options.width = img.width + 50;
-    options.height = img.height + 100;
-    
-    jQuery.ui.dialog.defaults.bgiframe = true;
-    
-    var popUp = jQuery('<div align="center"/>');
-    var imageLink = jQuery('<a/>');
-    imageLink.attr('href', img.src);
-    imageLink.attr('target', '_blank');
-    imageLink.html('Open in new window');
-    
-    popUp.append(imageLink);
-    popUp.append('<br><br>');
-    popUp.append(img);
-    
-    popUp.dialog(options);
+    img.onload = function() {
+      var options = {};
+      img = admin.photo.resizeImage(img, 800);            
+      
+      options.width = img.width + 50;
+      options.height = img.height + 100;
+      
+      jQuery.ui.dialog.defaults.bgiframe = true;
+      
+      var popUp = jQuery('<div align="center"/>');
+      var imageLink = jQuery('<a/>');
+      imageLink.attr('href', img.src);
+      imageLink.attr('target', '_blank');
+      imageLink.html('Open in new window');
+      
+      popUp.append(imageLink);
+      popUp.append('<br><br>');
+      popUp.append(img);
+      
+      popUp.dialog(options);
+    };
   });
   return thumb;  
 };

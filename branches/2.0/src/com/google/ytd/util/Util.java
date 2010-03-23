@@ -49,8 +49,8 @@ public class Util {
   private static final Logger log = Logger.getLogger(Util.class.getName());
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
-  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-      .setDateFormat(DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
+  public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(
+      DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
       .registerTypeAdapter(Blob.class, new BlobToStringAdapter()).create();
 
   private static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
@@ -76,7 +76,7 @@ public class Util {
       }
     }
   }
-  
+
   private static class BlobToStringAdapter implements JsonSerializer<Blob>, JsonDeserializer<Blob> {
     public JsonElement toJson(Blob blob, Type type, JsonSerializationContext context) {
       return serialize(blob, type, context);

@@ -17,17 +17,17 @@ public class ServeThumbnail extends HttpServlet {
   private static final Logger log = Logger.getLogger(ServeThumbnail.class.getName());
 
   private PhotoSubmissionDao photoSubmissionDao = null;
-  
+
   @Inject
   public ServeThumbnail(PhotoSubmissionDao photoSubmissionDao) {
     this.photoSubmissionDao = photoSubmissionDao;
   }
-  
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String id = req.getParameter("id");    
-    PhotoEntry entry = photoSubmissionDao.getPhotoEntry(id);    
+    String id = req.getParameter("id");
+    PhotoEntry entry = photoSubmissionDao.getPhotoEntry(id);
     resp.setContentType("image/" + entry.getFormat());
-    resp.getOutputStream().write(entry.getThumbnail());    
+    resp.getOutputStream().write(entry.getThumbnail().getBytes());
   }
 }
