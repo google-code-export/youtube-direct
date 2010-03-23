@@ -28,23 +28,46 @@ public class PhotoEntry {
   @Expose
   private String imageUrl = null;
 
+  @Persistent
+  @Expose
+  private String thumbnailUrl = null;  
+  
+  @Persistent
+  private byte[] thumbnail = null;
+  
+  @Persistent
+  @Expose
+  private int width = 0;
+
+  @Persistent
+  @Expose
+  private int height = 0;
+  
+  @Persistent
+  @Expose
+  private String format = null;  
+  
   public enum ModerationStatus {
     UNREVIEWED,
     APPROVED,
-    REJECTED,
-    SPAM
+    REJECTED
   }
 
   @Expose
   @Persistent
   private ModerationStatus status;
 
-  public PhotoEntry(String submissionId, BlobKey blobKey) {
+  public PhotoEntry(String submissionId, BlobKey blobKey, String format, int width, int height, byte[] thumbnail) {
     this.blobKey = blobKey;
     this.id = blobKey.getKeyString();
     this.submissionId = submissionId;
     this.imageUrl = "/image?id=" + this.id;
+    this.thumbnailUrl = "/thumb?id=" + this.id;
     this.status = ModerationStatus.UNREVIEWED;
+    this.width = width;
+    this.height = height;
+    this.format = format;
+    this.thumbnail = thumbnail;
   }
 
   public String getId() {
@@ -70,5 +93,25 @@ public class PhotoEntry {
   public String getImageUrl() {
     return imageUrl;
   }
-
+  
+  public String getThumbnailUrl() {
+    return thumbnailUrl;
+  }
+    
+  public String getFormat() {
+    return format;
+  }
+ 
+  public byte[] getThumbnail() {
+    return thumbnail;
+  }
+  
+  public int getWidth() {
+    return width;
+  }
+  
+  public int getHeight() {
+    return height;
+  }
+  
 }

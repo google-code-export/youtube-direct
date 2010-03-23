@@ -315,29 +315,65 @@ admin.photo.refreshGridUI = function(entries) {
   }
 };
 
+admin.photo.resizeImage = function(image, max) {
+  var w_ = image.width;
+  var h_ = image.height;
+
+  if (w_ > max || h_ > max) {
+    var wRatio = w_ / max;
+    var hRatio = h_ / max;
+    
+    var ratio = Math.max(wRatio, hRatio);
+
+    var w = Math.round(w_ / ratio);
+    var h = Math.round(h_ / ratio);
+    
+    image.width = w;
+    image.height = h;
+    image.style.width = w;
+    image.style.height = h;
+    
+    image.style.pixelHeight = h;
+    //image.offsetHeight = h;
+    
+    image.style.pixelWidth = w;
+    //image.offsetWidth = w;  
+  }
+  return image;
+};
+
 admin.photo.getImageThumb = function(entry) {
-  var thumb = jQuery('<img width="100" height="100"/>');
+  var thumb = jQuery('<img/>');
+  thumb.attr('width', 100);
+  thumb.attr('height', 100);
   thumb.attr('src', entry.imageUrl);
   
   thumb.click(function() {
-    var bigImgOptions = {};
-    bigImgOptions.title = 'image';
+    var options = {};
     
     var img = new Image();
-    img.src = thumb.attr('src');
+    img.src = thumb.attr('src');    
+    img = admin.photo.resizeImage(img, 800);
     
-    bigImgOptions.width = img.width + 30;
-    bigImgOptions.height = img.height + 50;
+    options.width = img.width + 50;
+    options.height = img.height + 100;
     
     jQuery.ui.dialog.defaults.bgiframe = true;
     
-    var bigImg = jQuery('<div/>');
-    bigImg.append('<img src="' + entry.imageUrl + '"/>');
+    var popUp = jQuery('<div align="center"/>');
+    var imageLink = jQuery('<a/>');
+    imageLink.attr('href', img.src);
+    imageLink.attr('target', '_blank');
+    imageLink.html('Open in new window');
     
-    bigImg.dialog(bigImgOptions);
+    popUp.append(imageLink);
+    popUp.append('<br><br>');
+    popUp.append(img);
+    
+    popUp.dialog(options);
   });
   return thumb;  
-}
+};
 
 admin.photo.showDetails = function(entryId) {
   var submission = admin.photo.getSubmission(entryId);
