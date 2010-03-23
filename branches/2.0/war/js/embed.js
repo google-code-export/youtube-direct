@@ -56,7 +56,7 @@ function init() {
 
 function highlightRequired() {
   jQuery.each(jQuery('.required'), function(index, value) {
-    jQuery(value).before('<span class="smallRed">*</span>&nbsp;')
+    jQuery(value).after('&nbsp;<span class="smallRed">(required)</span>&nbsp;')
   });  
 }
 
