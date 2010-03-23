@@ -88,7 +88,7 @@
 <div align="center">
 	<div id="loginInstruction">			
 	<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
-	<br>
+	<br><br>
 		<%
 			if (authenticator.isLoggedIn()) {		
 		%>
