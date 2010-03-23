@@ -149,6 +149,7 @@
 	<label class="required" for="videoUrl">Video URL:</label> 
   <br>
   <div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
+  <br>
 	<label for="date">Date:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="date" id="submitDate" /></div>
