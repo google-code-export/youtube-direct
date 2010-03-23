@@ -89,22 +89,22 @@ public class UpdateVideoSubmissionStatus extends Command {
       }
 
       switch (newStatus) {
-      case APPROVED:
-        submission.setStatus(ModerationStatus.APPROVED);
-        onApproved(submission);
-        break;
-      case REJECTED:
-        submission.setStatus(ModerationStatus.REJECTED);
-        onRejected(submission);
-        break;
-      case SPAM:
-        submission.setStatus(ModerationStatus.SPAM);
-        onRejected(submission);
-        break;
-      case UNREVIEWED:
-        submission.setStatus(ModerationStatus.UNREVIEWED);
-        onRejected(submission);
-        break;
+        case APPROVED:
+          submission.setStatus(ModerationStatus.APPROVED);
+          onApproved(submission);
+          break;
+        case REJECTED:
+          submission.setStatus(ModerationStatus.REJECTED);
+          onRejected(submission);
+          break;
+        case SPAM:
+          submission.setStatus(ModerationStatus.SPAM);
+          onRejected(submission);
+          break;
+        case UNREVIEWED:
+          submission.setStatus(ModerationStatus.UNREVIEWED);
+          onRejected(submission);
+          break;
       }
       submission.setUpdated(new Date());
       submissionDao.save(submission);

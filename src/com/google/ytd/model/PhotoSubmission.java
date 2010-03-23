@@ -37,8 +37,8 @@ public class PhotoSubmission {
 
   @Persistent
   @Expose
-  Date updated = null;  
-  
+  Date updated = null;
+
   @Persistent
   @Expose
   private String articleUrl = null;
@@ -95,8 +95,7 @@ public class PhotoSubmission {
   public Date getUpdated() {
     return updated;
   }
-  
-  
+
   public String getTitle() {
     return title;
   }
@@ -132,7 +131,7 @@ public class PhotoSubmission {
   public String getAdminNotes() {
     return adminNotes;
   }
-  
+
   public void setUpdated(Date date) {
     this.updated = date;
   }

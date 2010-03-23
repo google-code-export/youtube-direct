@@ -105,6 +105,6 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     }
 
     return entry;
-  }  
-  
+  }
+
 }

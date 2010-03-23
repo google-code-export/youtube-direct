@@ -6,6 +6,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.datastore.Blob;
 import com.google.gson.annotations.Expose;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -30,23 +31,15 @@ public class PhotoEntry {
 
   @Persistent
   @Expose
-  private String thumbnailUrl = null;  
-  
+  private String thumbnailUrl = null;
+
   @Persistent
-  private byte[] thumbnail = null;
-  
-  @Persistent
-  @Expose
-  private int width = 0;
+  private Blob thumbnail = null;
 
   @Persistent
   @Expose
-  private int height = 0;
-  
-  @Persistent
-  @Expose
-  private String format = null;  
-  
+  private String format = null;
+
   public enum ModerationStatus {
     UNREVIEWED,
     APPROVED,
@@ -57,15 +50,13 @@ public class PhotoEntry {
   @Persistent
   private ModerationStatus status;
 
-  public PhotoEntry(String submissionId, BlobKey blobKey, String format, int width, int height, byte[] thumbnail) {
+  public PhotoEntry(String submissionId, BlobKey blobKey, String format, Blob thumbnail) {
     this.blobKey = blobKey;
     this.id = blobKey.getKeyString();
     this.submissionId = submissionId;
     this.imageUrl = "/image?id=" + this.id;
     this.thumbnailUrl = "/thumb?id=" + this.id;
     this.status = ModerationStatus.UNREVIEWED;
-    this.width = width;
-    this.height = height;
     this.format = format;
     this.thumbnail = thumbnail;
   }
@@ -93,25 +84,16 @@ public class PhotoEntry {
   public String getImageUrl() {
     return imageUrl;
   }
-  
+
   public String getThumbnailUrl() {
     return thumbnailUrl;
   }
-    
+
   public String getFormat() {
     return format;
   }
- 
-  public byte[] getThumbnail() {
+
+  public Blob getThumbnail() {
     return thumbnail;
   }
-  
-  public int getWidth() {
-    return width;
-  }
-  
-  public int getHeight() {
-    return height;
-  }
-  
 }

@@ -68,17 +68,17 @@ public class EmailUtil {
 
       String body;
       switch (status) {
-      case APPROVED:
-        body = adminConfig.getApprovalEmailText();
-        break;
+        case APPROVED:
+          body = adminConfig.getApprovalEmailText();
+          break;
 
-      case REJECTED:
-        body = adminConfig.getRejectionEmailText();
-        break;
+        case REJECTED:
+          body = adminConfig.getRejectionEmailText();
+          break;
 
-      default:
-        throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
-            status.toString()));
+        default:
+          throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
+              status.toString()));
       }
       if (util.isNullOrEmpty(body)) {
         throw new IllegalArgumentException("No email body found in configuration.");

@@ -45,9 +45,9 @@ public class JsonRpcProcessor extends HttpServlet {
         String method = jsonRpcRequest.getMethod();
         if (method != null) {
           Class<? extends Command> commandClass = CommandType.valueOfIngoreCase(method).getClazz();
-          
+
           UserService userService = UserServiceFactory.getUserService();
-          
+
           if (commandClass.isAnnotationPresent(NonAdmin.class) || userService.isUserAdmin()) {
             Command command = injector.getInstance(commandClass);
             command.setParams(jsonRpcRequest.getParams());

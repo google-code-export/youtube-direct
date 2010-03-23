@@ -18,7 +18,7 @@ import com.google.ytd.util.Util;
 public class UpdateAdminConfig extends Command {
   private static final Logger LOG = Logger.getLogger(UpdateAdminConfig.class.getName());
   private static final String CLIENT_ID_PREFIX = "ytd20-";
-  
+
   private AdminConfigDao adminConfigDao = null;
   private HttpServletRequest servletRequest = null;
 
@@ -112,12 +112,12 @@ public class UpdateAdminConfig extends Command {
     if (rejectionEmailText != null) {
       adminConfig.setRejectionEmailText(rejectionEmailText);
     }
-    
+
     if (privateKeyBytes != null) {
       privateKeyBytes = privateKeyBytes.replace("-----BEGIN PRIVATE KEY-----", "");
       privateKeyBytes = privateKeyBytes.replace("-----END PRIVATE KEY-----", "");
       privateKeyBytes = privateKeyBytes.replace("\n", "");
-      
+
       try {
         adminConfig.setPrivateKeyBytes(Base64.decode(privateKeyBytes));
       } catch (Base64DecoderException e) {
@@ -125,19 +125,19 @@ public class UpdateAdminConfig extends Command {
         adminConfig.setPrivateKeyBytes(new byte[0]);
       }
     }
-    
+
     if (maxPhotoSizeMb != null) {
       adminConfig.setMaxPhotoSizeMb(Integer.parseInt(maxPhotoSizeMb));
     }
-    
+
     if (photoSubmissionEnabled != null) {
       adminConfig.setPhotoSubmissionEnabled(photoSubmissionEnabled.equals("true"));
     }
-    
+
     if (recaptchaPrivateKey != null) {
       adminConfig.setRecaptchaPrivateKey(recaptchaPrivateKey);
     }
-    
+
     if (recaptchaPublicKey != null) {
       adminConfig.setRecaptchaPublicKey(recaptchaPublicKey);
     }

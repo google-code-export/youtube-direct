@@ -32,20 +32,19 @@ public class GetYouTubeCategories extends Command {
   private static final Logger LOG = Logger.getLogger(GetYouTubeCategories.class.getName());
 
   private static final String CATEGORIES_CACHE_KEY = "categories";
-  private static final String CATEGORIES_URL =
-    "http://gdata.youtube.com/schemas/2007/categories.cat";
+  private static final String CATEGORIES_URL = "http://gdata.youtube.com/schemas/2007/categories.cat";
   private static final int CACHE_EXPIRATION_SECONDS = 60 * 60 * 24; // One day.
 
   @Override
   public JSONObject execute() throws JSONException {
     JSONObject json = new JSONObject();
-    
+
     List<String> categories = getCategoryCodes();
     json.put("categories", categories);
-    
+
     return json;
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<String> getCategoryCodes() {
     List<String> categories;

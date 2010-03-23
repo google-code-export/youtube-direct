@@ -99,14 +99,14 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
     }
 
     switch (newStatus) {
-    case APPROVED:
-      onApproved(submission);
-      break;
-    case REJECTED:
-    case UNREVIEWED:
-    case SPAM:
-      onNotApproved(submission);
-      break;
+      case APPROVED:
+        onApproved(submission);
+        break;
+      case REJECTED:
+      case UNREVIEWED:
+      case SPAM:
+        onNotApproved(submission);
+        break;
     }
   }
 

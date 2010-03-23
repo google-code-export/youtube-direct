@@ -38,7 +38,7 @@ public class NewAssignment extends Command {
     if (util.isNullOrEmpty(description)) {
       throw new IllegalArgumentException("Missing required param: description");
     }
-    
+
     if (util.isNullOrEmpty(status)) {
       throw new IllegalArgumentException("Missing required param: status");
     }
@@ -46,7 +46,7 @@ public class NewAssignment extends Command {
     if (util.isNullOrEmpty(category)) {
       throw new IllegalArgumentException("Missing required param: category");
     }
-    
+
     if (util.isNullOrEmpty(title)) {
       throw new IllegalArgumentException("Missing required param: title");
     }

@@ -22,6 +22,8 @@
     <property name="com.google.ytd.BrandingTag" value=""/>
     <property name="com.google.ytd.LinkBackText" value=""/>
     <property name="appengine.orm.disable.duplicate.pmf.exception" value="false"/>
+    <property name="com.google.ytd.RecaptchaPrivateKey" value=""/>
+    <property name="com.google.ytd.RecaptchaPublicKey" value=""/>    
     
 	</system-properties>
 	

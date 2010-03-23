@@ -18,29 +18,28 @@ import java.util.Map;
 @NonAdmin
 public class GetYouTubeVideos extends Command {
   private YouTubeApiHelper apiManager = null;
-  
+
   @Inject
   private Util util;
-  
+
   @Inject
   public GetYouTubeVideos(YouTubeApiHelper apiManager) {
     this.apiManager = apiManager;
   }
-  
+
   @Override
   public JSONObject execute() throws JSONException {
     JSONObject json = new JSONObject();
-    
+
     String username = getParam("username");
     if (util.isNullOrEmpty(username)) {
       throw new IllegalArgumentException("Required parameter 'username' is null or empty.");
     }
-    
+
     VideoFeed uploadsFeed = apiManager.getUploadsFeed(username);
     if (uploadsFeed != null) {
       if (uploadsFeed.getEntries().size() > 0) {
-        HashMap<String, Map<String, String>> videoIdToMetadata =
-          new HashMap<String, Map<String, String>>();
+        HashMap<String, Map<String, String>> videoIdToMetadata = new HashMap<String, Map<String, String>>();
         for (VideoEntry videoEntry : uploadsFeed.getEntries()) {
           if (!videoEntry.isDraft()) {
             HashMap<String, String> metadata = new HashMap<String, String>();
@@ -54,8 +53,7 @@ public class GetYouTubeVideos extends Command {
 
             List<MediaThumbnail> thumbnails = mediaGroup.getThumbnails();
             if (thumbnails.size() > 0) {
-              metadata.put("thumbnailUrl",
-                  mediaGroup.getThumbnails().get(0).getUrl());
+              metadata.put("thumbnailUrl", mediaGroup.getThumbnails().get(0).getUrl());
             }
 
             videoIdToMetadata.put(videoEntry.getMediaGroup().getVideoId(), metadata);
@@ -69,7 +67,7 @@ public class GetYouTubeVideos extends Command {
     } else {
       json.put("error", "Unable to retrieve YouTube videos.");
     }
-    
+
     return json;
   }
 }

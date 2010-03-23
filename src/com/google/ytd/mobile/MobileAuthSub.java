@@ -46,7 +46,7 @@ public class MobileAuthSub extends HttpServlet {
   private static final Logger log = Logger.getLogger(PersistAuthSubToken.class.getName());
   private static final String REDIRECT_FORMAT = "%s://authsub/%s/%s";
   private static final String SCOPE = "http://gdata.youtube.com";
-  
+
   @Inject
   private Util util;
   @Inject
