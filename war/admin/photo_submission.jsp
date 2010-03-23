@@ -38,8 +38,8 @@ limitations under the License.
 	  		<td align="left">	  	
           <select id="photoStatus">
             <option value="none" selected>[choose an action]</option>
-            <option value="APPROVED">Marked as Approved</option>
-            <option value="REJECTED">Marked as Rejected</option>
+            <option value="APPROVED">Mark as Approved</option>
+            <option value="REJECTED">Mark as Rejected</option>
           </select>
           <br>
           <br>
