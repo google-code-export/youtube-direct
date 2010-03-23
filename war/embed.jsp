@@ -86,45 +86,37 @@
 <div id="processing"></div>
 
 <div align="center">
-	<div id="loginInstruction" style="display: none;">			
-		<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
-  </div>		
+	<div id="loginInstruction">			
+	<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
 	<br>
 		<%
-			if (!authenticator.isLoggedIn()) {		
-		%> 		
-				
-		<input onclick="javascript:top.location='<%=authenticator.getLogInUrl()%>';" 
-					class="askButton" type="button" value="Login" />
+			if (authenticator.isLoggedIn()) {		
+		%>
+  <input id="uploadVideoButton" class="askButton" type="button" value="Upload a New Video" />
+      <%    
+        if (!adminConfigDao.isUploadOnly()) {   
+      %>  
+  <br><br>
+  <input id="existingVideoButton" class="askButton" type="button" value="Submit an Existing Video" /> 
+      <%
+        }
+      %>
+		<%
+		  } else {
+		%>
+  <input onclick="javascript:top.location='<%=authenticator.getLogInUrl()%>';" class="askButton" type="button" value="Login to YouTube" />
 		<%
 			}	
-		%> 	
-</div>
-
-<div id="submissionAsk" style="display: none;">
-	<div align="center">
-	<br><br><br><br><br><br><br>
-	<input id="uploadVideoButton" class="askButton" type="button" value="Upload a new video" />
-
-	<%		
-		if (!adminConfigDao.isUploadOnly()) {		
-	%> 	
-	<br><br>
-	<input id="existingVideoButton" class="askButton" type="button" value="Submit an existing video" />	
-	<%
-		}
-	%>
-	
-	<%    
-    if (adminConfigDao.allowPhotoSubmission()) {   
-  %>
+		%>
+	  <%
+	    if (adminConfigDao.allowPhotoSubmission()) {
+	  %>
   <br><br>
-  <input id="photoButton" class="askButton" type="button" value="Submit photo(s)" /> 
-  <%
-    }
-  %>
-	
-	</div>
+  <input id="photoButton" class="askButton" type="button" value="Submit Photo(s)" /> 
+    <%
+      }
+    %>
+  </div>
 </div>
 
 <div align="center">

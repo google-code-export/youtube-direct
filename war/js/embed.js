@@ -19,39 +19,25 @@ jQuery(document).ready( function() {
 
 function init() {
 	window.URL_PARAMS = getUrlParams();
-	
-  // Hide post submission message.
-  jQuery('#postSubmitMessage').css('display', 'none');
-  
-  if (window.isLoggedIn) {
-    highlightRequired();        
-    
-    // hide YouTube instruction
-    jQuery('#loginInstruction').css('display', 'none');
-    
-    // show submissionAsk
-    jQuery('#submissionAsk').css('display', 'block');
-    
-    jQuery('#uploadVideoButton').click( function(event) {
-      jQuery('#submissionAsk').css('display', 'none');      
-      uploaderMainInit();
-    });
 
-    jQuery('#existingVideoButton').click( function(event) {
-      jQuery('#submissionAsk').css('display', 'none'); 
-      existingVideoMainInit();
-    });
-    
-    jQuery('#photoButton').click(function(event) {
-    	jQuery('#submissionAsk').css('display', 'none');
-    	photoMainInit();
-    });
-    
-    addFileElement();
-  } else {
-    // show YouTube instruction
-    jQuery('#loginInstruction').css('display', 'block');
-  }
+	highlightRequired();        
+
+	jQuery('#uploadVideoButton').click( function(event) {
+		jQuery('#loginInstruction').css('display', 'none');      
+		uploaderMainInit();
+	});
+
+	jQuery('#existingVideoButton').click( function(event) {
+		jQuery('#loginInstruction').css('display', 'none'); 
+		existingVideoMainInit();
+	});
+
+	jQuery('#photoButton').click(function(event) {
+		jQuery('#loginInstruction').css('display', 'none');
+		photoMainInit();
+	});
+
+	addFileElement();
 }
 
 function highlightRequired() {
@@ -166,8 +152,8 @@ function photoMainInit() {
 
   photoMain.find('#cancelUploadButton').click(function(event) {
     clearMessage();
-    jQuery('#submissionAsk').css('display', 'block');
-    jQuery('#photoMain').css('display', 'none');
+    photoMain.css('display', 'none');
+    jQuery('#loginInstruction').css('display', 'block');
   });      
   
   photoMain.find("#submitDate").datepicker();
@@ -275,9 +261,8 @@ function existingVideoMainInit() {
 
   jQuery('#cancelSubmitButton').click( function(event) {
     clearMessage();
-    jQuery('#submissionAsk').css('display', 'block');
     jQuery('#existingVideoMain').css('display', 'none');
-    jQuery('#uploaderMain').css('display', 'none');
+    jQuery('#loginInstruction').css('display', 'block');
   });      
   
   jQuery('#submitEmailAsk').change( function() {
@@ -347,9 +332,8 @@ function uploaderMainInit() {
 
   jQuery('#cancelUploadButton').click( function(event) {
     clearMessage();
-    jQuery('#submissionAsk').css('display', 'block');
-    jQuery('#existingVideoMain').css('display', 'none');
     jQuery('#uploaderMain').css('display', 'none');
+    jQuery('#loginInstruction').css('display', 'block');
   });      
   
   jQuery('#uploadEmailAsk').change( function() {
