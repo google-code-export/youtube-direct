@@ -31,7 +31,7 @@ public class DeletePhotoSubmission extends Command {
     if (util.isNullOrEmpty(id)) {
       throw new IllegalArgumentException("Missing required param: id");
     }
-    
+
     photoSubmissionDao.deleteSubmission(id);
     return json;
   }

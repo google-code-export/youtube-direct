@@ -36,10 +36,10 @@ public class UpdatePhotoEntriesStatus extends Command {
     if (util.isNullOrEmpty(status)) {
       throw new IllegalArgumentException("Missing required param: status");
     }
-    
+
     for (String id : ids.split(",")) {
       PhotoEntry entry = photoSubmissionDao.getPhotoEntry(id);
-      entry.setStatus(ModerationStatus.valueOf(status.toUpperCase()));  
+      entry.setStatus(ModerationStatus.valueOf(status.toUpperCase()));
       photoSubmissionDao.save(entry);
     }
     return json;
