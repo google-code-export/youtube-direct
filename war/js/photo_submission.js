@@ -89,6 +89,16 @@ admin.photo.filterByText = function() {
   admin.photo.refreshGridUI(matches); 
 }
 
+
+admin.photo.deleteEntry = function(entryId) {
+  if (confirm("This will delete the entire photo submission along with all its photos.  Are you sure?")) {    
+    admin.photo.deleteSubmission(entryId, function() {
+      var messageElement = admin.showMessage("Deleting photo submission...");
+      admin.photo.refreshGrid();
+    });    
+  }  
+};
+
 admin.photo.initSubmissionGrid = function() {
   var grid = {};
   grid.datatype = 'local';
@@ -108,7 +118,11 @@ admin.photo.initSubmissionGrid = function() {
     
     var detailsButton = '<input type="button" onclick=admin.photo.showDetails("' + 
         entryId + '") value="details" />';
-    jQuery('#photoGrid').setCell(rowid, 'details', detailsButton);     
+    jQuery('#photoGrid').setCell(rowid, 'details', detailsButton);
+    
+    var deleteButton = '<input type="button" onclick=admin.photo.deleteEntry("' + 
+        entryId + '") value="delete" />';
+    jQuery('#photoGrid').setCell(rowid, 'delete', deleteButton);    
   };
 
   grid.afterSaveCell = function(rowid, cellname, value, iRow, iCol) {
@@ -232,6 +246,15 @@ admin.photo.initGridModels = function(grid) {
     hidden: false
   });    
   
+  grid.colNames.push('Delete');
+  grid.colModel.push( {
+    name : 'delete',
+    index : 'delete',
+    width : 75,
+    align : 'center',
+    sortable : false,
+    hidden: false
+  });    
 };
 
 admin.photo.formatDate = function(date) {
@@ -565,6 +588,31 @@ admin.photo.deletePhotos = function(ids, callback) {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo entries deleted.", messageElement);
+        var entries = json.result;
+        callback(entries);          
+      } else {
+        admin.showError(json.error, messageElement);          
+      }
+    } catch(exception) {
+        admin.showError('Request failed: ' + exception, messageElement);
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
+};
+
+admin.photo.deleteSubmission = function(id, callback) {
+  var messageElement = admin.showMessage("Deleting photo submission...");
+  
+  var command = 'DELETE_PHOTO_SUBMISSION';
+  var params = {};
+  params.id = id
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        admin.showMessage("Photo submission deleted.", messageElement);
         var entries = json.result;
         callback(entries);          
       } else {
