@@ -51,7 +51,7 @@ limitations under the License.
           <br>          
 	  			<div id="photos"></div>
 					<br><br>	
-					Approved Photos: <span id="feedsDiv"></span>
+					<b>Approved Photos: </b><span id="feedsDiv"></span>
           <br>
           <br>				  						   			
 					<div><b>Admin notes:</b></div>
