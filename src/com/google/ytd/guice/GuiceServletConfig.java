@@ -12,11 +12,11 @@ import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
 import com.google.ytd.embed.SubmitExistingVideo;
 import com.google.ytd.embed.UploadResponseHandler;
-import com.google.ytd.image.ServeImage;
-import com.google.ytd.image.ServeThumbnail;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
+import com.google.ytd.photo.ServeImage;
+import com.google.ytd.photo.ServeThumbnail;
 import com.google.ytd.youtube.PersistAuthSubToken;
 
 public class GuiceServletConfig extends GuiceServletContextListener {

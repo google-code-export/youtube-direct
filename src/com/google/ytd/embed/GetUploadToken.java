@@ -77,6 +77,7 @@ public class GetUploadToken extends HttpServlet {
       String title = jsonObj.getString("title");
       String description = jsonObj.getString("description");
       String location = jsonObj.getString("location");
+      String phoneNumber = jsonObj.getString("phoneNumber");
       String date = jsonObj.getString("date");
       String email = jsonObj.getString("email");
       JSONArray tagsArray = jsonObj.getJSONArray("tags");
@@ -161,6 +162,7 @@ public class GetUploadToken extends HttpServlet {
       userSession.addMetaData("videoTitle", title);
       userSession.addMetaData("videoDescription", description);
       userSession.addMetaData("videoLocation", location);
+      userSession.addMetaData("phoneNumber", phoneNumber);
       userSession.addMetaData("videoDate", date);
       userSession.addMetaData("videoTags", sortedTags);
       userSession.addMetaData("email", email);

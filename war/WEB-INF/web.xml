@@ -5,8 +5,8 @@
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
-	<!-- BEGIN Guice config -->
-	<filter>
+  <!-- BEGIN Guice config -->
+  <filter>
     <filter-name>guiceFilter</filter-name>
     <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
   </filter>
@@ -19,7 +19,7 @@
   <listener>
     <listener-class>com.google.ytd.guice.GuiceServletConfig</listener-class>
   </listener>
-	<!-- END Guice config -->  
+  <!-- END Guice config -->  
 
   <servlet>
     <servlet-name>DefaultExceptionHandler</servlet-name>
@@ -39,11 +39,11 @@
     <url-pattern>/SubmitPhoto</url-pattern>
   </servlet-mapping>
 
-	<error-page>
-		<error-code>400</error-code>
-		<error-code>403</error-code>
-		<error-code>404</error-code>
-		<error-code>500</error-code>
+  <error-page>
+    <error-code>400</error-code>
+    <error-code>403</error-code>
+    <error-code>404</error-code>
+    <error-code>500</error-code>
     <exception-type>java.lang.RuntimeException</exception-type>
     <location>/exception</location>
   </error-page>
@@ -57,7 +57,7 @@
     <servlet-name>admin</servlet-name>
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
-  <!-- END admin JSPs -->	
+  <!-- END admin JSPs --> 
 
   <security-constraint>
     <web-resource-collection>

@@ -747,6 +747,9 @@ admin.sub.showDetails = function(submission) {
   mainDiv.find('#videoLocation').html(
       submission.videoLocation?submission.videoLocation:'N/A');
   
+  mainDiv.find('#phoneNumber').html(
+      submission.phoneNumber?submission.phoneNumber:'N/A');  
+  
   mainDiv.find('#video').html(videoHtml);
   
   var moderationStatus = -1;

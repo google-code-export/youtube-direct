@@ -77,6 +77,7 @@ public class SubmitExistingVideo extends HttpServlet {
 
       String videoId = jsonObj.getString("videoId");
       String location = jsonObj.getString("location");
+      String phoneNumber = jsonObj.getString("phoneNumber");
       String date = jsonObj.getString("date");
       String email = jsonObj.getString("email");
 
@@ -125,6 +126,7 @@ public class SubmitExistingVideo extends HttpServlet {
         submission.setVideoDescription(description);
         submission.setVideoTags(sortedTags);
         submission.setVideoLocation(location);
+        submission.setPhoneNumber(phoneNumber);
         submission.setVideoDate(date);
         submission.setYouTubeName(youTubeName);
 

@@ -96,6 +96,8 @@ public class SubmitPhoto extends HttpServlet {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
 
+      String phoneNumber = req.getParameter("phoneNumber");
+      
       String location = req.getParameter("location");
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -131,7 +133,7 @@ public class SubmitPhoto extends HttpServlet {
       if (validSubmissionKeys.size() > 0) {
         // PhotoSubmission represents the meta data of a set of photo entries     
         PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-            articleUrl, email, title, description, location, validSubmissionKeys.size());
+            articleUrl, email, phoneNumber, title, description, location, validSubmissionKeys.size());
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
 
