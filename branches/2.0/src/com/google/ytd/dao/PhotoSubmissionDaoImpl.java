@@ -135,12 +135,12 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
       photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);      
       this.save(photoSubmission);
       
-      // Delete the persistent entry record of this image
-      pm.deletePersistent(entry);
-      
       // Delete the image binary from blob store
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       blobstoreService.delete(entry.getBlobKey());      
+      
+      // Delete the persistent entry record of this image
+      pm.deletePersistent(entry);
     } finally {
       pm.close();
     }        
