@@ -6,6 +6,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Inject;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
@@ -106,10 +108,18 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     PhotoEntry entry = null;
     try {                  
       entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);      
-      PhotoSubmission photoSubmission = this.getSubmissionById(entry.getSubmissionId());      
+      
+      // Update the photo count of the corresponding submission
+      PhotoSubmission photoSubmission = this.getSubmissionById(entry.getSubmissionId());
       photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);      
-      this.save(photoSubmission);      
-      pm.deletePersistent(entry);      
+      this.save(photoSubmission);
+      
+      // Delete the persistent entry record of this image
+      pm.deletePersistent(entry);
+      
+      // Delete the image binary from blob store
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      blobstoreService.delete(entry.getBlobKey());      
     } finally {
       pm.close();
     }        
