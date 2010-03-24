@@ -27,6 +27,8 @@ public enum CommandType {
       UpdatePhotoEntriesStatus.class),
   DELETE_PHOTO_ENTRIES(
       DeletePhotoEntries.class),
+  DELETE_PHOTO_SUBMISSION(
+      DeletePhotoSubmission.class),
   VALIDATE_CAPTCHA(
       ValidateCaptcha.class),
   GET_VIDEO_DETAILS(
