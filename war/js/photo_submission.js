@@ -476,9 +476,14 @@ admin.photo.showDetails = function(entryId) {
   
   var approvedFeedLinkHtml = [];
   approvedFeedLinkHtml.push('[ <a target="_blank" href="');
-  approvedFeedLinkHtml.push('/approved_photos?id=' + entryId + '">');
+  approvedFeedLinkHtml.push('/approved_photos/atom?id=' + entryId + '">');
   approvedFeedLinkHtml.push('atom');
   approvedFeedLinkHtml.push('</a> ]');
+  approvedFeedLinkHtml.push('&nbsp;');
+  approvedFeedLinkHtml.push('[ <a target="_blank" href="');
+  approvedFeedLinkHtml.push('/approved_photos/json?id=' + entryId + '">');
+  approvedFeedLinkHtml.push('json');
+  approvedFeedLinkHtml.push('</a> ]');  
   
   mainDiv.find('#feedsDiv').html(approvedFeedLinkHtml.join(''));
   

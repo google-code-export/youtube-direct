@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
 
+    <datastore-index kind="PhotoEntry" ancestor="false" source="auto">
+        <property name="submissionId_" direction="asc"/>
+        <property name="status" direction="asc"/>
+    </datastore-index>
+
     <datastore-index kind="VideoSubmission" ancestor="false" source="auto">
         <property name="assignmentId" direction="asc"/>
         <property name="status" direction="asc"/>

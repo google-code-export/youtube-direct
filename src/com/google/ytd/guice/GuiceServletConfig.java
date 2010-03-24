@@ -16,6 +16,7 @@ import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
 import com.google.ytd.photo.ApprovedPhotosAtomGenerator;
+import com.google.ytd.photo.ApprovedPhotosJsonGenerator;
 import com.google.ytd.photo.ServeImage;
 import com.google.ytd.photo.ServeThumbnail;
 import com.google.ytd.youtube.PersistAuthSubToken;
@@ -34,7 +35,8 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         // Image related servlet endpoints
         serve("/image").with(ServeImage.class);
         serve("/thumb").with(ServeThumbnail.class);
-        serve("/approved_photos").with(ApprovedPhotosAtomGenerator.class);
+        serve("/approved_photos/atom").with(ApprovedPhotosAtomGenerator.class);
+        serve("/approved_photos/json").with(ApprovedPhotosJsonGenerator.class);
 
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
