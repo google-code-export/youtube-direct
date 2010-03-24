@@ -21,4 +21,6 @@ public interface PhotoSubmissionDao {
   public void deletePhotoEntries(String[] ids);
 
   public void deletePhotoEntry(String id);
+
+  public void deleteSubmission(String id);
 }
