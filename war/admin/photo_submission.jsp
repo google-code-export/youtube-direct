@@ -35,11 +35,12 @@ limitations under the License.
 				  <b>Article URL:</b><div id="articleUrl"></div><br>
 				  <b>Photo location:</b><div id="location"></div><br>			  				    			
 	  		</td>
-	  		<td align="left">	  	
-          <select id="photoStatus">
-            <option value="none" selected>[choose an action]</option>
-            <option value="APPROVED">Mark as Approved</option>
-            <option value="REJECTED">Mark as Rejected</option>
+	  		<td align="left">
+	  		  <select id="photoAction">
+            <option value="none" selected> apply ... </option>
+            <option value="approve">Approve selected</option>
+            <option value="reject">Reject selected</option>
+            <option value="delete">Delete selected</option>            
           </select>
           <br>
           <br>

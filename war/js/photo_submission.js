@@ -342,7 +342,10 @@ admin.photo.resizeImage = function(image, max) {
   return image;
 };
 
-admin.photo.getImageThumb = function(entry) {
+admin.photo.getImageThumb = function(entry) {    
+  var div = jQuery('<div id="' + entry.id + '"/>');  
+  var table = jQuery('<table><tr><td id="actions"></td><td id="thumb"></td></tr></table>');  
+  
   var thumb = jQuery('<img/>');
   thumb.attr('src', entry.thumbnailUrl);
   
@@ -371,8 +374,24 @@ admin.photo.getImageThumb = function(entry) {
       
       popUp.dialog(options);
     };
-  });
-  return thumb;  
+  });  
+  
+  var selection = jQuery('<input type="checkbox" name="selection" value="' + entry.id + '">');
+  
+  switch(entry.status.toUpperCase()) {
+    case 'APPROVED':
+      thumb.css('border', 'solid green 2px;');
+      break;
+    case 'REJECTED':
+      thumb.css('border', 'solid red 2px;');
+      break;      
+  }
+  
+  table.find('#thumb').append(thumb);
+  var actions = table.find('#actions');
+  actions.append(selection);
+  div.append(table);  
+  return div;  
 };
 
 admin.photo.showDetails = function(entryId) {
@@ -409,14 +428,59 @@ admin.photo.showDetails = function(entryId) {
   
   // Grab photo entries
   admin.photo.getAllPhotos(submission.id, function(entries) {
-    var photoHtml = [];
-    
+    var photoHtml = [];    
     var photosDiv = mainDiv.find('#photos');  
     
-    for (var i=0; i<entries.length; i++) {
-      photosDiv.append(admin.photo.getImageThumb(entries[i]));
-      photosDiv.append('<br/>');
+    for (var i=0; i<entries.length; i++) {      
+      var imageThumb = admin.photo.getImageThumb(entries[i]);      
+      photosDiv.append(imageThumb);
     }
+  });
+  
+  mainDiv.find('#photoAction').change(function() {    
+    var selection = mainDiv.find('#photoAction').get(0)[mainDiv.find('#photoAction').get(0).selectedIndex].value;
+
+    switch(selection) {
+      case 'approve':
+        var photos = mainDiv.find('#photos').find('input:checked');        
+        var ids = [];        
+        for (var i=0; i<photos.length; i++) {
+          ids.push(jQuery(photos[i]).val());
+        }
+        
+        if (ids.length > 0) {
+          admin.photo.updateStatus(ids, 'APPROVED', function() {                       
+          }); 
+        }            
+        break; 
+      case 'reject':
+        var photos = mainDiv.find('#photos').find('input:checked');        
+        var ids = [];        
+        for (var i=0; i<photos.length; i++) {
+          ids.push(jQuery(photos[i]).val());
+        }
+        if (ids.length > 0) {
+          admin.photo.updateStatus(ids, 'REJECTED', function() {
+          });
+        }                      
+        break;
+      case 'delete':
+        var photos = mainDiv.find('#photos').find('input:checked');        
+        var ids = [];        
+        for (var i=0; i<photos.length; i++) {
+          ids.push(jQuery(photos[i]).val());
+        }
+        
+        if (ids.length > 0) {
+          admin.photo.deletePhotos(ids, function() {
+            for (var i=0; i<photos.length; i++) {
+              jQuery(photos[i]).parent().parent().remove();
+            }
+            admin.photo.refreshGrid();
+          });             
+        }            
+        break;        
+    }      
   });
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);
@@ -445,6 +509,57 @@ admin.photo.showDetails = function(entryId) {
   });  
   
   mainDiv.dialog(dialogOptions);
+};
+
+admin.photo.updateStatus = function(ids, status, callback) {
+  var messageElement = admin.showMessage("Updating photo entries...");
+  
+  var command = 'UPDATE_PHOTO_ENTRIES_STATUS';
+  var params = {};
+  params.ids = ids.join(',');
+  params.status = status;
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        admin.showMessage("Photo entries updated.", messageElement);
+        var entries = json.result;
+        callback(entries);          
+      } else {
+        admin.showError(json.error, messageElement);          
+      }
+    } catch(exception) {
+        admin.showError('Request failed: ' + exception, messageElement);
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
+};
+
+admin.photo.deletePhotos = function(ids, callback) {
+  var messageElement = admin.showMessage("Deleting photo entries...");
+  
+  var command = 'DELETE_PHOTO_ENTRIES';
+  var params = {};
+  params.ids = ids.join(',');
+  
+  var jsonRpcCallback = function(jsonStr) {
+    try {
+      var json = JSON.parse(jsonStr);
+      if (!json.error) {
+        admin.showMessage("Photo entries deleted.", messageElement);
+        var entries = json.result;
+        callback(entries);          
+      } else {
+        admin.showError(json.error, messageElement);          
+      }
+    } catch(exception) {
+        admin.showError('Request failed: ' + exception, messageElement);
+    }
+  } 
+  
+  jsonrpc.makeRequest(command, params, jsonRpcCallback);  
 };
 
 admin.photo.getAllPhotos = function(submissionId, callback) {

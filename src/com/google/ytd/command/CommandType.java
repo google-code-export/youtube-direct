@@ -23,6 +23,10 @@ public enum CommandType {
       GetAllPhotoEntries.class),
   UPDATE_PHOTO_SUBMISSION_ADMIN_NOTES(
       UpdatePhotoSubmissionAdminNotes.class),
+  UPDATE_PHOTO_ENTRIES_STATUS(
+      UpdatePhotoEntriesStatus.class),
+  DELETE_PHOTO_ENTRIES(
+      DeletePhotoEntries.class),
   VALIDATE_CAPTCHA(
       ValidateCaptcha.class),
   GET_VIDEO_DETAILS(

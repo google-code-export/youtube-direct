@@ -92,6 +92,28 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     return submission;
   }
+  
+  @Override
+  public void deletePhotoEntries(String[] ids) {    
+    for (String id : ids) {
+      deletePhotoEntry(id);
+    }
+  }
+  
+  @Override
+  public void deletePhotoEntry(String id) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    PhotoEntry entry = null;
+    try {                  
+      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);      
+      PhotoSubmission photoSubmission = this.getSubmissionById(entry.getSubmissionId());      
+      photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);      
+      this.save(photoSubmission);      
+      pm.deletePersistent(entry);      
+    } finally {
+      pm.close();
+    }        
+  }
 
   @Override
   public PhotoEntry getPhotoEntry(String id) {
