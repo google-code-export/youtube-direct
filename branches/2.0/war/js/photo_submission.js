@@ -407,10 +407,10 @@ admin.photo.getImageThumb = function(entry) {
   
   switch(entry.status.toUpperCase()) {
     case 'APPROVED':
-      thumbDiv.css('border', 'solid green 5px');
+      thumbDiv.fadeTo('fast', 1);
       break;
     case 'REJECTED':
-      thumbDiv.css('border', 'solid red 5px');
+      thumbDiv.fadeTo('slow', 0.3);
       break;      
   }
   
@@ -480,7 +480,7 @@ admin.photo.showDetails = function(entryId) {
             for (var i=0; i<ids.length; i++) {
               var id = ids[i];
               var approvedImage = jQuery(mainDiv.find('#photos').find('#' + id));
-              approvedImage.css('border', 'solid green 5px');
+              approvedImage.fadeTo('fast', 1);
             }            
           }); 
         }            
@@ -496,7 +496,7 @@ admin.photo.showDetails = function(entryId) {
             for (var i=0; i<ids.length; i++) {
               var id = ids[i];
               var rejectedImage = jQuery(mainDiv.find('#photos').find('#' + id));
-              rejectedImage.css('border', 'solid red 5px');
+              rejectedImage.fadeTo('slow', 0.3);
             }               
           });
         }                      
