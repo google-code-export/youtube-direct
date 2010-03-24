@@ -94,7 +94,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     return submission;
   }
-  
+
   @Override
   public void deleteSubmission(String id) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -102,48 +102,48 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     try {
       submission = (PhotoSubmission) pm.getObjectById(PhotoSubmission.class, id);
-      
+
       // Delete all associated photo entries of this submission
-      List<PhotoEntry> photos = this.getAllPhotos(id);      
+      List<PhotoEntry> photos = this.getAllPhotos(id);
       for (PhotoEntry photo : photos) {
         this.deletePhotoEntry(photo.getId());
       }
-      
+
       // Delete the persistent entry for this photo submission
-      pm.deletePersistent(submission);      
+      pm.deletePersistent(submission);
     } finally {
       pm.close();
     }
-  }  
-  
+  }
+
   @Override
-  public void deletePhotoEntries(String[] ids) {    
+  public void deletePhotoEntries(String[] ids) {
     for (String id : ids) {
       deletePhotoEntry(id);
     }
   }
-  
+
   @Override
   public void deletePhotoEntry(String id) {
     PersistenceManager pm = pmf.getPersistenceManager();
     PhotoEntry entry = null;
-    try {                  
-      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);      
-      
+    try {
+      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);
+
       // Update the photo count of the corresponding submission
       PhotoSubmission photoSubmission = this.getSubmissionById(entry.getSubmissionId());
-      photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);      
+      photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);
       this.save(photoSubmission);
-      
+
       // Delete the image binary from blob store
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      blobstoreService.delete(entry.getBlobKey());      
-      
+      blobstoreService.delete(entry.getBlobKey());
+
       // Delete the persistent entry record of this image
       pm.deletePersistent(entry);
     } finally {
       pm.close();
-    }        
+    }
   }
 
   @Override

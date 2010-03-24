@@ -13,7 +13,7 @@ import com.google.ytd.util.Util;
 
 public class NewAssignment extends Command {
   private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
-  
+
   private AssignmentDao assignmentDao = null;
 
   @Inject

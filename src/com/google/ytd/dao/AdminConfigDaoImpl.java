@@ -65,15 +65,15 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     }
     return uploadOnly;
   }
-  
+
   public boolean allowPhotoSubmission() {
     return getAdminConfig().getPhotoSubmissionEnabled();
   }
-  
+
   public long getMaxPhotoSize() {
     return getAdminConfig().getMaxPhotoSizeMb() * 1024 * 1024;
   }
-  
+
   public PrivateKey getPrivateKey() {
     byte[] privateKeyBytes = getAdminConfig().getPrivateKeyBytes();
     if (privateKeyBytes != null && privateKeyBytes.length > 0) {
@@ -81,9 +81,9 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-        
+
         return privateKey;
-      } catch(InvalidKeySpecException e) {
+      } catch (InvalidKeySpecException e) {
         LOG.log(Level.WARNING, "", e);
       } catch (NoSuchAlgorithmException e) {
         LOG.log(Level.WARNING, "", e);
@@ -104,32 +104,32 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     }
     return adminConfig;
   }
-  
+
   public String getLoginInstruction(String assignmentId) {
     String globalInstruction = getAdminConfig().getLoginInstruction();
-    
+
     AssignmentDao assignmentDao = new AssignmentDaoImpl(pmf);
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
-    
+
     String assignmentLoginInstruction = "";
     if (assignment != null && assignment.getLoginInstruction() != null) {
       assignmentLoginInstruction = assignment.getLoginInstruction();
     }
-    
+
     return globalInstruction.replace("ASSIGNMENT_MESSAGE", assignmentLoginInstruction);
   }
-  
+
   public String getPostSubmitMessage(String assignmentId) {
     String globalPostSubmitMessage = getAdminConfig().getPostSubmitMessage();
-    
+
     AssignmentDao assignmentDao = new AssignmentDaoImpl(pmf);
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
-    
+
     String assignmentPostSubmitMessage = "";
     if (assignment != null && assignment.getPostSubmitMessage() != null) {
       assignmentPostSubmitMessage = assignment.getPostSubmitMessage();
     }
-    
+
     return globalPostSubmitMessage.replace("ASSIGNMENT_MESSAGE", assignmentPostSubmitMessage);
   }
 }

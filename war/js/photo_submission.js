@@ -503,7 +503,7 @@ admin.photo.showDetails = function(entryId) {
           ids.push(jQuery(checkboxes[i]).val());
         }
         
-        admin.photo.updateStatus(ids, 'APPROVED', function() {            
+        admin.photo.updateStatus(ids, 'REJECTED', function() {            
           for (var i = 0; i < ids.length; i++) {
             var id = ids[i];
             var image = jQuery(mainDiv.find('#photos').find('#' + id));
@@ -534,6 +534,7 @@ admin.photo.showDetails = function(entryId) {
       checkboxes[i].checked = false;
     }
     mainDiv.find('#photoAction').get(0).selectedIndex = 0;
+    mainDiv.find('#selectAll').get(0).checked = false;
   });
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);

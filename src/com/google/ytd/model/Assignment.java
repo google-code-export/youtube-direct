@@ -78,11 +78,11 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private AssignmentStatus status;
-  
+
   @Persistent
   @Expose
   private String loginInstruction;
-  
+
   @Persistent
   @Expose
   private String postSubmitMessage;
