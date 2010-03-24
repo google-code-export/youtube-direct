@@ -17,4 +17,8 @@ public interface PhotoSubmissionDao {
   public PhotoSubmission getSubmissionById(String id);
 
   public PhotoEntry getPhotoEntry(String id);
+
+  public void deletePhotoEntries(String[] ids);
+
+  public void deletePhotoEntry(String id);
 }
