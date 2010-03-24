@@ -28,8 +28,8 @@ import org.json.JSONObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.dao.UserAuthTokenDao;
+import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
@@ -75,6 +75,7 @@ public class UploadResponseHandler extends HttpServlet {
       String videoDescription = userSession.getMetaData("videoDescription");
       String youTubeName = userSession.getMetaData("youTubeName");
       String email = userSession.getMetaData("email");
+      String phoneNumber = userSession.getMetaData("phoneNumber");
       String videoTags = userSession.getMetaData("videoTags");
       String videoLocation = userSession.getMetaData("videoLocation");
       String videoDate = userSession.getMetaData("videoDate");
@@ -97,6 +98,7 @@ public class UploadResponseHandler extends HttpServlet {
       submission.setYouTubeName(youTubeName);
       submission.setVideoSource(VideoSubmission.VideoSource.NEW_UPLOAD);
       submission.setNotifyEmail(email);
+      submission.setPhoneNumber(phoneNumber);
 
       userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
 

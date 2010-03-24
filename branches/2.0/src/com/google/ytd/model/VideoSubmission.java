@@ -86,6 +86,10 @@ public class VideoSubmission implements Serializable {
 
   @Expose
   @Persistent
+  private String phoneNumber = null;  
+  
+  @Expose
+  @Persistent
   private String adminNotes = null;
 
   @Expose
@@ -329,6 +333,14 @@ public class VideoSubmission implements Serializable {
     return notifyEmail;
   }
 
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }  
+  
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }  
+  
   public String getVideoUrl() {
     return String.format(YOUTUBE_VIDEO_URL_FORMAT, videoId);
   }

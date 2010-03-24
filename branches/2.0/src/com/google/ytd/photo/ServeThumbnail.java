@@ -1,4 +1,4 @@
-package com.google.ytd.image;
+package com.google.ytd.photo;
 
 import java.io.IOException;
 import java.util.logging.Logger;

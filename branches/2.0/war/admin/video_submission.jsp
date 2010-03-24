@@ -41,6 +41,7 @@ limitations under the License.
 				  <b>Assignment ID:&nbsp;</b><div id="assignmentId"></div><br>
 				  <b>Submitted on:</b><div id="created"></div><br>
 				  <b>Submitted by:</b><div id="youTubeName"></div><br>
+				  <b>Phone number:</b><div id="phoneNumber"></div><br>
 				  <b>Video ID:</b><div id="videoId"></div><br>
 				  <b>Video source:</b><div id="videoSource"></div><br>
 				  <b>Video state:</b><div id="youTubeState"></div><br>

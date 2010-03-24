@@ -216,10 +216,12 @@ function existingVideoMainInit() {
     jQuery('#cancelSubmitButton').get(0).disabled = true;
 
     var location = jQuery('#submitLocation').val();  
+    var phoneNumber = jQuery('#phoneNumber').val();  
     var date = jQuery('#submitDate').val();
     var email = jQuery('#submitEmail').val();
 
     jsonObj.location = location;
+    jsonObj.phoneNumber = phoneNumber;
     jsonObj.date = date;
     jsonObj.email = email;
     
@@ -354,7 +356,8 @@ function uploaderMainInit() {
 function getUploadToken() {
   var title = jQuery('#title').val();
   var description = jQuery('#description').val();
-  var location = jQuery('#uploadLocation').val();  
+  var location = jQuery('#uploadLocation').val(); 
+  var phoneNumber = jQuery('#uploadPhoneNumber').val(); 
   var date = jQuery('#uploadDate').val();
   var email = jQuery('#uploadEmail').val();
   var tagsString = jQuery('#tags').val();
@@ -368,6 +371,7 @@ function getUploadToken() {
   jsonObj.title = title;
   jsonObj.description = description;
   jsonObj.location = location;
+  jsonObj.phoneNumber = phoneNumber;
   jsonObj.date = date;
   jsonObj.email = email;
   jsonObj.tags = tags;

@@ -445,7 +445,10 @@ admin.photo.showDetails = function(entryId) {
   mainDiv.find('#title').html(submission.title);
 
   mainDiv.find('#description').html(submission.description);
-
+  
+  mainDiv.find('#phoneNumber').html(
+      submission.phoneNumber?submission.phoneNumber:'N/A');  
+  
   var articleLink = submission.articleUrl ? '<a target="_blank" href="'
       + submission.articleUrl + '">' + submission.articleUrl + '</a>' : 'N/A';
   mainDiv.find('#articleUrl').html(articleLink);
@@ -476,6 +479,7 @@ admin.photo.showDetails = function(entryId) {
     var checkboxes = mainDiv.find('#photos').find('input:checked');
 
     if (checkboxes.length == 0) {
+      mainDiv.find('#photoAction').get(0).selectedIndex = 0;
       return;
     }
 

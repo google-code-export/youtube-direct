@@ -150,6 +150,10 @@
 	<br>
 	<div><input class="inputBox" type="text" name="location" id="submitLocation" /></div>
 	<br>
+  <label for="phoneNumber">Phone Number:</label>
+  <br>
+  <div><input class="inputBox" type="text" name="phoneNumber" id="phoneNumber" /></div>
+  <br>  		
 	<label>Email me on approval: </label><input id="submitEmailAsk" type="checkbox" />
 	<input class="emailInputBox" id="submitEmail" type="text" value=""/>
 	<br>
@@ -181,6 +185,10 @@
 	<br>
 	<div><input class="inputBox" type="text" name="location" id="uploadLocation" /></div>
 	<br>
+  <label for="phoneNumber">Phone Number:</label>
+  <br>
+  <div><input class="inputBox" type="text" name="phoneNumber" id="uploadPhoneNumber" /></div>
+  <br>		
 	<label>Email me on approval: </label><input id="uploadEmailAsk" type="checkbox" />
 	<input class="emailInputBox" id="uploadEmail" type="text" value=""/>
 	<br><br> 
@@ -232,6 +240,12 @@
       <input class="inputBox" type="text" name="location" id="uploadLocation" />
     </div>
     <br>
+    <label for="phoneNumber">Phone Number:</label>
+    <br>
+    <div>
+      <input class="inputBox" type="text" name="phoneNumber" id="phoneNumber" />
+    </div>
+    <br>    
     <label class="required" for="uploadEmail">Your Email: </label>
     <div>
       <input class="inputBox" id="uploadEmail" name="uploadEmail" type="text" />

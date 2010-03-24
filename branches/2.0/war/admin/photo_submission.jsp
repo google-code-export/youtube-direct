@@ -33,7 +33,8 @@ limitations under the License.
 				  <b>Title:</b><div id="title"></div><br>
 				  <b>Description: </b><div id="description"></div><br>
 				  <b>Article URL:</b><div id="articleUrl"></div><br>
-				  <b>Photo location:</b><div id="location"></div><br>			  				    			
+				  <b>Photo location:</b><div id="location"></div><br>
+				  <b>Phone Number:</b><div id="phoneNumber"></div><br> 				    			
 	  		</td>
 	  		<td align="left">
 	  		  <span>Apply action: </span>	  		 
