@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
+import com.google.ytd.model.PhotoEntry.ModerationStatus;
 
 public interface PhotoSubmissionDao {
   public List<PhotoSubmission> getPhotoSubmissions(String sortBy, String sortOrder);
@@ -23,4 +24,6 @@ public interface PhotoSubmissionDao {
   public void deletePhotoEntry(String id);
 
   public void deleteSubmission(String id);
+
+  public List<PhotoEntry> getAllPhotos(String submissionId, ModerationStatus status);
 }

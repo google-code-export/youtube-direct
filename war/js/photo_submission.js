@@ -473,7 +473,15 @@ admin.photo.showDetails = function(entryId) {
       checkboxes[i].checked = this.checked;
     }
   });
-
+  
+  var approvedFeedLinkHtml = [];
+  approvedFeedLinkHtml.push('[ <a target="_blank" href="');
+  approvedFeedLinkHtml.push('/approved_photos?id=' + entryId + '">');
+  approvedFeedLinkHtml.push('atom');
+  approvedFeedLinkHtml.push('</a> ]');
+  
+  mainDiv.find('#feedsDiv').html(approvedFeedLinkHtml.join(''));
+  
   mainDiv.find('#photoAction').change(function() {
     var selection = mainDiv.find('#photoAction').get(0)[mainDiv.find('#photoAction').get(0).selectedIndex];    
     var checkboxes = mainDiv.find('#photos').find('input:checked');
