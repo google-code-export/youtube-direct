@@ -36,12 +36,16 @@ limitations under the License.
 				  <b>Photo location:</b><div id="location"></div><br>			  				    			
 	  		</td>
 	  		<td align="left">
+	  		  <span>Apply action: </span>	  		 
 	  		  <select id="photoAction">
-            <option value="none" selected> CHOOSE AN ACTION </option>
-            <option value="approve">Approve selected</option>
-            <option value="reject">Reject selected</option>
-            <option value="delete">Delete selected</option>            
+            <option value="none" selected> ------ </option>
+            <option value="approve">Mark as approved</option>
+            <option value="reject">Mark as rejected</option>
+            <option value="delete">Delete</option>            
           </select>
+          <br>
+          <br>
+          <input id="selectAll" type="checkbox">&nbsp;select all        
           <br>
           <br>
 	  			<div id="photos"></div>

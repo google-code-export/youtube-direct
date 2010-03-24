@@ -366,7 +366,7 @@ admin.photo.resizeImage = function(image, max) {
 };
 
 admin.photo.getImageThumb = function(entry) {    
-  var div = jQuery('<div/>');  
+  var div = jQuery('<div style="padding: 1px;"/>');  
   var table = jQuery('<table><tr><td id="actions"></td><td id="image"></td></tr></table>');  
   
   var thumbDiv = jQuery('<div id="' + entry.id + '"/>');
@@ -411,7 +411,9 @@ admin.photo.getImageThumb = function(entry) {
       break;
     case 'REJECTED':
       thumbDiv.fadeTo('slow', 0.3);
-      break;      
+      break;
+    case 'UNREVIEWED':
+      thumbDiv.css('border', 'solid blue 2px');
   }
   
   table.find('#image').append(thumbDiv);
@@ -464,62 +466,74 @@ admin.photo.showDetails = function(entryId) {
     }
   });
   
+  mainDiv.find('#selectAll').click(function() {    
+    var checkboxes = mainDiv.find('#photos').find('input:checkbox');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = this.checked;
+    }
+  });
+  
   mainDiv.find('#photoAction').change(function() {    
-    var selection = mainDiv.find('#photoAction').get(0)[mainDiv.find('#photoAction').get(0).selectedIndex].value;
-
-    switch(selection) {
-      case 'approve':
-        var photos = mainDiv.find('#photos').find('input:checked');        
+    var selection = mainDiv.find('#photoAction').get(0)[mainDiv.find('#photoAction').get(0).selectedIndex];
+    var checkboxes = mainDiv.find('#photos').find('input:checked');    
+    
+    if (checkboxes.length == 0) {
+      return;
+    }
+    
+    switch(selection.value) {
+      case 'approve':        
         var ids = [];        
-        for (var i=0; i<photos.length; i++) {
-          ids.push(jQuery(photos[i]).val());
+        for (var i = 0; i < checkboxes.length; i++) {
+          ids.push(jQuery(checkboxes[i]).val());
         }
         
-        if (ids.length > 0) {
-          admin.photo.updateStatus(ids, 'APPROVED', function() {            
-            for (var i=0; i<ids.length; i++) {
-              var id = ids[i];
-              var approvedImage = jQuery(mainDiv.find('#photos').find('#' + id));
-              approvedImage.fadeTo('fast', 1);
-            }            
-          }); 
-        }            
+        admin.photo.updateStatus(ids, 'APPROVED', function() {            
+          for (var i = 0; i < ids.length; i++) {
+            var id = ids[i];
+            var image = jQuery(mainDiv.find('#photos').find('#' + id));
+            image.fadeTo('fast', 1);
+            image.css('border', '0px');
+          }            
+        });       
         break; 
       case 'reject':
-        var photos = mainDiv.find('#photos').find('input:checked');        
         var ids = [];        
-        for (var i=0; i<photos.length; i++) {
-          ids.push(jQuery(photos[i]).val());
-        }
-        if (ids.length > 0) {
-          admin.photo.updateStatus(ids, 'REJECTED', function() {
-            for (var i=0; i<ids.length; i++) {
-              var id = ids[i];
-              var rejectedImage = jQuery(mainDiv.find('#photos').find('#' + id));
-              rejectedImage.fadeTo('slow', 0.3);
-            }               
-          });
-        }                      
-        break;
-      case 'delete':        
-        var photos = mainDiv.find('#photos').find('input:checked');        
-        var ids = [];        
-        for (var i=0; i<photos.length; i++) {
-          ids.push(jQuery(photos[i]).val());
+        for (var i = 0; i < checkboxes.length; i++) {
+          ids.push(jQuery(checkboxes[i]).val());
         }
         
-        if (ids.length > 0) {          
-          if (confirm('This will delete all selected images permanently.  Are you sure?')) {       
-            admin.photo.deletePhotos(ids, function() {
-              for (var i=0; i<photos.length; i++) {
-                jQuery(photos[i]).parent().parent().remove();
-              }
-              admin.photo.refreshGrid();
-            });  
-          }
-        }            
+        admin.photo.updateStatus(ids, 'APPROVED', function() {            
+          for (var i = 0; i < ids.length; i++) {
+            var id = ids[i];
+            var image = jQuery(mainDiv.find('#photos').find('#' + id));
+            image.fadeTo('slow', .3);
+            image.css('border', '0px');
+          }            
+        });       
+        break;
+      case 'delete':          
+        var ids = [];        
+        for (var i = 0; i < checkboxes.length; i++) {
+          ids.push(jQuery(checkboxes[i]).val());
+        }
+             
+        if (confirm('This will delete all selected images permanently.  Are you sure?')) {       
+          admin.photo.deletePhotos(ids, function() {
+            for (var i=0; i < checkboxes.length; i++) {
+              jQuery(checkboxes[i]).parent().parent().remove();
+            }
+            admin.photo.refreshGrid();
+          });  
+        }        
         break;        
-    }      
+    }
+    
+    // Uncheck all checkboxes
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+    mainDiv.find('#photoAction').get(0).selectedIndex = 0;
   });
   
   mainDiv.find('#adminNotes').html(submission.adminNotes);
