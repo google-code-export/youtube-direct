@@ -11,6 +11,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Inject;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
+import com.google.ytd.model.PhotoEntry.ModerationStatus;
 import com.google.ytd.util.Util;
 
 public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
@@ -56,29 +57,24 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     return photos;
   }
-
+  
   @Override
-  public PhotoSubmission save(PhotoSubmission submission) {
+  public List<PhotoEntry> getAllPhotos(String submissionId, ModerationStatus status) {
     PersistenceManager pm = pmf.getPersistenceManager();
+    List<PhotoEntry> photos = null;
+
     try {
-      pm.makePersistent(submission);
-      submission = pm.detachCopy(submission);
+      Query query = pm.newQuery(PhotoEntry.class);
+      query.declareParameters("String submissionId_, String status_");
+      String filters = "submissionId == submissionId_ && status == status_";
+      query.setFilter(filters);
+      photos = (List<PhotoEntry>) query.execute(submissionId, status.toString());
+      photos = (List<PhotoEntry>) pm.detachCopyAll(photos);
     } finally {
       pm.close();
     }
-    return submission;
-  }
 
-  @Override
-  public PhotoEntry save(PhotoEntry photo) {
-    PersistenceManager pm = pmf.getPersistenceManager();
-    try {
-      pm.makePersistent(photo);
-      photo = pm.detachCopy(photo);
-    } finally {
-      pm.close();
-    }
-    return photo;
+    return photos;
   }
 
   @Override
@@ -160,4 +156,27 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     return entry;
   }
 
+  @Override
+  public PhotoSubmission save(PhotoSubmission submission) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      pm.makePersistent(submission);
+      submission = pm.detachCopy(submission);
+    } finally {
+      pm.close();
+    }
+    return submission;
+  }
+
+  @Override
+  public PhotoEntry save(PhotoEntry photo) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      pm.makePersistent(photo);
+      photo = pm.detachCopy(photo);
+    } finally {
+      pm.close();
+    }
+    return photo;
+  }
 }

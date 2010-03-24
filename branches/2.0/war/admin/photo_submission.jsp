@@ -46,11 +46,14 @@ limitations under the License.
           </select>
           <br>
           <br>
-          <input id="selectAll" type="checkbox">&nbsp;select all        
+          <input id="selectAll" type="checkbox">&nbsp;select all
           <br>
-          <br>
+          <br>          
 	  			<div id="photos"></div>
-					<br><br>					  						   			
+					<br><br>	
+					Approved Photos: <span id="feedsDiv"></span>
+          <br>
+          <br>				  						   			
 					<div><b>Admin notes:</b></div>
 					<textarea cols="35" rows="5" id="adminNotes"></textarea><br>				
 					<input id="saveAdminNotes" type="button" value="Save Notes"/>	
