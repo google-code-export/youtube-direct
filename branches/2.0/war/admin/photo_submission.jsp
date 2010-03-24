@@ -37,7 +37,7 @@ limitations under the License.
 	  		</td>
 	  		<td align="left">
 	  		  <select id="photoAction">
-            <option value="none" selected> apply ... </option>
+            <option value="none" selected> CHOOSE AN ACTION </option>
             <option value="approve">Approve selected</option>
             <option value="reject">Reject selected</option>
             <option value="delete">Delete selected</option>            
