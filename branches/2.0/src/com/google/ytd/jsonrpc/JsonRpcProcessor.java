@@ -1,6 +1,7 @@
 package com.google.ytd.jsonrpc;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +24,19 @@ import com.google.ytd.util.Util;
 
 @Singleton
 public class JsonRpcProcessor extends HttpServlet {
-  @Inject
+  private static final Logger LOG = Logger.getLogger(JsonRpcProcessor.class.getName());
+  
   private JsonExceptionHandler jsonExceptionHandler;
-  @Inject
   private Util util;
-  @Inject
   private Injector injector;
-
+  
+  @Inject
+  public JsonRpcProcessor(JsonExceptionHandler jsonExceptionHandler, Util util, Injector injector) {
+    this.jsonExceptionHandler = jsonExceptionHandler;
+    this.util = util;
+    this.injector = injector;
+  }
+  
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {

@@ -37,7 +37,7 @@ limitations under the License.
 				  <b>Phone Number:</b><div id="phoneNumber"></div><br> 				    			
 	  		</td>
 	  		<td align="left">
-	  		  <span>Apply action: </span>	  		 
+	  		  <span><b>Apply action: </b></span>	  		 
 	  		  <select id="photoAction">
             <option value="none" selected> ------ </option>
             <option value="approve">Mark as approved</option>
@@ -46,12 +46,13 @@ limitations under the License.
           </select>
           <br>
           <br>
-          <input id="selectAll" type="checkbox">&nbsp;select all
+          &nbsp;&nbsp;<input id="selectAll" type="checkbox">&nbsp;<b><i>select all</i></b>
           <br>
           <br>          
 	  			<div id="photos"></div>
 					<br><br>	
 					<b>Approved Photos: </b><span id="feedsDiv"></span>
+          <br>
           <br>
           <br>				  						   			
 					<div><b>Admin notes:</b></div>
