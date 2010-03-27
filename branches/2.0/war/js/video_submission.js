@@ -201,7 +201,7 @@ admin.sub.languageMap = {
 				"yo": "Yoruba",
 				"za": "Zhuang",
 				"zh": "Chinese",
-				"zu": "Zulu",
+				"zu": "Zulu"
 };
 
 // user current setting
