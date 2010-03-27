@@ -20,6 +20,7 @@ import com.google.ytd.photo.ApprovedPhotosJsonGenerator;
 import com.google.ytd.photo.ServeImage;
 import com.google.ytd.photo.ServeThumbnail;
 import com.google.ytd.youtube.PersistAuthSubToken;
+import com.google.ytd.youtube.VideoDownloadRedirect;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
   private static final Logger LOG = Logger.getLogger(GuiceServletConfig.class.getName());
@@ -37,7 +38,10 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/thumb").with(ServeThumbnail.class);
         serve("/approved_photos/atom").with(ApprovedPhotosAtomGenerator.class);
         serve("/approved_photos/json").with(ApprovedPhotosJsonGenerator.class);
-
+        
+        // Video download endpoint
+        serve("/admin/VideoDownloadRedirect").with(VideoDownloadRedirect.class);
+        
         // Frontend jsp embed endpoint
         serve("/embed").with(EmbedJspForwarder.class);
         serve("/logout").with(LogoutHandler.class);

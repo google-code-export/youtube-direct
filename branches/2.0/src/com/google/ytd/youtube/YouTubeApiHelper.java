@@ -107,11 +107,11 @@ public class YouTubeApiHelper {
   }
 
   public YouTubeApiHelper(String clientId) {
+    this.util = Util.get();
     if (util.isNullOrEmpty(clientId)) {
       clientId = "";
       log.warning("clientId parameter is null or empty.");
     }
-
     service = new YouTubeService(clientId);
   }
 
