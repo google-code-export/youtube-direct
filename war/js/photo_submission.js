@@ -366,10 +366,11 @@ admin.photo.resizeImage = function(image, max) {
 };
 
 admin.photo.getImageThumb = function(entry) {
-  var div = jQuery('<div id="' + entry.id + '_main" style="padding: 1px;"/>');
-  var table = jQuery('<table><tr><td id="checkbox"></td><td id="thumbnail"></td></tr></table>');
+  var div = jQuery('<span id="' + entry.id + '_main" style="padding: 1px;"/>');
+  var table = jQuery('<table style="display: inline"><tr width=""><td id="checkbox"></td></tr>' + 
+      '<tr><td id="thumbnail"></td></tr><tr><td id="photoModeration"></td></tr></table>');
 
-  var thumbDiv = jQuery('<div id="' + entry.id + '"/>');
+  var thumbDiv = jQuery('<span id="' + entry.id + '"/>');
 
   var thumbImage = jQuery('<img/>');
   thumbImage.attr('src', entry.thumbnailUrl);
@@ -398,6 +399,7 @@ admin.photo.getImageThumb = function(entry) {
       popUp.append(img);
 
       popUp.dialog(options);
+      
     };
   });
 
@@ -413,11 +415,30 @@ admin.photo.getImageThumb = function(entry) {
     thumbDiv.fadeTo('fast', 0.3);
     break;
   case 'UNREVIEWED':
-    thumbDiv.css('border', 'solid blue 3px');
+    thumbImage.css('border', 'solid blue 2px');
   }
 
   table.find('#thumbnail').append(thumbDiv);
   table.find('#checkbox').append(checkbox);
+  
+  var photoModeration = jQuery('<select id="' + entry.id + '_mod"/>');
+  photoModeration.append('<option value="none"> ------ </option>');
+  photoModeration.append('<option value="approve">approve</option>');
+  photoModeration.append('<option value="reject">reject</option>');
+  
+  photoModeration.change(function() {
+    var selection = jQuery(photoModeration.get(0)[photoModeration.get(0).selectedIndex]);
+    
+    switch(selection.val()) {      
+      case 'approve':
+        break;
+      case 'reject':
+        break;        
+    }
+  });
+  
+  table.find('#photoModeration').append(photoModeration);
+  
   return div.append(table);
 };
 
@@ -456,14 +477,20 @@ admin.photo.showDetails = function(entryId) {
   mainDiv.find('#location').html(
       submission.location ? submission.location : 'N/A');
 
+  var colSize = 3;
+
   // Grab photo entries
   admin.photo.getAllPhotos(submission.id, function(entries) {
     var photoHtml = [];
     var photosDiv = mainDiv.find('#photos');
-
+	
     for ( var i = 0; i < entries.length; i++) {
       var imageThumb = admin.photo.getImageThumb(entries[i]);
       photosDiv.append(imageThumb);
+            
+      if (i > 0 && (i+1) % colSize == 0) {
+      	photosDiv.append('<br/>');
+      }
     }
   });
 
@@ -487,12 +514,12 @@ admin.photo.showDetails = function(entryId) {
   
   mainDiv.find('#feedsDiv').html(approvedFeedLinkHtml.join(''));
   
-  mainDiv.find('#photoAction').change(function() {
-    var selection = mainDiv.find('#photoAction').get(0)[mainDiv.find('#photoAction').get(0).selectedIndex];    
+  mainDiv.find('#photoBulkAction').change(function() {
+    var selection = mainDiv.find('#photoBulkAction').get(0)[mainDiv.find('#photoBulkAction').get(0).selectedIndex];    
     var checkboxes = mainDiv.find('#photos').find('input:checked');
 
     if (checkboxes.length == 0) {
-      mainDiv.find('#photoAction').get(0).selectedIndex = 0;
+      mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
       return;
     }
 
@@ -508,7 +535,7 @@ admin.photo.showDetails = function(entryId) {
             var id = ids[i];
             var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
             thumbnailDiv.fadeTo('fast', 1);
-            thumbnailDiv.css('border', '0px');
+            thumbnailDiv.find('img').css('border', '0px');
           }
         });
         break;
@@ -523,7 +550,7 @@ admin.photo.showDetails = function(entryId) {
             var id = ids[i];
             var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
             thumbnailDiv.fadeTo('slow', .3);
-            thumbnailDiv.css('border', '0px');
+            thumbnailDiv.find('img').css('border', '0px');
           }
         });
         break;
@@ -550,7 +577,7 @@ admin.photo.showDetails = function(entryId) {
     for ( var i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = false;
     }
-    mainDiv.find('#photoAction').get(0).selectedIndex = 0;
+    mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
     mainDiv.find('#selectAll').get(0).checked = false;
   });
 

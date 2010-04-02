@@ -38,15 +38,15 @@ limitations under the License.
 	  		</td>
 	  		<td align="left">
 	  		  <span><b>Apply action: </b></span>	  		 
-	  		  <select id="photoAction">
-            <option value="none" selected> ------ </option>
-            <option value="approve">Mark as approved</option>
-            <option value="reject">Mark as rejected</option>
-            <option value="delete">Delete</option>            
-          </select>
+	  		  <select id="photoBulkAction">
+	            <option value="none" selected> ------ </option>
+	            <option value="approve">Mark as approved</option>
+	            <option value="reject">Mark as rejected</option>
+	            <option value="delete">Delete</option>            
+	          </select>
           <br>
           <br>
-          &nbsp;&nbsp;<input id="selectAll" type="checkbox">&nbsp;<b><i>select all</i></b>
+          &nbsp;<input id="selectAll" type="checkbox">&nbsp;<b><i>select all</i></b>
           <br>
           <br>          
 	  			<div id="photos"></div>
