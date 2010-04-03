@@ -366,11 +366,13 @@ admin.photo.resizeImage = function(image, max) {
 };
 
 admin.photo.getImageThumb = function(entry) {
-  var div = jQuery('<span id="' + entry.id + '_main" style="padding: 1px;"/>');
-  var table = jQuery('<table style="display: inline"><tr width=""><td id="checkbox"></td></tr>' + 
-      '<tr><td id="thumbnail"></td></tr><tr><td id="photoModeration"></td></tr></table>');
-
-  var thumbDiv = jQuery('<span id="' + entry.id + '"/>');
+  var topMostDiv = jQuery('<div id="' + entry.id + '_main" style="padding: 1px;"/>');
+  
+  var checkboxDiv = jQuery('<div id="checkbox"/>');
+  var thumbnailDiv = jQuery('<div style="width: 120px; height: 100px" id="thumbnail"/>');
+  var photoModerationDiv = jQuery('<div id="photoModeration"/>');
+  
+  var thumbDiv = jQuery('<div id="' + entry.id + '"/>');
 
   var thumbImage = jQuery('<img/>');
   thumbImage.attr('src', entry.thumbnailUrl);
@@ -425,7 +427,7 @@ admin.photo.getImageThumb = function(entry) {
         admin.photo.updateStatus([entry.id], 'REJECTED', function() {
           thumbDiv.fadeTo('fast', .3);          
         });          
-        break;        
+        break;             
     }
   });
 
@@ -439,12 +441,16 @@ admin.photo.getImageThumb = function(entry) {
     photoModeration.get(0).selectedIndex = 2;
     break;
   }
-
-  table.find('#thumbnail').append(thumbDiv);
-  table.find('#checkbox').append(checkbox);
-  table.find('#photoModeration').append(photoModeration);
   
-  return div.append(table);
+  checkboxDiv.append(checkbox);
+  thumbnailDiv.append(thumbDiv);
+  photoModerationDiv.append(photoModeration);
+  
+  topMostDiv.append(checkboxDiv);
+  topMostDiv.append(thumbnailDiv);
+  topMostDiv.append(photoModerationDiv);
+  
+  return topMostDiv;
 };
 
 admin.photo.showDetails = function(entryId) {
@@ -483,19 +489,31 @@ admin.photo.showDetails = function(entryId) {
       submission.location ? submission.location : 'N/A');
 
   var colSize = 3;
-
+  
   // Grab photo entries
   admin.photo.getAllPhotos(submission.id, function(entries) {
     var photoHtml = [];
-    var photosDiv = mainDiv.find('#photos');
-	
-    for ( var i = 0; i < entries.length; i++) {
-      var imageThumb = admin.photo.getImageThumb(entries[i]);
-      photosDiv.append(imageThumb);
-            
-      if (i > 0 && (i+1) % colSize == 0) {
-      	photosDiv.append('<br/>');
-      }
+    var photosTable = mainDiv.find('#photos');    
+    
+    var rowSize = Math.floor(entries.length / colSize) + entries.length % colSize;
+    
+    var entryIndex = 0;
+    
+    for (var i = 0; i < rowSize; i++) {
+      var tr = jQuery('<tr/>');
+      photosTable.append(tr);            
+      
+      for (var j = 0; j < colSize; j++) {
+        if (entryIndex >= entries.length) {
+          break;
+        }
+      
+        var imageThumb = admin.photo.getImageThumb(entries[entryIndex]);
+        var td = jQuery('<td valign="top"/>');
+        td.append(imageThumb);
+        tr.append(td);
+        entryIndex++;
+      } 
     }
   });
 
