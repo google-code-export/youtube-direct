@@ -406,20 +406,6 @@ admin.photo.getImageThumb = function(entry) {
   thumbDiv.append(thumbImage);
 
   var checkbox = jQuery('<input type="checkbox" value="' + entry.id + '">');
-
-  switch (entry.status.toUpperCase()) {
-  case 'APPROVED':
-    thumbDiv.fadeTo('fast', 1);
-    break;
-  case 'REJECTED':
-    thumbDiv.fadeTo('fast', 0.3);
-    break;
-  case 'UNREVIEWED':
-    thumbImage.css('border', 'solid blue 2px');
-  }
-
-  table.find('#thumbnail').append(thumbDiv);
-  table.find('#checkbox').append(checkbox);
   
   var photoModeration = jQuery('<select id="' + entry.id + '_mod"/>');
   photoModeration.append('<option value="none"> ------ </option>');
@@ -431,12 +417,31 @@ admin.photo.getImageThumb = function(entry) {
     
     switch(selection.val()) {      
       case 'approve':
+        admin.photo.updateStatus([entry.id], 'APPROVED', function() {
+      thumbDiv.fadeTo('fast', 1);
+        });      
         break;
       case 'reject':
+        admin.photo.updateStatus([entry.id], 'REJECTED', function() {
+          thumbDiv.fadeTo('fast', .3);          
+        });          
         break;        
     }
   });
-  
+
+  switch (entry.status.toUpperCase()) {
+  case 'APPROVED':
+    thumbDiv.fadeTo('fast', 1);
+    photoModeration.get(0).selectedIndex = 1;
+    break;
+  case 'REJECTED':
+    thumbDiv.fadeTo('fast', 0.3);
+    photoModeration.get(0).selectedIndex = 2;
+    break;
+  }
+
+  table.find('#thumbnail').append(thumbDiv);
+  table.find('#checkbox').append(checkbox);
   table.find('#photoModeration').append(photoModeration);
   
   return div.append(table);
@@ -535,7 +540,8 @@ admin.photo.showDetails = function(entryId) {
             var id = ids[i];
             var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
             thumbnailDiv.fadeTo('fast', 1);
-            thumbnailDiv.find('img').css('border', '0px');
+            var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
+            moderationSelect.get(0).selectedIndex = 1;
           }
         });
         break;
@@ -549,8 +555,9 @@ admin.photo.showDetails = function(entryId) {
           for ( var i = 0; i < ids.length; i++) {
             var id = ids[i];
             var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
-            thumbnailDiv.fadeTo('slow', .3);
-            thumbnailDiv.find('img').css('border', '0px');
+            thumbnailDiv.fadeTo('slow', .3);          
+            var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
+            moderationSelect.get(0).selectedIndex = 2;
           }
         });
         break;
