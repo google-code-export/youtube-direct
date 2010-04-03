@@ -49,7 +49,9 @@ limitations under the License.
           &nbsp;<input id="selectAll" type="checkbox">&nbsp;<b><i>select all</i></b>
           <br>
           <br>          
-	  			<div id="photos"></div>
+	  			<table id="photos"></table>
+	  			
+	  			
 					<br><br>	
 					<b>Approved Photos: </b><span id="feedsDiv"></span>
           <br>
