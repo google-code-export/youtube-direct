@@ -96,8 +96,13 @@ public class SubmitPhoto extends HttpServlet {
         throw new IllegalArgumentException("'uploadEmail' is null or empty.");
       }
 
+      String author = req.getParameter("author");
+      if (util.isNullOrEmpty(author)) {
+        throw new IllegalArgumentException("'author' is null or empty.");
+      }
+
       String phoneNumber = req.getParameter("phoneNumber");
-      
+
       String location = req.getParameter("location");
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -131,9 +136,10 @@ public class SubmitPhoto extends HttpServlet {
       }
 
       if (validSubmissionKeys.size() > 0) {
-        // PhotoSubmission represents the meta data of a set of photo entries     
+        // PhotoSubmission represents the meta data of a set of photo entries
         PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-            articleUrl, email, phoneNumber, title, description, location, validSubmissionKeys.size());
+                articleUrl, author, email, phoneNumber, title, description, location,
+                validSubmissionKeys.size());
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
 
@@ -141,10 +147,10 @@ public class SubmitPhoto extends HttpServlet {
           ImagesService imagesService = ImagesServiceFactory.getImagesService();
           Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
           Image thumbnail = imagesService.applyTransform(ImagesServiceFactory.makeResize(
-              THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), image);
+                  THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), image);
 
           PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, image.getFormat()
-              .toString().toLowerCase(), new Blob(thumbnail.getImageData()));
+                  .toString().toLowerCase(), new Blob(thumbnail.getImageData()));
           pmfUtil.persistJdo(photoEntry);
         }
       } else {
@@ -154,7 +160,8 @@ public class SubmitPhoto extends HttpServlet {
       LOG.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
-      //TODO: Do something here, though it's effectively ignored by the uploader iframe.
+      // TODO: Do something here, though it's effectively ignored by the
+      // uploader iframe.
     }
   }
 }

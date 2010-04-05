@@ -32,6 +32,7 @@ limitations under the License.
 				  <b>Submitted on:</b><div id="created"></div><br>
 				  <b>Title:</b><div id="title"></div><br>
 				  <b>Description: </b><div id="description"></div><br>
+          <b>Author:</b><div id="author"></div><br>				  
 				  <b>Article URL:</b><div id="articleUrl"></div><br>
 				  <b>Photo location:</b><div id="location"></div><br>
 				  <b>Phone number:</b><div id="phoneNumber"></div><br> 				    			

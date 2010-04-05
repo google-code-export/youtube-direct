@@ -156,7 +156,7 @@ function photoMainInit() {
     jQuery('#loginInstruction').css('display', 'block');
   });      
   
-  photoMain.find("#submitDate").datepicker();
+  photoMain.find("#uploadDate").datepicker();
 }
 
 function addFileElement() {

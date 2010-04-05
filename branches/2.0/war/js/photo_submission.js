@@ -474,6 +474,8 @@ admin.photo.showDetails = function(entryId) {
 
   mainDiv.find('#created').html(created);
 
+  mainDiv.find('#author').html(submission.author);
+
   mainDiv.find('#title').html(submission.title);
 
   mainDiv.find('#description').html(submission.description);
