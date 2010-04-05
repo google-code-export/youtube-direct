@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gdata.data.youtube.VideoEntry;
@@ -55,7 +54,7 @@ public class UpdateVideoSubmissionStatus extends Command {
   }
 
   @Override
-  public JSONObject execute() throws JSONException {
+  public JSONObject execute() {
     LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String id = getParam("id");
@@ -136,7 +135,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     }
 
     // Notify the submitter of rejection if there is a notify email
-    if (adminConfig.isModerationEmail() && (submission.getNotifyEmail() != null)) {
+    if (adminConfig.isModerationEmail() && !util.isNullOrEmpty(submission.getNotifyEmail())) {
       emailUtil.sendNotificationEmail(submission, ModerationStatus.REJECTED);
     }
   }
@@ -179,8 +178,6 @@ public class UpdateVideoSubmissionStatus extends Command {
   /**
    * Adds a video to a YouTube playlist corresponding to the video's assignment.
    * 
-   * @param apiManager
-   *          The YouTubeApiManager instance to handle YouTube API calls.
    * @param videoSubmission
    *          The video to add.
    * @return true if the video was added; false otherwise.
@@ -214,8 +211,6 @@ public class UpdateVideoSubmissionStatus extends Command {
    * Removes a video from a YouTube playlist corresponding to the video's
    * assignment.
    * 
-   * @param apiManager
-   *          The YouTubeApiManager instance to handle YouTube API calls.
    * @param videoSubmission
    *          The video to remove.
    * @return true if the video was removed; false otherwise.
