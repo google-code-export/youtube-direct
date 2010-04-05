@@ -21,7 +21,7 @@ import com.google.ytd.youtube.YouTubeApiHelper;
 
 public class GetVideoDetails extends Command {
   private static final Logger LOG = Logger.getLogger(GetVideoSubmissions.class.getName());
-  private static final long REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes, in milliseconds
+  private static final long REFRESH_INTERVAL = 30 * 1000; // 30 seconds, in milliseconds
 
   private VideoSubmissionDao submissionDao = null;
   private YouTubeApiHelper apiManager = null;
