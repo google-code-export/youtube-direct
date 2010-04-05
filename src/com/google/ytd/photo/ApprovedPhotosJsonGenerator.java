@@ -40,7 +40,7 @@ public class ApprovedPhotosJsonGenerator extends HttpServlet {
     if (!util.isNullOrEmpty(req.getParameter("count"))) {
       count = Integer.parseInt(req.getParameter("count"));
     }
-    
+
     String submissionId = req.getParameter("id");
     if (util.isNullOrEmpty(submissionId)) {
       throw new IllegalArgumentException("Missing required param: id");
@@ -48,25 +48,28 @@ public class ApprovedPhotosJsonGenerator extends HttpServlet {
 
     PhotoSubmission submission = this.photoSubmissionDao.getSubmissionById(submissionId);
     List<PhotoEntry> entries = this.photoSubmissionDao.getAllPhotos(submissionId,
-        ModerationStatus.APPROVED);
-    
+            ModerationStatus.APPROVED);
+
     String serverHost = req.getServerName();
     int serverPort = req.getServerPort();
-    
+
     JSONObject json = new JSONObject();
-    
+
     try {
-      json.put("total", entries.size());
+      json.put("title", submission.getTitle());
+      json.put("description", submission.getDescription());
+      json.put("author", submission.getAuthor());
       JSONArray jsonArray = new JSONArray();
+      json.put("total", entries.size());
       json.put("result", jsonArray);
-      
+
       for (PhotoEntry entry : entries) {
         JSONObject jsonObject = new JSONObject();
-        String imageUrl = "http://" + serverHost + ":" + serverPort + entry.getImageUrl(); 
+        String imageUrl = "http://" + serverHost + ":" + serverPort + entry.getImageUrl();
         jsonObject.put("imageUrl", imageUrl);
         jsonArray.put(jsonObject);
-      }      
-      
+      }
+
       resp.setHeader("content-type", "application/javascript");
       resp.getWriter().println(json.toString());
     } catch (JSONException e) {
