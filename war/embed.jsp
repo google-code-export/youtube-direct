@@ -240,6 +240,12 @@
       <input class="inputBox" type="text" name="location" id="uploadLocation" />
     </div>
     <br>
+    <label class="required" for="author">Your Name (for photo credit):</label>
+    <br>
+    <div>
+      <input class="inputBox" type="text" name="author" id="author" />
+    </div>        
+    <br>    
     <label for="phoneNumber">Phone Number:</label>
     <br>
     <div>
