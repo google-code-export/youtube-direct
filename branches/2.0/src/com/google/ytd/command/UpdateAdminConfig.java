@@ -38,7 +38,7 @@ public class UpdateAdminConfig extends Command {
     String clientId = getParam("clientId");
     String developerKey = getParam("developerKey");
     String defaultTag = getParam("defaultTag");
-    String linkBackText = getParam("inkBackText");
+    String linkBackText = getParam("linkBackText");
     String moderationMode = getParam("moderationMode");
     String brandingMode = getParam("brandingMode");
     String submissionMode = getParam("submissionMode");
