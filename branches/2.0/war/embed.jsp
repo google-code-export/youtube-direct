@@ -245,16 +245,16 @@
     <div>
       <input class="inputBox" type="text" name="author" id="author" />
     </div>        
-    <br>    
+    <br>        
+    <label class="required" for="uploadEmail">Your Email: </label>
+    <div>
+      <input class="inputBox" id="uploadEmail" name="uploadEmail" type="text" />
+    </div>    
+    <br>
     <label for="phoneNumber">Phone Number:</label>
     <br>
     <div>
       <input class="inputBox" type="text" name="phoneNumber" id="phoneNumber" />
-    </div>
-    <br>    
-    <label class="required" for="uploadEmail">Your Email: </label>
-    <div>
-      <input class="inputBox" id="uploadEmail" name="uploadEmail" type="text" />
     </div>
     <input id="assignmentId" name="assignmentId" type="hidden" value="<%=request.getParameter("assignmentId")%>"/>
     <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
