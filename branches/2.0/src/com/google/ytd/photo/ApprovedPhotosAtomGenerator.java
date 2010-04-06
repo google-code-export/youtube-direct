@@ -54,7 +54,10 @@ public class ApprovedPhotosAtomGenerator extends HttpServlet {
     String description = submission.getDescription();
 
     String serverHost = req.getServerName();
-    int serverPort = req.getServerPort();
+
+    if (serverHost.equals("localhost")) {
+      serverHost = serverHost + ":" + req.getServerPort();
+    }
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ssZ");
@@ -73,8 +76,8 @@ public class ApprovedPhotosAtomGenerator extends HttpServlet {
     for (PhotoEntry entry : entries) {
       String id = URLEncoder.encode(entry.getId(), "UTF-8");
 
-      String imageUrl = "http://" + serverHost + ":" + serverPort + entry.getImageUrl();
-      String thumbnailUrl = "http://" + serverHost + ":" + serverPort + entry.getThumbnailUrl();
+      String imageUrl = "http://" + serverHost + entry.getImageUrl();
+      String thumbnailUrl = "http://" + serverHost + entry.getThumbnailUrl();
 
       xml.append("<entry>");
       xml.append(String.format("<id>http://%s/post/%s</id>", serverHost, id));

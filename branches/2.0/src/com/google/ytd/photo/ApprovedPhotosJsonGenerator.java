@@ -51,7 +51,10 @@ public class ApprovedPhotosJsonGenerator extends HttpServlet {
             ModerationStatus.APPROVED);
 
     String serverHost = req.getServerName();
-    int serverPort = req.getServerPort();
+
+    if (serverHost.equals("localhost")) {
+      serverHost = serverHost + ":" + req.getServerPort();
+    }
 
     JSONObject json = new JSONObject();
 
@@ -65,7 +68,7 @@ public class ApprovedPhotosJsonGenerator extends HttpServlet {
 
       for (PhotoEntry entry : entries) {
         JSONObject jsonObject = new JSONObject();
-        String imageUrl = "http://" + serverHost + ":" + serverPort + entry.getImageUrl();
+        String imageUrl = "http://" + serverHost + entry.getImageUrl();
         jsonObject.put("imageUrl", imageUrl);
         jsonArray.put(jsonObject);
       }
