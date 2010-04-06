@@ -425,19 +425,22 @@ public class YouTubeApiHelper {
     }
 
     try {
-      service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
-      log.info(String.format("Inserted video id '%s' into playlist id '%s'.", videoId, playlistId));
+      playlistEntry = service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
+      log.info(String.format("Inserted video id '%s' into playlist id '%s'. Now moving to front " +
+      		"of playlist.", videoId, playlistId));
+      playlistEntry.setPosition(0);
+      service.update(new URL(playlistEntry.getEditLink().getHref()), playlistEntry);
+      log.info(String.format("Moved video id '%s' to front of playlist id '%s'.", videoId,
+          playlistId));
       return true;
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
     } catch (ServiceException e) {
-      // This may be thrown if the video is not found, i.e. because it is not
-      // done processing.
+      // This may be thrown if the video is not found, i.e. because it is not done processing.
       // We don't need to log it at WARNING level.
-      // TODO: Propogate AuthenticationExceptions so the calling code can
-      // invalidate the token.
+      // TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
       log.log(Level.WARNING, "", e);
     }
 
