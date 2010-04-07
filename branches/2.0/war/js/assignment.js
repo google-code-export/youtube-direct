@@ -323,11 +323,11 @@ admin.assign.showEmbedCode = function(id) {
   code.push('<script type="text/javascript">\n');
   code.push('var ytdInitFunction = function() {\n');
   code.push('  var ytd = new Ytd();\n');
-  code.push('  ytd.setAssignmentId("' + entry.id + '");\n');
-  code.push('  ytd.setCallToAction("callToActionId");\n');
+  code.push(jQuery.sprintf('  ytd.setAssignmentId("%s");\n', entry.id));
+  code.push(jQuery.sprintf('  ytd.setCallToAction("callToActionId-%s");\n', entry.id));
   code.push('  var containerWidth = 350;\n');
   code.push('  var containerHeight = 550;\n');
-  code.push('  ytd.setYtdContainer("ytdContainer", containerWidth, containerHeight);\n');
+  code.push(jQuery.sprintf('  ytd.setYtdContainer("ytdContainer-%s", containerWidth, containerHeight);\n', entry.id));
   code.push('  ytd.ready();\n');
   code.push('};\n');
   code.push('if (window.addEventListener) {\n');
@@ -336,9 +336,8 @@ admin.assign.showEmbedCode = function(id) {
   code.push('  window.attachEvent("onload", ytdInitFunction);\n');
   code.push('}\n');
   code.push('</script>\n');
-  code.push('<a id="callToActionId" href="javascript:void(0);"><img src="' 
-      + admin.assign.getSelfUrl() + '/calltoaction.png"/></a>\n');  
-  code.push('<div id="ytdContainer" />');  
+  code.push(jQuery.sprintf('<a id="callToActionId-%s" href="javascript:void(0);"><img src="%s/calltoaction.png"></a>\n', entry.id, admin.assign.getSelfUrl()));
+  code.push(jQuery.sprintf('<div id="ytdContainer-%s"></div>', entry.id));  
   
   code = code.join('');
   code = code.replace(/\</g,'&lt;');
