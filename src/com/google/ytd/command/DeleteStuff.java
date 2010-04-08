@@ -26,9 +26,9 @@ public class DeleteStuff extends Command {
 
   @Override
   public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
-    JSONObject json = new JSONObject();
+    LOG.info(String.format("Performing datastore delete. Request is: %s", this.toString()));
 
+    JSONObject json = new JSONObject();
     String className = getParam("className");
 
     if (util.isNullOrEmpty(className)) {
@@ -48,5 +48,4 @@ public class DeleteStuff extends Command {
 
     return json;
   }
-
 }

@@ -1,8 +1,5 @@
 package com.google.ytd.command;
 
-import java.util.logging.Logger;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
@@ -14,8 +11,6 @@ import com.google.ytd.util.Util;
 public class UpdateAssignment extends Command {
   private AssignmentDao assignmentDao = null;
 
-  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
-
   @Inject
   private Util util;
 
@@ -25,8 +20,7 @@ public class UpdateAssignment extends Command {
   }
 
   @Override
-  public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
+  public JSONObject execute() {
     JSONObject json = new JSONObject();
 
     String id = getParam("id");

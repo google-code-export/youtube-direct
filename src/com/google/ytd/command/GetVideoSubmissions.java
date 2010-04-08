@@ -1,7 +1,6 @@
 package com.google.ytd.command;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +12,6 @@ import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 
 public class GetVideoSubmissions extends Command {
-  private static final Logger LOG = Logger.getLogger(GetVideoSubmissions.class.getName());
 
   private VideoSubmissionDao submissionDao = null;
 
@@ -27,7 +25,6 @@ public class GetVideoSubmissions extends Command {
 
   @Override
   public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
     JSONObject json = new JSONObject();
     List<VideoSubmission> submissions = null;
 

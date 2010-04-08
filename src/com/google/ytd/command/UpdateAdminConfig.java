@@ -33,7 +33,6 @@ public class UpdateAdminConfig extends Command {
 
   @Override
   public JSONObject execute() {
-    LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String clientId = getParam("clientId");
     String developerKey = getParam("developerKey");

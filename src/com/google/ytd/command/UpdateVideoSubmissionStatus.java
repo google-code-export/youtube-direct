@@ -55,7 +55,6 @@ public class UpdateVideoSubmissionStatus extends Command {
 
   @Override
   public JSONObject execute() {
-    LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String id = getParam("id");
     String status = getParam("status");

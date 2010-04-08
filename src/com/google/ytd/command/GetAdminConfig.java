@@ -1,7 +1,5 @@
 package com.google.ytd.command;
 
-import java.util.logging.Logger;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,8 +10,6 @@ import com.google.ytd.util.Util;
 
 public class GetAdminConfig extends Command {
   private AdminConfigDao adminConfigDao = null;
-
-  private static final Logger LOG = Logger.getLogger(GetAdminConfig.class.getName());
 
   @Inject
   private Util util;
@@ -33,5 +29,4 @@ public class GetAdminConfig extends Command {
     json.put("result", new JSONObject(util.toJson(adminConfig)));
     return json;
   }
-
 }
