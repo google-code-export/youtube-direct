@@ -5,13 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 abstract public class Command {
-  private static final Logger LOG = Logger.getLogger(Command.class.getName());
   private Map<String, String> params = new HashMap<String, String>();
 
   abstract public JSONObject execute() throws JSONException;
