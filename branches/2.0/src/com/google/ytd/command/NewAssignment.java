@@ -1,7 +1,5 @@
 package com.google.ytd.command;
 
-import java.util.logging.Logger;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,7 +10,6 @@ import com.google.ytd.model.Assignment.AssignmentStatus;
 import com.google.ytd.util.Util;
 
 public class NewAssignment extends Command {
-  private static final Logger LOG = Logger.getLogger(NewAssignment.class.getName());
 
   private AssignmentDao assignmentDao = null;
 
@@ -26,7 +23,6 @@ public class NewAssignment extends Command {
 
   @Override
   public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
     JSONObject json = new JSONObject();
     String status = getParam("status");
     String description = getParam("description");

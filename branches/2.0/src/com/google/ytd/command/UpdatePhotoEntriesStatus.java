@@ -1,8 +1,5 @@
 package com.google.ytd.command;
 
-import java.util.logging.Logger;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
@@ -12,7 +9,6 @@ import com.google.ytd.model.PhotoEntry.ModerationStatus;
 import com.google.ytd.util.Util;
 
 public class UpdatePhotoEntriesStatus extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdatePhotoEntriesStatus.class.getName());
 
   private PhotoSubmissionDao photoSubmissionDao = null;
   private Util util = null;
@@ -24,8 +20,7 @@ public class UpdatePhotoEntriesStatus extends Command {
   }
 
   @Override
-  public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
+  public JSONObject execute() {
     JSONObject json = new JSONObject();
     String ids = getParam("ids");
     String status = getParam("status");
@@ -42,6 +37,7 @@ public class UpdatePhotoEntriesStatus extends Command {
       entry.setStatus(ModerationStatus.valueOf(status.toUpperCase()));
       photoSubmissionDao.save(entry);
     }
+    
     return json;
   }
 }

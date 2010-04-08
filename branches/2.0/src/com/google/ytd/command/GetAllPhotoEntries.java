@@ -1,7 +1,6 @@
 package com.google.ytd.command;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +12,6 @@ import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.util.Util;
 
 public class GetAllPhotoEntries extends Command {
-  private static final Logger LOG = Logger.getLogger(GetAllPhotoEntries.class.getName());
-
   @Inject
   private Util util = null;
 
@@ -27,7 +24,6 @@ public class GetAllPhotoEntries extends Command {
 
   @Override
   public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
     JSONObject json = new JSONObject();
     List<PhotoEntry> photos = null;
 

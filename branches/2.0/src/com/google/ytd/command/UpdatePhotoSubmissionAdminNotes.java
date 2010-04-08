@@ -1,9 +1,7 @@
 package com.google.ytd.command;
 
 import java.util.Date;
-import java.util.logging.Logger;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
@@ -12,9 +10,6 @@ import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.util.Util;
 
 public class UpdatePhotoSubmissionAdminNotes extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdatePhotoSubmissionAdminNotes.class
-      .getName());
-
   private PhotoSubmissionDao photoSubmissionDao = null;
 
   @Inject
@@ -26,8 +21,7 @@ public class UpdatePhotoSubmissionAdminNotes extends Command {
   }
 
   @Override
-  public JSONObject execute() throws JSONException {
-    LOG.info(this.toString());
+  public JSONObject execute() {
     JSONObject json = new JSONObject();
     String id = getParam("id");
     String adminNotes = getParam("adminNotes");
