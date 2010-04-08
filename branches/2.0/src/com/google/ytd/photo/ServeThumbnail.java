@@ -1,7 +1,6 @@
 package com.google.ytd.photo;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +13,6 @@ import com.google.ytd.model.PhotoEntry;
 
 @Singleton
 public class ServeThumbnail extends HttpServlet {
-  private static final Logger log = Logger.getLogger(ServeThumbnail.class.getName());
-
   private PhotoSubmissionDao photoSubmissionDao = null;
 
   @Inject
