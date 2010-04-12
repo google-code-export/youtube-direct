@@ -414,11 +414,16 @@ function initiateUpload(uploadForm) {
   var iframeName = 'hiddenIframe';
   var iframeId = iframeName;
 
-  var hiddenIframe = document.createElement('iframe');
+  var hiddenIframe;
+  try {
+  	hiddenIframe = document.createElement('<iframe name="' + iframeName + '">');
+  } catch (e) {
+  	hiddenIframe = document.createElement('iframe');
+    hiddenIframe.name = iframeName;
+  }
   hiddenIframe.src = '/blank.html';
   hiddenIframe.style.display = 'none';
   hiddenIframe.id = iframeId;
-  hiddenIframe.name = iframeName;
 
   uploadForm.attr('target', iframeName);
 
