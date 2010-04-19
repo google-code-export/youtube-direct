@@ -228,10 +228,10 @@
       <textarea class="inputBox" name="description" id="description"></textarea>
     </div>
     <br>
-    <label for="date">Date:</label>
+    <label for="photoDate">Date:</label>
     <br>
     <div>
-      <input class="inputBox" type="text" name="date" id="uploadDate" />
+      <input class="inputBox" type="text" name="date" id="photoDate" />
     </div>
     <br> 
     <label for="location">Location:</label>
