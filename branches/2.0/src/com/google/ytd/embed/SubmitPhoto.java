@@ -104,6 +104,8 @@ public class SubmitPhoto extends HttpServlet {
       String phoneNumber = req.getParameter("phoneNumber");
 
       String location = req.getParameter("location");
+      
+      String date = req.getParameter("date");
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
@@ -138,7 +140,7 @@ public class SubmitPhoto extends HttpServlet {
       if (validSubmissionKeys.size() > 0) {
         // PhotoSubmission represents the meta data of a set of photo entries
         PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-                articleUrl, author, email, phoneNumber, title, description, location,
+                articleUrl, author, email, phoneNumber, title, description, location, date,
                 validSubmissionKeys.size());
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();

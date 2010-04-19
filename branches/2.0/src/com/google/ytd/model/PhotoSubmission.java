@@ -70,9 +70,14 @@ public class PhotoSubmission {
   @Persistent
   @Expose
   private String phoneNumber = null;
+  
+  @Persistent
+  @Expose
+  private String date = null;
 
   public PhotoSubmission(Long assignmentId, String articleUrl, String author, String email,
-          String phoneNumber, String title, String description, String location, int numberOfPhotos) {
+          String phoneNumber, String title, String description, String location, String date,
+          int numberOfPhotos) {
     this.author = author;
     this.assignmentId = assignmentId;
     this.articleUrl = articleUrl;
@@ -82,6 +87,7 @@ public class PhotoSubmission {
     this.location = location;
     this.numberOfPhotos = numberOfPhotos;
     this.phoneNumber = phoneNumber;
+    this.date = date;
     this.created = new Date();
     this.updated = this.created;
   }
@@ -156,5 +162,13 @@ public class PhotoSubmission {
 
   public String getPhoneNumber() {
     return phoneNumber;
+  }
+
+  public String getDate() {
+    return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
   }
 }
