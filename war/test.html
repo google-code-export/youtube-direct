@@ -1,13 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
-<title>Partner Test Page</title>
-<script type="text/javascript" src="js/ext/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="js/ytd-embed.js"></script>
-<script type="text/javascript">
-
+  <head>
+    <title>YouTube Direct Test Page</title>
+    <script type="text/javascript" src="js/ext/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="js/ytd-embed.js"></script>
+    <script type="text/javascript">
 jQuery(document).ready(function() {
-  	
 	var assignmentId = getUrlParams().id;
 	if (!assignmentId) {
 		alert('missing assignment id, please append to end of the URL ?id=assignmentId');
@@ -18,10 +15,9 @@ jQuery(document).ready(function() {
 	ytd.setAssignmentId(assignmentId);
 	ytd.setCallToAction('callToAction');
 	ytd.setYtdContainer('ytd', 400, 800);
-	ytd.ready();  
-
-	 	
+	ytd.ready();
 });
+
 function getUrlParams() {
   var args = new Object();
   var params = window.location.href.split('?');
@@ -41,52 +37,28 @@ function getUrlParams() {
   }
   return args;
 }
-
-
-</script>
-</head>
-<style>
-#callToAction {
-}
-#approvedVideos {
-	height: 450px;
-	overflow: auto;
-	border: 1px solid black;
-}
-</style>
-<body>
-<div align="center">
-<div align="center" style="width: 900px;">
-
-<table cellpadding="5" cellspacing="5">
-	<tr valign="top">
-		<td>
-		<h3>Hubble image shows debris from Jupiter collision</h3>
-		<p style="font-size: 12px; font-family: arial;"><img src="jupiter.jpg"/>
-		BALTIMORE - NASA's
-		Hubble Space Telescope is offering a glimpse of atmospheric debris
-		from an object that plunged into Jupiter in a rare collision with the
-		planet. Scientists used the telescope Thursday to capture what they
-		call the "sharpest visible-light picture" so far of the expanding
-		gash. An amateur stargazer in Australia spotted the impression last
-		Sunday. Amy Simon-Miller of NASA's Goddard Space Flight Center in
-		Greenbelt, Md., says the magnitude of the impact is believed to be
-		rare. Simon-Miller estimates the diameter of the object that hit the
-		planet was the size of several football fields. The debris possibly
-		came from a comet or asteroid that hit Jupiter. NASA also says the new
-		images prove repairs done on the Hubble in May were successful.</p>
-		</td>
-		<td align="center">
-		<br><br>
-		
-		<a id="callToAction" href="javascript:void(0);"><img src="calltoaction.png" border="0"/></a>
-		<div id="ytd"></div>
-		
-		</td>
-	</tr>
-</table>
-
-</div>
-</div>
-</body>
+    </script>
+  </head>
+  <body>
+    <div align="center">
+      <div align="center" style="width: 900px;">
+        <table cellpadding="5" cellspacing="5">
+          <tr valign="top">
+            <td>
+              <h3>Donec pulvinar vehicula massa nec aliquam.</h3>
+              <p style="font-size: 12px; font-family: arial;">
+                <img src="skeleton.jpg"/>
+		            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ullamcorper hendrerit ligula in fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent vulputate nibh ut ante varius lobortis ac id nisl. Mauris quam purus, rhoncus ac sollicitudin eu, tincidunt eu diam. Aliquam vel semper nisl. Nam euismod imperdiet nisl in adipiscing. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras quis elit nisi, at bibendum enim. Proin ac ipsum metus, sit amet accumsan justo. Nam eu neque a nulla tempor euismod eget commodo purus. Cras consequat lectus ac massa hendrerit eleifend. Etiam dolor nibh, auctor sed vulputate in, scelerisque et purus. Maecenas aliquam tempus enim, vitae cursus nunc dignissim et. Curabitur vehicula mattis velit at sodales. Sed porta porta erat, in fermentum felis venenatis eu. Mauris turpis sapien, volutpat nec scelerisque vel, vehicula eget arcu. Quisque elementum pharetra libero, vel tincidunt enim malesuada nec. Aenean sollicitudin neque nec urna vulputate cursus.
+              </p>
+            </td>
+            <td align="center">
+              <br><br>
+              <a id="callToAction" href="javascript:void(0);"><img src="calltoaction.png" border="0"/></a>
+		          <div id="ytd"></div>
+		        </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
 </html>
