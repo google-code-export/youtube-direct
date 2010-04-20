@@ -109,7 +109,7 @@
 			}	
 		%>
 	  <%
-	    if (adminConfigDao.allowPhotoSubmission()) {
+	    if (!authenticator.isLoggedIn() && adminConfigDao.allowPhotoSubmission()) {
 	  %>
   <br><br>
   <input id="photoButton" class="askButton" type="button" value="Submit Photo(s)" /> 

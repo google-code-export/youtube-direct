@@ -66,6 +66,9 @@ Ytd.prototype.ready = function() {
 Ytd.prototype.embed = function() {
   var loadingElement = document.createElement('div');
   loadingElement.innerHTML = 'Loading... please wait.';
+  loadingElement.style.fontFamily = 'arial, sans-serif';
+  loadingElement.style.position = 'absolute';
+  loadingElement.style.top = '100px';
   
 	var iframeElement = document.createElement('iframe');
 	iframeElement.width = this.width + 'px';
