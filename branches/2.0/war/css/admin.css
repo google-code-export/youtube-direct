@@ -4,6 +4,16 @@ body {
 	font-family: arial;
 }
 
+th {
+  font-size: 11px;
+  font-family: arial;
+}
+
+td {
+  font-size: 11px;
+  font-family: arial;  
+}
+
 #videoDisplay {
 	position: absolute;
 	top: 0px;
