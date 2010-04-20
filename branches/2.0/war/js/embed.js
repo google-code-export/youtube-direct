@@ -91,8 +91,8 @@ function validateCaptcha() {
 	var photoMain = jQuery('#photoMain');
 	
   // Disable buttons during submission.
-  photoMain.find('#submitButton').disabled = true;
-  photoMain.find('#cancelSubmitButton').disabled = true;    
+  photoMain.find('#uploadButton').get(0).disabled = true;
+  photoMain.find('#cancelUploadButton').get(0).disabled = true;    
   
   var params = {};
   params.challenge = jQuery('#recaptcha_challenge_field').val();
@@ -104,8 +104,8 @@ function validateCaptcha() {
   	if (json.result == 'true') {
   		startPhotoUpload();
     } else {
-    	photoMain.find('#submitButton').disabled = false;
-    	photoMain.find('#cancelSubmitButton').disabled = false;
+    	photoMain.find('#uploadButton').get(0).disabled = false;
+    	photoMain.find('#cancelUploadButton').get(0).disabled = false;
     	
     	Recaptcha.reload();
     	
