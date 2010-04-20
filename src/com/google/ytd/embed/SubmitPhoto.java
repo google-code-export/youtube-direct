@@ -160,10 +160,9 @@ public class SubmitPhoto extends HttpServlet {
       }
     } catch (IllegalArgumentException e) {
       LOG.log(Level.WARNING, "", e);
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } finally {
-      // TODO: Do something here, though it's effectively ignored by the
-      // uploader iframe.
+      // As per the BlobStore spec, we need to return a 30x response here. It's ignored by the JS.
+      resp.sendRedirect("/blank.html");
     }
   }
 }
