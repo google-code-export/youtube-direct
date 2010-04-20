@@ -621,7 +621,7 @@ admin.photo.showDetails = function(entryId) {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
           submission.adminNotes = params.adminNotes;
-          alert('Notes are save.');
+          alert('Notes are saved.');
         } else {
           admin.showError(json.error, messageElement);
         }
