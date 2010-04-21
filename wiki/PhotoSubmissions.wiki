@@ -15,5 +15,6 @@ While the photos are stored in the Blobstore and could theoretically be served d
   # Visit your !YouTube Direct Admin interface at http://APP_ID.appspot.com/admin, and go to the "Configuration" tab.
   # Assuming you're running the latest !YouTube Direct codebase, you should see a "Photo Submissions" checkbox under the "Moderation / Submission Settings" section. Check this box.
   # Specify your preferred maximum photo size and the public and private reCAPTCHA keys that you registered in step 3.
+  # Save your configuration changes.
 
 Your users should now see a "Submit Photo(s)" option when they visit a page with an embedded !YouTube Direct uploader. You can access their photo submissions via the new "Photo Submission" tab in the Admin interface.
