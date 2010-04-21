@@ -1,0 +1,11 @@
+=YouTube Direct Photo Submissions=
+
+In addition to allowing for video submissions, YouTube Direct now supports photo uploads from users. This guide explains how photo submissions work, and includes instructions on configuring your YouTube Direct instance to support photo uploads.
+
+==Implementation Details==
+
+Unlike videos, photos are not tied to an existing YouTube account. The photo upload interface performs an HTTP POST request to your App Engine instance, and the binary photo data is stored in your instance's [http://code.google.com/appengine/docs/java/blobstore/overview.html Blobstore]. Before storing the data, some sanity checks are performed (is the data an actual image? is the data under a certain max size threshold?). Users do not have to log in with a YouTube account to upload photos, so we require that they provide an email address and solve a [http://recaptcha.net/ reCAPTCHA] to discourage spammy submissions.
+
+While the photos are stored in the Blobstore and could theoretically be served directly from there, developers should be aware that there is a cost involved for both Blobstore storage and for the raw data transferred from your App Engine instance. A best practice is to download a copy of approved photos via the YouTube Direct Admin interface and to serve the image data from your own web hosting provider. You can optionally delete a photo using the Admin interface to free up storage space in the Blobstore.
+
+==Setting Up Photo Submissions==
