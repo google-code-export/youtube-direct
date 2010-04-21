@@ -419,8 +419,8 @@ admin.photo.getImageThumb = function(entry) {
   
   var photoModeration = jQuery('<select id="' + entry.id + '_mod"/>');
   photoModeration.append('<option value="none"> ------ </option>');
-  photoModeration.append('<option value="approve">approve</option>');
-  photoModeration.append('<option value="reject">reject</option>');
+  photoModeration.append('<option value="approve">approved</option>');
+  photoModeration.append('<option value="reject">rejected</option>');
   
   photoModeration.change(function() {
     var selection = jQuery(photoModeration.get(0)[photoModeration.get(0).selectedIndex]);
