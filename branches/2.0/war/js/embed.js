@@ -140,6 +140,11 @@ function photoMainInit() {
       return false;
     }
     
+  	if (!isValidEmail(photoMain.find('#uploadEmail').val())) {
+      showMessage('Your email address appears to be invalid.');
+      return false;
+  	}
+    
     if (!processFileElements(jQuery('#photoMain'))) {
       showMessage('Please select at least one file to upload.');
       return false;
@@ -201,6 +206,12 @@ function existingVideoMainInit() {
       showMessage('Please fill in all required field(s).');
       return;
     }
+    
+  	if (jQuery('#submitEmailAsk').get(0).checked && !isValidEmail(jQuery('#submitEmail').val())) {
+  		event.preventDefault();
+      showMessage('Your email address appears to be invalid.');
+      return;
+  	}
 
     var jsonObj = {};
     var url = jQuery('#videoUrl').val();
@@ -320,25 +331,33 @@ function displayExistingVideos(videos) {
 function uploaderMainInit() {
   jQuery('#uploaderMain').css('display', 'block');
 
-  jQuery('#uploadButton').click( function(event) {        
+  jQuery('#uploadButton').click(function(event) {        
     if (!isRequiredFilled('uploaderMain')) {
       event.preventDefault();
       showMessage('Please fill in all required field(s).');
-    } else {
-      jQuery('#uploadButton').get(0).disabled = true;
-      jQuery('#cancelUploadButton').get(0).disabled = true;
-      getUploadToken();
       return false;
     }
+    
+  	if (jQuery('#uploadEmailAsk').get(0).checked &&
+  					!isValidEmail(jQuery('#uploaderMain').find('#uploadEmail').val())) {
+  		event.preventDefault();
+      showMessage('Your email address appears to be invalid.');
+      return false;
+  	}
+    
+    jQuery('#uploadButton').get(0).disabled = true;
+    jQuery('#cancelUploadButton').get(0).disabled = true;
+    getUploadToken();
+    return false;
   });
 
-  jQuery('#cancelUploadButton').click( function(event) {
+  jQuery('#cancelUploadButton').click(function(event) {
     clearMessage();
     jQuery('#uploaderMain').css('display', 'none');
     jQuery('#loginInstruction').css('display', 'block');
   });      
   
-  jQuery('#uploadEmailAsk').change( function() {
+  jQuery('#uploadEmailAsk').change(function() {
     var checked = jQuery(this).get(0).checked;
 
     if (checked) {
@@ -525,4 +544,11 @@ function clearProcessing() {
   var e = jQuery('#processing');
   e.empty();
   e.css('display', 'none');  
+}
+
+// Hopefully-good-enough regex for checking to see if an email address is "valid".
+function isValidEmail(email) {
+	var regex = /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
+	return regex.test(email);
 }
