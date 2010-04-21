@@ -387,21 +387,24 @@ admin.photo.getImageThumb = function(entry) {
 
       options.width = img.width + 50;
       options.height = img.height + 100;
+      
+      var popUp = jQuery('<div align="center"/>');
+      popUp.css('width', options.width);
+      popUp.css('height', options.height);
+      
+      options.open = function() {
+        var imageLink = jQuery('<a/>');
+        imageLink.attr('href', img.src);
+        imageLink.attr('target', '_blank');
+        imageLink.html('Open in new window');
+  
+        popUp.append(imageLink);
+        popUp.append('<br><br>');
+        popUp.append(img);        
+      };
 
       jQuery.ui.dialog.defaults.bgiframe = true;
-
-      var popUp = jQuery('<div align="center"/>');
-      var imageLink = jQuery('<a/>');
-      imageLink.attr('href', img.src);
-      imageLink.attr('target', '_blank');
-      imageLink.html('Open in new window');
-
-      popUp.append(imageLink);
-      popUp.append('<br><br>');
-      popUp.append(img);
-
       popUp.dialog(options);
-      
     };
   });
 
