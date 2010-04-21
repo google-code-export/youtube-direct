@@ -379,20 +379,22 @@ admin.photo.getImageThumb = function(entry) {
 
   thumbImage.click( function() {
     var img = new Image();
-    img.src = entry.imageUrl;
-
-    img.onload = function() {
+    img.src = entry.imageUrl + '#' + (new Date()).getTime();  
+    
+    var popUp = jQuery('<div align="center"/>');
+    
+    jQuery(img).load(function() {
       var options = {};
-      img = admin.photo.resizeImage(img, 800);
-
-      options.width = img.width + 50;
-      options.height = img.height + 100;
       
-      var popUp = jQuery('<div align="center"/>');
-      popUp.css('width', options.width);
-      popUp.css('height', options.height);
-      
-      options.open = function() {
+      options.open = function() {    
+	      img = admin.photo.resizeImage(img, 800);
+	
+	      options.width = img.width + 50;
+	      options.height = img.height + 100;
+	      
+	      popUp.css('width', options.width);
+	      popUp.css('height', options.height);
+            
         var imageLink = jQuery('<a/>');
         imageLink.attr('href', img.src);
         imageLink.attr('target', '_blank');
@@ -402,12 +404,17 @@ admin.photo.getImageThumb = function(entry) {
         popUp.append('<br><br>');
         popUp.append(img);        
       };
-
+	  
+  	  options.close = function() {
+  	  	jQuery(img).remove();
+  	  	popUp.dialog('destroy');
+  	  };
+	  
       jQuery.ui.dialog.defaults.bgiframe = true;
       popUp.dialog(options);
-    };
+    });
   });
-
+  
   thumbDiv.append(thumbImage);
 
   var checkbox = jQuery('<input type="checkbox" value="' + entry.id + '">');
