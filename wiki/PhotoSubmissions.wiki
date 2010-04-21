@@ -9,7 +9,7 @@ Unlike videos, photos are not tied to an existing !YouTube account. The photo up
 While the photos are stored in the Blobstore and could theoretically be served directly from there, developers should be aware that there is a cost involved for both Blobstore storage and for the raw data transferred from your App Engine instance. A best practice is to download a copy of approved photos via the !YouTube Direct Admin interface and to serve the image data from your own web hosting provider. You can optionally delete a photo using the Admin interface to free up storage space in the Blobstore.
 
 ==Setting Up Photo Submissions==
-  # Ensure that you're using the latest release of !YouTube Direct. Initial support for photo submissions was added in the 20100421 release (!YouTube Direct "2.0").
+  # Ensure that you're using the latest release of !YouTube Direct. Initial support for photo submissions was added in the `20100421` release (a.k.a. !YouTube Direct "2.0").
   # [http://code.google.com/appengine/docs/billing.html Enable billing] for your App Engine instance. Photo submissions make use of the Blobstore, which is not included in your free quota.
   # Register for a [https://admin.recaptcha.net/recaptcha/sites/ reCAPTCHA account] and generate a new reCAPTCHA API key pair. When generating your reCAPTCHA keys, you should specify `APP_ID`.appspot.com (where `APP_ID` is your App Engine instance) as the target domain.
   # Visit your !YouTube Direct Admin interface at http://APP_ID.appspot.com/admin, and go to the "Configuration" tab.
