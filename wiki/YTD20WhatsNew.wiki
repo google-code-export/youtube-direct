@@ -5,9 +5,9 @@
 ==New Functionality:==
 
   * Support for photo submissions. Photos are stored in the App Engine datastore and require that you have billing enabled on your App Engine instance.
-  * Support for secure AuthSub, if properly configured.
-  * Support for viewing and editing YouTube captions for any video submitted. All caption languages are supported.
-  * Support for multiple YouTube Direct uploader embeds (for different assignments) on a single page.
+  * Support for secure !AuthSub, if properly configured.
+  * Support for viewing and editing !YouTube captions for any video submitted. All caption languages are supported.
+  * Support for multiple !YouTube Direct uploader embeds (for different assignments) on a single page.
   * Pre- and post-submission text is now configurable on a per-assignment basis with a special ASSIGNMENT_MESSAGE macro.
   * Users can now select from a pre-populated list of the most recent 50 videos in their account when uploading an existing video.  
 
