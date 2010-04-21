@@ -696,7 +696,9 @@ admin.sub.fetchDetails = function(entryId) {
 };
 
 admin.sub.showDetails = function(submission) {
-  var mainDiv = jQuery('#submissionDetailsTemplate').clone();   
+  var mainDiv = jQuery('#submissionDetailsTemplate').clone();
+  mainDiv.css('display', 'block');
+  mainDiv.css('height', '650px');
   
   var videoWidth = 255;
   var videoHeight = 220;  
@@ -705,131 +707,129 @@ admin.sub.showDetails = function(submission) {
   dialogOptions.title = submission.videoTitle;
   dialogOptions.width = 700;
   dialogOptions.height = 650;
+  dialogOptions.open = function() {
+    mainDiv.find('#assignmentId').html(submission.assignmentId);
+    
+    var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
+        new Date(submission.created).toLocaleDateString()
+    
+    mainDiv.find('#created').html(created);
+    
+    mainDiv.find('#videoSource').html(submission.videoSource);  
+    
+    var creatorInfo = submission.youTubeName + 
+        (submission.notifyEmail?' (' + submission.notifyEmail +')':'');    
+    mainDiv.find('#youTubeName').html(creatorInfo);  
+    
+    mainDiv.find('#videoId').html(
+        '<a target="_blank" href="http://www.youtube.com/watch#v=' + 
+        submission.videoId + '">' + 
+        submission.videoId + '</a>');
+    mainDiv.find('#youTubeState').html(submission.youTubeState);
+    
+    mainDiv.find('#videoTitle').html(submission.videoTitle);
+    
+    mainDiv.find('#videoDescription').html(submission.videoDescription);
+    
+    mainDiv.find('#videoTags').html(submission.videoTags);  
+    
+    var articleLink = submission.articleUrl?'<a target="_blank" href="' + 
+        submission.articleUrl + '">' + submission.articleUrl + '</a>':'N/A';  
+    mainDiv.find('#articleUrl').html(articleLink);  
+    
+    mainDiv.find('#videoDate').html(
+        submission.videoDate?submission.videoDate:'N/A');
+    
+    mainDiv.find('#videoLocation').html(
+        submission.videoLocation?submission.videoLocation:'N/A');
+    
+    mainDiv.find('#phoneNumber').html(
+        submission.phoneNumber?submission.phoneNumber:'N/A');  
+    
+    var moderationStatus = -1;
+    switch(submission.status) {
+      case 'UNREVIEWED':
+        moderationStatus = 0;
+        break;
+      case 'APPROVED':
+        moderationStatus = 1;
+        break;
+      case 'REJECTED':
+        moderationStatus = 2;
+        break;
+      case 'SPAM':
+        moderationStatus = 3;
+        break;      
+    }
+      
+    mainDiv.find('#moderationStatus').get(0).selectedIndex = moderationStatus;  
+    mainDiv.find('#moderationStatus').change(function() {
+      switch(mainDiv.find('#moderationStatus').get(0).selectedIndex) {
+        case 0:
+          submission.status = 'UNREVIEWED';
+          break;
+        case 1:
+          submission.status = 'APPROVED';
+          break;
+        case 2:
+          submission.status = 'REJECTED';
+          break;
+        case 3:
+          submission.status = 'SPAM';
+          break;        
+      }
+      
+      if (submission.status == 'APPROVED' && submission.youTubeState != 'OKAY') {
+        if (!confirm("This video's state is '" + submission.youTubeState + 
+                "'. It may not be available on YouTube. Are you sure you want to approve it?")) {
+          return;
+        }  
+      }
+      
+      admin.sub.updateSubmissionStatus(submission);
+    });    
+    
+    mainDiv.find('#adminNotes').html(submission.adminNotes);
+    
+    mainDiv.find('#saveAdminNotes').click(function() {
+      var messageElement = admin.showMessage("Saving admin notes...");
+      
+      var command = 'UPDATE_VIDEO_SUBMISSION_ADMIN_NOTES';
+      var params = {};
+      params.id = submission.id;
+      params.adminNotes = mainDiv.find('#adminNotes').val();
+      
+      var jsonRpcCallback = function(jsonStr) {
+        try {
+          var json = JSON.parse(jsonStr);
+          if (!json.error) {
+            admin.showMessage("Admin notes saved.", messageElement);
+            submission.adminNotes = params.adminNotes;
+          } else {
+            admin.showError(json.error, messageElement);
+          }
+        } catch(exception) {
+          admin.showError('Request failed: ' + exception, messageElement);
+        }
+      } 
+      
+      jsonrpc.makeRequest(command, params, jsonRpcCallback);
+    });
+    
+    mainDiv.find('#download').click(function() {
+      admin.sub.downloadVideo(submission);
+    });
+    
+    mainDiv.find('#captions').click(function() {
+      mainDiv.dialog('close');
+      admin.sub.loadCaptions(submission.id);
+    });  
+  
+    var videoHtml = admin.sub.getVideoHTML(submission.videoId, videoWidth, videoHeight);
+    mainDiv.find('#video').html(videoHtml);
+  };
   
   jQuery.ui.dialog.defaults.bgiframe = true;
-  
-  var videoHtml = admin.sub.getVideoHTML(submission.videoId, videoWidth, videoHeight);
-  
-  mainDiv.css('display', 'block');
-  
-  mainDiv.find('#assignmentId').html(submission.assignmentId);
-  
-  var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
-      new Date(submission.created).toLocaleDateString()
-  
-  mainDiv.find('#created').html(created);
-  
-  mainDiv.find('#videoSource').html(submission.videoSource);  
-  
-  var creatorInfo = submission.youTubeName + 
-      (submission.notifyEmail?' (' + submission.notifyEmail +')':'');    
-  mainDiv.find('#youTubeName').html(creatorInfo);  
-  
-  mainDiv.find('#videoId').html(
-      '<a target="_blank" href="http://www.youtube.com/watch#v=' + 
-      submission.videoId + '">' + 
-      submission.videoId + '</a>');
-  mainDiv.find('#youTubeState').html(submission.youTubeState);
-  
-  mainDiv.find('#videoTitle').html(submission.videoTitle);
-  
-  mainDiv.find('#videoDescription').html(submission.videoDescription);
-  
-  mainDiv.find('#videoTags').html(submission.videoTags);  
-  
-  var articleLink = submission.articleUrl?'<a target="_blank" href="' + 
-      submission.articleUrl + '">' + submission.articleUrl + '</a>':'N/A';  
-  mainDiv.find('#articleUrl').html(articleLink);  
-  
-  mainDiv.find('#videoDate').html(
-      submission.videoDate?submission.videoDate:'N/A');
-  
-  mainDiv.find('#videoLocation').html(
-      submission.videoLocation?submission.videoLocation:'N/A');
-  
-  mainDiv.find('#phoneNumber').html(
-      submission.phoneNumber?submission.phoneNumber:'N/A');  
-  
-  mainDiv.find('#video').html(videoHtml);
-  
-  var moderationStatus = -1;
-  switch(submission.status) {
-    case 'UNREVIEWED':
-      moderationStatus = 0;
-      break;
-    case 'APPROVED':
-      moderationStatus = 1;
-      break;
-    case 'REJECTED':
-      moderationStatus = 2;
-      break;
-    case 'SPAM':
-      moderationStatus = 3;
-      break;      
-  }
-    
-  mainDiv.find('#moderationStatus').get(0).selectedIndex = moderationStatus;  
-  mainDiv.find('#moderationStatus').change(function() {
-    switch(mainDiv.find('#moderationStatus').get(0).selectedIndex) {
-      case 0:
-        submission.status = 'UNREVIEWED';
-        break;
-      case 1:
-        submission.status = 'APPROVED';
-        break;
-      case 2:
-        submission.status = 'REJECTED';
-        break;
-      case 3:
-        submission.status = 'SPAM';
-        break;        
-    }
-    
-    if (submission.status == 'APPROVED' && submission.youTubeState != 'OKAY') {
-      if (!confirm("This video's state is '" + submission.youTubeState + 
-      				"'. It may not be available on YouTube. Are you sure you want to approve it?")) {
-        return;
-      }  
-    }
-    
-    admin.sub.updateSubmissionStatus(submission);
-  });    
-  
-  mainDiv.find('#adminNotes').html(submission.adminNotes);
-  
-  mainDiv.find('#saveAdminNotes').click(function() {
-  	var messageElement = admin.showMessage("Saving admin notes...");
-  	
-    var command = 'UPDATE_VIDEO_SUBMISSION_ADMIN_NOTES';
-    var params = {};
-    params.id = submission.id;
-    params.adminNotes = mainDiv.find('#adminNotes').val();
-    
-    var jsonRpcCallback = function(jsonStr) {
-      try {
-        var json = JSON.parse(jsonStr);
-        if (!json.error) {
-        	admin.showMessage("Admin notes saved.", messageElement);
-          submission.adminNotes = params.adminNotes;
-        } else {
-          admin.showError(json.error, messageElement);
-        }
-      } catch(exception) {
-      	admin.showError('Request failed: ' + exception, messageElement);
-      }
-    } 
-    
-    jsonrpc.makeRequest(command, params, jsonRpcCallback);
-  });
-  
-  mainDiv.find('#download').click(function() {
-    admin.sub.downloadVideo(submission);
-  });
-  
-  mainDiv.find('#captions').click(function() {
-  	mainDiv.dialog('close');
-  	admin.sub.loadCaptions(submission.id);
-  });
   
   mainDiv.dialog(dialogOptions);
 };
@@ -986,15 +986,18 @@ admin.sub.previewVideo = function(entryId) {
 
   var videoWidth = 275;
   var videoHeight = 250;
-
+  
+  var div = jQuery('<div style="width: 330px; height: 300px;" align="center"/>');
+  
   var dialogOptions = {};
   dialogOptions.title = title;
   dialogOptions.width = 330;
-  dialogOptions.height = 300;
+  dialogOptions.height = 330;
+  dialogOptions.open = function() {
+    div.html(admin.sub.getVideoHTML(videoId, videoWidth, videoHeight));
+  };
   
   jQuery.ui.dialog.defaults.bgiframe = true;
-  var div = jQuery('<div align="center"/>');
-  div.html(admin.sub.getVideoHTML(videoId, videoWidth, videoHeight));
   div.dialog(dialogOptions);
 };
 
