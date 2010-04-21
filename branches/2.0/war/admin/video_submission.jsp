@@ -34,7 +34,7 @@ limitations under the License.
 	</div>
 	<table id="submissionGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	
-	<div style="display: none;" id="submissionDetailsTemplate" align="center">		  
+	<div style="height: 650px; display: none;" id="submissionDetailsTemplate" align="center">		  
 	  <table cellspacing="10" cellspadding="10" style="width: 90%;">
 	  	<tr valign="top">
 	  		<td>

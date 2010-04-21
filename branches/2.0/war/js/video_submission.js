@@ -696,18 +696,18 @@ admin.sub.fetchDetails = function(entryId) {
 };
 
 admin.sub.showDetails = function(submission) {
-  var mainDiv = jQuery('#submissionDetailsTemplate').clone();
-  mainDiv.css('display', 'block');
-  mainDiv.css('height', '650px');
-  
-  var videoWidth = 255;
-  var videoHeight = 220;  
+  var div = jQuery('<div style="width: 700px; height: 600;" align="center"/>');
   
   var dialogOptions = {};
   dialogOptions.title = submission.videoTitle;
   dialogOptions.width = 700;
-  dialogOptions.height = 650;
+  dialogOptions.height = 700;
   dialogOptions.open = function() {
+    var videoWidth = 255;
+    var videoHeight = 220;  
+  
+    var mainDiv = jQuery('#submissionDetailsTemplate').clone();
+    mainDiv.css('display', 'block');  
     mainDiv.find('#assignmentId').html(submission.assignmentId);
     
     var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
@@ -827,11 +827,12 @@ admin.sub.showDetails = function(submission) {
   
     var videoHtml = admin.sub.getVideoHTML(submission.videoId, videoWidth, videoHeight);
     mainDiv.find('#video').html(videoHtml);
+    
+    div.append(mainDiv);
   };
   
   jQuery.ui.dialog.defaults.bgiframe = true;
-  
-  mainDiv.dialog(dialogOptions);
+  div.dialog(dialogOptions);
 };
 
 admin.sub.downloadVideo = function(submission) {
