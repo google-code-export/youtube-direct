@@ -458,185 +458,186 @@ admin.photo.getImageThumb = function(entry) {
 
 admin.photo.showDetails = function(entryId) {
   var submission = admin.photo.getSubmission(entryId);
-
-  var mainDiv = jQuery('#photoDetailsTemplate').clone();
-
+  var div = jQuery('<div style="width: 700px; height: 600;" align="center"/>');
+  
   var dialogOptions = {};
   dialogOptions.title = submission.title;
-  dialogOptions.width = 800;
-  dialogOptions.height = 650;
-
-  jQuery.ui.dialog.defaults.bgiframe = true;
-
-  mainDiv.css('display', 'block');
-
-  mainDiv.find('#assignmentId').html(submission.assignmentId);
-
-  var created = new Date(submission.created).toLocaleTimeString() + ' '
-      + new Date(submission.created).toLocaleDateString()
-
-  mainDiv.find('#created').html(created);
-
-  mainDiv.find('#author').html(submission.author);
-
-  mainDiv.find('#title').html(submission.title);
-
-  mainDiv.find('#description').html(submission.description);
+  dialogOptions.width = 700;
+  dialogOptions.height = 700;
+  dialogOptions.open = function() {
+    var mainDiv = jQuery('#photoDetailsTemplate').clone();
+    mainDiv.css('display', 'block');
+    mainDiv.find('#assignmentId').html(submission.assignmentId);
   
-  mainDiv.find('#phoneNumber').html(
-      submission.phoneNumber?submission.phoneNumber:'N/A');  
+    var created = new Date(submission.created).toLocaleTimeString() + ' '
+        + new Date(submission.created).toLocaleDateString()
   
-  var articleLink = submission.articleUrl ? '<a target="_blank" href="'
-      + submission.articleUrl + '">' + submission.articleUrl + '</a>' : 'N/A';
-  mainDiv.find('#articleUrl').html(articleLink);
-
-  mainDiv.find('#location').html(
-      submission.location ? submission.location : 'N/A');
-
-  var colSize = 3;
+    mainDiv.find('#created').html(created);
   
-  // Grab photo entries
-  admin.photo.getAllPhotos(submission.id, function(entries) {
-    var photoHtml = [];
-    var photosTable = mainDiv.find('#photos');    
+    mainDiv.find('#author').html(submission.author);
+  
+    mainDiv.find('#title').html(submission.title);
+  
+    mainDiv.find('#description').html(submission.description);
     
-    var rowSize = Math.floor(entries.length / colSize) + entries.length % colSize;
+    mainDiv.find('#phoneNumber').html(
+        submission.phoneNumber?submission.phoneNumber:'N/A');  
     
-    var entryIndex = 0;
+    var articleLink = submission.articleUrl ? '<a target="_blank" href="'
+        + submission.articleUrl + '">' + submission.articleUrl + '</a>' : 'N/A';
+    mainDiv.find('#articleUrl').html(articleLink);
+  
+    mainDiv.find('#location').html(
+        submission.location ? submission.location : 'N/A');
+  
+    var colSize = 3;
     
-    for (var i = 0; i < rowSize; i++) {
-      var tr = jQuery('<tr/>');
-      photosTable.append(tr);            
+    // Grab photo entries
+    admin.photo.getAllPhotos(submission.id, function(entries) {
+      var photoHtml = [];
+      var photosTable = mainDiv.find('#photos');    
       
-      for (var j = 0; j < colSize; j++) {
-        if (entryIndex >= entries.length) {
-          break;
-        }
+      var rowSize = Math.floor(entries.length / colSize) + entries.length % colSize;
       
-        var imageThumb = admin.photo.getImageThumb(entries[entryIndex]);
-        var td = jQuery('<td valign="top"/>');
-        td.append(imageThumb);
-        tr.append(td);
-        entryIndex++;
-      } 
-    }
-  });
-
-  mainDiv.find('#selectAll').click( function() {
-    var checkboxes = mainDiv.find('#photos').find('input:checkbox');
-    for ( var i = 0; i < checkboxes.length; i++) {
-      checkboxes[i].checked = this.checked;
-    }
-  });
-  
-  var approvedFeedLinkHtml = [];
-  approvedFeedLinkHtml.push('[ <a target="_blank" href="');
-  approvedFeedLinkHtml.push('/approved_photos/atom?id=' + entryId + '">');
-  approvedFeedLinkHtml.push('atom');
-  approvedFeedLinkHtml.push('</a> ]');
-  approvedFeedLinkHtml.push('&nbsp;');
-  approvedFeedLinkHtml.push('[ <a target="_blank" href="');
-  approvedFeedLinkHtml.push('/approved_photos/json?id=' + entryId + '">');
-  approvedFeedLinkHtml.push('json');
-  approvedFeedLinkHtml.push('</a> ]');  
-  
-  mainDiv.find('#feedsDiv').html(approvedFeedLinkHtml.join(''));
-  
-  mainDiv.find('#photoBulkAction').change(function() {
-    var selection = mainDiv.find('#photoBulkAction').get(0)[mainDiv.find('#photoBulkAction').get(0).selectedIndex];    
-    var checkboxes = mainDiv.find('#photos').find('input:checked');
-
-    if (checkboxes.length == 0) {
-      mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
-      return;
-    }
-
-    switch (selection.value) {
-      case 'approve':
-        var ids = [];
-        for ( var i = 0; i < checkboxes.length; i++) {
-          ids.push(jQuery(checkboxes[i]).val());
-        }
-  
-        admin.photo.updateStatus(ids, 'APPROVED', function() {
-          for ( var i = 0; i < ids.length; i++) {
-            var id = ids[i];
-            var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
-            thumbnailDiv.fadeTo('fast', 1);
-            var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
-            moderationSelect.get(0).selectedIndex = 1;
+      var entryIndex = 0;
+      
+      for (var i = 0; i < rowSize; i++) {
+        var tr = jQuery('<tr/>');
+        photosTable.append(tr);            
+        
+        for (var j = 0; j < colSize; j++) {
+          if (entryIndex >= entries.length) {
+            break;
           }
-        });
-        break;
-      case 'reject':
-        var ids = [];
-        for ( var i = 0; i < checkboxes.length; i++) {
-          ids.push(jQuery(checkboxes[i]).val());
-        }
+        
+          var imageThumb = admin.photo.getImageThumb(entries[entryIndex]);
+          var td = jQuery('<td valign="top"/>');
+          td.append(imageThumb);
+          tr.append(td);
+          entryIndex++;
+        } 
+      }
+    });
   
-        admin.photo.updateStatus(ids, 'REJECTED', function() {
-          for ( var i = 0; i < ids.length; i++) {
-            var id = ids[i];
-            var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
-            thumbnailDiv.fadeTo('slow', .3);          
-            var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
-            moderationSelect.get(0).selectedIndex = 2;
+    mainDiv.find('#selectAll').click( function() {
+      var checkboxes = mainDiv.find('#photos').find('input:checkbox');
+      for ( var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = this.checked;
+      }
+    });
+    
+    var approvedFeedLinkHtml = [];
+    approvedFeedLinkHtml.push('[ <a target="_blank" href="');
+    approvedFeedLinkHtml.push('/approved_photos/atom?id=' + entryId + '">');
+    approvedFeedLinkHtml.push('atom');
+    approvedFeedLinkHtml.push('</a> ]');
+    approvedFeedLinkHtml.push('&nbsp;');
+    approvedFeedLinkHtml.push('[ <a target="_blank" href="');
+    approvedFeedLinkHtml.push('/approved_photos/json?id=' + entryId + '">');
+    approvedFeedLinkHtml.push('json');
+    approvedFeedLinkHtml.push('</a> ]');  
+    
+    mainDiv.find('#feedsDiv').html(approvedFeedLinkHtml.join(''));
+    
+    mainDiv.find('#photoBulkAction').change(function() {
+      var selection = mainDiv.find('#photoBulkAction').get(0)[mainDiv.find('#photoBulkAction').get(0).selectedIndex];    
+      var checkboxes = mainDiv.find('#photos').find('input:checked');
+  
+      if (checkboxes.length == 0) {
+        mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
+        return;
+      }
+  
+      switch (selection.value) {
+        case 'approve':
+          var ids = [];
+          for ( var i = 0; i < checkboxes.length; i++) {
+            ids.push(jQuery(checkboxes[i]).val());
           }
-        });
-        break;
-      case 'delete':
-        var ids = [];
-        for ( var i = 0; i < checkboxes.length; i++) {
-          ids.push(jQuery(checkboxes[i]).val());
-        }
-  
-        if (confirm('This will delete all selected images permanently.  Are you sure?')) {
-          admin.photo.deletePhotos(ids, function() {
+    
+          admin.photo.updateStatus(ids, 'APPROVED', function() {
             for ( var i = 0; i < ids.length; i++) {
               var id = ids[i];
-              var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id + '_main'));
-              thumbnailDiv.remove();
+              var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
+              thumbnailDiv.fadeTo('fast', 1);
+              var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
+              moderationSelect.get(0).selectedIndex = 1;
             }
-            admin.photo.refreshGrid();
           });
-        }
-        break;
-    }
-
-    // Reset all selections
-    for ( var i = 0; i < checkboxes.length; i++) {
-      checkboxes[i].checked = false;
-    }
-    mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
-    mainDiv.find('#selectAll').get(0).checked = false;
-  });
-
-  mainDiv.find('#adminNotes').html(submission.adminNotes);
-
-  mainDiv.find('#saveAdminNotes').click( function() {
-    var command = 'UPDATE_PHOTO_SUBMISSION_ADMIN_NOTES';
-    var params = {};
-    params.id = submission.id;
-    params.adminNotes = mainDiv.find('#adminNotes').val();
-
-    var jsonRpcCallback = function(jsonStr) {
-      try {
-        var json = JSON.parse(jsonStr);
-        if (!json.error) {
-          submission.adminNotes = params.adminNotes;
-          alert('Notes are saved.');
-        } else {
-          admin.showError(json.error, messageElement);
-        }
-      } catch (exception) {
-        admin.showError('Request failed: ' + exception, messageElement);
+          break;
+        case 'reject':
+          var ids = [];
+          for ( var i = 0; i < checkboxes.length; i++) {
+            ids.push(jQuery(checkboxes[i]).val());
+          }
+    
+          admin.photo.updateStatus(ids, 'REJECTED', function() {
+            for ( var i = 0; i < ids.length; i++) {
+              var id = ids[i];
+              var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id));
+              thumbnailDiv.fadeTo('slow', .3);          
+              var moderationSelect = jQuery(mainDiv.find('#photos').find('#' + id + '_mod'));
+              moderationSelect.get(0).selectedIndex = 2;
+            }
+          });
+          break;
+        case 'delete':
+          var ids = [];
+          for ( var i = 0; i < checkboxes.length; i++) {
+            ids.push(jQuery(checkboxes[i]).val());
+          }
+    
+          if (confirm('This will delete all selected images permanently.  Are you sure?')) {
+            admin.photo.deletePhotos(ids, function() {
+              for ( var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                var thumbnailDiv = jQuery(mainDiv.find('#photos').find('#' + id + '_main'));
+                thumbnailDiv.remove();
+              }
+              admin.photo.refreshGrid();
+            });
+          }
+          break;
       }
-    }
+  
+      // Reset all selections
+      for ( var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = false;
+      }
+      mainDiv.find('#photoBulkAction').get(0).selectedIndex = 0;
+      mainDiv.find('#selectAll').get(0).checked = false;
+    });
+  
+    mainDiv.find('#adminNotes').html(submission.adminNotes);
+  
+    mainDiv.find('#saveAdminNotes').click( function() {
+      var command = 'UPDATE_PHOTO_SUBMISSION_ADMIN_NOTES';
+      var params = {};
+      params.id = submission.id;
+      params.adminNotes = mainDiv.find('#adminNotes').val();
+  
+      var jsonRpcCallback = function(jsonStr) {
+        try {
+          var json = JSON.parse(jsonStr);
+          if (!json.error) {
+            submission.adminNotes = params.adminNotes;
+            alert('Notes are saved.');
+          } else {
+            admin.showError(json.error, messageElement);
+          }
+        } catch (exception) {
+          admin.showError('Request failed: ' + exception, messageElement);
+        }
+      }
+  
+      jsonrpc.makeRequest(command, params, jsonRpcCallback);
+    });
+    
+    div.append(mainDiv);
+  };
 
-    jsonrpc.makeRequest(command, params, jsonRpcCallback);
-  });
-
-  mainDiv.dialog(dialogOptions);
+  jQuery.ui.dialog.defaults.bgiframe = true;
+  div.dialog(dialogOptions);
 };
 
 admin.photo.updateStatus = function(ids, status, callback) {
