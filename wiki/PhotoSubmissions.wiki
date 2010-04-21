@@ -8,7 +8,7 @@ Unlike videos, photos are not tied to an existing !YouTube account. The photo up
 
 While the photos are stored in the Blobstore and could theoretically be served directly from there, developers should be aware that there is a cost involved for both Blobstore storage and for the raw data transferred from your App Engine instance. A best practice is to download a copy of approved photos via the !YouTube Direct Admin interface and to serve the image data from your own web hosting provider. You can optionally delete a photo using the Admin interface to free up storage space in the Blobstore.
 
-Please note that YouTube uploads can't be disabled entirely, so photo submissions are meant to supplement !YouTube submissions. Also note that if a user is logged in to their !YouTube account in the embedded uploader, we assume that means that they want to submit a video, and the option to submit a photo is disabled. Users can use the Logout link to get back to the interface where they can submit photos.
+Please note that !YouTube uploads can't be disabled entirely, so photo submissions are meant to supplement !YouTube submissions. Also note that if a user is logged in to their !YouTube account in the embedded uploader, we assume that means that they want to submit a video, and the option to submit a photo is disabled. Users can use the Logout link to get back to the interface where they can submit photos.
 
 ==Setting Up Photo Submissions==
   # Ensure that you're using the latest release of !YouTube Direct. Initial support for photo submissions was added in the `20100421` release (a.k.a. !YouTube Direct "2.0").
