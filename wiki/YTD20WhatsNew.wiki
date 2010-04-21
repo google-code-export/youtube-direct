@@ -1,0 +1,18 @@
+!YouTube Direct 2.0 (i.e. any release after `20100422`) represents a substantial rewrite of the 1.0 codebase to allow for easier extensibility and testing. In addition to those backend changes, there are a number of new features that have been added and bugs that have been fixed.
+
+*If you have an existing !YouTube Direct 1.0 installation, please read our [http://code.google.com/p/youtube-direct/wiki/YTD20Migration migration guide] for specific information about the upgrade process.*
+
+==New Functionality:==
+
+  * Support for photo submissions. Photos are stored in the App Engine datastore and require that you have billing enabled on your App Engine instance.
+  * Support for secure AuthSub, if properly configured.
+  * Support for viewing and editing YouTube captions for any video submitted. All caption languages are supported.
+  * Support for multiple YouTube Direct uploader embeds (for different assignments) on a single page.
+  * Pre- and post-submission text is now configurable on a per-assignment basis with a special ASSIGNMENT_MESSAGE macro.
+  * Users can now select from a pre-populated list of the most recent 50 videos in their account when uploading an existing video.  
+
+==Public Issues Resolved:==
+
+  * [http://code.google.com/p/youtube-direct/issues/detail?id=8 Language other than english in admin->configuration->initial message throws error]
+  * [http://code.google.com/p/youtube-direct/issues/detail?id=15 Videos approved before youtube processing completed do not appear in playlist]
+  * [http://code.google.com/p/youtube-direct/issues/detail?id=20 Order by date added to feed]
