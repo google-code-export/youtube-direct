@@ -1,0 +1,114 @@
+* {
+  padding:0;
+  margin:0;
+}
+body {
+  color:#000;
+  font-size: 13px;
+  font-family: arial, sans-serif;
+} 
+#main {
+  padding:10px;
+  text-align:left;
+}
+#main label {
+  font-weight:bold;
+}
+#message {
+  border-top:1px solid #ddd;
+  margin-top:6px;
+  padding-top:10px;
+  font-weight:bold;
+  color:#f00;
+}
+#youTubeLogo {
+  position: absolute;
+  top: 13px;
+  right: 10px;
+}
+#uploaderMain {
+  display: none;
+  clear: right;
+}
+#existingVideoMain {
+  display: none;
+  clear: right;
+}
+#photoMain {
+  display: none;
+  clear: right;
+}
+#submissionAsk {
+  display: none;
+  clear: right;
+}
+#submissionAsk * {
+  text-align:center;
+}
+#loginInstruction {
+  text-align:center;
+  clear:right;
+  margin-top:25px;
+}
+#postSubmitMessage {
+  text-align: center;
+  padding: 5px;
+  clear: right;
+  margin-top: 25px;
+}
+#youTubeTOS {
+  font-size: 11px;
+  color: #666;
+}
+.inputBox {
+  margin-top:2px;
+  width:100%;
+}
+#file {
+  margin-bottom:10px;
+}
+div[align="center"] {
+  text-align:left;
+}
+div[align="center"] input[value="Login"] {
+  margin:0 auto;
+  display:block;
+}
+#uploadButton {
+  font-weight:bold;
+}
+.emailInputBox {
+  width:100px;
+  visibility: hidden;
+}
+.small {
+  font-size: 11px;
+}
+.smallRed {
+  font-size: 11px;
+  color: #f00;
+}
+.tip {
+  font-size: 11px;
+  color: #666;
+}
+#processing {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: white;
+  background: #f00;
+  font-size: 11px;  
+}
+.upload {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#description {
+	font-size: 11px;
+	color: #333;
+}
+#loadingVideos {
+  color: red;
+}
