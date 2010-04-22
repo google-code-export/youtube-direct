@@ -1,0 +1,29 @@
+The YouTube Direct (YTD) platform consist of 2 components:
+
+1. The embeddable YTD container
+  - Google AuthSub authentication to YouTube
+  - YouTube video uploads
+  - Photo uploads to App Engine's Blobstore
+
+2. The YTD admin panel
+  - Manage assignments
+  - Manage video submissions
+  - Manage photo submissions
+  - Generate embed code for YTD container for each assignment
+  - Preview submitted videos and photos
+  - Search filter for assignments and submissions
+
+To get started, please read the Getting Started guide at
+
+  http://code.google.com/p/youtube-direct/wiki/GettingStarted
+
+This is considered the 2.0 release of YouTube Direct. If you're upgrading from a previous
+installation, this migration guide should help:
+
+  http://code.google.com/p/youtube-direct/wiki/YTD20Migration
+  
+While it's recommended to sync to the SVN repository so that future updates
+can be easily retrieved, you can also downloaded a package tarball of the
+YTD project at
+
+  http://code.google.com/p/youtube-direct/downloads/list
