@@ -2,6 +2,13 @@
 #labels Featured
 
 =Release Notes=
+===2.0-20100422===
+  * First release in the YouTube Direct 2.0 codebase.
+  * Many changes -- see the [YTD20WhatsNew what's new in 2.0] guide.
+
+===1.0-20100421===
+  * Potentially last release in the YouTube Direct 1.0 codebase.
+  * Updated Java Google Data client libraries to 1.41.1 release.
 
 ===20100309===
   * Modified the code that inserts videos into playlists. It should be more reliable for newly-uploaded videos that are not yet in YouTube's search index.
