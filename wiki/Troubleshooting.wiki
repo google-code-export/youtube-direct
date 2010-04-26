@@ -7,3 +7,6 @@
 
 ==Check your JDK!==
 If you're a developer running Windows who does not have an existing [http://www.eclipse.org/ Eclipse IDE] installation, then you need to make sure that you install a compatible Java Development Kit on your Windows machine and configure Eclipse to use it. More information can be found at the start of the EclipseSetup guide.
+
+==Check you AuthSub registration!==
+When you're configuring AuthSub support for your App Engine domain, be sure that you register `APP_ID.appspot.com`, as explained in the [http://code.google.com/p/youtube-direct/wiki/GettingStarted#Registering_your_website_for configuration guide]. A common mistake is to register the hostname of the site that contains the embedded uploader. If you don't register your App Engine instance correctly for AuthSub, users will see a red warning message when they attempt to authenticate, or they'll see an error message indicating that a site sent a malformed authorization request.
