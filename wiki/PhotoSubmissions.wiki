@@ -1,3 +1,5 @@
+#summary Details about photo submissions in YTD 2.0
+
 =!YouTube Direct Photo Submissions=
 
 In addition to allowing for video submissions, !YouTube Direct now supports photo uploads from users. This guide explains how photo submissions work, and includes instructions on configuring your !YouTube Direct instance to support photo uploads.
