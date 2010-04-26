@@ -1,3 +1,5 @@
+#summary General troubleshooting tips.
+
 !YouTube Direct has a number of "moving parts" and pieces that need to be configured. It also makes heavy use of the App Engine and !YouTube APIs. While we hope that the existing guides and configuration details are enough to get you started using !YouTube Direct, we wanted to highlight a number of troubleshoot tips that might get you over some bumps in the road.
 
 ==Check your logs!==
