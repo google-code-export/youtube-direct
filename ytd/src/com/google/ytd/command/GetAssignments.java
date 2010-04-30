@@ -11,6 +11,7 @@ import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.model.Assignment;
 import com.google.ytd.util.Util;
 
+@NonAdmin
 public class GetAssignments extends Command {
   private AssignmentDao assignmentDao = null;
 
