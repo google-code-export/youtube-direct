@@ -93,8 +93,9 @@ public class AssignmentDaoImpl implements AssignmentDao {
       query.declareImports("import java.util.Date");
       query.declareParameters("String filterType");
       query.setOrdering(sortBy + " " + sortOrder);
-
-      if (!filterType.toUpperCase().equals("ALL")) {
+      
+      filterType = filterType.toUpperCase();
+      if (!filterType.equals("ALL")) {
         String filters = "status == filterType";
         query.setFilter(filters);
       }
