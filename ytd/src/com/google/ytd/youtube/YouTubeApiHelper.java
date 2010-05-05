@@ -44,6 +44,7 @@ import com.google.gdata.util.ContentType;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.util.Util;
 
 /**
@@ -51,11 +52,6 @@ import com.google.ytd.util.Util;
  * YouTube support.
  */
 public class YouTubeApiHelper {
-  private Util util;
-
-  private YouTubeService service = null;
-  private AdminConfigDao adminConfigDao;
-
   private static final Logger log = Logger.getLogger(YouTubeApiHelper.class.getName());
 
   // CONSTANTS
@@ -81,14 +77,20 @@ public class YouTubeApiHelper {
   private static final String UPLOADS_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
       + "users/%s/uploads?max-results=50";
 
+  private Util util;
+  private YouTubeService service = null;
+  private AdminConfigDao adminConfigDao = null;
+  private UserAuthTokenDao userAuthTokenDao = null;  
+  
   /**
    * Create a new instance of the class, initializing a YouTubeService object
    * with parameters specified in appengine-web.xml
    */
   @Inject
-  public YouTubeApiHelper(AdminConfigDao adminConfigDao) {
+  public YouTubeApiHelper(AdminConfigDao adminConfigDao, UserAuthTokenDao userAuthTokenDao) {
     this.util = Util.get();
     this.adminConfigDao = adminConfigDao;
+    this.userAuthTokenDao = userAuthTokenDao;
 
     String clientId = this.adminConfigDao.getAdminConfig().getClientId();
     String developerKey = this.adminConfigDao.getAdminConfig().getDeveloperKey();
@@ -114,14 +116,14 @@ public class YouTubeApiHelper {
     }
     service = new YouTubeService(clientId);
   }
-
+  
   /**
    * Sets the AuthSub token to use for API requests.
    * 
    * @param token
    *          The token to use.
    */
-  public void setToken(String token) {
+  public void setAuthSubToken(String token) {
     PrivateKey privateKey = adminConfigDao.getPrivateKey();
     if (privateKey == null) {
       service.setAuthSubToken(token);
@@ -130,6 +132,16 @@ public class YouTubeApiHelper {
     }
   }
 
+  /**
+   * Sets the AuthSub token to use for API requests.
+   * 
+   * @param token
+   *          The token to use.
+   */
+  public void setClientLoginToken(String token) {
+    service.setUserToken(token);
+  }  
+  
   /**
    * Sets an arbitrary header for all outgoing requests using this service
    * instance.

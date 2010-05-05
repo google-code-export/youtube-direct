@@ -121,7 +121,7 @@ public class PersistMobileSubmission extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing authSubToken");
       }
 
-      youtubeApiProxy.setToken(authSubToken);
+      youtubeApiProxy.setAuthSubToken(authSubToken);
       VideoEntry videoEntry = youtubeApiProxy.getUploadsVideoEntry(videoId);
 
       if (videoEntry == null) {

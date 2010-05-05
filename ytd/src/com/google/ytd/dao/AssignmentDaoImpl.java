@@ -125,7 +125,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
         log.warning(String.format("Could not create new playlist for assignment '%s' because no"
             + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
       } else {
-        youTubeApiHelper.setToken(token);
+        youTubeApiHelper.setAuthSubToken(token);
 
         String playlistId = youTubeApiHelper.createPlaylist(playlistTitle, assignment
             .getDescription());
@@ -181,7 +181,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
           log.warning(String.format("Could not create new playlist for assignment '%s' because no"
               + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
         } else {
-          youTubeApiHelper.setToken(token);
+          youTubeApiHelper.setAuthSubToken(token);
           String playlistId = youTubeApiHelper.createPlaylist(String.format(
               "Playlist for Assignment #%d", assignment.getId()), assignment.getDescription());
           assignment.setPlaylistId(playlistId);

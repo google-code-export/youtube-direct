@@ -168,7 +168,7 @@ public class GetUploadToken extends HttpServlet {
       userSession.addMetaData("email", email);
       userSessionManager.save(userSession);
 
-      youTubeApi.setToken(authSubToken);
+      youTubeApi.setAuthSubToken(authSubToken);
 
       FormUploadToken token = youTubeApi.getFormUploadToken(newEntry);
       if (token == null) {
