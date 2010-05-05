@@ -39,6 +39,9 @@ public class UserAuthToken {
   @Persistent
   private String authSubToken;
 
+  @Persistent
+  private String clientLoginToken;  
+  
   public UserAuthToken() {
     this.youtubeName = "";
     this.authSubToken = "";
@@ -67,5 +70,13 @@ public class UserAuthToken {
 
   public void setAuthSubToken(String authSubToken) {
     this.authSubToken = authSubToken;
+  }
+
+  public void setClientLoginToken(String clientLoginToken) {
+    this.clientLoginToken = clientLoginToken;
+  }
+
+  public String getClientLoginToken() {
+    return clientLoginToken;
   }
 }

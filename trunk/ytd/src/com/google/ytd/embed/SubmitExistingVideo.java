@@ -93,7 +93,7 @@ public class SubmitExistingVideo extends HttpServlet {
       String assignmentId = userSession.getMetaData("assignmentId");
       String articleUrl = userSession.getMetaData("articleUrl");
 
-      apiManager.setToken(authSubToken);
+      apiManager.setAuthSubToken(authSubToken);
 
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
 

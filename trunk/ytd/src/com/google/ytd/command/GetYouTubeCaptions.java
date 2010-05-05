@@ -3,6 +3,7 @@ package com.google.ytd.command;
 import com.google.inject.Inject;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.VideoSubmissionDao;
+import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
@@ -21,8 +22,8 @@ public class GetYouTubeCaptions extends Command {
   private Util util;
 
   @Inject
-  public GetYouTubeCaptions(VideoSubmissionDao submissionDao, UserAuthTokenDao authTokenDao,
-      YouTubeApiHelper apiManager) {
+  public GetYouTubeCaptions(VideoSubmissionDao submissionDao,
+      UserAuthTokenDao authTokenDao, YouTubeApiHelper apiManager) {
     this.submissionDao = submissionDao;
     this.authTokenDao = authTokenDao;
     this.apiManager = apiManager;
@@ -34,26 +35,36 @@ public class GetYouTubeCaptions extends Command {
 
     String submissionId = getParam("submissionId");
     if (util.isNullOrEmpty(submissionId)) {
-      throw new IllegalArgumentException("Required parameter 'submissionId' is null or empty.");
+      throw new IllegalArgumentException(
+          "Required parameter 'submissionId' is null or empty.");
     }
 
-    VideoSubmission videoSubmission = submissionDao.getSubmissionById(submissionId);
+    VideoSubmission videoSubmission = submissionDao
+        .getSubmissionById(submissionId);
     if (videoSubmission == null) {
-      throw new IllegalArgumentException(String.format("Couldn't retrieve VideoSubmission with"
-          + " id '%s' from the datastore.", submissionId));
+      throw new IllegalArgumentException(String.format(
+          "Couldn't retrieve VideoSubmission with"
+              + " id '%s' from the datastore.", submissionId));
     }
 
     String username = videoSubmission.getYouTubeName();
-    String authSubToken = authTokenDao.getUserAuthToken(username).getAuthSubToken();
-    apiManager.setToken(authSubToken);
+    UserAuthToken userAuthToken = authTokenDao.getUserAuthToken(videoSubmission
+        .getYouTubeName());
+    if (!userAuthToken.getAuthSubToken().isEmpty()) {
+      apiManager.setAuthSubToken(userAuthToken.getAuthSubToken());
+    } else {
+      apiManager.setClientLoginToken(userAuthToken.getClientLoginToken());
+    }
 
-    Map<String, String> languageToUrl = apiManager.getCaptions(videoSubmission.getVideoId());
+    Map<String, String> languageToUrl = apiManager.getCaptions(videoSubmission
+        .getVideoId());
     if (languageToUrl != null) {
       json.put("captions", languageToUrl);
-      json.put("authSubToken", authSubToken);
+      json.put("username", username);
       json.put("videoId", videoSubmission.getVideoId());
     } else {
-      throw new IllegalArgumentException("Unable to retrieve caption information for the video.");
+      throw new IllegalArgumentException(
+          "Unable to retrieve caption information for the video.");
     }
 
     return json;

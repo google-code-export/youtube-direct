@@ -76,7 +76,7 @@ public class MobileAuthSub extends HttpServlet {
         String sessionToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
         // Test the token to make sure it's valid, and get the username it corresponds to.
-        apiManager.setToken(sessionToken);
+        apiManager.setAuthSubToken(sessionToken);
 
         String youTubeName = apiManager.getCurrentUsername();
         if (util.isNullOrEmpty(youTubeName)) {

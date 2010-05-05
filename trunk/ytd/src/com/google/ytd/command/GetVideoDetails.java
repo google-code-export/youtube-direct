@@ -57,9 +57,14 @@ public class GetVideoDetails extends Command {
     Date now = new Date();
     long delta = now.getTime() - videoSubmission.getLastSynced().getTime();
     if (delta > REFRESH_INTERVAL) {
-      UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthToken(videoSubmission
-          .getYouTubeName());
-      apiManager.setToken(userAuthToken.getAuthSubToken());
+      UserAuthToken userAuthToken = 
+        userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName());
+    
+      if (!userAuthToken.getAuthSubToken().isEmpty()) {
+        apiManager.setAuthSubToken(userAuthToken.getAuthSubToken());
+      } else {
+        apiManager.setClientLoginToken(userAuthToken.getClientLoginToken());
+      }
 
       String videoId = videoSubmission.getVideoId();
 
@@ -68,7 +73,7 @@ public class GetVideoDetails extends Command {
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
       if (videoEntry == null) {
         // Try an unauthenticated request to the specific user's uploads feed next.
-        apiManager.setToken("");
+        apiManager.setAuthSubToken("");
         videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
 
         if (videoEntry == null) {

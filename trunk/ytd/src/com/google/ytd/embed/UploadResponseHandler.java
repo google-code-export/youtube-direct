@@ -104,7 +104,7 @@ public class UploadResponseHandler extends HttpServlet {
 
       AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-      youTubeApiHelper.setToken(adminConfig.getYouTubeAuthSubToken());
+      youTubeApiHelper.setAuthSubToken(adminConfig.getYouTubeAuthSubToken());
 
       if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
         // NO_MOD is set, auto approve all submission

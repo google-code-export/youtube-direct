@@ -63,7 +63,7 @@ public class InsightDownloadRedirect extends HttpServlet {
         throw new IllegalArgumentException("'token' parameter is null or empty.");
       }
 
-      apiManager.setToken(token);
+      apiManager.setAuthSubToken(token);
 
       VideoEntry videoEntry = apiManager.getVideoEntry(id);
       if (videoEntry == null) {

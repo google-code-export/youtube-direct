@@ -19,6 +19,7 @@ import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.Assignment;
+import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.AdminConfig.BrandingModeType;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
@@ -28,7 +29,8 @@ import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
 public class UpdateVideoSubmissionStatus extends Command {
-  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionStatus.class.getName());
+  private static final Logger LOG = Logger
+      .getLogger(UpdateVideoSubmissionStatus.class.getName());
 
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao = null;
@@ -45,8 +47,9 @@ public class UpdateVideoSubmissionStatus extends Command {
   private YouTubeApiHelper adminYouTubeApi;
 
   @Inject
-  public UpdateVideoSubmissionStatus(AssignmentDao assignmentDao, VideoSubmissionDao submissionDao,
-      AdminConfigDao adminConfigDao, UserAuthTokenDao userAuthTokenDao) {
+  public UpdateVideoSubmissionStatus(AssignmentDao assignmentDao,
+      VideoSubmissionDao submissionDao, AdminConfigDao adminConfigDao,
+      UserAuthTokenDao userAuthTokenDao) {
     this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;
     this.adminConfigDao = adminConfigDao;
@@ -69,7 +72,8 @@ public class UpdateVideoSubmissionStatus extends Command {
     VideoSubmission submission = submissionDao.getSubmissionById(id);
 
     if (submission == null) {
-      throw new IllegalArgumentException("The input video id cannot be located.");
+      throw new IllegalArgumentException(
+          "The input video id cannot be located.");
     }
 
     ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
@@ -81,28 +85,29 @@ public class UpdateVideoSubmissionStatus extends Command {
       // Set the YouTubeApiHelper with the admin auth token
       String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
       if (util.isNullOrEmpty(token)) {
-        throw new IllegalStateException("No AuthSub token found in admin config.");
+        throw new IllegalStateException(
+            "No AuthSub token found in admin config.");
       } else {
-        adminYouTubeApi.setToken(token);
+        adminYouTubeApi.setAuthSubToken(token);
       }
 
       switch (newStatus) {
-        case APPROVED:
-          submission.setStatus(ModerationStatus.APPROVED);
-          onApproved(submission);
-          break;
-        case REJECTED:
-          submission.setStatus(ModerationStatus.REJECTED);
-          onRejected(submission);
-          break;
-        case SPAM:
-          submission.setStatus(ModerationStatus.SPAM);
-          onRejected(submission);
-          break;
-        case UNREVIEWED:
-          submission.setStatus(ModerationStatus.UNREVIEWED);
-          onRejected(submission);
-          break;
+      case APPROVED:
+        submission.setStatus(ModerationStatus.APPROVED);
+        onApproved(submission);
+        break;
+      case REJECTED:
+        submission.setStatus(ModerationStatus.REJECTED);
+        onRejected(submission);
+        break;
+      case SPAM:
+        submission.setStatus(ModerationStatus.SPAM);
+        onRejected(submission);
+        break;
+      case UNREVIEWED:
+        submission.setStatus(ModerationStatus.UNREVIEWED);
+        onRejected(submission);
+        break;
       }
       submission.setUpdated(new Date());
       submissionDao.save(submission);
@@ -119,7 +124,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     if (util.isNullOrEmpty(token)) {
       LOG.warning(String.format("No AuthSub token found in admin config."));
     } else {
-      adminYouTubeApi.setToken(token);
+      adminYouTubeApi.setAuthSubToken(token);
     }
 
     // TODO: Handle removing the branding if a video goes from APPROVED to
@@ -134,7 +139,8 @@ public class UpdateVideoSubmissionStatus extends Command {
     }
 
     // Notify the submitter of rejection if there is a notify email
-    if (adminConfig.isModerationEmail() && !util.isNullOrEmpty(submission.getNotifyEmail())) {
+    if (adminConfig.isModerationEmail()
+        && !util.isNullOrEmpty(submission.getNotifyEmail())) {
       emailUtil.sendNotificationEmail(submission, ModerationStatus.REJECTED);
     }
   }
@@ -146,11 +152,13 @@ public class UpdateVideoSubmissionStatus extends Command {
     if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
       String linkBackText = adminConfig.getLinkBackText();
       if (!util.isNullOrEmpty(linkBackText)) {
-        String prependText = linkBackText.replace("ARTICLE_URL", submission.getArticleUrl());
+        String prependText = linkBackText.replace("ARTICLE_URL", submission
+            .getArticleUrl());
 
         if (!submission.getVideoDescription().contains(prependText)) {
           // We only want to update the video if the text isn't already there.
-          updateVideoDescription(submission, prependText, adminConfig.getDefaultTag());
+          updateVideoDescription(submission, prependText, adminConfig
+              .getDefaultTag());
         }
       }
 
@@ -169,7 +177,8 @@ public class UpdateVideoSubmissionStatus extends Command {
     }
 
     // Notify the submitter of approval if there is a notify email
-    if (adminConfig.isModerationEmail() && (submission.getNotifyEmail() != null)) {
+    if (adminConfig.isModerationEmail()
+        && (submission.getNotifyEmail() != null)) {
       emailUtil.sendNotificationEmail(submission, ModerationStatus.APPROVED);
     }
   }
@@ -186,14 +195,16 @@ public class UpdateVideoSubmissionStatus extends Command {
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
 
     if (assignment == null) {
-      LOG.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.",
-          assignmentId, videoSubmission.getId()));
+      LOG.warning(String.format(
+          "Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
+          videoSubmission.getId()));
       return false;
     }
 
     String playlistId = assignment.getPlaylistId();
     if (util.isNullOrEmpty(playlistId)) {
-      LOG.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+      LOG.warning(String.format(
+          "Assignment id '%d' does not have an associated playlist.",
           assignmentId));
       return false;
     }
@@ -203,7 +214,8 @@ public class UpdateVideoSubmissionStatus extends Command {
     // due to too many videos, and prevent continuously trying to add the same
     // video to the same
     // full playlist.
-    return adminYouTubeApi.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
+    return adminYouTubeApi.insertVideoIntoPlaylist(playlistId, videoSubmission
+        .getVideoId());
   }
 
   /**
@@ -219,19 +231,22 @@ public class UpdateVideoSubmissionStatus extends Command {
     Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
 
     if (assignment == null) {
-      LOG.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.",
-          assignmentId, videoSubmission.getId()));
+      LOG.warning(String.format(
+          "Couldn't find assignment id '%d' for video id '%s'.", assignmentId,
+          videoSubmission.getId()));
       return false;
     }
 
     String playlistId = assignment.getPlaylistId();
     if (util.isNullOrEmpty(playlistId)) {
-      LOG.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+      LOG.warning(String.format(
+          "Assignment id '%d' does not have an associated playlist.",
           assignmentId));
       return false;
     }
 
-    return adminYouTubeApi.removeVideoFromPlaylist(playlistId, videoSubmission.getVideoId());
+    return adminYouTubeApi.removeVideoFromPlaylist(playlistId, videoSubmission
+        .getVideoId());
   }
 
   /**
@@ -251,31 +266,42 @@ public class UpdateVideoSubmissionStatus extends Command {
    * @return A YouTube API VideoEntry object with the updated description, or
    *         null if the video could not be updated.
    */
-  private VideoEntry updateVideoDescription(VideoSubmission videoSubmission, String prependText,
-      String newTag) {
+  private VideoEntry updateVideoDescription(VideoSubmission videoSubmission,
+      String prependText, String newTag) {
 
-    YouTubeApiHelper userYouTubeApi = new YouTubeApiHelper(adminConfigDao);
-    userYouTubeApi.setToken(userAuthTokenDao.getUserAuthToken(videoSubmission.getYouTubeName())
-        .getAuthSubToken());
+    YouTubeApiHelper userYouTubeApi = new YouTubeApiHelper(adminConfigDao,
+        userAuthTokenDao);
+
+    UserAuthToken userAuthToken = userAuthTokenDao
+        .getUserAuthToken(videoSubmission.getYouTubeName());
+    if (!userAuthToken.getAuthSubToken().isEmpty()) {
+      userYouTubeApi.setAuthSubToken(userAuthToken.getAuthSubToken());
+    } else {
+      userYouTubeApi.setClientLoginToken(userAuthToken.getClientLoginToken());
+    }
 
     String videoId = videoSubmission.getVideoId();
-    LOG.info(String.format("Updating description and tags of id '%s' (YouTube video id '%s').",
+    LOG.info(String.format(
+        "Updating description and tags of id '%s' (YouTube video id '%s').",
         videoSubmission.getId(), videoId));
 
     VideoEntry videoEntry = userYouTubeApi.getUploadsVideoEntry(videoId);
     if (videoEntry == null) {
-      LOG.warning(String.format("Couldn't get video with id '%s' in the uploads feed of user "
-          + "'%s'. Perhaps the AuthSub token has been revoked?", videoId, videoSubmission
-          .getYouTubeName()));
+      LOG.warning(String.format(
+          "Couldn't get video with id '%s' in the uploads feed of user "
+              + "'%s'. Perhaps the AuthSub token has been revoked?", videoId,
+          videoSubmission.getYouTubeName()));
     } else {
       String currentDescription = videoSubmission.getVideoDescription();
-      String newDescription = String.format("%s\n\n%s", prependText, currentDescription);
+      String newDescription = String.format("%s\n\n%s", prependText,
+          currentDescription);
 
       // If we have a new tag to add, add to the datastore and YouTube entries.
       if (!util.isNullOrEmpty(newTag)) {
         String currentTags = videoSubmission.getVideoTags();
         String[] tagsArray = currentTags.split(",\\s?");
-        ArrayList<String> tagsArrayList = new ArrayList<String>(Arrays.asList(tagsArray));
+        ArrayList<String> tagsArrayList = new ArrayList<String>(Arrays
+            .asList(tagsArray));
         if (!tagsArrayList.contains(newTag)) {
           tagsArrayList.add(newTag);
           String newTags = util.sortedJoin(tagsArrayList, ",");
@@ -292,16 +318,19 @@ public class UpdateVideoSubmissionStatus extends Command {
       videoSubmission.setVideoDescription(newDescription);
 
       // Update the YouTube entry's description.
-      videoEntry.getMediaGroup().getDescription().setPlainTextContent(newDescription);
+      videoEntry.getMediaGroup().getDescription().setPlainTextContent(
+          newDescription);
 
       try {
         // And update the YouTube.com video as well.
         videoEntry.update();
         return videoEntry;
       } catch (IOException e) {
-        LOG.log(Level.WARNING, String.format("Error while updating video id '%s':", videoId), e);
+        LOG.log(Level.WARNING, String.format(
+            "Error while updating video id '%s':", videoId), e);
       } catch (ServiceException e) {
-        LOG.log(Level.WARNING, String.format("Error while updating video id '%s':", videoId), e);
+        LOG.log(Level.WARNING, String.format(
+            "Error while updating video id '%s':", videoId), e);
       }
     }
 

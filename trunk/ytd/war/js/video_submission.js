@@ -916,7 +916,7 @@ admin.sub.showCaptionInfo = function(json) {
   	  var command = 'GET_YOUTUBE_CAPTION_TRACK';
   	  var params = {};
   	  params.url = json.captions[selectedLanguageCode];
-  	  params.authSubToken = json.authSubToken;
+  	  params.username = json.username;
   	  
   	  var jsonRpcCallback = function(jsonStr) {
   	    try {
@@ -945,7 +945,7 @@ admin.sub.showCaptionInfo = function(json) {
 	  var command = 'UPDATE_YOUTUBE_CAPTION_TRACK';
 	  var params = {};
 	  params.videoId = json.videoId;
-	  params.authSubToken = json.authSubToken;
+	  params.username = json.username;
 	  params.captionTrack = dialogDiv.find('#captionTrack').val();
 	  params.languageCode = selectedLanguageCode;
 	  

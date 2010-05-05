@@ -3,6 +3,7 @@ package com.google.ytd.command;
 import com.google.inject.Inject;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.VideoSubmissionDao;
+import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
@@ -11,13 +12,15 @@ import org.json.JSONObject;
 
 public class GetYouTubeCaptionTrack extends Command {
   private YouTubeApiHelper apiManager = null;
+  private UserAuthTokenDao authTokenDao = null;
 
   @Inject
   private Util util;
 
+
   @Inject
-  public GetYouTubeCaptionTrack(VideoSubmissionDao submissionDao, UserAuthTokenDao authTokenDao,
-      YouTubeApiHelper apiManager) {
+  public GetYouTubeCaptionTrack(UserAuthTokenDao authTokenDao, YouTubeApiHelper apiManager) {
+    this.authTokenDao = authTokenDao;
     this.apiManager = apiManager;
   }
 
@@ -30,12 +33,19 @@ public class GetYouTubeCaptionTrack extends Command {
       throw new IllegalArgumentException("Required parameter 'url' is null or empty.");
     }
 
-    String authSubToken = getParam("authSubToken");
-    if (util.isNullOrEmpty(authSubToken)) {
-      throw new IllegalArgumentException("Required parameter 'authSubToken' is null or empty.");
+    String username = getParam("username");
+    if (util.isNullOrEmpty(username)) {
+      throw new IllegalArgumentException("Required parameter 'username' is null or empty.");
     }
-
-    apiManager.setToken(authSubToken);
+    
+    UserAuthToken userAuthToken = authTokenDao.getUserAuthToken(username);    
+    
+    if (!userAuthToken.getAuthSubToken().isEmpty()) {
+      apiManager.setAuthSubToken(userAuthToken.getAuthSubToken());
+    } else {
+      apiManager.setClientLoginToken(userAuthToken.getClientLoginToken());
+    }    
+    
     String captionTrack = apiManager.getCaptionTrack(url);
 
     if (captionTrack != null) {

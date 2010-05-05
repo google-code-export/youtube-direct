@@ -48,7 +48,7 @@ public class AuthSubHandler extends HttpServlet {
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
-  private YouTubeApiHelper apiManager;
+  private YouTubeApiHelper youTubeApiHelper;
   @Inject
   private UserAuthTokenDao userAuthTokenDao;
   @Inject
@@ -82,9 +82,9 @@ public class AuthSubHandler extends HttpServlet {
       // userSession.setAuthSubToken(authSubToken);
       userSession.addMetaData("authSubToken", authSubToken);
 
-      apiManager.setToken(authSubToken);
+      youTubeApiHelper.setAuthSubToken(authSubToken);
 
-      String youTubeName = apiManager.getCurrentUsername();
+      String youTubeName = youTubeApiHelper.getCurrentUsername();
       if (util.isNullOrEmpty(youTubeName)) {
         // TODO: Throw a better Exception class here.
         throw new IllegalArgumentException("Unable to retrieve a YouTube username for "

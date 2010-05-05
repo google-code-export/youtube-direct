@@ -66,7 +66,7 @@ public class PersistAuthSubToken extends HttpServlet {
       PrivateKey privateKey = adminConfigDao.getPrivateKey();
       String sessionToken = AuthSubUtil.exchangeForSessionToken(token, privateKey);
 
-      youtubeApi.setToken(sessionToken);
+      youtubeApi.setAuthSubToken(sessionToken);
 
       String youTubeName = youtubeApi.getCurrentUsername();
       if (util.isNullOrEmpty(youTubeName)) {
