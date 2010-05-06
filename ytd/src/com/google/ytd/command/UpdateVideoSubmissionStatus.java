@@ -151,7 +151,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // Turn branding on if applicable
     if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
       String linkBackText = adminConfig.getLinkBackText();
-      if (!util.isNullOrEmpty(linkBackText)) {
+      if (!util.isNullOrEmpty(linkBackText) && !util.isNullOrEmpty(submission.getArticleUrl())) {
         String prependText = linkBackText.replace("ARTICLE_URL", submission
             .getArticleUrl());
 
