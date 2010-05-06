@@ -9,6 +9,8 @@ public enum CommandType {
       UpdateVideoSubmissionAdminNotes.class),
   NEW_ASSIGNMENT(
       NewAssignment.class),
+  NEW_MOBILE_VIDEO_SUBMISSION(
+      NewMobileVideoSubmission.class),   
   GET_ASSIGNMENTS(
       GetAssignments.class),
   UPDATE_ASSIGNMENT(
@@ -42,7 +44,7 @@ public enum CommandType {
   UPDATE_YOUTUBE_CAPTION_TRACK(
       UpdateYouTubeCaptionTrack.class),
   GET_YOUTUBE_VIDEOS(
-      GetYouTubeVideos.class),
+      GetYouTubeVideos.class),   
   DELETE_STUFF(
       DeleteStuff.class);
 

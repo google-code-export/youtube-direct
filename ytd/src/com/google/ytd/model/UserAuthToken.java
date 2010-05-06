@@ -41,6 +41,11 @@ public class UserAuthToken {
 
   @Persistent
   private String clientLoginToken;  
+
+  public enum TokenType {
+    AUTH_SUB,
+    CLIENT_LOGIN
+  };  
   
   public UserAuthToken() {
     this.youtubeName = "";
