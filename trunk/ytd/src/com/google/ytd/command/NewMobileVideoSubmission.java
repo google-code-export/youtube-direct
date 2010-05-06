@@ -31,7 +31,10 @@ public class NewMobileVideoSubmission extends Command {
     String videoId = getParam("videoId");
     String clientLoginToken = getParam("clientLoginToken");
     String youTubeName = getParam("youTubeName");
-
+    String title = getParam("title");
+    String description = getParam("description");
+    String videoDate = getParam("videoDate");
+    
     if (util.isNullOrEmpty(assignmentId)) {
       throw new IllegalArgumentException("Missing required param: assignmentId");
     }
@@ -48,12 +51,26 @@ public class NewMobileVideoSubmission extends Command {
       throw new IllegalArgumentException("Missing required param: youTubeName");
     }
     
+    if (util.isNullOrEmpty(title)) {
+      throw new IllegalArgumentException("Missing required param: title");
+    }
+    
+    if (util.isNullOrEmpty(description)) {
+      throw new IllegalArgumentException("Missing required param: description");
+    }    
+    
+    if (util.isNullOrEmpty(videoDate)) {
+      throw new IllegalArgumentException("Missing required param: description");
+    }        
+    
     VideoSubmission submission = new VideoSubmission();
     submission.setAssignmentId(Long.parseLong(assignmentId));
-    submission.setArticleUrl("MOBILE");
     submission.setYouTubeName(youTubeName);
     submission.setVideoSource(VideoSubmission.VideoSource.MOBILE_SUBMIT);
     submission.setVideoId(videoId);
+    submission.setVideoTitle(title);
+    submission.setVideoDescription(description);
+    submission.setVideoDate(videoDate);
     submissionDao.save(submission);
     
     userAuthTokenDao.setUserAuthToken(youTubeName, clientLoginToken, 
