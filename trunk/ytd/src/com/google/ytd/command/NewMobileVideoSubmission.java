@@ -60,7 +60,7 @@ public class NewMobileVideoSubmission extends Command {
     }    
     
     if (util.isNullOrEmpty(videoDate)) {
-      throw new IllegalArgumentException("Missing required param: description");
+      throw new IllegalArgumentException("Missing required param: videoDate");
     }        
     
     VideoSubmission submission = new VideoSubmission();
