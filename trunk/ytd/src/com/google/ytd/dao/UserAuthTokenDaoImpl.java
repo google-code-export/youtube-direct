@@ -14,11 +14,6 @@ import com.google.ytd.util.Util;
 public class UserAuthTokenDaoImpl implements UserAuthTokenDao {
   private static final Logger LOG = Logger.getLogger(UserAuthTokenDaoImpl.class.getName());
   private PersistenceManagerFactory pmf = null;
-
-  public enum TokenType {
-    AUTH_SUB,
-    CLIENT_LOGIN
-  };
   
   @Inject
   private Util util;
@@ -49,11 +44,11 @@ public class UserAuthTokenDaoImpl implements UserAuthTokenDao {
   @Override
   public void setUserAuthToken(String username, String token) {
     // default token type is authsub
-    setUserAuthToken(username, token, TokenType.AUTH_SUB);
+    setUserAuthToken(username, token, UserAuthToken.TokenType.AUTH_SUB);
   }
   
   @Override
-  public void setUserAuthToken(String username, String token, TokenType tokenType) {
+  public void setUserAuthToken(String username, String token, UserAuthToken.TokenType tokenType) {
     UserAuthToken userAuthToken = getUserAuthToken(username);
     
     if (userAuthToken == null) {

@@ -1,6 +1,5 @@
 package com.google.ytd.dao;
 
-import com.google.ytd.dao.UserAuthTokenDaoImpl.TokenType;
 import com.google.ytd.model.UserAuthToken;
 
 public interface UserAuthTokenDao {
@@ -8,5 +7,5 @@ public interface UserAuthTokenDao {
 
   public void setUserAuthToken(String username, String token);
 
-  public void setUserAuthToken(String username, String token, TokenType tokenType);
+  public void setUserAuthToken(String username, String token, UserAuthToken.TokenType tokenType);
 }
