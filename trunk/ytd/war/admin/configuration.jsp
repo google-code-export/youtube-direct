@@ -74,7 +74,7 @@ limitations under the License.
     <div class="clear">
       <label for="newSubmissionAddress" class="configureLabel">Notification Address:</label>
       <input class="configureInput" id="newSubmissionAddress" type="text"/>
-      <img class="tip" src="/questionmark.png" title="Email will be sent to this address whenever a video is submitted. Address must be an AppEngine admin."></img>
+      <img class="tip" src="/questionmark.png" title="Comma-separated list of one or more addresses that will receive email whenever a video is submitted. Addresses must correspond to App Engine admins."></img>
     </div>
     <div class="clear">
       <label for="moderationEmail" class="configureLabel">Moderation Email:</label>
