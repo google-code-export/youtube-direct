@@ -31,16 +31,21 @@ public class EmailUtil {
   public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    String address = adminConfig.getNewSubmissionAddress();
-    if (!util.isNullOrEmpty(address)) {
+    String addressCommaSeparated = adminConfig.getNewSubmissionAddress();
+    if (!util.isNullOrEmpty(addressCommaSeparated)) {
+      String[] addresses = addressCommaSeparated.split("\\s*,\\s*");
       try {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         Message msg = new MimeMessage(session);
 
-        msg.setFrom(new InternetAddress(address, address));
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
-
+        // Default to the first (or only) address in the recipient list to use as From: header.
+        msg.setFrom(new InternetAddress(addresses[0], addresses[0]));
+        
+        for (String address : addresses) {
+          msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
+        }
+        
         msg.setSubject(String.format("New submission for assignment id %d", videoSubmission
             .getAssignmentId()));
 
