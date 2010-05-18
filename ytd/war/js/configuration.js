@@ -21,8 +21,7 @@ admin.config = admin.config || {};
 admin.config.BASIC_PARAMS = ['developerKey', 'defaultTag', 'linkBackText',
                              'moderationMode', 'newSubmissionAddress', 'brandingMode',
                              'loginInstruction', 'postSubmitMessage', 'fromAddress',
-                             'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes', 
-                             'maxPhotoSizeMb', 'recaptchaPrivateKey', 'recaptchaPublicKey'];
+                             'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes'];
 
 admin.config.init = function() {
   var saveButton = jQuery('#saveButton');     
@@ -46,14 +45,6 @@ admin.config.init = function() {
       				data.youTubeUsername));
       jQuery('#authenticateButton').val("Re-Authenticate");
     }
-    
-    if (data.photoSubmissionEnabled) {
-    	jQuery('#photoSubmissionEnabled').attr('checked', true);
-    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), true);
-    } else {
-    	jQuery('#photoSubmissionEnabled').attr('checked', false);
-    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), false);
-    }
   });
   
   saveButton.click(function() {
@@ -70,10 +61,6 @@ admin.config.init = function() {
   
   jQuery('#moderationEmail').click(function() {
     admin.config.toggleDiv(jQuery('#moderationEmailTextDiv'));
-  });
-  
-  jQuery('#photoSubmissionEnabled').click(function() {
-    admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'));
   });
 };
 
