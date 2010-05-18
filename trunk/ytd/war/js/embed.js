@@ -32,11 +32,6 @@ function init() {
 		existingVideoMainInit();
 	});
 
-	jQuery('#photoButton').click(function(event) {
-		jQuery('#loginInstruction').css('display', 'none');
-		photoMainInit();
-	});
-
 	addFileElement();
 }
 
