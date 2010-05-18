@@ -57,7 +57,6 @@ After deployment is completed. You must perform a few configuration before you c
   * Go to the admin panel for YTD by visiting http://APP_ID.appspot.com/admin, where APP_ID is your registered App Engine instance name. You'll need to log in with a Google Account that is set up as an administrator for your App Engine instance.
   * Go to the "Configuration" tab and make the desired configuration changes. Mouse over the ? icons for descriptions of each option.
   * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key.
-  * If you'd like to enable photo submissions, please see [PhotoSubmissions this guide].
 
 ===Registering your website for AuthSub===
 Register your new YTD instance with Google's AuthSub. This will get rid of the red warning text box that appears when unregistered web sites us AuthSub. There is more information on AuthSub in this document. You can initiate the registration process at https://www.google.com/accounts/ManageDomains.
