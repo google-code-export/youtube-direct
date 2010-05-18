@@ -6,7 +6,6 @@
 
 ==New Functionality:==
 
-  * Support for photo submissions. Photos are stored in the App Engine datastore and require that you have billing enabled on your App Engine instance.
   * Support for secure !AuthSub, if properly [GettingStarted#Registering_your_website_for configured].
   * Support for viewing and editing !YouTube captions for any video submitted. All caption languages are supported.
   * Support for multiple !YouTube Direct uploader embeds (for different assignments) on a single page.
