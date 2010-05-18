@@ -1,6 +1,6 @@
 ==Setting Up App Engine for !YouTube Direct==
 
-!YouTube Direct is designed to run on [http://code.google.com/appengine/ Google App Engine] - Google's highly scalable hosting platform. App Engine comes with a set of free resource quotas that will allow your application to serve ~ 5M pageviews per month. If your application need more quota, or if you plan on enabling photo submissions, you can simply add a credit card, set a maximum budget and App Engine will automatically scale up your application to serve the traffic as needed. You will only be charged for the extra quota that you used. You can read more about App Engine billing [http://googleappengine.blogspot.com/2009/02/new-grow-your-app-beyond-free-quotas.html here].
+!YouTube Direct is designed to run on [http://code.google.com/appengine/ Google App Engine] - Google's highly scalable hosting platform. App Engine comes with a set of free resource quotas that will allow your application to serve ~ 5M pageviews per month. If your application need more quota, you can simply add a credit card, set a maximum budget and App Engine will automatically scale up your application to serve the traffic as needed. You will only be charged for the extra quota that you used. You can read more about App Engine billing [http://googleappengine.blogspot.com/2009/02/new-grow-your-app-beyond-free-quotas.html here].
 
 You need to set up your Google App Engine account before using !YouTube Direct. Please follow the steps below.
 
@@ -11,7 +11,6 @@ You need to set up your Google App Engine account before using !YouTube Direct. 
   # Create a new app for your instance of !YouTube Direct by entering a new app_id. The app_id cannot be changed once it's set up, but you can set it up to be accessable through your domain name. App Engine uses Google Apps to manage domains. Please view this [http://www.youtube.com/watch?v=7mh9vUzOVng short screencast] that explains the simple set up process.
   # Familiarize yourself with the App Engine Admin Console. The Google App Engine Administration Console gives you complete access to the public version of your application. Access the Console by visiting https://appengine.google.com/
     * Sign in with your Google account, or create one with an email address and password. If you are using App Engine with your [http://www.google.com/a/ Google Apps] account, you can sign in to App Engine for your domain using a URL similar to the following, where _your-domain.com_ is your Google Apps domain: https://appengine.google.com/a/your-domain.com
-  # If you plan on using the new photo submission functionality in YTD 2.0, you *must* [http://code.google.com/appengine/docs/billing.html enable billing] in your App Engine instance. Photo submissions are stored in the App Engine blobstore, and that storage is not free. 
 
 You can use the Administration Console to:
   * create a new application, and set up a free appspot.com sub-domain, or a top-level domain name of your choosing
