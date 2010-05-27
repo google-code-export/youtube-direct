@@ -17,7 +17,7 @@ public class NewMobileVideoSubmission extends Command {
   private Util util = null;
 
   @Inject
-  public NewMobileVideoSubmission(Util util, VideoSubmissionDao submissionDao, 
+  public NewMobileVideoSubmission(Util util, VideoSubmissionDao submissionDao,
       UserAuthTokenDao userAuthTokenDao) {
     this.util = util;
     this.submissionDao = submissionDao;
@@ -34,7 +34,9 @@ public class NewMobileVideoSubmission extends Command {
     String title = getParam("title");
     String description = getParam("description");
     String videoDate = getParam("videoDate");
-    
+    String videoLocation = getParam("videoLocation");
+    String tags = getParam("tags");
+
     if (util.isNullOrEmpty(assignmentId)) {
       throw new IllegalArgumentException("Missing required param: assignmentId");
     }
@@ -50,19 +52,19 @@ public class NewMobileVideoSubmission extends Command {
     if (util.isNullOrEmpty(youTubeName)) {
       throw new IllegalArgumentException("Missing required param: youTubeName");
     }
-    
+
     if (util.isNullOrEmpty(title)) {
       throw new IllegalArgumentException("Missing required param: title");
     }
-    
+
     if (util.isNullOrEmpty(description)) {
       throw new IllegalArgumentException("Missing required param: description");
-    }    
-    
+    }
+
     if (util.isNullOrEmpty(videoDate)) {
       throw new IllegalArgumentException("Missing required param: videoDate");
-    }        
-    
+    }
+
     VideoSubmission submission = new VideoSubmission();
     submission.setAssignmentId(Long.parseLong(assignmentId));
     submission.setYouTubeName(youTubeName);
@@ -71,11 +73,20 @@ public class NewMobileVideoSubmission extends Command {
     submission.setVideoTitle(title);
     submission.setVideoDescription(description);
     submission.setVideoDate(videoDate);
+
+    if (!util.isNullOrEmpty(videoLocation)) {
+      submission.setVideoLocation(videoLocation);
+    }
+
+    if (!util.isNullOrEmpty(tags)) {
+      submission.setVideoTags(tags);
+    }
+
     submissionDao.save(submission);
-    
-    userAuthTokenDao.setUserAuthToken(youTubeName, clientLoginToken, 
+
+    userAuthTokenDao.setUserAuthToken(youTubeName, clientLoginToken,
         UserAuthToken.TokenType.CLIENT_LOGIN);
-    
+
     return json;
   }
 }
