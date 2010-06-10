@@ -53,6 +53,14 @@ public class AdminConfig implements Serializable {
   @Expose
   @Persistent
   private String youTubeAuthSubToken;
+  
+  @Expose
+  @Persistent
+  private String picasaUsername;
+
+  @Expose
+  @Persistent
+  private String picasaAuthSubToken;
 
   @Expose
   @Persistent
@@ -254,6 +262,22 @@ public class AdminConfig implements Serializable {
 
   public void setYouTubeAuthSubToken(String youTubeAuthSubToken) {
     this.youTubeAuthSubToken = youTubeAuthSubToken;
+  }
+
+  public String getPicasaUsername() {
+    return picasaUsername;
+  }
+
+  public void setPicasaUsername(String picasaUsername) {
+    this.picasaUsername = picasaUsername;
+  }
+
+  public String getPicasaAuthSubToken() {
+    return picasaAuthSubToken;
+  }
+
+  public void setPicasaAuthSubToken(String picasaAuthSubToken) {
+    this.picasaAuthSubToken = picasaAuthSubToken;
   }
 
   public String getDefaultTag() {

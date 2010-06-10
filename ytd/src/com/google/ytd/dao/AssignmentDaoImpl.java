@@ -1,16 +1,17 @@
-/* Copyright (c) 2009 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+/*
+ * Copyright (c) 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.ytd.dao;
@@ -27,6 +28,7 @@ import javax.jdo.Query;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.Assignment;
+import com.google.ytd.picasa.PicasaApiHelper;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
@@ -44,6 +46,8 @@ public class AssignmentDaoImpl implements AssignmentDao {
   private PersistenceManagerFactory pmf;
   @Inject
   private YouTubeApiHelper youTubeApiHelper;
+  @Inject
+  private PicasaApiHelper picasaApiHelper;
   @Inject
   private AdminConfigDao adminConfigDao;
 
@@ -69,8 +73,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
   /**
    * Retrieves an Assignment from the datastore given its id.
    * 
-   * @param id
-   *          An ID corresponding to an Assignment object in the datastore.
+   * @param id An ID corresponding to an Assignment object in the datastore.
    * @return The Assignment object whose id is specified, or null if the id is
    *         invalid.
    */
@@ -83,6 +86,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<Assignment> getAssignments(String sortBy, String sortOrder, String filterType) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -93,7 +97,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
       query.declareImports("import java.util.Date");
       query.declareParameters("String filterType");
       query.setOrdering(sortBy + " " + sortOrder);
-      
+
       filterType = filterType.toUpperCase();
       if (!filterType.equals("ALL")) {
         String filters = "status == filterType";
@@ -116,7 +120,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
    * com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment
    * )
    */
-  public Assignment newAssignment(Assignment assignment, String playlistTitle) {
+  public Assignment newAssignment(Assignment assignment, String title) {
     PersistenceManager pm = pmf.getPersistenceManager();
     try {
       assignment = pm.makePersistent(assignment);
@@ -127,12 +131,26 @@ public class AssignmentDaoImpl implements AssignmentDao {
       } else {
         youTubeApiHelper.setAuthSubToken(token);
 
-        String playlistId = youTubeApiHelper.createPlaylist(playlistTitle, assignment
-            .getDescription());
+        String playlistId = youTubeApiHelper.createPlaylist(title, assignment.getDescription());
         assignment.setPlaylistId(playlistId);
-        assignment = pm.makePersistent(assignment);
-        assignment = pm.detachCopy(assignment);
       }
+
+      if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
+          && picasaApiHelper.isAuthenticated()) {
+        String privateAlbumUrl =
+            picasaApiHelper.createAlbum(title + " (Private)", assignment.getDescription(), true);
+        String publicAlbumUrl =
+            picasaApiHelper.createAlbum(title, assignment.getDescription(), false);
+
+        assignment.setPrivateAlbumUrl(privateAlbumUrl);
+        assignment.setPublicAlbumUrl(publicAlbumUrl);
+      } else {
+        log.info("Not attempting to create a Picasa album, since no Picasa AuthSub token was "
+            + "found in the config or photo submissions are disabled.");
+      }
+
+      assignment = pm.makePersistent(assignment);
+      assignment = pm.detachCopy(assignment);
     } finally {
       pm.close();
     }
@@ -164,8 +182,8 @@ public class AssignmentDaoImpl implements AssignmentDao {
       Query query = pm.newQuery(Assignment.class);
       query.declareParameters("String defaultMobileAssignmentDescription");
       query.setFilter("description == defaultMobileAssignmentDescription");
-      List<Assignment> results = (List<Assignment>) query
-          .execute(defaultMobileAssignmentDescription);
+      List<Assignment> results =
+          (List<Assignment>) query.execute(defaultMobileAssignmentDescription);
       if (results.size() > 0) {
         assignmentId = results.get(0).getId();
       } else {
@@ -182,8 +200,9 @@ public class AssignmentDaoImpl implements AssignmentDao {
               + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
         } else {
           youTubeApiHelper.setAuthSubToken(token);
-          String playlistId = youTubeApiHelper.createPlaylist(String.format(
-              "Playlist for Assignment #%d", assignment.getId()), assignment.getDescription());
+          String playlistId =
+              youTubeApiHelper.createPlaylist(String.format("Playlist for Assignment #%d",
+                  assignment.getId()), assignment.getDescription());
           assignment.setPlaylistId(playlistId);
           assignment = pm.makePersistent(assignment);
         }

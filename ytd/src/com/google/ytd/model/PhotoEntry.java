@@ -6,7 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.datastore.Blob;
 import com.google.gson.annotations.Expose;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -24,21 +23,22 @@ public class PhotoEntry {
 
   @Persistent
   private BlobKey blobKey = null;
-
+  
   @Persistent
   @Expose
-  private String imageUrl = null;
-
-  @Persistent
-  @Expose
-  private String thumbnailUrl = null;
-
-  @Persistent
-  private Blob thumbnail = null;
+  private String picasaUrl = null;
 
   @Persistent
   @Expose
   private String format = null;
+  
+  @Persistent
+  @Expose
+  private String thumbnailUrl = null;
+  
+  @Persistent
+  @Expose
+  private String imageUrl = null;
 
   public enum ModerationStatus {
     UNREVIEWED,
@@ -50,15 +50,12 @@ public class PhotoEntry {
   @Persistent
   private ModerationStatus status;
 
-  public PhotoEntry(String submissionId, BlobKey blobKey, String format, Blob thumbnail) {
+  public PhotoEntry(String submissionId, BlobKey blobKey, String format) {
     this.blobKey = blobKey;
     this.id = blobKey.getKeyString();
     this.submissionId = submissionId;
-    this.imageUrl = "/image?id=" + this.id;
-    this.thumbnailUrl = "/thumb?id=" + this.id;
     this.status = ModerationStatus.UNREVIEWED;
     this.format = format;
-    this.thumbnail = thumbnail;
   }
 
   public String getId() {
@@ -67,6 +64,10 @@ public class PhotoEntry {
 
   public String getSubmissionId() {
     return submissionId;
+  }
+
+  public void setBlobKey(BlobKey blobKey) {
+    this.blobKey = blobKey;
   }
 
   public BlobKey getBlobKey() {
@@ -81,19 +82,31 @@ public class PhotoEntry {
     return status;
   }
 
-  public String getImageUrl() {
-    return imageUrl;
+  public String getFormat() {
+    return format;
+  }
+
+  public String getPicasaUrl() {
+    return picasaUrl;
+  }
+
+  public void setPicasaUrl(String picasaUrl) {
+    this.picasaUrl = picasaUrl;
   }
 
   public String getThumbnailUrl() {
     return thumbnailUrl;
   }
 
-  public String getFormat() {
-    return format;
+  public void setThumbnailUrl(String thumbnailUrl) {
+    this.thumbnailUrl = thumbnailUrl;
   }
 
-  public Blob getThumbnail() {
-    return thumbnail;
+  public String getImageUrl() {
+    return imageUrl;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 }

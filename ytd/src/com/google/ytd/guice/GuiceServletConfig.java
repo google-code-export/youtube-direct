@@ -1,7 +1,5 @@
 package com.google.ytd.guice;
 
-import java.util.logging.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
@@ -15,15 +13,12 @@ import com.google.ytd.embed.UploadResponseHandler;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
-import com.google.ytd.photo.ApprovedPhotosAtomGenerator;
-import com.google.ytd.photo.ApprovedPhotosJsonGenerator;
-import com.google.ytd.photo.ServeImage;
-import com.google.ytd.photo.ServeThumbnail;
+import com.google.ytd.picasa.PersistPicasaAuthSubToken;
+import com.google.ytd.tasks.MoveToPicasa;
 import com.google.ytd.youtube.PersistAuthSubToken;
 import com.google.ytd.youtube.VideoDownloadRedirect;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
-  private static final Logger LOG = Logger.getLogger(GuiceServletConfig.class.getName());
 
   @Override
   protected Injector getInjector() {
@@ -32,12 +27,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
       protected void configureServlets() {
         // Single entry point for all jsonrpc requests
         serve("/jsonrpc").with(JsonRpcProcessor.class);
-
-        // Image related servlet endpoints
-        serve("/image").with(ServeImage.class);
-        serve("/thumb").with(ServeThumbnail.class);
-        serve("/approved_photos/atom").with(ApprovedPhotosAtomGenerator.class);
-        serve("/approved_photos/json").with(ApprovedPhotosJsonGenerator.class);
         
         // Video download endpoint
         serve("/admin/VideoDownloadRedirect").with(VideoDownloadRedirect.class);
@@ -51,6 +40,8 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/LogoutHandler").with(LogoutHandler.class);
         serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
         serve("/admin/PersistAuthSubToken").with(PersistAuthSubToken.class);
+        serve("/admin/PersistPicasaAuthSubToken").with(PersistPicasaAuthSubToken.class);
+        serve("/tasks/MoveToPicasa").with(MoveToPicasa.class);
 
         // Map mobile servlet handlers
         String mobileDir = "/mobile";

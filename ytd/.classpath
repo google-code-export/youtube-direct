@@ -35,5 +35,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jmock-2.5.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jmock-junit4-2.5.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gdata-photos-2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gdata-photos-meta-2.0.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

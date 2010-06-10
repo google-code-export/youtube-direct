@@ -369,49 +369,54 @@ admin.photo.getImageThumb = function(entry) {
   var topMostDiv = jQuery('<div id="' + entry.id + '_main" style="padding: 1px;"/>');
   
   var checkboxDiv = jQuery('<div id="checkbox"/>');
-  var thumbnailDiv = jQuery('<div style="width: 120px; height: 100px" id="thumbnail"/>');
+  var thumbnailDiv = jQuery('<div style="width: 100px; height: 100px" id="thumbnail"/>');
   var photoModerationDiv = jQuery('<div id="photoModeration"/>');
   
   var thumbDiv = jQuery('<div id="' + entry.id + '"/>');
 
   var thumbImage = jQuery('<img/>');
-  thumbImage.attr('src', entry.thumbnailUrl);
-
-  thumbImage.click( function() {
-    var img = new Image();
-    img.src = entry.imageUrl;
-
-    img.onload = function() {
-      var options = {};
-      img = admin.photo.resizeImage(img, 800);
-
-      options.width = img.width + 50;
-      options.height = img.height + 100;
-      
-      var popUp = jQuery('<div align="center"/>');
-      popUp.css('width', options.width);
-      popUp.css('height', options.height);
-      
-      options.open = function() {
-        var imageLink = jQuery('<a/>');
-        imageLink.attr('href', img.src);
-        imageLink.attr('target', '_blank');
-        imageLink.html('Open in new window');
   
-        popUp.append(imageLink);
-        popUp.append('<br><br>');
-        popUp.append(img);        
+  if (entry.thumbnailUrl != null && entry.thumbnailUrl.length > 0) {
+  	thumbImage.attr('src', entry.thumbnailUrl);
+  	
+    thumbImage.click(function() {
+      var img = new Image();
+      img.src = entry.imageUrl;
+
+      img.onload = function() {
+        var options = {};
+        img = admin.photo.resizeImage(img, 800);
+
+        options.width = img.width + 50;
+        options.height = img.height + 100;
+        
+        var popUp = jQuery('<div align="center"/>');
+        popUp.css('width', options.width);
+        popUp.css('height', options.height);
+        
+        options.open = function() {
+          var imageLink = jQuery('<a/>');
+          imageLink.attr('href', img.src);
+          imageLink.attr('target', '_blank');
+          imageLink.html('Open in new window');
+    
+          popUp.append(imageLink);
+          popUp.append('<br><br>');
+          popUp.append(img);        
+        };
+        
+        options.close = function() {
+          jQuery(img).remove();
+          img = null;
+        };
+        
+        jQuery.ui.dialog.defaults.bgiframe = true;
+        popUp.dialog(options);
       };
-      
-      options.close = function() {
-        jQuery(img).remove();
-        img = null;
-      };
-      
-      jQuery.ui.dialog.defaults.bgiframe = true;
-      popUp.dialog(options);
-    };
-  });
+    });
+  } else {
+  	thumbImage.attr('src', '/questionmark.png');
+  }
   
   thumbDiv.append(thumbImage);
 

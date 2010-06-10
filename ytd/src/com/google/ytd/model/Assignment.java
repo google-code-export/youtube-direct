@@ -60,6 +60,14 @@ public class Assignment implements Serializable {
   @Persistent
   @Expose
   private String playlistId = "";
+  
+  @Persistent
+  @Expose
+  private String privateAlbumUrl = "";
+  
+  @Persistent
+  @Expose
+  private String publicAlbumUrl = "";
 
   @Persistent
   @Expose
@@ -238,5 +246,21 @@ public class Assignment implements Serializable {
 
   public void setPostSubmitMessage(String postSubmitMessage) {
     this.postSubmitMessage = postSubmitMessage;
+  }
+
+  public String getPrivateAlbumUrl() {
+    return privateAlbumUrl;
+  }
+
+  public void setPrivateAlbumUrl(String privateAlbumUrl) {
+    this.privateAlbumUrl = privateAlbumUrl;
+  }
+
+  public String getPublicAlbumUrl() {
+    return publicAlbumUrl;
+  }
+
+  public void setPublicAlbumUrl(String publicAlbumUrl) {
+    this.publicAlbumUrl = publicAlbumUrl;
   }
 }
