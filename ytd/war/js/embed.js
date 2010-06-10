@@ -32,6 +32,11 @@ function init() {
 		existingVideoMainInit();
 	});
 
+	jQuery('#photoButton').click(function(event) {
+		jQuery('#loginInstruction').css('display', 'none');
+		photoMainInit();
+	});
+
 	addFileElement();
 }
 
@@ -217,7 +222,7 @@ function existingVideoMainInit() {
       return;
     }
 
-    // disable buttons during submitting
+    // Disable buttons while submitting.
     jQuery('#submitButton').get(0).disabled = true;
     jQuery('#cancelSubmitButton').get(0).disabled = true;
 
