@@ -1,16 +1,17 @@
-/* Copyright (c) 2010 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+/*
+ * Copyright (c) 2010 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.ytd.embed;
@@ -31,10 +32,11 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.datastore.Blob;
-import com.google.appengine.api.images.Image;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -47,14 +49,14 @@ import com.google.ytd.util.Util;
 
 /**
  * Servlet that handles the submission of photos. It creates a new
- * PhotoSubmission object and saves it to the datastore.
+ * PhotoSubmission object, saves it to the datastore, and creates a TaskQueue
+ * entry to transmit it to Picasa.
  */
 @Singleton
 public class SubmitPhoto extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(SubmitPhoto.class.getName());
 
-  private static final int THUMBNAIL_WIDTH = 120;
-  private static final int THUMBNAIL_HEIGHT = 100;
+  private static final long TASK_DELAY = 1000 * 60; // Timeout before task is invoked.
 
   private Injector injector = null;
   private Util util = null;
@@ -104,7 +106,7 @@ public class SubmitPhoto extends HttpServlet {
       String phoneNumber = req.getParameter("phoneNumber");
 
       String location = req.getParameter("location");
-      
+
       String date = req.getParameter("date");
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -138,21 +140,21 @@ public class SubmitPhoto extends HttpServlet {
       }
 
       if (validSubmissionKeys.size() > 0) {
-        // PhotoSubmission represents the meta data of a set of photo entries
-        PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId),
-                articleUrl, author, email, phoneNumber, title, description, location, date,
-                validSubmissionKeys.size());
+        // PhotoSubmission represents the metadata of a set of photo entries
+        PhotoSubmission photoSubmission =
+            new PhotoSubmission(Long.parseLong(assignmentId), articleUrl, author, email,
+                phoneNumber, title, description, location, date, validSubmissionKeys.size());
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
 
-        for (BlobKey blobKey : validSubmissionKeys) {
-          ImagesService imagesService = ImagesServiceFactory.getImagesService();
-          Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
-          Image thumbnail = imagesService.applyTransform(ImagesServiceFactory.makeResize(
-                  THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), image);
+        Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(url("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
+            .countdownMillis(TASK_DELAY));
 
-          PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, image.getFormat()
-                  .toString().toLowerCase(), new Blob(thumbnail.getImageData()));
+        for (BlobKey blobKey : validSubmissionKeys) {
+          BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+
+          PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, blobInfo.getContentType());
           pmfUtil.persistJdo(photoEntry);
         }
       } else {
@@ -161,7 +163,8 @@ public class SubmitPhoto extends HttpServlet {
     } catch (IllegalArgumentException e) {
       LOG.log(Level.WARNING, "", e);
     } finally {
-      // As per the BlobStore spec, we need to return a 30x response here. It's ignored by the JS.
+      // As per the BlobStore spec, we need to return a 30x response here. It's
+      // ignored by the JS.
       resp.sendRedirect("/blank.html");
     }
   }

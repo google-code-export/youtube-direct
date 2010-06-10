@@ -141,7 +141,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // Notify the submitter of rejection if there is a notify email
     if (adminConfig.isModerationEmail()
         && !util.isNullOrEmpty(submission.getNotifyEmail())) {
-      emailUtil.sendNotificationEmail(submission, ModerationStatus.REJECTED);
+      emailUtil.sendUserModerationEmail(submission, ModerationStatus.REJECTED);
     }
   }
 
@@ -179,7 +179,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // Notify the submitter of approval if there is a notify email
     if (adminConfig.isModerationEmail()
         && (submission.getNotifyEmail() != null)) {
-      emailUtil.sendNotificationEmail(submission, ModerationStatus.APPROVED);
+      emailUtil.sendUserModerationEmail(submission, ModerationStatus.APPROVED);
     }
   }
 

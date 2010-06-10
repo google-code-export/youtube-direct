@@ -4,10 +4,9 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONObject;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.appengine.repackaged.com.google.common.util.Base64;
 import com.google.appengine.repackaged.com.google.common.util.Base64DecoderException;
 import com.google.inject.Inject;
@@ -17,18 +16,15 @@ import com.google.ytd.util.Util;
 
 public class UpdateAdminConfig extends Command {
   private static final Logger LOG = Logger.getLogger(UpdateAdminConfig.class.getName());
-  private static final String CLIENT_ID_PREFIX = "ytd20-";
 
   private AdminConfigDao adminConfigDao = null;
-  private HttpServletRequest servletRequest = null;
 
   @Inject
   private Util util;
 
   @Inject
-  public UpdateAdminConfig(HttpServletRequest servletRequest, AdminConfigDao adminConfigDao) {
+  public UpdateAdminConfig(AdminConfigDao adminConfigDao) {
     this.adminConfigDao = adminConfigDao;
-    this.servletRequest = servletRequest;
   }
 
   @Override
@@ -56,8 +52,8 @@ public class UpdateAdminConfig extends Command {
 
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    // Using the name of the App Engine server for the client id
-    adminConfig.setClientId(CLIENT_ID_PREFIX + servletRequest.getServerName());
+    // Use the name of the App Engine isntance for the client id.
+    adminConfig.setClientId(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
 
     if (developerKey != null) {
       adminConfig.setDeveloperKey(developerKey);

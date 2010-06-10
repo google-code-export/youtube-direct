@@ -49,11 +49,11 @@ limitations under the License.
 	  </select>  
 		<br><br>
 
-		<div>YouTube Playlist Title</div>
+		<div>Assignment Title</div>
 		<input type="text" size="40" id="playlistTitle"/>
 		<br><br>
 
-		<div>YouTube Playlist Description</div>
+		<div>Assignment Description</div>
 		<textarea cols="40" rows="5" id="assignmentDescription"></textarea>		
 		<br><br>
 		

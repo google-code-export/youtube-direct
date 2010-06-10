@@ -46,6 +46,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Util {
+  public static final String CLIENT_ID_PREFIX = "ytd20-";
   private static final Logger log = Logger.getLogger(Util.class.getName());
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 

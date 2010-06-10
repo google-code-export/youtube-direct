@@ -6,20 +6,19 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Inject;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.model.PhotoEntry.ModerationStatus;
-import com.google.ytd.util.Util;
 
 public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
   @Inject
-  private Util util;
-  @Inject
   private PersistenceManagerFactory pmf;
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<PhotoSubmission> getPhotoSubmissions(String sortBy, String sortOrder) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -39,6 +38,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     return submissions;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<PhotoEntry> getAllPhotos(String submissionId) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -57,7 +57,8 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
 
     return photos;
   }
-  
+
+  @SuppressWarnings("unchecked")
   @Override
   public List<PhotoEntry> getAllPhotos(String submissionId, ModerationStatus status) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -83,7 +84,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     PhotoSubmission submission = null;
 
     try {
-      submission = (PhotoSubmission) pm.getObjectById(PhotoSubmission.class, id);
+      submission = pm.getObjectById(PhotoSubmission.class, id);
     } finally {
       pm.close();
     }
@@ -97,7 +98,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     PhotoSubmission submission = null;
 
     try {
-      submission = (PhotoSubmission) pm.getObjectById(PhotoSubmission.class, id);
+      submission = pm.getObjectById(PhotoSubmission.class, id);
 
       // Delete all associated photo entries of this submission
       List<PhotoEntry> photos = this.getAllPhotos(id);
@@ -124,16 +125,19 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     PersistenceManager pm = pmf.getPersistenceManager();
     PhotoEntry entry = null;
     try {
-      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);
+      entry = pm.getObjectById(PhotoEntry.class, id);
 
       // Update the photo count of the corresponding submission
       PhotoSubmission photoSubmission = this.getSubmissionById(entry.getSubmissionId());
       photoSubmission.setNumberOfPhotos(photoSubmission.getNumberOfPhotos() - 1);
       this.save(photoSubmission);
 
-      // Delete the image binary from blob store
-      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      blobstoreService.delete(entry.getBlobKey());
+      BlobKey blobKey = entry.getBlobKey();
+      if (blobKey != null) {
+        // Delete the image binary from blob store
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        blobstoreService.delete(blobKey);
+      }
 
       // Delete the persistent entry record of this image
       pm.deletePersistent(entry);
@@ -148,7 +152,7 @@ public class PhotoSubmissionDaoImpl implements PhotoSubmissionDao {
     PhotoEntry entry = null;
 
     try {
-      entry = (PhotoEntry) pm.getObjectById(PhotoEntry.class, id);
+      entry = pm.getObjectById(PhotoEntry.class, id);
     } finally {
       pm.close();
     }

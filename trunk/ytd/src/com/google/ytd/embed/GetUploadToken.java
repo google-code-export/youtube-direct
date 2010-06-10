@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.gdata.data.media.mediarss.MediaCategory;
 import com.google.gdata.data.media.mediarss.MediaDescription;
 import com.google.gdata.data.media.mediarss.MediaKeywords;
@@ -140,8 +141,7 @@ public class GetUploadToken extends HttpServlet {
       mg.setDescription(new MediaDescription());
       mg.getDescription().setPlainTextContent(description);
 
-      // TODO: Move this to a config or constant.
-      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, "ytd"));
+      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get()));
 
       // Maximum size of a developer tag is 25 characters, and we prepend 2
       // characters.

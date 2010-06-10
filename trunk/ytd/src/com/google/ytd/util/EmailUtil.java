@@ -1,21 +1,19 @@
 package com.google.ytd.util;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Properties;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+import com.google.appengine.api.mail.MailService;
+import com.google.appengine.api.mail.MailServiceFactory;
+import com.google.appengine.api.mail.MailService.Message;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.dao.PhotoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.model.PhotoEntry;
+import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 
@@ -26,49 +24,100 @@ public class EmailUtil {
   private AdminConfigDao adminConfigDao;
 
   @Inject
+  private PhotoSubmissionDao photoSubmissionDao;
+
+  @Inject
   private Util util;
 
-  public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
-    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+  private void sendNewSubmissionEmail(String subject, String body) {
+    try {
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
-    String addressCommaSeparated = adminConfig.getNewSubmissionAddress();
-    if (!util.isNullOrEmpty(addressCommaSeparated)) {
-      String[] addresses = addressCommaSeparated.split("\\s*,\\s*");
-      try {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-        Message msg = new MimeMessage(session);
-
-        // Default to the first (or only) address in the recipient list to use as From: header.
-        msg.setFrom(new InternetAddress(addresses[0], addresses[0]));
-        
-        for (String address : addresses) {
-          msg.addRecipient(Message.RecipientType.TO, new InternetAddress(address, address));
-        }
-        
-        msg.setSubject(String.format("New submission for assignment id %d", videoSubmission
-            .getAssignmentId()));
-
-        msg.setText(String.format("Video %s was submitted by YouTube user %s in response to "
-            + "assignment id %d.", videoSubmission.getWatchUrl(), videoSubmission.getYouTubeName(),
-            videoSubmission.getAssignmentId()));
-
-        Transport.send(msg);
-      } catch (UnsupportedEncodingException e) {
-        log.log(Level.WARNING, "", e);
-      } catch (MessagingException e) {
-        log.log(Level.WARNING, "", e);
+      String addressCommaSeparated = adminConfig.getNewSubmissionAddress();
+      if (util.isNullOrEmpty(addressCommaSeparated)) {
+        throw new IllegalArgumentException(
+            "No notification email addresses found in configuration.");
       }
+      String[] addresses = addressCommaSeparated.split("\\s*,\\s*");
+
+
+      MailService mailService = MailServiceFactory.getMailService();
+      Message message = new Message();
+
+      // Default to the first (or only) address in the recipient list to use
+      // as From: header.
+      message.setSender(addresses[0]);
+      message.setTo(addresses);
+      message.setSubject(subject);
+      message.setTextBody(body);
+
+      mailService.send(message);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
     }
   }
 
-  public void sendNotificationEmail(VideoSubmission entry, ModerationStatus status) {
+  public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
+    String subject =
+        String.format("New video submission for assignment id %d", videoSubmission
+            .getAssignmentId());
+
+    String body =
+        String.format("Video %s was submitted by YouTube user %s in response to "
+            + "assignment id %d.", videoSubmission.getWatchUrl(), videoSubmission.getYouTubeName(),
+            videoSubmission.getAssignmentId());
+
+    sendNewSubmissionEmail(subject, body);
+  }
+
+  public void sendNewSubmissionEmail(PhotoSubmission photoSubmission) {
+    String subject =
+        String.format("New photo submission for assignment id %d", photoSubmission
+            .getAssignmentId());
+
+    StringBuilder picasaUrls = new StringBuilder();
+    for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmission.getId())) {
+      picasaUrls.append(photoEntry.getPicasaUrl());
+      picasaUrls.append("\n");
+    }
+
+    String body =
+        String.format("The following photos were submitted by %s (%s) in response to "
+            + "assignment id %d.", photoSubmission.getAuthor(), photoSubmission.getNotifyEmail(),
+            photoSubmission.getAssignmentId(), picasaUrls.toString());
+
+    sendNewSubmissionEmail(subject, body);
+  }
+
+  private void sendUserModerationEmail(String toAddress, String subject, String body) {
     try {
-      String toAddress = entry.getNotifyEmail();
-      if (util.isNullOrEmpty(toAddress)) {
-        throw new IllegalArgumentException("No destination email address in VideoSubmission.");
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+
+      MailService mailService = MailServiceFactory.getMailService();
+      Message message = new Message();
+
+      String fromAddress = adminConfig.getFromAddress();
+      if (util.isNullOrEmpty(fromAddress)) {
+        throw new IllegalArgumentException("No from address found in configuration.");
       }
 
+      message.setSender(fromAddress);
+      message.setTo(toAddress);
+      message.setSubject(subject);
+      message.setTextBody(body);
+
+      mailService.send(message);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IllegalArgumentException e) {
+      log.log(Level.WARNING, "", e);
+    }
+  }
+
+  public void sendUserModerationEmail(VideoSubmission entry, ModerationStatus status) {
+    try {
       AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
       String body;
@@ -89,34 +138,59 @@ public class EmailUtil {
         throw new IllegalArgumentException("No email body found in configuration.");
       }
 
-      String fromAddress = adminConfig.getFromAddress();
-      if (util.isNullOrEmpty(fromAddress)) {
-        throw new IllegalArgumentException("No from address found in configuration.");
-      }
-
       body = body.replace("ARTICLE_URL", entry.getArticleUrl());
       body = body.replace("YOUTUBE_URL", entry.getWatchUrl());
+      body = body.replace("MEDIA_URL", entry.getWatchUrl());
 
-      Properties props = new Properties();
-      Session session = Session.getDefaultInstance(props, null);
-      Message msg = new MimeMessage(session);
+      String toAddress = entry.getNotifyEmail();
+      if (util.isNullOrEmpty(toAddress)) {
+        throw new IllegalArgumentException("No destination email address in VideoSubmission.");
+      }
 
-      msg.setFrom(new InternetAddress(fromAddress, fromAddress));
-      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress, toAddress));
-
-      msg.setSubject("Your Recent Video Submission");
-
-      msg.setText(body);
-
-      Transport.send(msg);
-
-      log.info(String.format("Sent %s notification email for status %s", toAddress, status
-          .toString()));
+      sendUserModerationEmail(toAddress, "Your Recent Video Submission", body);
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
-    } catch (UnsupportedEncodingException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (MessagingException e) {
+    }
+  }
+
+  public void sendUserModerationEmail(PhotoSubmission photoSubmission, PhotoEntry photoEntry,
+      ModerationStatus status) {
+    try {
+      AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+
+      String body;
+      switch (status) {
+        case APPROVED:
+          body = adminConfig.getApprovalEmailText();
+          break;
+
+        case REJECTED:
+          body = adminConfig.getRejectionEmailText();
+          break;
+
+        default:
+          throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
+              status.toString()));
+      }
+      if (util.isNullOrEmpty(body)) {
+        throw new IllegalArgumentException("No email body found in configuration.");
+      }
+
+      body = body.replace("ARTICLE_URL", photoSubmission.getArticleUrl());
+
+      if (status == ModerationStatus.APPROVED) {
+        body = body.replace("MEDIA_URL", photoEntry.getPicasaUrl());
+      } else {
+        body = body.replace("MEDIA_URL", "");
+      }
+
+      String toAddress = photoSubmission.getNotifyEmail();
+      if (util.isNullOrEmpty(toAddress)) {
+        throw new IllegalArgumentException("No destination email address in PhotoSubmission.");
+      }
+
+      sendUserModerationEmail(toAddress, "Your Recent Photo Submission", body);
+    } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
     }
   }

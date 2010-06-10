@@ -115,7 +115,7 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
 
     // Send notify email
     if (submission.getNotifyEmail() != null && adminConfig.isModerationEmail()) {
-      emailUtil.sendNotificationEmail(submission, ModerationStatus.APPROVED);
+      emailUtil.sendUserModerationEmail(submission, ModerationStatus.APPROVED);
     }
 
   }
