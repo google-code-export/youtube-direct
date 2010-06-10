@@ -51,7 +51,6 @@
 <title>YouTube Direct</title>
 
 <link type="text/css" href="/css/ext/themes/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-
 <link type="text/css" href="/css/embed.css" rel="stylesheet" />
 
 <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
@@ -108,6 +107,14 @@
 		<%
 			}	
 		%>
+	  <%
+	    if (!authenticator.isLoggedIn() && adminConfigDao.allowPhotoSubmission()) {
+	  %>
+  <br><br>
+  <input id="photoButton" class="askButton" type="button" value="Submit Photo(s)" /> 
+    <%
+      }
+    %>
   </div>
 </div>
 

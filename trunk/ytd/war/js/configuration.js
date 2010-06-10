@@ -21,7 +21,8 @@ admin.config = admin.config || {};
 admin.config.BASIC_PARAMS = ['developerKey', 'defaultTag', 'linkBackText',
                              'moderationMode', 'newSubmissionAddress', 'brandingMode',
                              'loginInstruction', 'postSubmitMessage', 'fromAddress',
-                             'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes'];
+                             'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes', 
+                             'maxPhotoSizeMb', 'recaptchaPrivateKey', 'recaptchaPublicKey'];
 
 admin.config.init = function() {
   var saveButton = jQuery('#saveButton');     
@@ -45,6 +46,20 @@ admin.config.init = function() {
       				data.youTubeUsername));
       jQuery('#authenticateButton').val("Re-Authenticate");
     }
+    
+    if (data.picasaAuthSubToken && data.picasaUsername) {
+      jQuery('#picasaUsername').html(jQuery.sprintf(
+      				'Authenticated as %s', data.picasaUsername));
+      jQuery('#picasaAuthenticateButton').val("Re-Authenticate");
+    }
+    
+    if (data.photoSubmissionEnabled) {
+    	jQuery('#photoSubmissionEnabled').attr('checked', true);
+    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), true);
+    } else {
+    	jQuery('#photoSubmissionEnabled').attr('checked', false);
+    	admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'), false);
+    }
   });
   
   saveButton.click(function() {
@@ -59,8 +74,20 @@ admin.config.init = function() {
     window.location = jQuery.sprintf('https://www.google.com/accounts/AuthSubRequest?next=%s&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0', nextUrl);
   });
   
+  jQuery('#picasaAuthenticateButton').click(function() {
+    // Hardcode http:// rather than allowing for https:// to ensure that we can get by with
+    // registering http://APP.appspot.com/ as the prefix for AuthSub requests in the Google
+    // Manage Your Domain pages.
+    var nextUrl = jQuery.sprintf('http://%s/admin/PersistPicasaAuthSubToken', window.location.host);
+    window.location = jQuery.sprintf('https://www.google.com/accounts/AuthSubRequest?next=%s&scope=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2F&session=1&secure=0', nextUrl);
+  });
+  
   jQuery('#moderationEmail').click(function() {
     admin.config.toggleDiv(jQuery('#moderationEmailTextDiv'));
+  });
+  
+  jQuery('#photoSubmissionEnabled').click(function() {
+    admin.config.toggleDiv(jQuery('#photoSubmissionConfigDiv'));
   });
 };
 
