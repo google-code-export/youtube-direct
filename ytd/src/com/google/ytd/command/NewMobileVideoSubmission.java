@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
+import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.UserAuthToken;
@@ -14,12 +15,14 @@ import com.google.ytd.util.Util;
 public class NewMobileVideoSubmission extends Command {
   private VideoSubmissionDao submissionDao = null;
   private UserAuthTokenDao userAuthTokenDao = null;
+  private AssignmentDao assignmentDao = null;
   private Util util = null;
 
   @Inject
   public NewMobileVideoSubmission(Util util, VideoSubmissionDao submissionDao,
-      UserAuthTokenDao userAuthTokenDao) {
+      AssignmentDao assignmentDao, UserAuthTokenDao userAuthTokenDao) {
     this.util = util;
+    this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;
     this.userAuthTokenDao = userAuthTokenDao;
   }
@@ -38,7 +41,7 @@ public class NewMobileVideoSubmission extends Command {
     String tags = getParam("tags");
 
     if (util.isNullOrEmpty(assignmentId)) {
-      throw new IllegalArgumentException("Missing required param: assignmentId");
+      assignmentId = this.assignmentDao.getDefaultMobileAssignmentId() + "";
     }
 
     if (util.isNullOrEmpty(videoId)) {
