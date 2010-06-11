@@ -134,21 +134,14 @@ public class AssignmentDaoImpl implements AssignmentDao {
       String description = assignment.getDescription();
       String assignmentId = assignment.getId().toString();
 
-      String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
-      if (util.isNullOrEmpty(token)) {
-        log.warning(String.format("Could not create new playlist for assignment '%s' because no"
-            + " YouTube AuthSub token was found in the config.", description));
-      } else {
-        youTubeApiHelper.setAuthSubToken(token);
+      Queue queue = QueueFactory.getDefaultQueue();
 
-        String playlistId = youTubeApiHelper.createPlaylist(title, description);
-        assignment.setPlaylistId(playlistId);
-      }
+      queue.add(url("/tasks/CreatePlaylist").method(Method.POST)
+          .param("assignmentId", assignmentId).param("title", title).param("description",
+              description));
 
       if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
           && picasaApiHelper.isAuthenticated()) {
-        Queue queue = QueueFactory.getDefaultQueue();
-
         queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
             .param("title", title).param("description", description).param("status",
                 ModerationStatus.APPROVED.toString()));
