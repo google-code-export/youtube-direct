@@ -54,9 +54,10 @@ public class PicasaApiHelper {
       "http://picasaweb.google.com/data/feed/api/user/default";
   // The maximum length or width of an image.
   private static final int MAX_DIMENSION = 1600;
-  // The connect + read timeout needs to be <= 10 seconds, due to App Engine limitations.
-  private static final int CONNECT_TIMEOUT = 5;
-  private static final int READ_TIMEOUT = 5;
+  // The connect + read timeout needs to be <= 10 seconds, due to App Engine
+  // limitations.
+  private static final int CONNECT_TIMEOUT = 1000 * 3; // In milliseconds
+  private static final int READ_TIMEOUT = 1000 * 7; // In milliseconds
 
   private PicasawebService service = null;
   private AdminConfigDao adminConfigDao = null;
@@ -72,7 +73,7 @@ public class PicasaApiHelper {
     if (!util.isNullOrEmpty(authSubToken)) {
       service.setAuthSubToken(authSubToken);
     }
-    
+
     service.setConnectTimeout(CONNECT_TIMEOUT);
     service.setReadTimeout(READ_TIMEOUT);
   }
@@ -97,6 +98,8 @@ public class PicasaApiHelper {
   }
 
   public String createAlbum(String title, String description, boolean privateAlbum) {
+    LOG.info(String.format("Attempting to create %s Picasa album...", privateAlbum ? "private"
+        : "public"));
     AlbumEntry album = new AlbumEntry();
 
     if (privateAlbum) {
@@ -126,8 +129,9 @@ public class PicasaApiHelper {
     return null;
   }
 
-  public com.google.gdata.data.photos.PhotoEntry uploadToPicasa(com.google.ytd.model.PhotoEntry photoEntry, String title,
-      String description, String albumUrl) throws IOException, ServiceException {
+  public com.google.gdata.data.photos.PhotoEntry uploadToPicasa(
+      com.google.ytd.model.PhotoEntry photoEntry, String title, String description, String albumUrl)
+      throws IOException, ServiceException {
     LOG.info(String.format("Preparing to upload to Picasa.\nTitle: %s\nDescription: %s\nAlbum: %s",
         title, description, albumUrl));
 
@@ -147,7 +151,7 @@ public class PicasaApiHelper {
     }
 
     picasaPhoto.setKeywords(keywords);
-    
+
     Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     Transform resize = ImagesServiceFactory.makeResize(MAX_DIMENSION, MAX_DIMENSION);
@@ -160,7 +164,8 @@ public class PicasaApiHelper {
 
     try {
       picasaPhoto = service.insert(new URL(albumUrl), picasaPhoto);
-      LOG.info(String.format("Upload successful. Url is '%s'.", picasaPhoto.getEditLink().getHref()));
+      LOG.info(String
+          .format("Upload successful. Url is '%s'.", picasaPhoto.getEditLink().getHref()));
 
       return picasaPhoto;
     } catch (MalformedURLException e) {
