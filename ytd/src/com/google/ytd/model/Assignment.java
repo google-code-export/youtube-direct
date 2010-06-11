@@ -63,11 +63,15 @@ public class Assignment implements Serializable {
   
   @Persistent
   @Expose
-  private String privateAlbumUrl = "";
+  private String unreviewedAlbumUrl = "";
   
   @Persistent
   @Expose
-  private String publicAlbumUrl = "";
+  private String rejectedAlbumUrl = "";
+  
+  @Persistent
+  @Expose
+  private String approvedAlbumUrl = "";
 
   @Persistent
   @Expose
@@ -248,19 +252,27 @@ public class Assignment implements Serializable {
     this.postSubmitMessage = postSubmitMessage;
   }
 
-  public String getPrivateAlbumUrl() {
-    return privateAlbumUrl;
+  public String getUnreviewedAlbumUrl() {
+    return unreviewedAlbumUrl;
   }
 
-  public void setPrivateAlbumUrl(String privateAlbumUrl) {
-    this.privateAlbumUrl = privateAlbumUrl;
+  public void setUnreviewedAlbumUrl(String unreviewedAlbumUrl) {
+    this.unreviewedAlbumUrl = unreviewedAlbumUrl;
   }
 
-  public String getPublicAlbumUrl() {
-    return publicAlbumUrl;
+  public String getRejectedAlbumUrl() {
+    return rejectedAlbumUrl;
   }
 
-  public void setPublicAlbumUrl(String publicAlbumUrl) {
-    this.publicAlbumUrl = publicAlbumUrl;
+  public void setRejectedAlbumUrl(String rejectedAlbumUrl) {
+    this.rejectedAlbumUrl = rejectedAlbumUrl;
+  }
+
+  public String getApprovedAlbumUrl() {
+    return approvedAlbumUrl;
+  }
+
+  public void setApprovedAlbumUrl(String approvedAlbumUrl) {
+    this.approvedAlbumUrl = approvedAlbumUrl;
   }
 }

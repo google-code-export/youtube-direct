@@ -16,4 +16,6 @@ public interface AssignmentDao {
   public long getDefaultMobileAssignmentId();
 
   public List<Assignment> getAssignments(String sortBy, String sortOrder, String filterType);
+  
+  public boolean isAssignmentPhotoEnabled(String id);
 }

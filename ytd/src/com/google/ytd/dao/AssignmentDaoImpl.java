@@ -137,13 +137,16 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
       if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
           && picasaApiHelper.isAuthenticated()) {
-        String privateAlbumUrl =
-            picasaApiHelper.createAlbum(title + " (Private)", assignment.getDescription(), true);
-        String publicAlbumUrl =
+        String unreviewedAlbumUrl =
+            picasaApiHelper.createAlbum(title + " (Unreviewed)", assignment.getDescription(), true);
+        String rejectedAlbumUrl =
+          picasaApiHelper.createAlbum(title + " (Rejected)", assignment.getDescription(), true);
+        String approvedAlbumUrl =
             picasaApiHelper.createAlbum(title, assignment.getDescription(), false);
 
-        assignment.setPrivateAlbumUrl(privateAlbumUrl);
-        assignment.setPublicAlbumUrl(publicAlbumUrl);
+        assignment.setApprovedAlbumUrl(approvedAlbumUrl);
+        assignment.setRejectedAlbumUrl(rejectedAlbumUrl);
+        assignment.setUnreviewedAlbumUrl(unreviewedAlbumUrl);
       } else {
         log.info("Not attempting to create a Picasa album, since no Picasa AuthSub token was "
             + "found in the config or photo submissions are disabled.");
@@ -212,5 +215,18 @@ public class AssignmentDaoImpl implements AssignmentDao {
       pm.close();
     }
     return assignmentId;
+  }
+  
+  public boolean isAssignmentPhotoEnabled(String id) {
+    Assignment assignment = getAssignmentById(id);
+    log.info("un: " + assignment.getUnreviewedAlbumUrl());
+    log.info("re: " + assignment.getRejectedAlbumUrl());
+    log.info("ap: " + assignment.getApprovedAlbumUrl());
+    
+    if (util.isNullOrEmpty(assignment.getUnreviewedAlbumUrl()) || util.isNullOrEmpty(assignment.getRejectedAlbumUrl()) || util.isNullOrEmpty(assignment.getApprovedAlbumUrl())) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

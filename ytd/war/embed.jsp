@@ -9,12 +9,15 @@
 <%@ page import="com.google.ytd.dao.UserAuthTokenDaoImpl"%>
 <%@ page import="com.google.ytd.dao.AdminConfigDao"%>
 <%@ page import="com.google.ytd.dao.AdminConfigDaoImpl"%>
+<%@ page import="com.google.ytd.dao.AssignmentDao"%>
+<%@ page import="com.google.ytd.dao.AssignmentDaoImpl"%>
 <%@ page import="com.google.ytd.util.Util"%>
 <%@ page import="com.google.ytd.model.AdminConfig"%>
 <%@ page import="java.net.URLDecoder"%>
 <%@ page import="javax.jdo.PersistenceManagerFactory"%>
 <%@ page import="javax.servlet.http.HttpServletRequest"%>
-<%@ page import="javax.servlet.http.HttpServletResponse"%><%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="javax.servlet.http.HttpServletResponse"%>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 
@@ -28,19 +31,23 @@
 		      bind(PersistenceManagerFactory.class).toInstance(
 		          (PersistenceManagerFactory) getServletContext().getAttribute("pmf"));
 		      bind(HttpServletRequest.class).toInstance(req);
-		      bind(HttpServletResponse.class).toInstance(resp);		
-		      bind(BlobstoreService.class).toInstance(BlobstoreServiceFactory.getBlobstoreService());		      
-	        bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);	 
-		      bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);		      
+		      bind(HttpServletResponse.class).toInstance(resp);
+		      bind(BlobstoreService.class).toInstance(BlobstoreServiceFactory.getBlobstoreService());
+	        bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);
+	        bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
+		      bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
 	      }
 	    });
 	
+	AssignmentDao assignmentDao = injector.getInstance(AssignmentDao.class);
 	AdminConfigDao adminConfigDao = injector.getInstance(AdminConfigDao.class);
 	AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 	Util util = injector.getInstance(Util.class);
 	UserSessionManager userSessionManager = injector.getInstance(UserSessionManager.class);
-	Authenticator authenticator = injector.getInstance(Authenticator.class);	
-	BlobstoreService blobstoreService = injector.getInstance(BlobstoreService.class); 
+	Authenticator authenticator = injector.getInstance(Authenticator.class);
+	BlobstoreService blobstoreService = injector.getInstance(BlobstoreService.class);
+	
+	boolean photosEnabledForAssignment = assignmentDao.isAssignmentPhotoEnabled(request.getParameter("assignmentId"));
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -108,7 +115,7 @@
 			}	
 		%>
 	  <%
-	    if (!authenticator.isLoggedIn() && adminConfigDao.allowPhotoSubmission()) {
+	    if (!authenticator.isLoggedIn() && adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {
 	  %>
   <br><br>
   <input id="photoButton" class="askButton" type="button" value="Submit Photo(s)" /> 
@@ -211,7 +218,7 @@
 </div>
 
   <%    
-    if (adminConfigDao.allowPhotoSubmission()) {   
+    if (adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {   
   %>
 <div id="photoMain" style="display: none;">
   <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
