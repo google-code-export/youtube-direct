@@ -468,12 +468,12 @@ admin.photo.getImageThumb = function(entry) {
 
 admin.photo.showDetails = function(entryId) {
   var submission = admin.photo.getSubmission(entryId);
-  var div = jQuery('<div style="width: 700px; height: 600;" align="center"/>');
+  var div = jQuery('<div style="width: 700px; height: 600px;" align="center"/>');
   
   var dialogOptions = {};
   dialogOptions.title = submission.title;
   dialogOptions.width = 700;
-  dialogOptions.height = 700;
+  dialogOptions.height = 'auto';
   dialogOptions.open = function() {
     var mainDiv = jQuery('#photoDetailsTemplate').clone();
     mainDiv.css('display', 'block');
