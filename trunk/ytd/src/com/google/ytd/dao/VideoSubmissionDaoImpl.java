@@ -14,7 +14,6 @@ import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.util.EmailUtil;
-import com.google.ytd.util.Util;
 
 @Singleton
 public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
@@ -22,8 +21,6 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
 
   private PersistenceManagerFactory pmf = null;
 
-  @Inject
-  private Util util;
   @Inject
   private EmailUtil emailUtil;
   @Inject
@@ -38,6 +35,7 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
     return new VideoSubmission(assignmentId);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<VideoSubmission> getSubmissions(String sortBy, String sortOrder, String filterType) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -69,7 +67,7 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
     VideoSubmission submission = null;
 
     try {
-      submission = (VideoSubmission) pm.getObjectById(VideoSubmission.class, id);
+      submission = pm.getObjectById(VideoSubmission.class, id);
     } finally {
       pm.close();
     }
@@ -134,5 +132,19 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
       pm.close();
     }
     return submission;
+  }
+  
+  public void deleteSubmission(String id) {
+    LOG.info(String.format("Attempting to delete VideoSubmission '%s'...", id));
+    
+    PersistenceManager pm = pmf.getPersistenceManager();
+    try {
+      VideoSubmission submission = pm.getObjectById(VideoSubmission.class, id);
+      pm.deletePersistent(submission);
+      
+      LOG.info("VideoSubmission deleted.");
+    } finally {
+      pm.close();
+    }
   }
 }

@@ -14,4 +14,6 @@ public interface VideoSubmissionDao {
   public VideoSubmission getSubmissionById(String id);
 
   public VideoSubmission save(VideoSubmission submission);
+  
+  public void deleteSubmission(String id);
 }
