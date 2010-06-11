@@ -45,7 +45,7 @@ public class UserAuthToken {
   public enum TokenType {
     AUTH_SUB,
     CLIENT_LOGIN
-  };  
+  }  
   
   public UserAuthToken() {
     this.youtubeName = "";
