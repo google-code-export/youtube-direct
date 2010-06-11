@@ -16,6 +16,8 @@
 
 package com.google.ytd.dao;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,9 +27,13 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.Assignment;
+import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.picasa.PicasaApiHelper;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
@@ -124,31 +130,36 @@ public class AssignmentDaoImpl implements AssignmentDao {
     PersistenceManager pm = pmf.getPersistenceManager();
     try {
       assignment = pm.makePersistent(assignment);
+
+      String description = assignment.getDescription();
+      String assignmentId = assignment.getId().toString();
+
       String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
       if (util.isNullOrEmpty(token)) {
         log.warning(String.format("Could not create new playlist for assignment '%s' because no"
-            + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
+            + " YouTube AuthSub token was found in the config.", description));
       } else {
         youTubeApiHelper.setAuthSubToken(token);
 
-        String playlistId = youTubeApiHelper.createPlaylist(title, assignment.getDescription());
+        String playlistId = youTubeApiHelper.createPlaylist(title, description);
         assignment.setPlaylistId(playlistId);
       }
 
       if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
           && picasaApiHelper.isAuthenticated()) {
-        String unreviewedAlbumUrl =
-            picasaApiHelper.createAlbum(title + " (Unreviewed)", assignment.getDescription(), true);
-        String rejectedAlbumUrl =
-          picasaApiHelper.createAlbum(title + " (Rejected)", assignment.getDescription(), true);
-        String approvedAlbumUrl =
-            picasaApiHelper.createAlbum(title, assignment.getDescription(), false);
+        Queue queue = QueueFactory.getDefaultQueue();
 
-        assignment.setApprovedAlbumUrl(approvedAlbumUrl);
-        assignment.setRejectedAlbumUrl(rejectedAlbumUrl);
-        assignment.setUnreviewedAlbumUrl(unreviewedAlbumUrl);
+        queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
+            .param("title", title).param("description", description).param("status",
+                ModerationStatus.APPROVED.toString()));
+        queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
+            .param("title", title).param("description", description).param("status",
+                ModerationStatus.UNREVIEWED.toString()));
+        queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
+            .param("title", title).param("description", description).param("status",
+                ModerationStatus.REJECTED.toString()));
       } else {
-        log.info("Not attempting to create a Picasa album, since no Picasa AuthSub token was "
+        log.info("Not attempting to create Picasa albums, since no Picasa AuthSub token was "
             + "found in the config or photo submissions are disabled.");
       }
 
@@ -216,14 +227,16 @@ public class AssignmentDaoImpl implements AssignmentDao {
     }
     return assignmentId;
   }
-  
+
   public boolean isAssignmentPhotoEnabled(String id) {
     Assignment assignment = getAssignmentById(id);
     log.info("un: " + assignment.getUnreviewedAlbumUrl());
     log.info("re: " + assignment.getRejectedAlbumUrl());
     log.info("ap: " + assignment.getApprovedAlbumUrl());
-    
-    if (util.isNullOrEmpty(assignment.getUnreviewedAlbumUrl()) || util.isNullOrEmpty(assignment.getRejectedAlbumUrl()) || util.isNullOrEmpty(assignment.getApprovedAlbumUrl())) {
+
+    if (util.isNullOrEmpty(assignment.getUnreviewedAlbumUrl())
+        || util.isNullOrEmpty(assignment.getRejectedAlbumUrl())
+        || util.isNullOrEmpty(assignment.getApprovedAlbumUrl())) {
       return false;
     } else {
       return true;
