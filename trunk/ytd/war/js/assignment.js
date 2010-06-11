@@ -343,18 +343,18 @@ admin.assign.showEmbedCode = function(id) {
   code = code.replace(/\</g,'&lt;');
   code = code.replace(/\>/g,'&gt;');
   
-  var textarea = jQuery('<textarea cols="80" cols="15"/>');
-  textarea.css('font-size', '11px');
-  textarea.css('color', 'black');
-  textarea.css('border', '0px');
-  textarea.html(code);
+  var dialogContainer = jQuery('<pre>');
+  dialogContainer.css('font-size', '11px');
+  dialogContainer.css('color', 'black');
+  dialogContainer.css('border', '0px');
+  dialogContainer.html(code);
   
   var dialogOptions = {};
   dialogOptions.title = 'Embed Code';
   dialogOptions.width = 550;
-  dialogOptions.height = 400;  
+  dialogOptions.height = 'auto';
    
-  textarea.dialog(dialogOptions);
+  dialogContainer.dialog(dialogOptions);
 };
 
 admin.assign.showPlaylistCode = function(id) {  
@@ -368,10 +368,16 @@ admin.assign.showPlaylistCode = function(id) {
   var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
 
   var code = [];
+  var dialogContainer;
   if (playlistId == null || playlistId == '') {
-    code = 'No playlist is associated with this assignment. Please check the YouTube account ' +
-        'settings in the "Configuration" tab.';
+  	dialogContainer = jQuery('<div>');
+
+    code = 'No playlist is associated with this assignment. If you just created the assignment, ' +
+    	'try waiting a few seconds and then refeshing. Otherwise, please check the YouTube account ' +
+      'settings in the "Configuration" tab.';
   } else {
+  	dialogContainer = jQuery('<pre>');
+  	
     code.push('<object width="' + width + '" height="' + height + '">\n');
     code.push('<param name="movie" value="\n');
     code.push(playlistUrl);
@@ -392,18 +398,18 @@ admin.assign.showPlaylistCode = function(id) {
     code = code.replace(/\>/g,'&gt;');
   }
 
-  var textarea = jQuery('<textarea cols="80" cols="15"/>');
-  textarea.css('font-size', '11px');
-  textarea.css('color', 'black');
-  textarea.css('border', '0px');
-  textarea.html(code);
+ 
+  dialogContainer.css('font-size', '11px');
+  dialogContainer.css('color', 'black');
+  dialogContainer.css('border', '0px');
+  dialogContainer.html(code);
   
   var dialogOptions = {};
   dialogOptions.title = 'Playlist Code';
-  dialogOptions.width = 400;
-  dialogOptions.height = 270;  
+  dialogOptions.width = 550;
+  dialogOptions.height = 'auto';  
    
-  textarea.dialog(dialogOptions);
+  dialogContainer.dialog(dialogOptions);
 };
 
 
@@ -454,7 +460,7 @@ admin.assign.getTotalPage = function() {
 };
 
 admin.assign.refreshGrid = function() {
-  admin.assign.getAllAssignments( function(entries) {
+  admin.assign.getAllAssignments(function(entries) {
     
     admin.assign.refreshGridUI(entries);
     
@@ -475,7 +481,7 @@ admin.assign.refreshGrid = function() {
         break;  
     }
     
-    jQuery('#assignmentGrid').setCaption(captionTitle + ' (' + admin.assign.total + ')');    
+    jQuery('#assignmentGrid').setCaption(captionTitle + ' (' + admin.assign.total + ')');
     
     var totalPage = admin.assign.getTotalPage();
     if (totalPage > 0) {
@@ -487,15 +493,14 @@ admin.assign.refreshGrid = function() {
     if (admin.assign.hasNextPage()) {
       jQuery('#assignmentNextPage').get(0).disabled = false;
     } else {
-      jQuery('#assignmentNextPage').get(0).disabled = true;      
+      jQuery('#assignmentNextPage').get(0).disabled = true;
     }
 
     if (admin.assign.hasPrevPage()) {
       jQuery('#assignmentPrevPage').get(0).disabled = false;
     } else {
-      jQuery('#assignmentPrevPage').get(0).disabled = true; 
-    }   
-    
+      jQuery('#assignmentPrevPage').get(0).disabled = true;
+    }
   });
 };
 
@@ -549,12 +554,7 @@ admin.assign.showAssignmentCreate = function(categories) {
       try {
         var json = JSON.parse(jsonStr);
         if (!json.error) {
-        	if (json.playlistId) {
-        		admin.showMessage("Assignment created.", messageElement);
-        	} else {
-        		admin.showError("Could not create a YouTube playlist for the new assignment. " +
-        				"Please check your YouTube API Settings in the Configuration tab.", messageElement);
-        	}
+        	admin.showMessage("Assignment created.", messageElement);
         	admin.assign.pageIndex = 1;
         	admin.assign.refreshGrid();
         } else {
