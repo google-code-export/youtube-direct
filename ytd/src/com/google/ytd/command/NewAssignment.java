@@ -57,7 +57,6 @@ public class NewAssignment extends Command {
     assignment = assignmentDao.newAssignment(assignment, title);
 
     json.put("id", assignment.getId());
-    json.put("playlistId", assignment.getPlaylistId());
 
     return json;
   }
