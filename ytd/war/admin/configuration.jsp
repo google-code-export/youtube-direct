@@ -33,6 +33,45 @@ limitations under the License.
     </div>
   </fieldset>
   <fieldset>
+    <legend>Photo Settings</legend>
+    <div class="clear">
+      You <b>must</b> <a target="_blank" href="http://code.google.com/appengine/docs/billing.html">enable billing</a> on your production App Engine instance <b>before</b> you enable photo submissions. YouTube Direct will not work otherwise.
+    </div>
+    <div class="clear">
+      <label for="photoSubmissionEnabled" class="configureLabel">Photo Submissions:</label>
+      <input type="checkbox" id="photoSubmissionEnabled">Enabled</input>
+      <img class="tip" src="/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
+    </div>
+    <div id="photoSubmissionConfigDiv">
+      <div class="clear">
+        <label class="configureLabel">Picasa Account:</label>
+        <span id="picasaUsername">Unauthenticated</span>
+        <input id="picasaAuthenticateButton" type="button" value="Authenticate"/>
+      </div>
+      <div class="clear">
+        <label for="maxPhotoSizeMb" class="configureLabel">Max. Photo Size (MB):</label>
+        <select class="configureInput" id="maxPhotoSizeMb">
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="5" selected="selected">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+        <img class="tip" src="/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
+      </div>
+      <div class="clear">
+        <label for="recaptchaPrivateKey" class="configureLabel">ReCaptcha Private Key: </label>
+        <input class="configureInput" id="recaptchaPrivateKey" type="text"/>
+        <img class="tip" src="/questionmark.png" title="Private key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+      </div>
+      <div class="clear">
+        <label for="recaptchaPublicKey" class="configureLabel">ReCaptcha Public Key: </label>
+        <input class="configureInput" id="recaptchaPublicKey" type="text"/>
+        <img class="tip" src="/questionmark.png" title="Public key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
     <legend>Video Branding Settings</legend>
     <div class="clear">
       <label for="brandingMode" class="configureLabel">Branding Mode:</label>
@@ -96,42 +135,6 @@ limitations under the License.
         <label for="rejectionEmailText" class="configureLabel">Rejection Email Text: </label>
         <textarea cols="50" rows="10" id="rejectionEmailText"></textarea>
         <img class="tip" src="/questionmark.png" title="Body of rejection emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
-      </div>
-    </div>
-    <div class="clear">
-      You <b>must</b> <a target="_blank" href="http://code.google.com/appengine/docs/billing.html">enable billing</a> on your production App Engine instance <b>before</b> you enable photo submissions. YouTube Direct will not work otherwise.
-    </div>
-    <div class="clear">
-      <label for="photoSubmissionEnabled" class="configureLabel">Photo Submissions:</label>
-      <input type="checkbox" id="photoSubmissionEnabled">Enabled</input>
-      <img class="tip" src="/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
-    </div>
-    <div id="photoSubmissionConfigDiv">
-      <div class="clear">
-        <label class="configureLabel">Picasa Account:</label>
-        <span id="picasaUsername">Unauthenticated</span>
-        <input id="picasaAuthenticateButton" type="button" value="Authenticate"/>
-      </div>
-      <div class="clear">
-        <label for="maxPhotoSizeMb" class="configureLabel">Max. Photo Size (MB):</label>
-        <select class="configureInput" id="maxPhotoSizeMb">
-          <option value="1">1</option>
-          <option value="3">3</option>
-          <option value="5" selected="selected">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-        </select>
-        <img class="tip" src="/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
-      </div>
-      <div class="clear">
-        <label for="recaptchaPrivateKey" class="configureLabel">ReCaptcha Private Key: </label>
-        <input class="configureInput" id="recaptchaPrivateKey" type="text"/>
-        <img class="tip" src="/questionmark.png" title="Private key registered for an *.appspot.com domain at http://recaptcha.net"></img>
-      </div>
-      <div class="clear">
-        <label for="recaptchaPublicKey" class="configureLabel">ReCaptcha Public Key: </label>
-        <input class="configureInput" id="recaptchaPublicKey" type="text"/>
-        <img class="tip" src="/questionmark.png" title="Public key registered for an *.appspot.com domain at http://recaptcha.net"></img>
       </div>
     </div>
   </fieldset>
