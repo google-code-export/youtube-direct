@@ -1,8 +1,11 @@
 package com.google.ytd.cron;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.model.PhotoEntry;
+import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.PmfUtil;
 
 import java.util.Calendar;
@@ -24,6 +27,9 @@ public class PurgeBlobstorePhotos extends HttpServlet {
 
   @Inject
   private PmfUtil pmfUtil;
+  
+  @Inject
+  private EmailUtil emailUtil;
 
   @SuppressWarnings("unchecked")
   @Override
@@ -32,7 +38,8 @@ public class PurgeBlobstorePhotos extends HttpServlet {
 
     PersistenceManager pm = pmfUtil.getPmf().getPersistenceManager();
     Query query = pm.newQuery(PhotoEntry.class);
-    query.setFilter("blobKey != null");
+    // I'd like to include a filter for blobKey != null here, but the datastore doesn't
+    // seem to support it.
     query.setFilter("created < oldestAllowedDate");
     query.declareParameters("java.util.Date oldestAllowedDate");
     
@@ -41,14 +48,36 @@ public class PurgeBlobstorePhotos extends HttpServlet {
     calendar.add(Calendar.HOUR_OF_DAY, 0 - MAX_AGE_IN_HOURS);
     LOG.info(calendar.getTime().toString());
 
+    int count = 0;
     try {
       List<PhotoEntry> photoEntries = (List<PhotoEntry>) query.execute(calendar.getTime());
-      LOG.info(String.format("Found %d PhotoEntry(s) still in the Blobstore", photoEntries.size()));
       for (PhotoEntry photoEntry : photoEntries) {
-        LOG.info(photoEntry.getId());
+        if (photoEntry.getBlobKey() != null) {
+          LOG.info(String.format("About to purge PhotoEntry id '%s'...", photoEntry.getId()));
+          
+          count++;
+          
+          purge(photoEntry);
+          pm.makePersistent(photoEntry);
+          
+          LOG.info("PhotoEntry has been purged.");
+        }
       }
     } finally {
       query.closeAll();
+    }
+    
+    LOG.info(String.format("All done. %d PhotoEntry(s) were purged from the Blobstore.", count));
+  }
+  
+  private void purge(PhotoEntry photoEntry) {
+    try {
+      emailUtil.sendPhotoEntryToAdmins(photoEntry);
+    } finally {
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      blobstoreService.delete(photoEntry.getBlobKey());
+    
+      photoEntry.setBlobKey(null);
     }
   }
 }

@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cronentries/>
+<cronentries>
+  <cron>
+    <url>/cron/PurgeBlobstorePhotos</url>
+    <description>Purge old photos in the Blobstore that never got uploaded to Picasa.</description>
+    <schedule>every 6 hours</schedule>
+  </cron>
+</cronentries>

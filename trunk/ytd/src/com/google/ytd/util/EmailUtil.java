@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.Transform;
 import com.google.appengine.api.mail.MailService;
 import com.google.appengine.api.mail.MailServiceFactory;
 import com.google.appengine.api.mail.MailService.Message;
@@ -20,6 +24,10 @@ import com.google.ytd.model.VideoSubmission.ModerationStatus;
 @Singleton
 public class EmailUtil {
   private static final Logger log = Logger.getLogger(EmailUtil.class.getName());
+
+  // The maximum length or width of an image.
+  private static final int MAX_DIMENSION = 1600;
+
   @Inject
   private AdminConfigDao adminConfigDao;
 
@@ -28,6 +36,41 @@ public class EmailUtil {
 
   @Inject
   private Util util;
+
+  public void sendPhotoEntryToAdmins(PhotoEntry photoEntry) {
+    log.info(String.format("Sending photo from PhotoEntry id '%s' to admins...",
+        photoEntry.getId()));
+    AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+
+    MailService mailService = MailServiceFactory.getMailService();
+    Message message = new Message();
+
+    String fromAddress = adminConfig.getFromAddress();
+    if (util.isNullOrEmpty(fromAddress)) {
+      throw new IllegalArgumentException("No from address found in configuration.");
+    }
+
+    message.setSubject("Unable to submit photo to Picasa");
+    message.setSender(fromAddress);
+    message.setTextBody("YouTube Direct was unable to upload a photo submission to Picasa.\n\n"
+        + "There might be a service issue, or your Picasa configuration might be incorrect.\n\n"
+        + "The photo in question is attached.");
+
+    Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    Transform resize = ImagesServiceFactory.makeResize(MAX_DIMENSION, MAX_DIMENSION);
+    Image resizedImage = imagesService.applyTransform(resize, originalImage);
+
+    MailService.Attachment photoAttachment =
+        new MailService.Attachment("photo." + resizedImage.getFormat(), resizedImage.getImageData());
+
+    try {
+      mailService.sendToAdmins(message);
+      log.info("Email sent to admins.");
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    }
+  }
 
   private void sendNewSubmissionEmail(String subject, String body) {
     try {
@@ -167,10 +210,11 @@ public class EmailUtil {
         case REJECTED:
           body = adminConfig.getRejectionEmailText();
           break;
-          
+
         case UNREVIEWED:
           // Let's not send any email when a photo is marked as UNREVIEWED.
-          // This differs from the video moderation behavior, but it's arguably more correct.
+          // This differs from the video moderation behavior, but it's arguably
+          // more correct.
           return;
 
         default:
