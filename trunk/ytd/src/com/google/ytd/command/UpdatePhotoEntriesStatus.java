@@ -10,6 +10,7 @@ import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.model.PhotoEntry.ModerationStatus;
 import com.google.ytd.picasa.PicasaApiHelper;
+import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
 
 public class UpdatePhotoEntriesStatus extends Command {
@@ -18,6 +19,9 @@ public class UpdatePhotoEntriesStatus extends Command {
   private AssignmentDao assignmentDao = null;
   private PicasaApiHelper picasaApi = null;
   private Util util = null;
+  
+  @Inject
+  private EmailUtil emailUtil;
 
   @Inject
   public UpdatePhotoEntriesStatus(PhotoSubmissionDao submissionDao, Util util,
@@ -84,6 +88,8 @@ public class UpdatePhotoEntriesStatus extends Command {
       entry.setPicasaUrl(newPhotoUrl);
       
       photoSubmissionDao.save(entry);
+      
+      emailUtil.sendUserModerationEmail(submission, entry, statusEnum);
     }
 
     return json;

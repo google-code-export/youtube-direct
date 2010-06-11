@@ -154,7 +154,7 @@ public class EmailUtil {
   }
 
   public void sendUserModerationEmail(PhotoSubmission photoSubmission, PhotoEntry photoEntry,
-      ModerationStatus status) {
+      com.google.ytd.model.PhotoEntry.ModerationStatus status) {
     try {
       AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
@@ -167,6 +167,11 @@ public class EmailUtil {
         case REJECTED:
           body = adminConfig.getRejectionEmailText();
           break;
+          
+        case UNREVIEWED:
+          // Let's not send any email when a photo is marked as UNREVIEWED.
+          // This differs from the video moderation behavior, but it's arguably more correct.
+          return;
 
         default:
           throw new IllegalArgumentException(String.format("ModerationStatus %s is not valid.",
@@ -178,7 +183,7 @@ public class EmailUtil {
 
       body = body.replace("ARTICLE_URL", photoSubmission.getArticleUrl());
 
-      if (status == ModerationStatus.APPROVED) {
+      if (status == com.google.ytd.model.PhotoEntry.ModerationStatus.APPROVED) {
         body = body.replace("MEDIA_URL", photoEntry.getPicasaUrl());
       } else {
         body = body.replace("MEDIA_URL", "");
