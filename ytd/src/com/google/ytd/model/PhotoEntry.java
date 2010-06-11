@@ -42,6 +42,7 @@ public class PhotoEntry {
   @Expose
   private String imageUrl = null;
   
+  @SuppressWarnings("unused")
   @Expose
   @Persistent
   private Date created;

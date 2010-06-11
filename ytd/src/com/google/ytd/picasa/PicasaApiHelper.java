@@ -152,6 +152,10 @@ public class PicasaApiHelper {
 
     picasaPhoto.setKeywords(keywords);
 
+    // TODO: Currently, you need to perform some sort of transform in order
+    // to actually load the bytes from a Blobstore image into memory.
+    // If the Blobstore API evolves and you don't need to do this anymore, then look
+    // into rewriting this so we only downscale when the original image is too large.
     Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     Transform resize = ImagesServiceFactory.makeResize(MAX_DIMENSION, MAX_DIMENSION);

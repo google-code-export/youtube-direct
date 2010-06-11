@@ -94,10 +94,11 @@ public class MoveToPicasa extends HttpServlet {
 
       for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmissionId)) {
         if (photoEntry.getBlobKey() != null) {
-          com.google.gdata.data.photos.PhotoEntry picasaPhoto = picasaApi.uploadToPicasa(photoEntry, title, description, albumUrl);
-          
+          com.google.gdata.data.photos.PhotoEntry picasaPhoto =
+              picasaApi.uploadToPicasa(photoEntry, title, description, albumUrl);
+
           photoEntry.setPicasaUrl(picasaPhoto.getEditLink().getHref());
-          
+
           // Let's use the smallest thumbnail from Picasa.
           String thumbnailUrl = "";
           int minWidth = Integer.MAX_VALUE;
@@ -109,7 +110,7 @@ public class MoveToPicasa extends HttpServlet {
             }
           }
           photoEntry.setThumbnailUrl(thumbnailUrl);
-          
+
           photoEntry.setImageUrl(picasaPhoto.getMediaGroup().getContents().get(0).getUrl());
 
           blobstoreService.delete(photoEntry.getBlobKey());
@@ -121,8 +122,8 @@ public class MoveToPicasa extends HttpServlet {
 
       emailUtil.sendNewSubmissionEmail(photoSubmission);
     } catch (IllegalArgumentException e) {
-      // We don't want to send an error response here, since that will result in the
-      // TaskQueue retrying and this is not a transient error.
+      // We don't want to send an error response here, since that will result
+      // in the TaskQueue retrying and this is not a transient error.
       LOG.log(Level.WARNING, "", e);
     } catch (IllegalStateException e) {
       LOG.log(Level.WARNING, "", e);
