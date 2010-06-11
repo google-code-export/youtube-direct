@@ -1,15 +1,11 @@
 package com.google.ytd.util;
 
-import java.util.logging.Logger;
-
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
 import com.google.inject.Inject;
 
 public class PmfUtil {
-  private static final Logger log = Logger.getLogger(PmfUtil.class.getName());
-
   private PersistenceManagerFactory pmf = null;
 
   @Inject

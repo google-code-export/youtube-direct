@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import com.google.ytd.cron.PurgeBlobstorePhotos;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -46,6 +47,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/tasks/CreatePlaylist").with(CreatePlaylist.class);
         serve("/tasks/CreateAlbum").with(CreateAlbum.class);
         serve("/tasks/MoveToPicasa").with(MoveToPicasa.class);
+        serve("/cron/PurgeBlobstorePhotos").with(PurgeBlobstorePhotos.class);
 
         // Map mobile servlet handlers
         String mobileDir = "/mobile";

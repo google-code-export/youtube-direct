@@ -8,6 +8,8 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.gson.annotations.Expose;
 
+import java.util.Date;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class PhotoEntry {
 
@@ -39,6 +41,10 @@ public class PhotoEntry {
   @Persistent
   @Expose
   private String imageUrl = null;
+  
+  @Expose
+  @Persistent
+  private Date created;
 
   public enum ModerationStatus {
     UNREVIEWED,
@@ -56,6 +62,8 @@ public class PhotoEntry {
     this.submissionId = submissionId;
     this.status = ModerationStatus.UNREVIEWED;
     this.format = format;
+    
+    this.created = new Date();
   }
 
   public String getId() {
