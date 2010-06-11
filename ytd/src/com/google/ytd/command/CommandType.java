@@ -44,7 +44,9 @@ public enum CommandType {
   UPDATE_YOUTUBE_CAPTION_TRACK(
       UpdateYouTubeCaptionTrack.class),
   GET_YOUTUBE_VIDEOS(
-      GetYouTubeVideos.class),   
+      GetYouTubeVideos.class),
+  DELETE_VIDEO_SUBMISSION(
+      DeleteVideoSubmission.class),
   DELETE_STUFF(
       DeleteStuff.class);
 

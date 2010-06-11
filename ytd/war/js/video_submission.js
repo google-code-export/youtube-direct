@@ -526,6 +526,16 @@ admin.sub.initGridModels = function(grid) {
     },
     sorttype : 'string'
   });
+  
+  grid.colNames.push('Delete');
+  grid.colModel.push( {
+    name : 'delete',
+    index : 'delete',
+    width : 75,
+    align : 'center',
+    sortable : false,
+    hidden: false
+  });
 
   grid.colNames.push('Preview');
   grid.colModel.push( {
@@ -544,17 +554,7 @@ admin.sub.initGridModels = function(grid) {
     align : 'center',
     sortable : false,
     hidden: true
-  }); 
-  
-  grid.colNames.push('Delete');
-  grid.colModel.push( {
-    name : 'delete',
-    index : 'delete',
-    width : 75,
-    align : 'center',
-    sortable : false,
-    hidden: true
-  });  
+  });
 
   grid.colNames.push('Details');
   grid.colModel.push( {
@@ -977,6 +977,26 @@ admin.sub.showCaptionInfo = function(json) {
 admin.sub.deleteEntry = function(entryId) {
   if (confirm("Delete this entry?")) {
     var messageElement = admin.showMessage("Deleting video submission...");
+
+    var command = 'DELETE_VIDEO_SUBMISSION';
+    var params = {};
+    params.id = entryId;
+
+    var jsonRpcCallback = function(jsonStr) {
+      try {
+        var json = JSON.parse(jsonStr);
+        if (!json.error) {
+          admin.showMessage("Video submission deleted.", messageElement);
+          admin.sub.refreshGrid();
+        } else {
+          admin.showError(json.error, messageElement);
+        }
+      } catch (exception) {
+        admin.showError('Request failed: ' + exception, messageElement);
+      }
+    }
+
+    jsonrpc.makeRequest(command, params, jsonRpcCallback);
   }  
 };
 
