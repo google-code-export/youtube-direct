@@ -17,7 +17,6 @@ package com.google.ytd.picasa;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
