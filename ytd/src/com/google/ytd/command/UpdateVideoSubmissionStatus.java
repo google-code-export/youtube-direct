@@ -269,8 +269,7 @@ public class UpdateVideoSubmissionStatus extends Command {
   private VideoEntry updateVideoDescription(VideoSubmission videoSubmission,
       String prependText, String newTag) {
 
-    YouTubeApiHelper userYouTubeApi = new YouTubeApiHelper(adminConfigDao,
-        userAuthTokenDao);
+    YouTubeApiHelper userYouTubeApi = new YouTubeApiHelper(adminConfigDao);
 
     UserAuthToken userAuthToken = userAuthTokenDao
         .getUserAuthToken(videoSubmission.getYouTubeName());

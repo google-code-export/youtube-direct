@@ -15,6 +15,7 @@ import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
 import com.google.ytd.picasa.PersistPicasaAuthSubToken;
 import com.google.ytd.tasks.CreateAlbum;
+import com.google.ytd.tasks.CreatePlaylist;
 import com.google.ytd.tasks.MoveToPicasa;
 import com.google.ytd.youtube.PersistAuthSubToken;
 import com.google.ytd.youtube.VideoDownloadRedirect;
@@ -42,6 +43,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
         serve("/admin/PersistAuthSubToken").with(PersistAuthSubToken.class);
         serve("/admin/PersistPicasaAuthSubToken").with(PersistPicasaAuthSubToken.class);
+        serve("/tasks/CreatePlaylist").with(CreatePlaylist.class);
         serve("/tasks/CreateAlbum").with(CreateAlbum.class);
         serve("/tasks/MoveToPicasa").with(MoveToPicasa.class);
 

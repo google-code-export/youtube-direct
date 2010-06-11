@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import com.google.gdata.client.Service.GDataRequest;
 import com.google.gdata.client.Service.GDataRequest.RequestType;
 import com.google.gdata.client.youtube.YouTubeService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Link;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.youtube.CaptionTrackEntry;
@@ -41,10 +42,10 @@ import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.VideoFeed;
 import com.google.gdata.util.ContentType;
+import com.google.gdata.util.InvalidEntryException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.util.Util;
 
 /**
@@ -80,17 +81,15 @@ public class YouTubeApiHelper {
   private Util util;
   private YouTubeService service = null;
   private AdminConfigDao adminConfigDao = null;
-  private UserAuthTokenDao userAuthTokenDao = null;  
   
   /**
    * Create a new instance of the class, initializing a YouTubeService object
    * with parameters specified in appengine-web.xml
    */
   @Inject
-  public YouTubeApiHelper(AdminConfigDao adminConfigDao, UserAuthTokenDao userAuthTokenDao) {
+  public YouTubeApiHelper(AdminConfigDao adminConfigDao) {
     this.util = Util.get();
     this.adminConfigDao = adminConfigDao;
-    this.userAuthTokenDao = userAuthTokenDao;
 
     String clientId = this.adminConfigDao.getAdminConfig().getClientId();
     String developerKey = this.adminConfigDao.getAdminConfig().getDeveloperKey();
@@ -497,7 +496,23 @@ public class YouTubeApiHelper {
     newEntry.setSummary(new PlainTextConstruct(description));
 
     try {
-      PlaylistLinkEntry createdEntry = service.insert(new URL(PLAYLIST_FEED_URL), newEntry);
+      PlaylistLinkEntry createdEntry;
+      
+      try {
+        createdEntry = service.insert(new URL(PLAYLIST_FEED_URL), newEntry);
+      } catch(InvalidEntryException e) {
+        // If the first attempt to create the playlist fails with this exception,
+        // it's most likely due to a duplicate playlist title.
+        // So let's make the title unique and try again.
+        String newTitle = title + " - " + DateTime.now().toUiString();
+        log.info(String.format("Playlist with title '%s' already exists. Attempting to create " +
+        		"playlist with title '%s'.", title, newTitle));
+
+        newEntry.setTitle(new PlainTextConstruct(newTitle));
+        
+        createdEntry = service.insert(new URL(PLAYLIST_FEED_URL), newEntry);
+      }
+      
       String id = createdEntry.getPlaylistId();
 
       log.info(String.format("Created new playlist with id '%s'.", id));
