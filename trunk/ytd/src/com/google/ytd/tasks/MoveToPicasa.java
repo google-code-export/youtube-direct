@@ -88,7 +88,7 @@ public class MoveToPicasa extends HttpServlet {
           String.format("%s\n\nSubmitted by %s in response to %s",
               photoSubmission.getDescription(), photoSubmission.getAuthor(), photoSubmission
                   .getArticleUrl());
-      String albumUrl = assignment.getPrivateAlbumUrl();
+      String albumUrl = assignment.getUnreviewedAlbumUrl();
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 

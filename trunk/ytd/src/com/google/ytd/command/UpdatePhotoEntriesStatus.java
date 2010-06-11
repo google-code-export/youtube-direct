@@ -60,10 +60,17 @@ public class UpdatePhotoEntriesStatus extends Command {
 
       String newAlbumUrl;
       ModerationStatus statusEnum = ModerationStatus.valueOf(status);
-      if (statusEnum == ModerationStatus.APPROVED) {
-        newAlbumUrl = assignment.getPublicAlbumUrl();
-      } else {
-        newAlbumUrl = assignment.getPrivateAlbumUrl();
+      switch (statusEnum) {
+        case APPROVED:
+          newAlbumUrl = assignment.getApprovedAlbumUrl();
+          break;
+          
+        case UNREVIEWED:
+          newAlbumUrl = assignment.getUnreviewedAlbumUrl();
+          break;
+          
+        default:
+          newAlbumUrl = assignment.getRejectedAlbumUrl();
       }
 
       String newPhotoUrl = picasaApi.moveToNewAlbum(entry.getPicasaUrl(), newAlbumUrl);
