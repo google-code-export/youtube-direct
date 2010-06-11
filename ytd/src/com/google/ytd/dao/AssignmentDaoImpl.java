@@ -230,9 +230,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
   public boolean isAssignmentPhotoEnabled(String id) {
     Assignment assignment = getAssignmentById(id);
-    log.info("un: " + assignment.getUnreviewedAlbumUrl());
-    log.info("re: " + assignment.getRejectedAlbumUrl());
-    log.info("ap: " + assignment.getApprovedAlbumUrl());
 
     if (util.isNullOrEmpty(assignment.getUnreviewedAlbumUrl())
         || util.isNullOrEmpty(assignment.getRejectedAlbumUrl())
