@@ -117,13 +117,13 @@ public class EmailUtil {
 
     StringBuilder picasaUrls = new StringBuilder();
     for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmission.getId())) {
-      picasaUrls.append(photoEntry.getPicasaUrl());
+      picasaUrls.append(photoEntry.getImageUrl());
       picasaUrls.append("\n");
     }
 
     String body =
         String.format("The following photos were submitted by %s (%s) in response to "
-            + "assignment id %d.", photoSubmission.getAuthor(), photoSubmission.getNotifyEmail(),
+            + "assignment id %d:\n\n%s", photoSubmission.getAuthor(), photoSubmission.getNotifyEmail(),
             photoSubmission.getAssignmentId(), picasaUrls.toString());
 
     sendNewSubmissionEmail(subject, body);
