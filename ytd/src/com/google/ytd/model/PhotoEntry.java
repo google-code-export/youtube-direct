@@ -42,6 +42,14 @@ public class PhotoEntry {
   @Expose
   private String imageUrl = null;
   
+  @Persistent
+  @Expose
+  private Long originalFileSize = null;
+  
+  @Persistent
+  @Expose
+  private String originalFileName = null;
+  
   @SuppressWarnings("unused")
   @Expose
   @Persistent
@@ -118,4 +126,20 @@ public class PhotoEntry {
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
   }
+
+	public long getOriginalFileSize() {
+		return originalFileSize.longValue();
+	}
+
+	public void setOriginalFileSize(long originalFileSize) {
+		this.originalFileSize = originalFileSize;
+	}
+
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
+	}
 }

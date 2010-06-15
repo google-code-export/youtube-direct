@@ -16,6 +16,8 @@
 
 package com.google.ytd.picasa;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
@@ -47,192 +49,200 @@ import java.util.logging.Logger;
  * support.
  */
 public class PicasaApiHelper {
-  private static final Logger LOG = Logger.getLogger(PicasaApiHelper.class.getName());
+	private static final Logger LOG = Logger.getLogger(PicasaApiHelper.class.getName());
 
-  // CONSTANTS
-  private static final String USER_FEED_URL =
-      "http://picasaweb.google.com/data/feed/api/user/default";
-  // The maximum length or width of an image.
-  private static final int MAX_DIMENSION = 1024;
-  // The connect + read timeout needs to be <= 10 seconds, due to App Engine
-  // limitations.
-  private static final int CONNECT_TIMEOUT = 1000 * 3; // In milliseconds
-  private static final int READ_TIMEOUT = 1000 * 7; // In milliseconds
+	// CONSTANTS
+	private static final String USER_FEED_URL = "http://picasaweb.google.com/data/feed/api/user/default";
+	// The maximum length or width of a resized image.
+	private static final int RESIZE_DIMENSION = 600;
+	// The largest number of bytes we can safely send to Picasa from App Engine.
+	// Let's use 1000KB instead of 1MB to account for metadata overhead.
+	private static final int MAX_UPLOAD_BYTES = 1024 * 1000;
+	// The connect + read timeout needs to be <= 10 seconds, due to App Engine
+	// limitations.
+	private static final int CONNECT_TIMEOUT = 1000 * 2; // In milliseconds
+	private static final int READ_TIMEOUT = 1000 * 8; // In milliseconds
 
-  private PicasawebService service = null;
-  private AdminConfigDao adminConfigDao = null;
-  private Util util = null;
+	private PicasawebService service = null;
+	private AdminConfigDao adminConfigDao = null;
+	private Util util = null;
 
-  @Inject
-  public PicasaApiHelper(AdminConfigDao adminConfigDao, AssignmentDao assignmentDao) {
-    this.service = new PicasawebService(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
-    this.util = Util.get();
-    this.adminConfigDao = adminConfigDao;
+	@Inject
+	public PicasaApiHelper(AdminConfigDao adminConfigDao, AssignmentDao assignmentDao) {
+		this.service = new PicasawebService(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
+		this.util = Util.get();
+		this.adminConfigDao = adminConfigDao;
 
-    String authSubToken = adminConfigDao.getAdminConfig().getPicasaAuthSubToken();
-    if (!util.isNullOrEmpty(authSubToken)) {
-      service.setAuthSubToken(authSubToken);
-    }
+		String authSubToken = adminConfigDao.getAdminConfig().getPicasaAuthSubToken();
+		if (!util.isNullOrEmpty(authSubToken)) {
+			service.setAuthSubToken(authSubToken);
+		}
 
-    service.setConnectTimeout(CONNECT_TIMEOUT);
-    service.setReadTimeout(READ_TIMEOUT);
-  }
+		service.setConnectTimeout(CONNECT_TIMEOUT);
+		service.setReadTimeout(READ_TIMEOUT);
+	}
 
-  public boolean isAuthenticated() {
-    return service.getAuthTokenFactory().getAuthToken() != null;
-  }
+	public boolean isAuthenticated() {
+		return service.getAuthTokenFactory().getAuthToken() != null;
+	}
 
-  public void setAuthSubToken(String token) {
-    service.setAuthSubToken(token);
-  }
+	public void setAuthSubToken(String token) {
+		service.setAuthSubToken(token);
+	}
 
-  public String getCurrentUsername() throws IOException, ServiceException {
-    try {
-      UserFeed userFeed = service.getFeed(new URL(USER_FEED_URL), UserFeed.class);
-      return userFeed.getUsername();
-    } catch (MalformedURLException e) {
-      LOG.log(Level.WARNING, "", e);
-    }
+	public String getCurrentUsername() throws IOException, ServiceException {
+		try {
+			UserFeed userFeed = service.getFeed(new URL(USER_FEED_URL), UserFeed.class);
+			return userFeed.getUsername();
+		} catch (MalformedURLException e) {
+			LOG.log(Level.WARNING, "", e);
+		}
 
-    return null;
-  }
+		return null;
+	}
 
-  public String createAlbum(String title, String description, boolean privateAlbum) {
-    LOG.info(String.format("Attempting to create %s Picasa album...", privateAlbum ? "private"
-        : "public"));
-    AlbumEntry album = new AlbumEntry();
+	public String createAlbum(String title, String description, boolean privateAlbum) {
+		LOG.info(String.format("Attempting to create %s Picasa album...", privateAlbum ? "private"
+				: "public"));
+		AlbumEntry album = new AlbumEntry();
 
-    if (privateAlbum) {
-      album.setAccess(GphotoAccess.Value.PRIVATE);
-    } else {
-      album.setAccess(GphotoAccess.Value.PUBLIC);
-    }
+		if (privateAlbum) {
+			album.setAccess(GphotoAccess.Value.PRIVATE);
+		} else {
+			album.setAccess(GphotoAccess.Value.PUBLIC);
+		}
 
-    album.setTitle(new PlainTextConstruct(title));
-    album.setDescription(new PlainTextConstruct(description));
+		album.setTitle(new PlainTextConstruct(title));
+		album.setDescription(new PlainTextConstruct(description));
 
-    try {
-      AlbumEntry albumEntry = service.insert(new URL(USER_FEED_URL), album);
-      String albumUrl = albumEntry.getFeedLink().getHref();
-      LOG.info(String.format("Created %s Picasa album: %s", privateAlbum ? "private" : "public",
-          albumUrl));
+		try {
+			AlbumEntry albumEntry = service.insert(new URL(USER_FEED_URL), album);
+			String albumUrl = albumEntry.getFeedLink().getHref();
+			LOG.info(String.format("Created %s Picasa album: %s", privateAlbum ? "private" : "public",
+					albumUrl));
 
-      return albumUrl;
-    } catch (MalformedURLException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (IOException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (ServiceException e) {
-      LOG.log(Level.WARNING, "", e);
-    }
+			return albumUrl;
+		} catch (MalformedURLException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (IOException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (ServiceException e) {
+			LOG.log(Level.WARNING, "", e);
+		}
 
-    return null;
-  }
+		return null;
+	}
 
-  public com.google.gdata.data.photos.PhotoEntry uploadToPicasa(
-      com.google.ytd.model.PhotoEntry photoEntry, String title, String description, String albumUrl)
-      throws IOException, ServiceException {
-    LOG.info(String.format("Preparing to upload to Picasa.\nTitle: %s\nDescription: %s\nAlbum: %s",
-        title, description, albumUrl));
+	public com.google.gdata.data.photos.PhotoEntry uploadToPicasa(
+			com.google.ytd.model.PhotoEntry photoEntry, String title, String description, String albumUrl)
+			throws IOException, ServiceException {
+		LOG.info(String.format("Preparing to upload to Picasa.\nTitle: %s\nDescription: %s\nAlbum: %s",
+				title, description, albumUrl));
 
-    com.google.gdata.data.photos.PhotoEntry picasaPhoto =
-        new com.google.gdata.data.photos.PhotoEntry();
+		com.google.gdata.data.photos.PhotoEntry picasaPhoto = new com.google.gdata.data.photos.PhotoEntry();
 
-    picasaPhoto.setTitle(new PlainTextConstruct(title));
-    picasaPhoto.setDescription(new PlainTextConstruct(description));
-    picasaPhoto.setClient(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
+		picasaPhoto.setTitle(new PlainTextConstruct(title));
+		picasaPhoto.setDescription(new PlainTextConstruct(description));
+		picasaPhoto.setClient(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
 
-    MediaKeywords keywords = new MediaKeywords();
-    keywords.addKeyword(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
+		MediaKeywords keywords = new MediaKeywords();
+		keywords.addKeyword(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
 
-    String defaultTag = adminConfigDao.getAdminConfig().getDefaultTag();
-    if (!util.isNullOrEmpty(defaultTag)) {
-      keywords.addKeyword(defaultTag);
-    }
+		String defaultTag = adminConfigDao.getAdminConfig().getDefaultTag();
+		if (!util.isNullOrEmpty(defaultTag)) {
+			keywords.addKeyword(defaultTag);
+		}
 
-    picasaPhoto.setKeywords(keywords);
+		picasaPhoto.setKeywords(keywords);
 
-    // TODO: Currently, you need to perform some sort of transform in order
-    // to actually load the bytes from a Blobstore image into memory.
-    // If the Blobstore API evolves and you don't need to do this anymore, then look
-    // into rewriting this so we only downscale when the original image is too large.
-    Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    Transform resize = ImagesServiceFactory.makeResize(MAX_DIMENSION, MAX_DIMENSION);
-    Image resizedImage = imagesService.applyTransform(resize, originalImage);
+		LOG.info(String.format("Original photo is %d bytes.", photoEntry.getOriginalFileSize()));
 
-    MediaStreamSource mediaStream =
-        new MediaStreamSource(new ByteArrayInputStream(resizedImage.getImageData()), photoEntry
-            .getFormat());
-    picasaPhoto.setMediaSource(mediaStream);
+		byte[] photoBytes = null;
+		if (photoEntry.getOriginalFileSize() > MAX_UPLOAD_BYTES) {
+			Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
+			ImagesService imagesService = ImagesServiceFactory.getImagesService();
+			Transform resize = ImagesServiceFactory.makeResize(RESIZE_DIMENSION, RESIZE_DIMENSION);
+			Image resizedImage = imagesService.applyTransform(resize, originalImage);
+			photoBytes = resizedImage.getImageData();
+			
+			LOG.info(String.format("Resized photo is %d bytes.", photoBytes.length));
+		} else {
+			BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+			photoBytes = blobstoreService.fetchData(photoEntry.getBlobKey(), 0, photoEntry
+					.getOriginalFileSize() - 1);
+		}
 
-    try {
-      picasaPhoto = service.insert(new URL(albumUrl), picasaPhoto);
-      LOG.info(String
-          .format("Upload successful. Url is '%s'.", picasaPhoto.getEditLink().getHref()));
+		MediaStreamSource mediaStream = new MediaStreamSource(new ByteArrayInputStream(photoBytes),
+				photoEntry.getFormat());
+		picasaPhoto.setMediaSource(mediaStream);
 
-      return picasaPhoto;
-    } catch (MalformedURLException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
+		try {
+			picasaPhoto = service.insert(new URL(albumUrl), picasaPhoto);
+			LOG.info(String
+					.format("Upload successful. Url is '%s'.", picasaPhoto.getEditLink().getHref()));
 
-  public String moveToNewAlbum(String photoUrl, String newAlbumUrl) {
-    LOG.info(String.format("Preparing to move '%s' to album '%s'...", photoUrl, newAlbumUrl));
+			return picasaPhoto;
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
 
-    AlbumFeed albumFeed = getAlbumFeedFromUrl(newAlbumUrl);
-    if (albumFeed == null) {
-      throw new IllegalArgumentException(String.format("Could not retrieve album from URL '%s'.",
-          newAlbumUrl));
-    }
-    String newAlbumId = albumFeed.getGphotoId();
+	public String moveToNewAlbum(String photoUrl, String newAlbumUrl) {
+		LOG.info(String.format("Preparing to move '%s' to album '%s'...", photoUrl, newAlbumUrl));
 
-    com.google.gdata.data.photos.PhotoEntry photoEntry = getPhotoEntryFromUrl(photoUrl);
-    if (photoEntry == null) {
-      throw new IllegalArgumentException(String.format("Could not get photo from URL '%s'.",
-          photoUrl));
-    }
+		AlbumFeed albumFeed = getAlbumFeedFromUrl(newAlbumUrl);
+		if (albumFeed == null) {
+			throw new IllegalArgumentException(String.format("Could not retrieve album from URL '%s'.",
+					newAlbumUrl));
+		}
+		String newAlbumId = albumFeed.getGphotoId();
 
-    photoEntry.setAlbumId(newAlbumId);
-    try {
-      photoEntry = photoEntry.update();
-      LOG.info("Move was successful.");
+		com.google.gdata.data.photos.PhotoEntry photoEntry = getPhotoEntryFromUrl(photoUrl);
+		if (photoEntry == null) {
+			throw new IllegalArgumentException(String.format("Could not get photo from URL '%s'.",
+					photoUrl));
+		}
 
-      return photoEntry.getEditLink().getHref();
-    } catch (IOException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (ServiceException e) {
-      LOG.log(Level.WARNING, "", e);
-    }
+		photoEntry.setAlbumId(newAlbumId);
+		try {
+			photoEntry = photoEntry.update();
+			LOG.info("Move was successful.");
 
-    return null;
-  }
+			return photoEntry.getEditLink().getHref();
+		} catch (IOException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (ServiceException e) {
+			LOG.log(Level.WARNING, "", e);
+		}
 
-  private com.google.gdata.data.photos.PhotoEntry getPhotoEntryFromUrl(String photoUrl) {
-    try {
-      return service.getEntry(new URL(photoUrl), com.google.gdata.data.photos.PhotoEntry.class);
-    } catch (MalformedURLException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (IOException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (ServiceException e) {
-      LOG.log(Level.WARNING, "", e);
-    }
+		return null;
+	}
 
-    return null;
-  }
+	private com.google.gdata.data.photos.PhotoEntry getPhotoEntryFromUrl(String photoUrl) {
+		try {
+			return service.getEntry(new URL(photoUrl), com.google.gdata.data.photos.PhotoEntry.class);
+		} catch (MalformedURLException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (IOException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (ServiceException e) {
+			LOG.log(Level.WARNING, "", e);
+		}
 
-  private AlbumFeed getAlbumFeedFromUrl(String albumUrl) {
-    try {
-      return service.getFeed(new URL(albumUrl), AlbumFeed.class);
-    } catch (MalformedURLException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (IOException e) {
-      LOG.log(Level.WARNING, "", e);
-    } catch (ServiceException e) {
-      LOG.log(Level.WARNING, "", e);
-    }
+		return null;
+	}
 
-    return null;
-  }
+	private AlbumFeed getAlbumFeedFromUrl(String albumUrl) {
+		try {
+			return service.getFeed(new URL(albumUrl), AlbumFeed.class);
+		} catch (MalformedURLException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (IOException e) {
+			LOG.log(Level.WARNING, "", e);
+		} catch (ServiceException e) {
+			LOG.log(Level.WARNING, "", e);
+		}
+
+		return null;
+	}
 }
