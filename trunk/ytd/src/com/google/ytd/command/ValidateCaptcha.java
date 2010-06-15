@@ -68,8 +68,6 @@ public class ValidateCaptcha extends Command {
       String postBody = String.format("challenge=%s&response=%s&remoteip=%s&privatekey=%s",
           challenge, response, remoteIp, privateKey);
 
-      LOG.info(String.format("POSTing '%s' to '%s'.", postBody, CAPTCHA_VALIDATE_URL));
-
       writer.write(postBody);
       writer.close();
 

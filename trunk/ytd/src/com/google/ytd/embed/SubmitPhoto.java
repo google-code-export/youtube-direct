@@ -155,6 +155,9 @@ public class SubmitPhoto extends HttpServlet {
           BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
 
           PhotoEntry photoEntry = new PhotoEntry(submissionId, blobKey, blobInfo.getContentType());
+          photoEntry.setOriginalFileSize(blobInfo.getSize());
+          photoEntry.setOriginalFileName(blobInfo.getFilename());
+          
           pmfUtil.persistJdo(photoEntry);
         }
       } else {

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.images.Image;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.Transform;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.mail.MailService;
 import com.google.appengine.api.mail.MailServiceFactory;
 import com.google.appengine.api.mail.MailService.Message;
@@ -24,9 +22,6 @@ import com.google.ytd.model.VideoSubmission.ModerationStatus;
 @Singleton
 public class EmailUtil {
   private static final Logger log = Logger.getLogger(EmailUtil.class.getName());
-
-  // The maximum length or width of an image.
-  private static final int MAX_DIMENSION = 1600;
 
   @Inject
   private AdminConfigDao adminConfigDao;
@@ -55,14 +50,14 @@ public class EmailUtil {
     message.setTextBody("YouTube Direct was unable to upload a photo submission to Picasa.\n\n"
         + "There might be a service issue, or your Picasa configuration might be incorrect.\n\n"
         + "The photo in question is attached.");
-
-    Image originalImage = ImagesServiceFactory.makeImageFromBlob(photoEntry.getBlobKey());
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    Transform resize = ImagesServiceFactory.makeResize(MAX_DIMENSION, MAX_DIMENSION);
-    Image resizedImage = imagesService.applyTransform(resize, originalImage);
-
+    
+		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+		byte[] photoBytes = blobstoreService.fetchData(photoEntry.getBlobKey(), 0,
+				photoEntry.getOriginalFileSize() - 1);
+		
     MailService.Attachment photoAttachment =
-        new MailService.Attachment("photo." + resizedImage.getFormat(), resizedImage.getImageData());
+        new MailService.Attachment(photoEntry.getOriginalFileName(), photoBytes);
+    message.setAttachments(photoAttachment);
 
     try {
       mailService.sendToAdmins(message);
