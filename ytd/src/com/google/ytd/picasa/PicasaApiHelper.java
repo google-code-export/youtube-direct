@@ -53,7 +53,7 @@ public class PicasaApiHelper {
   private static final String USER_FEED_URL =
       "http://picasaweb.google.com/data/feed/api/user/default";
   // The maximum length or width of an image.
-  private static final int MAX_DIMENSION = 1600;
+  private static final int MAX_DIMENSION = 1024;
   // The connect + read timeout needs to be <= 10 seconds, due to App Engine
   // limitations.
   private static final int CONNECT_TIMEOUT = 1000 * 3; // In milliseconds
