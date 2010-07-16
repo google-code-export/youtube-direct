@@ -152,6 +152,8 @@ public class AssignmentDaoImpl implements AssignmentDao {
             .param("title", title).param("description", description).param("status",
                 ModerationStatus.REJECTED.toString()));
       } else {
+        log.info("Photo submissions are : " + (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled() ? "enabled" : "disabled"));
+        log.info("Picassa AuthSub token : " + (picasaApiHelper.isAuthenticated() ? "found" : "not found"));
         log.info("Not attempting to create Picasa albums, since no Picasa AuthSub token was "
             + "found in the config or photo submissions are disabled.");
       }
