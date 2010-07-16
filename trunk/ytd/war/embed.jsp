@@ -115,7 +115,7 @@
 			}	
 		%>
 	  <%
-	    if (!authenticator.isLoggedIn() && adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {
+	    if (adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {
 	  %>
   <br><br>
   <input id="photoButton" class="askButton" type="button" value="Submit Photo(s)" /> 
@@ -272,9 +272,10 @@
     </div>
   </form>
   <br>
-  <div id="youTubeTOS">
-    By clicking 'Upload,' you certify that you own all rights to the content or that you are
-    authorized by the owner to make the content publicly available on this site.
+  <div id="picasaTOS">
+    By clicking "Upload," you represent that this content complies with Picasa Web Albums Program Policies
+    located at <a href="http://picasa.google.com/web/policy.html"target="_blank">http://picasa.google.com/web/policy.html</a>, and
+    that you own all copyrights in this content or have authorization to upload it.
   </div>
 </div>
   <%
