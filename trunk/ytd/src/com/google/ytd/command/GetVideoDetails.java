@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.model.AdminConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,16 +28,19 @@ public class GetVideoDetails extends Command {
   private VideoSubmissionDao submissionDao = null;
   private YouTubeApiHelper apiManager = null;
   private UserAuthTokenDao userAuthTokenDao = null;
+  private AdminConfigDao adminConfigDao;
+
 
   @Inject
   private Util util;
 
   @Inject
   public GetVideoDetails(VideoSubmissionDao submissionDao, YouTubeApiHelper apiManager,
-      UserAuthTokenDao userAuthTokenDao) {
+      UserAuthTokenDao userAuthTokenDao, AdminConfigDao adminConfigDao) {
     this.submissionDao = submissionDao;
     this.apiManager = apiManager;
     this.userAuthTokenDao = userAuthTokenDao;
+    this.adminConfigDao = adminConfigDao;
   }
 
   @Override
@@ -73,12 +78,14 @@ public class GetVideoDetails extends Command {
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
       if (videoEntry == null) {
         // Try an unauthenticated request to the specific user's uploads feed next.
-        apiManager.setAuthSubToken("");
-        videoEntry = apiManager.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
+        AdminConfig admin = adminConfigDao.getAdminConfig();
+        String clientId = admin.getClientId();
+        YouTubeApiHelper apiHelper = new YouTubeApiHelper(clientId);
+        videoEntry = apiHelper.getUploadsVideoEntry(videoSubmission.getYouTubeName(), videoId);
 
         if (videoEntry == null) {
           // Fall back on looking for the video in the public feed.
-          videoEntry = apiManager.getVideoEntry(videoId);
+          videoEntry = apiHelper.getVideoEntry(videoId);
 
           if (videoEntry == null) {
             // The video must have been deleted...
