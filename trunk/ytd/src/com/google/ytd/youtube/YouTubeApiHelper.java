@@ -44,6 +44,7 @@ import com.google.gdata.data.youtube.VideoFeed;
 import com.google.gdata.util.ContentType;
 import com.google.gdata.util.InvalidEntryException;
 import com.google.gdata.util.ServiceException;
+import com.google.gdata.util.XmlBlob;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.util.Util;
@@ -77,6 +78,7 @@ public class YouTubeApiHelper {
   private static final String CAPTION_FAILURE_TAG = "invalidFormat";
   private static final String UPLOADS_FEED_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
       + "users/%s/uploads?max-results=50";
+  private static final String CLAIMED = "<yt:claimed"; // closing bracked omitted for robustness 
 
   private Util util;
   private YouTubeService service = null;
@@ -528,5 +530,19 @@ public class YouTubeApiHelper {
     }
 
     return null;
+  }
+
+  /**
+   * Check to see if yt:claimed element is present. Since the entry
+   * class does not include an accessor method yet, we keep the code here.
+   * @param videoEntry the entry to inspect
+   * @return <code>true</code> if claimed can be found
+   */
+  public boolean isClaimed(VideoEntry videoEntry) {
+    // currently the element is only available in the extensions blob as an unrecognized extension
+    // TODO - jarekw@ , once the client library supports the extension, this code needs to change
+    XmlBlob xmlBlob = videoEntry.getXmlBlob();
+    String text = xmlBlob.getFullText();
+    return text != null && text.contains(CLAIMED);
   }
 }
