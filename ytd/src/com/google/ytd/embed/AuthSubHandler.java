@@ -16,6 +16,7 @@
 package com.google.ytd.embed;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.util.logging.Level;
@@ -57,6 +58,7 @@ public class AuthSubHandler extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
+    token = URLDecoder.decode(token, "UTF-8");
 
     try {
       if (token == null) {

@@ -16,6 +16,7 @@
 package com.google.ytd.youtube;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.util.logging.Level;
@@ -58,6 +59,8 @@ public class PersistAuthSubToken extends HttpServlet {
 
     try {
       String token = AuthSubUtil.getTokenFromReply(req.getQueryString());
+      token = URLDecoder.decode(token, "UTF-8");
+      
       if (util.isNullOrEmpty(token)) {
         throw new IllegalArgumentException(String.format("Could not retrieve token from "
             + "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
