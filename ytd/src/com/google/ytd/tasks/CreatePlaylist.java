@@ -1,16 +1,14 @@
 /*
  * Copyright (c) 2010 Google Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 
@@ -67,17 +65,23 @@ public class CreatePlaylist extends HttpServlet {
 
       Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
       if (assignment == null) {
-        throw new IllegalArgumentException(String.format(
-            "Could not find Assignment id '%s' in datastore.", assignmentId));
+        throw new IllegalArgumentException(
+            String.format("Could not find Assignment id '%s' in datastore.", assignmentId));
       }
 
       String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
       if (util.isNullOrEmpty(token)) {
-        throw new IllegalStateException(String.format(
-            "Could not create new playlist for assignment"
-                + " '%s' because no YouTube AuthSub token was found in the config.", assignmentId));
+        throw new IllegalArgumentException(
+            String.format("Could not create new playlist for assignment '%s' because no YouTube "
+                + "AuthSub token was found in the config.", assignmentId));
       }
       youtubeApi.setAuthSubToken(token);
+
+      if (util.isNullOrEmpty(adminConfigDao.getAdminConfig().getDeveloperKey())) {
+        throw new IllegalArgumentException(
+            String.format("Could not create new playlist for assignment '%s' because no YouTube "
+                + "developer key was found in the config.", assignmentId));
+      }
 
       String playlistId = youtubeApi.createPlaylist(title, description);
       if (util.isNullOrEmpty(playlistId)) {
@@ -89,8 +93,7 @@ public class CreatePlaylist extends HttpServlet {
       assignmentDao.save(assignment);
     } catch (IllegalArgumentException e) {
       // We don't want to send an error response here, since that will result in
-      // the
-      // TaskQueue retrying and this is not a transient error.
+      // the TaskQueue retrying and this is not a transient error.
       LOG.log(Level.WARNING, "", e);
     } catch (IllegalStateException e) {
       LOG.log(Level.WARNING, "", e);
