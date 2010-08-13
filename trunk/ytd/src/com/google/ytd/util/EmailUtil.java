@@ -12,7 +12,6 @@ import com.google.appengine.api.mail.MailService.Message;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
-import com.google.ytd.dao.PhotoSubmissionDao;
 import com.google.ytd.model.AdminConfig;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
@@ -25,9 +24,6 @@ public class EmailUtil {
 
   @Inject
   private AdminConfigDao adminConfigDao;
-
-  @Inject
-  private PhotoSubmissionDao photoSubmissionDao;
 
   @Inject
   private Util util;
@@ -51,12 +47,12 @@ public class EmailUtil {
         + "There might be a service issue, or your Picasa configuration might be incorrect.\n\n"
         + "The photo in question is attached.");
     
-		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-		byte[] photoBytes = blobstoreService.fetchData(photoEntry.getBlobKey(), 0,
-				photoEntry.getOriginalFileSize() - 1);
-		
-    MailService.Attachment photoAttachment =
-        new MailService.Attachment(photoEntry.getOriginalFileName(), photoBytes);
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    byte[] photoBytes = blobstoreService.fetchData(photoEntry.getBlobKey(), 0,
+        photoEntry.getOriginalFileSize() - 1);
+
+    MailService.Attachment photoAttachment = new MailService.Attachment(
+        photoEntry.getOriginalFileName(), photoBytes);
     message.setAttachments(photoAttachment);
 
     try {
@@ -98,33 +94,23 @@ public class EmailUtil {
   }
 
   public void sendNewSubmissionEmail(VideoSubmission videoSubmission) {
-    String subject =
-        String.format("New video submission for assignment id %d", videoSubmission
-            .getAssignmentId());
+    String subject = String.format("New video submission for assignment id %d",
+        videoSubmission.getAssignmentId());
 
-    String body =
-        String.format("Video %s was submitted by YouTube user %s in response to "
-            + "assignment id %d.", videoSubmission.getWatchUrl(), videoSubmission.getYouTubeName(),
-            videoSubmission.getAssignmentId());
+    String body = String.format("Video %s was submitted by YouTube user %s in response to "
+        + "assignment id %d.", videoSubmission.getWatchUrl(), videoSubmission.getYouTubeName(),
+        videoSubmission.getAssignmentId());
 
     sendNewSubmissionEmail(subject, body);
   }
 
-  public void sendNewSubmissionEmail(PhotoSubmission photoSubmission) {
-    String subject =
-        String.format("New photo submission for assignment id %d", photoSubmission
-            .getAssignmentId());
+  public void sendNewSubmissionEmail(PhotoEntry photoEntry, PhotoSubmission photoSubmission) {
+    String subject = String.format("New photo submission for assignment id %d",
+        photoSubmission.getAssignmentId());
 
-    StringBuilder picasaUrls = new StringBuilder();
-    for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmission.getId())) {
-      picasaUrls.append(photoEntry.getImageUrl());
-      picasaUrls.append("\n");
-    }
-
-    String body =
-        String.format("The following photos were submitted by %s (%s) in response to "
-            + "assignment id %d:\n\n%s", photoSubmission.getAuthor(), photoSubmission.getNotifyEmail(),
-            photoSubmission.getAssignmentId(), picasaUrls.toString());
+    String body = String.format("The following photo was submitted by %s (%s) in response to "
+        + "assignment id %d:\n\n%s", photoSubmission.getAuthor(), photoSubmission.getNotifyEmail(),
+        photoSubmission.getAssignmentId(), photoEntry.getImageUrl());
 
     sendNewSubmissionEmail(subject, body);
   }

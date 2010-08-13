@@ -18,6 +18,7 @@ import com.google.ytd.picasa.PersistPicasaAuthSubToken;
 import com.google.ytd.tasks.CreateAlbum;
 import com.google.ytd.tasks.CreatePlaylist;
 import com.google.ytd.tasks.MoveToPicasa;
+import com.google.ytd.tasks.PicasaUpload;
 import com.google.ytd.youtube.PersistAuthSubToken;
 import com.google.ytd.youtube.VideoDownloadRedirect;
 
@@ -47,6 +48,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/tasks/CreatePlaylist").with(CreatePlaylist.class);
         serve("/tasks/CreateAlbum").with(CreateAlbum.class);
         serve("/tasks/MoveToPicasa").with(MoveToPicasa.class);
+        serve("/tasks/PicasaUpload").with(PicasaUpload.class);
         serve("/cron/PurgeBlobstorePhotos").with(PurgeBlobstorePhotos.class);
 
         // Map mobile servlet handlers
