@@ -58,18 +58,18 @@ After deployment is completed. You must perform a few configuration before you c
   * Go to the "Configuration" tab and make the desired configuration changes. Mouse over the ? icons for descriptions of each option.
   * Make sure that the YouTube account you authenticate as is linked to the Google Account that owns your YouTube Developer Key.
 
-===Registering your website for AuthSub===
-Register your new YTD instance with Google's AuthSub. This will get rid of the red warning text box that appears when unregistered web sites us AuthSub. There is more information on AuthSub in this document. You can initiate the registration process at https://www.google.com/accounts/ManageDomains.
+===Registering your website for !AuthSub===
+Register your new YTD instance with Google's !AuthSub. This will get rid of the red warning text box that appears when unregistered web sites us !AuthSub. There is more information on !AuthSub in this document. You can initiate the registration process at https://www.google.com/accounts/ManageDomains.
 *Note:* Be sure that you initiate the domain registration with your new YTD APP_ID.appspot.com domain. You do not need to go through the domain registration process with your host website's domain. Only your YTD App Engine domain needs to be registered.
   * When asked for the Target URL path prefix: you should use http://APP_ID.appspot.com/ (where APP_ID is the name of your App Engine instance). Be sure that you use http:// and not https://
-  * If you enter an incorrect value for Target URL path prefix: then the AuthSub web interface will reject your requests for AuthSub tokens and will display an error message warning that a malicious web site might be requesting tokens on your behalf.
-*OPTIONAL* You can now use "secure" AuthSub with YTD 2.0. If you choose to implement secure AuthSub, the login message that users see will explicitly state that their requests are being sent securely.
-  * First, follow the previous steps and ensure that your basic AuthSub setup is functional.
+  * If you enter an incorrect value for Target URL path prefix: then the !AuthSub web interface will reject your requests for !AuthSub tokens and will display an error message warning that a malicious web site might be requesting tokens on your behalf.
+*OPTIONAL* You can now use "secure" !AuthSub with YTD 2.0. If you choose to implement secure !AuthSub, the login message that users see will explicitly state that their requests are being sent securely.
+  * First, follow the previous steps and ensure that your basic !AuthSub setup is functional.
   * Follow [http://code.google.com/apis/gdata/docs/auth/authsub.html#Registered the instructions] to generate both a certificate .pem file (the `openssl req -x509...` command) and a .pk8 private key file for Java (the `openssl pkcs8...` command).
   * Log in at https://www.google.com/accounts/ManageDomains and click on "Manage APP_ID.appspot.com" to bring up the domain management interface.
   * In the "Upload new X.509 cert:" section, select the .pem file that you generated in the previous step and submit it to Google.
   * Visit your YTD 2.0 Configuration tab at http://APP_ID.appspot.com/admin. In the "YouTube API Settings" section there's a text field labeled "Private Key Certificate". Paste in the contents of the .pk8 private key file you previously generated and save your changes. The .pk8 file should start with `-----BEGIN PRIVATE KEY-----`. Include all lines in the file when you paste in the contents.
-When users go through the AuthSub authentication flow they should now see the message `APP_ID.appspot.com: Registered, secure. This website is registered with Google to make authorization requests`
+When users go through the !AuthSub authentication flow they should now see the message `APP_ID.appspot.com: Registered, secure. This website is registered with Google to make authorization requests`
 
 
 ===Creating new assignments & Embedding YTD Uploader to your page===
