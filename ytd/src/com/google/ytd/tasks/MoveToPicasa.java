@@ -16,10 +16,13 @@
 
 package com.google.ytd.tasks;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.gdata.data.media.mediarss.MediaThumbnail;
-import com.google.gdata.util.ServiceException;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AssignmentDao;
@@ -28,7 +31,6 @@ import com.google.ytd.model.Assignment;
 import com.google.ytd.model.PhotoEntry;
 import com.google.ytd.model.PhotoSubmission;
 import com.google.ytd.picasa.PicasaApiHelper;
-import com.google.ytd.util.EmailUtil;
 import com.google.ytd.util.Util;
 
 import java.io.IOException;
@@ -42,6 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class MoveToPicasa extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(MoveToPicasa.class.getName());
+  
+  private static final long TASK_DELAY = 1000 * 30; // Timeout before task is invoked.
 
   @Inject
   private Util util;
@@ -51,8 +55,6 @@ public class MoveToPicasa extends HttpServlet {
   private AssignmentDao assignmentDao;
   @Inject
   private PicasaApiHelper picasaApi;
-  @Inject
-  private EmailUtil emailUtil;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -84,54 +86,39 @@ public class MoveToPicasa extends HttpServlet {
       }
 
       String title = photoSubmission.getTitle();
-      String description =
-          String.format("%s\n\nSubmitted by %s in response to %s",
-              photoSubmission.getDescription(), photoSubmission.getAuthor(), photoSubmission
-                  .getArticleUrl());
+      String description = String.format("%s\n\nSubmitted by %s in response to %s",
+          photoSubmission.getDescription(), photoSubmission.getAuthor(),
+          photoSubmission.getArticleUrl());
+      
+      // It would be arguably more useful to store the album id separately, but we can parse it from
+      // the album URL value.
       String albumUrl = assignment.getUnreviewedAlbumUrl();
+      String albumId = albumUrl.substring(albumUrl.lastIndexOf("/") + 1);
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
       for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmissionId)) {
         if (photoEntry.getBlobKey() != null) {
-          com.google.gdata.data.photos.PhotoEntry picasaPhoto =
-              picasaApi.uploadToPicasa(photoEntry, title, description, albumUrl);
+          String uploadUrl = picasaApi.getResumableUploadUrl(photoEntry, title, description,
+              albumId);
 
-          photoEntry.setPicasaUrl(picasaPhoto.getEditLink().getHref());
-
-          // Let's use the smallest thumbnail from Picasa.
-          String thumbnailUrl = "";
-          int minWidth = Integer.MAX_VALUE;
-          for (MediaThumbnail thumbnail : picasaPhoto.getMediaGroup().getThumbnails()) {
-            int width = thumbnail.getWidth();
-            if (width < minWidth) {
-              minWidth = width;
-              thumbnailUrl = thumbnail.getUrl();
-            }
+          // TODO: Think about the cases that might lead to a null URL, and whether any of them
+          // would necessitate a retry here. Right now we won't retry if we get null back.
+          if (uploadUrl != null) {
+            photoEntry.setResumableUploadUrl(uploadUrl);
+            photoSubmissionDao.save(photoEntry);
+            
+            Queue queue = QueueFactory.getDefaultQueue();
+            queue.add(url("/tasks/PicasaUpload").method(Method.POST).param("id",
+                photoEntry.getId()).countdownMillis(TASK_DELAY));
           }
-          photoEntry.setThumbnailUrl(thumbnailUrl);
-
-          photoEntry.setImageUrl(picasaPhoto.getMediaGroup().getContents().get(0).getUrl());
-
-          blobstoreService.delete(photoEntry.getBlobKey());
-          photoEntry.setBlobKey(null);
-
-          photoSubmissionDao.save(photoEntry);
         }
       }
-
-      emailUtil.sendNewSubmissionEmail(photoSubmission);
     } catch (IllegalArgumentException e) {
       // We don't want to send an error response here, since that will result
       // in the TaskQueue retrying and this is not a transient error.
       LOG.log(Level.WARNING, "", e);
     } catch (IllegalStateException e) {
-      LOG.log(Level.WARNING, "", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (ServiceException e) {
-      LOG.log(Level.WARNING, "", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (IOException e) {
       LOG.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }

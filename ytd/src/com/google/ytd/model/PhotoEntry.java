@@ -14,18 +14,17 @@ import java.util.Date;
 public class PhotoEntry {
 
   @PrimaryKey
-  @Expose
-  // The blob key string is the unique id of PhotoEntry
+  @Expose // The blob key string is the unique id of PhotoEntry
   private String id = null;
 
   @Persistent
-  @Expose
-  // ID that points to the PhotoSubmission that contains the meta data of the submission session
+  @Expose // ID that points to the PhotoSubmission that contains the meta data of
+         // the submission session
   private String submissionId = null;
 
   @Persistent
   private BlobKey blobKey = null;
-  
+
   @Persistent
   @Expose
   private String picasaUrl = null;
@@ -33,32 +32,34 @@ public class PhotoEntry {
   @Persistent
   @Expose
   private String format = null;
-  
+
   @Persistent
   @Expose
   private String thumbnailUrl = null;
-  
+
   @Persistent
   @Expose
   private String imageUrl = null;
-  
+
   @Persistent
   @Expose
   private Long originalFileSize = null;
-  
+
   @Persistent
   @Expose
   private String originalFileName = null;
-  
+
+  @Persistent
+  @Expose
+  private String resumableUploadUrl = null;
+
   @SuppressWarnings("unused")
   @Expose
   @Persistent
   private Date created;
 
   public enum ModerationStatus {
-    UNREVIEWED,
-    APPROVED,
-    REJECTED
+    UNREVIEWED, APPROVED, REJECTED
   }
 
   @Expose
@@ -71,7 +72,7 @@ public class PhotoEntry {
     this.submissionId = submissionId;
     this.status = ModerationStatus.UNREVIEWED;
     this.format = format;
-    
+
     this.created = new Date();
   }
 
@@ -127,19 +128,33 @@ public class PhotoEntry {
     this.imageUrl = imageUrl;
   }
 
-	public long getOriginalFileSize() {
-		return originalFileSize.longValue();
-	}
+  public long getOriginalFileSize() {
+    return originalFileSize.longValue();
+  }
 
-	public void setOriginalFileSize(long originalFileSize) {
-		this.originalFileSize = originalFileSize;
-	}
+  public void setOriginalFileSize(long originalFileSize) {
+    this.originalFileSize = originalFileSize;
+  }
 
-	public String getOriginalFileName() {
-		return originalFileName;
-	}
+  public String getOriginalFileName() {
+    return originalFileName;
+  }
 
-	public void setOriginalFileName(String originalFileName) {
-		this.originalFileName = originalFileName;
-	}
+  public void setOriginalFileName(String originalFileName) {
+    this.originalFileName = originalFileName;
+  }
+
+  /**
+   * @return the resumableUploadUrl
+   */
+  public String getResumableUploadUrl() {
+    return resumableUploadUrl;
+  }
+
+  /**
+   * @param resumableUploadUrl the resumableUploadUrl to set
+   */
+  public void setResumableUploadUrl(String resumableUploadUrl) {
+    this.resumableUploadUrl = resumableUploadUrl;
+  }
 }

@@ -56,7 +56,7 @@ import com.google.ytd.util.Util;
 public class SubmitPhoto extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(SubmitPhoto.class.getName());
 
-  private static final long TASK_DELAY = 1000 * 60; // Timeout before task is invoked.
+  private static final long TASK_DELAY = 1000 * 30; // Timeout before task is invoked.
 
   private Injector injector = null;
   private Util util = null;
