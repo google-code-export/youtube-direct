@@ -129,6 +129,10 @@ public class PhotoEntry {
   }
 
   public long getOriginalFileSize() {
+    if (originalFileSize == null) {
+      originalFileSize = new Long(0);
+    }
+    
     return originalFileSize.longValue();
   }
 
