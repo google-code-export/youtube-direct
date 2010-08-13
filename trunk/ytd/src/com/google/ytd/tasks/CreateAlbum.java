@@ -49,7 +49,7 @@ public class CreateAlbum extends HttpServlet {
 
     try {
       if (!picasaApi.isAuthenticated()) {
-        throw new IllegalStateException("No Picasa AuthSub token found in the configuration.");
+        throw new IllegalArgumentException("No Picasa AuthSub token found in the configuration.");
       }
       
       String assignmentId = request.getParameter("assignmentId");
@@ -74,7 +74,8 @@ public class CreateAlbum extends HttpServlet {
       
       Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
       if (assignment == null) {
-        throw new IllegalArgumentException(String.format("Could not find Assignment id '%s' in datastore.", assignmentId));
+        throw new IllegalArgumentException(String.format("Could not find Assignment id '%s' in "
+            + "datastore.", assignmentId));
       }
       
       String albumUrl;
@@ -108,7 +109,8 @@ public class CreateAlbum extends HttpServlet {
           break;
           
         default:
-          throw new IllegalArgumentException(String.format("'%s' is not a valid value for the 'status' parameter.", status));
+          throw new IllegalArgumentException(String.format("'%s' is not a valid value for the "
+              + "'status' parameter.", status));
       }
       
       assignmentDao.save(assignment);
