@@ -16,6 +16,7 @@
 package com.google.ytd.picasa;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ResourceNotFoundException;
 import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -57,6 +59,8 @@ public class PersistPicasaAuthSubToken extends HttpServlet {
 
     try {
       String token = AuthSubUtil.getTokenFromReply(req.getQueryString());
+      token = URLDecoder.decode(token, "UTF-8");
+      
       if (util.isNullOrEmpty(token)) {
         throw new IllegalArgumentException(String.format("Could not retrieve token from "
             + "AuthSub response. request.getQueryString() => %s", req.getQueryString()));
@@ -80,6 +84,10 @@ public class PersistPicasaAuthSubToken extends HttpServlet {
       pm.makePersistent(adminConfig);
 
       resp.sendRedirect("/admin#configuration");
+    } catch (ResourceNotFoundException e) {
+      log.log(Level.WARNING, "", e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "No Picasa account found for the "
+          + "authenticated user.");
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
