@@ -246,7 +246,15 @@ function existingVideoMainInit() {
     ajaxCall.processData = false;
     ajaxCall.error = function(xhr, text, error) {
       clearProcessing();
-      showMessage('Sorry, your video submission failed: ' + xhr.statusText);
+      
+      var errorText;
+      if (xhr.responseText) {
+      	errorText = JSON.parse(xhr.responseText).error;
+      } else {
+      	errorText = xhr.statusText;
+      }
+      
+      showMessage('Sorry, your video submission failed: ' + errorText);
     };
     ajaxCall.success = function(res) {
       clearProcessing();
@@ -404,8 +412,16 @@ function getUploadToken() {
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
   ajaxCall.error = function(xhr, text, error) {
-    clearProcessing(); 
-    showMessage('Could not retrieve YouTube upload token: ' + xhr.statusText);
+    clearProcessing();
+    
+    var errorText;
+    if (xhr.responseText) {
+    	errorText = JSON.parse(xhr.responseText).error;
+    } else {
+    	errorText = xhr.statusText;
+    }
+    
+    showMessage('Could not retrieve YouTube upload token: ' + errorText);
     jQuery('#uploadButton').get(0).disabled = false;
     jQuery('#cancelUploadButton').get(0).disabled = false;      
   };
