@@ -62,6 +62,23 @@ function isRequiredFilled(sectionId) {
   return true;
 }
 
+function validateTags(section) {
+	var tags = section.find('#tags').val();
+	
+	if (tags.length >= 490) {
+		return false;
+	}
+	
+	var splits = tags.split(',');
+	for (var i = 0; i < splits.length; i++) {
+		if (splits[i].length >= 29) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 function processFileElements(section) {
 	var emptyFileElements = [];
 	var fileElements = section.find('input[type="file"]');
@@ -208,7 +225,7 @@ function existingVideoMainInit() {
     }
     
   	if (jQuery('#submitEmailAsk').get(0).checked && !isValidEmail(jQuery('#submitEmail').val())) {
-  		event.preventDefault();
+  	  event.preventDefault();
       showMessage('Your email address appears to be invalid.');
       return;
   	}
@@ -344,6 +361,12 @@ function uploaderMainInit() {
       event.preventDefault();
       showMessage('Please fill in all required field(s).');
       return false;
+    }
+    
+    if (!validateTags(jQuery('#uploaderMain'))) {
+        event.preventDefault();
+        showMessage('Please use fewer, or shorter, tag values.');
+        return false;
     }
     
   	if (jQuery('#uploadEmailAsk').get(0).checked &&
