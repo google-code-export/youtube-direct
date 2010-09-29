@@ -86,9 +86,11 @@ public class MoveToPicasa extends HttpServlet {
       }
 
       String title = photoSubmission.getTitle();
-      String description = String.format("%s\n\nSubmitted by %s in response to %s",
-          photoSubmission.getDescription(), photoSubmission.getAuthor(),
-          photoSubmission.getArticleUrl());
+      String description = String.format("%s\n\nSubmitted by %s",
+          photoSubmission.getDescription(), photoSubmission.getAuthor());
+      if (!util.isNullOrEmpty(photoSubmission.getArticleUrl())) {
+        description += " in response to " + photoSubmission.getArticleUrl();
+      }
       
       // It would be arguably more useful to store the album id separately, but we can parse it from
       // the album URL value.
