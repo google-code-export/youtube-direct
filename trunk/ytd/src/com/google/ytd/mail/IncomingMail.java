@@ -7,6 +7,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.gdata.data.DateTime;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
@@ -23,6 +24,7 @@ import org.apache.geronimo.mail.util.Base64DecoderStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,8 +140,10 @@ public class IncomingMail extends HttpServlet {
         throw new IllegalArgumentException("No image attachments were found in the email.");
       }
       
+      String date = new DateTime().toUiString();
+      
       PhotoSubmission photoSubmission = new PhotoSubmission(Long.parseLong(assignmentId), "",
-          author, email, "", title, description, "", "", imageCount);
+          author, email, "", title, description, "", date, imageCount);
       pmfUtil.persistJdo(photoSubmission);
       String submissionId = photoSubmission.getId();
 

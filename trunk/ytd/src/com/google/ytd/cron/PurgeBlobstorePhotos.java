@@ -57,10 +57,9 @@ public class PurgeBlobstorePhotos extends HttpServlet {
           
           count++;
           
-          purge(photoEntry);
-          pm.makePersistent(photoEntry);
+          purge(photoEntry, pm);
           
-          LOG.info("PhotoEntry has been purged.");
+          LOG.info("Photo data for entry has been purged.");
         }
       }
     } finally {
@@ -70,7 +69,7 @@ public class PurgeBlobstorePhotos extends HttpServlet {
     LOG.info(String.format("All done. %d PhotoEntry(s) were purged from the Blobstore.", count));
   }
   
-  private void purge(PhotoEntry photoEntry) {
+  private void purge(PhotoEntry photoEntry, PersistenceManager pm) {
     try {
       emailUtil.sendPhotoEntryToAdmins(photoEntry);
     } finally {
@@ -78,6 +77,9 @@ public class PurgeBlobstorePhotos extends HttpServlet {
       blobstoreService.delete(photoEntry.getBlobKey());
     
       photoEntry.setBlobKey(null);
+      pm.makePersistent(photoEntry);
+      
+      LOG.info("BlobKey set to null.");
     }
   }
 }
