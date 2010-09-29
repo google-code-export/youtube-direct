@@ -98,20 +98,19 @@ public class MoveToPicasa extends HttpServlet {
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
       for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmissionId)) {
-        if (photoEntry.getBlobKey() != null) {
-          String uploadUrl = picasaApi.getResumableUploadUrl(photoEntry, title, description,
-              albumId);
+        String uploadUrl = picasaApi.getResumableUploadUrl(photoEntry, title, description, albumId);
 
-          // TODO: Think about the cases that might lead to a null URL, and whether any of them
-          // would necessitate a retry here. Right now we won't retry if we get null back.
-          if (uploadUrl != null) {
-            photoEntry.setResumableUploadUrl(uploadUrl);
-            photoSubmissionDao.save(photoEntry);
-            
-            Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(url("/tasks/PicasaUpload").method(Method.POST).param("id",
-                photoEntry.getId()).countdownMillis(TASK_DELAY));
-          }
+        // TODO: Think about the cases that might lead to a null URL, and whether any of them
+        // would necessitate a retry here. Right now we won't retry if we get null back.
+        if (uploadUrl != null) {
+          photoEntry.setResumableUploadUrl(uploadUrl);
+          photoSubmissionDao.save(photoEntry);
+
+          Queue queue = QueueFactory.getDefaultQueue();
+          queue.add(url("/tasks/PicasaUpload")
+              .method(Method.POST)
+              .param("id", photoEntry.getId())
+              .countdownMillis(TASK_DELAY));
         }
       }
     } catch (IllegalArgumentException e) {

@@ -116,14 +116,19 @@ public class Util {
 
   public String getPostBody(HttpServletRequest req) throws IOException {
     InputStream is = req.getInputStream();
-
+    
+    return readInputStream(is);
+  }
+  
+  public String readInputStream(InputStream inputStream) throws IOException {
     StringBuffer body = new StringBuffer();
     String line = null;
-    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
     while ((line = br.readLine()) != null) {
       body.append(line);
       body.append("\n");
     }
+    
     return body.toString();
   }
 

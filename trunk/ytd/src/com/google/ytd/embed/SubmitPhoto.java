@@ -147,10 +147,6 @@ public class SubmitPhoto extends HttpServlet {
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
 
-        Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(url("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
-            .countdownMillis(TASK_DELAY));
-
         for (BlobKey blobKey : validSubmissionKeys) {
           BlobInfo blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
 
@@ -160,6 +156,10 @@ public class SubmitPhoto extends HttpServlet {
           
           pmfUtil.persistJdo(photoEntry);
         }
+        
+        Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(url("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
+            .countdownMillis(TASK_DELAY));
       } else {
         LOG.warning("No valid photos found in upload.");
       }
