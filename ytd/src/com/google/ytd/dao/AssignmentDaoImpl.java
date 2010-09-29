@@ -36,7 +36,6 @@ import com.google.ytd.model.Assignment;
 import com.google.ytd.model.VideoSubmission.ModerationStatus;
 import com.google.ytd.picasa.PicasaApiHelper;
 import com.google.ytd.util.Util;
-import com.google.ytd.youtube.YouTubeApiHelper;
 
 /**
  * Class that handles persisting new assignments to the datastore and creating
@@ -50,8 +49,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
   private Util util;
   @Inject
   private PersistenceManagerFactory pmf;
-  @Inject
-  private YouTubeApiHelper youTubeApiHelper;
   @Inject
   private PicasaApiHelper picasaApiHelper;
   @Inject
@@ -187,6 +184,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
     long assignmentId = -1;
     String defaultMobileAssignmentDescription = "default mobile assignment";
     PersistenceManager pm = pmf.getPersistenceManager();
+    
     try {
       Query query = pm.newQuery(Assignment.class);
       query.declareParameters("String defaultMobileAssignmentDescription");
@@ -202,24 +200,17 @@ public class AssignmentDaoImpl implements AssignmentDao {
         assignment.setDescription(defaultMobileAssignmentDescription);
         assignment.setStatus(Assignment.AssignmentStatus.ACTIVE);
         assignment = pm.makePersistent(assignment);
-
-        String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
-        if (util.isNullOrEmpty(token)) {
-          log.warning(String.format("Could not create new playlist for assignment '%s' because no"
-              + " YouTube AuthSub token was found in the config.", assignment.getDescription()));
-        } else {
-          youTubeApiHelper.setAuthSubToken(token);
-          String playlistId =
-              youTubeApiHelper.createPlaylist(String.format("Playlist for Assignment #%d",
-                  assignment.getId()), assignment.getDescription());
-          assignment.setPlaylistId(playlistId);
-          assignment = pm.makePersistent(assignment);
-        }
+        
+        assignment = pm.makePersistent(assignment);
+        assignment = pm.detachCopy(assignment);
         assignmentId = assignment.getId();
+        
+        newAssignment(assignment, "Mobile Submissions");
       }
     } finally {
       pm.close();
     }
+    
     return assignmentId;
   }
 

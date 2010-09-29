@@ -1,7 +1,6 @@
 package com.google.ytd.guice;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.ServletException;
@@ -14,7 +13,6 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class EmbedJspForwarder extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(EmbedJspForwarder.class.getName());
   @Inject
   private PersistenceManagerFactory pmf = null;
 

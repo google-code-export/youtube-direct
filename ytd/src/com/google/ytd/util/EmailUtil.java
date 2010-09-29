@@ -1,8 +1,13 @@
 package com.google.ytd.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMultipart;
 
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -29,36 +34,38 @@ public class EmailUtil {
   private Util util;
 
   public void sendPhotoEntryToAdmins(PhotoEntry photoEntry) {
-    log.info(String.format("Sending photo from PhotoEntry id '%s' to admins...",
-        photoEntry.getId()));
+    log.info(
+        String.format("Sending photo from PhotoEntry id '%s' to admins...", photoEntry.getId()));
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
 
     MailService mailService = MailServiceFactory.getMailService();
     Message message = new Message();
 
-    String fromAddress = adminConfig.getFromAddress();
-    if (util.isNullOrEmpty(fromAddress)) {
-      throw new IllegalArgumentException("No from address found in configuration.");
-    }
-
-    message.setSubject("Unable to submit photo to Picasa");
-    message.setSender(fromAddress);
-    message.setTextBody("YouTube Direct was unable to upload a photo submission to Picasa.\n\n"
-        + "There might be a service issue, or your Picasa configuration might be incorrect.\n\n"
-        + "The photo in question is attached.");
-    
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    byte[] photoBytes = blobstoreService.fetchData(photoEntry.getBlobKey(), 0,
-        photoEntry.getOriginalFileSize() - 1);
-
-    MailService.Attachment photoAttachment = new MailService.Attachment(
-        photoEntry.getOriginalFileName(), photoBytes);
-    message.setAttachments(photoAttachment);
-
     try {
+      String fromAddress = adminConfig.getFromAddress();
+      if (util.isNullOrEmpty(fromAddress)) {
+        throw new IllegalArgumentException("No from address found in configuration.");
+      }
+
+      message.setSubject("Unable to submit photo to Picasa");
+      message.setSender(fromAddress);
+      message.setTextBody("YouTube Direct was unable to upload a photo submission to Picasa.\n\n"
+          + "There might be a service issue, or your Picasa configuration might be incorrect.\n\n"
+          + "The photo in question is attached.");
+
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      byte[] photoBytes = blobstoreService.fetchData(
+          photoEntry.getBlobKey(), 0, photoEntry.getOriginalFileSize() - 1);
+
+      MailService.Attachment photoAttachment =
+          new MailService.Attachment(photoEntry.getOriginalFileName(), photoBytes);
+      message.setAttachments(photoAttachment);
+
       mailService.sendToAdmins(message);
       log.info("Email sent to admins.");
     } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
     }
   }
@@ -223,5 +230,32 @@ public class EmailUtil {
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
     }
+  }
+  
+  public ArrayList<BodyPart> getAllMIMEParts(MimeMultipart mimePart) {
+    ArrayList<BodyPart> parts = new ArrayList<BodyPart>();
+    
+    try {
+      for (int i = 0; i < mimePart.getCount(); i++) {
+        BodyPart bodyPart = mimePart.getBodyPart(i);
+        log.info("Subpart's content is: " + bodyPart.getContentType());
+        
+        if (bodyPart.getContentType().toLowerCase().startsWith("multipart/")) {
+          parts.addAll(getAllMIMEParts((MimeMultipart) bodyPart.getContent()));
+        } else {
+          parts.add(bodyPart);
+        }
+      }
+    } catch (MessagingException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ClassCastException e) {
+      // I am not 100% sure that the casts will all work here, so let's catch this just to be safe.
+      // Worst-case scenario is that we end up missing a part in a funky multi-multi-part message.
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return parts;
   }
 }

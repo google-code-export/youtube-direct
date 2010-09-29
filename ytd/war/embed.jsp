@@ -11,6 +11,8 @@
 <%@ page import="com.google.ytd.dao.AdminConfigDaoImpl"%>
 <%@ page import="com.google.ytd.dao.AssignmentDao"%>
 <%@ page import="com.google.ytd.dao.AssignmentDaoImpl"%>
+<%@ page import="com.google.ytd.dao.DataChunkDao"%>
+<%@ page import="com.google.ytd.dao.DataChunkDaoImpl"%>
 <%@ page import="com.google.ytd.util.Util"%>
 <%@ page import="com.google.ytd.model.AdminConfig"%>
 <%@ page import="java.net.URLDecoder"%>
@@ -36,6 +38,7 @@
 	        bind(AdminConfigDao.class).to(AdminConfigDaoImpl.class);
 	        bind(AssignmentDao.class).to(AssignmentDaoImpl.class);
 		      bind(UserAuthTokenDao.class).to(UserAuthTokenDaoImpl.class);
+		      bind(DataChunkDao.class).to(DataChunkDaoImpl.class);
 	      }
 	    });
 	

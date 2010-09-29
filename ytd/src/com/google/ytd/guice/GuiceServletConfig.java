@@ -12,6 +12,7 @@ import com.google.ytd.embed.LogoutHandler;
 import com.google.ytd.embed.SubmitExistingVideo;
 import com.google.ytd.embed.UploadResponseHandler;
 import com.google.ytd.jsonrpc.JsonRpcProcessor;
+import com.google.ytd.mail.IncomingMail;
 import com.google.ytd.mobile.MobileAuthSub;
 import com.google.ytd.mobile.PersistMobileSubmission;
 import com.google.ytd.picasa.PersistPicasaAuthSubToken;
@@ -50,6 +51,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/tasks/MoveToPicasa").with(MoveToPicasa.class);
         serve("/tasks/PicasaUpload").with(PicasaUpload.class);
         serve("/cron/PurgeBlobstorePhotos").with(PurgeBlobstorePhotos.class);
+        serve("/_ah/mail/*").with(IncomingMail.class);
 
         // Map mobile servlet handlers
         String mobileDir = "/mobile";

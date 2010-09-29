@@ -32,6 +32,7 @@ import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AssignmentDao;
+import com.google.ytd.dao.DataChunkDao;
 import com.google.ytd.util.Util;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -75,12 +76,15 @@ public class PicasaApiHelper {
   private PicasawebService service = null;
   private Util util = null;
   private AdminConfigDao adminConfigDao = null;
+  private DataChunkDao dataChunkDao = null;
 
   @Inject
-  public PicasaApiHelper(AdminConfigDao adminConfigDao, AssignmentDao assignmentDao) {
+  public PicasaApiHelper(AdminConfigDao adminConfigDao, AssignmentDao assignmentDao,
+      DataChunkDao dataChunkDao) {
     this.service = new PicasawebService(Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get());
     this.util = Util.get();
     this.adminConfigDao = adminConfigDao;
+    this.dataChunkDao = dataChunkDao;
 
     String authSubToken = adminConfigDao.getAdminConfig().getPicasaAuthSubToken();
     if (!util.isNullOrEmpty(authSubToken)) {
@@ -292,28 +296,47 @@ public class PicasaApiHelper {
           }
         }
 
-        long lastByte = previousByte + CHUNK_SIZE;
-        if (lastByte > (photoEntry.getOriginalFileSize() - 1)) {
-          lastByte = photoEntry.getOriginalFileSize() - 1;
-        }
-
         connection = (HttpURLConnection) url.openConnection();
         connection.setInstanceFollowRedirects(false);
         connection.setDoOutput(true);
         connection.setConnectTimeout(CONNECT_TIMEOUT);
         connection.setReadTimeout(READ_TIMEOUT);
         connection.setRequestMethod("PUT");
+        
+        byte[] bytes;
+        String contentRangeHeader;
+        
+        if (photoEntry.getBlobKey() != null) {
+          long lastByte = previousByte + CHUNK_SIZE;
+          if (lastByte > (photoEntry.getOriginalFileSize() - 1)) {
+            lastByte = photoEntry.getOriginalFileSize() - 1;
+          }
 
-        String contentRangeHeader = String.format("bytes %d-%d/%d", previousByte, lastByte,
+          contentRangeHeader = String.format("bytes %d-%d/%d", previousByte, lastByte,
             photoEntry.getOriginalFileSize());
+          
+          BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+          bytes = blobstoreService.fetchData(photoEntry.getBlobKey(), previousByte, lastByte);
+        } else {
+          bytes = dataChunkDao.getBytes(photoEntry.getId(), previousByte);
+          
+          if (bytes == null) {
+            throw new IllegalArgumentException(String.format("PhotoEntry with id '%s' does not "
+                + "have a valid blob key. Additionally, there is no DataChunk entry for the "
+                + "initial byte '%d'.", photoEntry.getId(), previousByte));
+          }
+          
+          contentRangeHeader = String.format("bytes %d-%d/%d", previousByte,
+              previousByte + bytes.length - 1, photoEntry.getOriginalFileSize());
+        }
+        
+        connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+        
         LOG.info("Using the following for Content-Range header: " + contentRangeHeader);
         connection.setRequestProperty("Content-Range", contentRangeHeader);
 
-        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-
         OutputStream outputStream = connection.getOutputStream();
-        outputStream.write(
-            blobstoreService.fetchData(photoEntry.getBlobKey(), previousByte, lastByte));
+        outputStream.write(bytes);
         outputStream.close();
 
         if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {

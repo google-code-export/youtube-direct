@@ -12,7 +12,6 @@ import java.util.Date;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class PhotoEntry {
-
   @PrimaryKey
   @Expose // The blob key string is the unique id of PhotoEntry
   private String id = null;
@@ -70,6 +69,15 @@ public class PhotoEntry {
     this.blobKey = blobKey;
     this.id = blobKey.getKeyString();
     this.submissionId = submissionId;
+    this.status = ModerationStatus.UNREVIEWED;
+    this.format = format;
+
+    this.created = new Date();
+  }
+  
+  public PhotoEntry(String submissionId, String id, String format) {
+    this.submissionId = submissionId;
+    this.id = id;
     this.status = ModerationStatus.UNREVIEWED;
     this.format = format;
 

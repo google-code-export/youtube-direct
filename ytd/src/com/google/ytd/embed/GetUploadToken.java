@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,8 +58,6 @@ public class GetUploadToken extends HttpServlet {
 
   @Inject
   private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject
@@ -141,7 +138,11 @@ public class GetUploadToken extends HttpServlet {
       mg.setDescription(new MediaDescription());
       mg.getDescription().setPlainTextContent(description);
 
-      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get()));
+      String applicationNameTag = Util.CLIENT_ID_PREFIX + SystemProperty.applicationId.get();
+      if (applicationNameTag.length() > 25) {
+        applicationNameTag = applicationNameTag.substring(0, 24) + "!";
+      }
+      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME, applicationNameTag));
 
       // Maximum size of a developer tag is 25 characters, and we prepend 2
       // characters.
