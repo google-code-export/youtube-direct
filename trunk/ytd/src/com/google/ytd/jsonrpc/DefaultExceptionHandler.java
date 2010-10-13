@@ -1,7 +1,6 @@
 package com.google.ytd.jsonrpc;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +12,6 @@ import com.google.ytd.guice.ProductionModule;
 
 @Singleton
 public class DefaultExceptionHandler extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(DefaultExceptionHandler.class.getName());
-
   JsonExceptionHandler jsonExceptionHandler = Guice.createInjector(new ProductionModule())
       .getInstance(JsonExceptionHandler.class);
 

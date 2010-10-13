@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +44,6 @@ public class InsightDownloadRedirect extends HttpServlet {
 
   @Inject
   private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private YouTubeApiHelper apiManager;
 
