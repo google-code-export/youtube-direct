@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,8 +56,6 @@ public class SubmitExistingVideo extends HttpServlet {
   private EmailUtil emailUtil;
   @Inject
   private PmfUtil pmfUtil;
-  @Inject
-  private PersistenceManagerFactory pmf;
   @Inject
   private UserSessionManager userSessionManager;
   @Inject

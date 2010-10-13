@@ -1,7 +1,6 @@
 package com.google.ytd.dao;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -12,7 +11,6 @@ import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.util.Util;
 
 public class UserAuthTokenDaoImpl implements UserAuthTokenDao {
-  private static final Logger LOG = Logger.getLogger(UserAuthTokenDaoImpl.class.getName());
   private PersistenceManagerFactory pmf = null;
   
   @Inject
@@ -23,6 +21,7 @@ public class UserAuthTokenDaoImpl implements UserAuthTokenDao {
     this.pmf = pmf;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public UserAuthToken getUserAuthToken(String username) {
     PersistenceManager pm = pmf.getPersistenceManager();

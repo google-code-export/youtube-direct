@@ -24,7 +24,6 @@ import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,14 +41,8 @@ import com.google.ytd.util.Util;
  */
 @Singleton
 public class Authenticator {
-  private Util util;
-  @Inject
-  private PersistenceManagerFactory pmf;
-
   @Inject
   private AdminConfigDao adminConfigDao;
-
-  private UserSessionManager userSessionManager;
 
   private HttpServletRequest request = null;
   private HttpServletResponse response = null;
@@ -64,10 +57,8 @@ public class Authenticator {
   @Inject
   public Authenticator(HttpServletRequest req, HttpServletResponse resp,
       UserSessionManager userSessionManager, Util util, AdminConfigDao adminConfigDao) {
-    this.userSessionManager = userSessionManager;
     this.request = req;
     this.response = resp;
-    this.util = util;
     this.adminConfigDao = adminConfigDao;
     this.userSession = userSessionManager.getUserSession(request);
 

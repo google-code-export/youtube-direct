@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,7 +46,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class Util {
   public static final String CLIENT_ID_PREFIX = "ytd22-";
-  private static final Logger log = Logger.getLogger(Util.class.getName());
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
   public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(
@@ -55,10 +53,12 @@ public class Util {
       .registerTypeAdapter(Blob.class, new BlobToStringAdapter()).create();
 
   private static class TextToStringAdapter implements JsonSerializer<Text>, JsonDeserializer<Text> {
+    @SuppressWarnings("unused")
     public JsonElement toJson(Text text, Type type, JsonSerializationContext context) {
       return serialize(text, type, context);
     }
 
+    @SuppressWarnings("unused")
     public Text fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
       return deserialize(json, type, context);
     }
@@ -79,10 +79,12 @@ public class Util {
   }
 
   private static class BlobToStringAdapter implements JsonSerializer<Blob>, JsonDeserializer<Blob> {
+    @SuppressWarnings("unused")
     public JsonElement toJson(Blob blob, Type type, JsonSerializationContext context) {
       return serialize(blob, type, context);
     }
 
+    @SuppressWarnings("unused")
     public Blob fromJson(JsonElement json, Type type, JsonDeserializationContext context) {
       return deserialize(json, type, context);
     }

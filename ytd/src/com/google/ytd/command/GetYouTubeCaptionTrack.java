@@ -2,7 +2,6 @@ package com.google.ytd.command;
 
 import com.google.inject.Inject;
 import com.google.ytd.dao.UserAuthTokenDao;
-import com.google.ytd.dao.VideoSubmissionDao;
 import com.google.ytd.model.UserAuthToken;
 import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
