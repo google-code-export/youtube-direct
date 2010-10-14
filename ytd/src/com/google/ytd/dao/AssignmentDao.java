@@ -17,5 +17,9 @@ public interface AssignmentDao {
 
   public List<Assignment> getAssignments(String sortBy, String sortOrder, String filterType);
   
+  public List<Assignment> getActiveVideoAssignments();
+  
+  public List<Assignment> getActivePhotoAssignments();
+  
   public boolean isAssignmentPhotoEnabled(String id);
 }

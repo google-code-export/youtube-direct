@@ -14,6 +14,7 @@
 <%@ page import="com.google.ytd.dao.DataChunkDao"%>
 <%@ page import="com.google.ytd.dao.DataChunkDaoImpl"%>
 <%@ page import="com.google.ytd.util.Util"%>
+<%@ page import="com.google.ytd.model.Assignment"%>
 <%@ page import="com.google.ytd.model.AdminConfig"%>
 <%@ page import="java.net.URLDecoder"%>
 <%@ page import="javax.jdo.PersistenceManagerFactory"%>
@@ -50,7 +51,21 @@
 	Authenticator authenticator = injector.getInstance(Authenticator.class);
 	BlobstoreService blobstoreService = injector.getInstance(BlobstoreService.class);
 	
-	boolean photosEnabledForAssignment = assignmentDao.isAssignmentPhotoEnabled(request.getParameter("assignmentId"));
+	String assignmentId = request.getParameter("assignmentId");
+	String potentiallyEmptyVideoSelectElement = "";
+	if (util.isNullOrEmpty(assignmentId) || assignmentId.equals("undefined")) {
+	 assignmentId = "undefined";
+	 StringBuffer videoOptions = new StringBuffer();
+
+	 for (Assignment assignment : assignmentDao.getActiveVideoAssignments()) {
+	   videoOptions.append("<option value='" + assignment.getId().toString() + "'>" + assignment.getDescription() + "</option>");
+	 }
+	 
+	 potentiallyEmptyVideoSelectElement = String.format("<label for='assignmentId'>Choose a Topic: </label><select id='assignmentId' name='assignmentId'>%s</select><br><br>", videoOptions.toString());
+	}
+	
+	// This will default to true if the assignmentId parameter is missing or set to "undefined".
+	boolean photosEnabledForAssignment = assignmentDao.isAssignmentPhotoEnabled(assignmentId);
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -96,7 +111,7 @@
 
 <div align="center">
 	<div id="loginInstruction">			
-	<%= adminConfigDao.getLoginInstruction(request.getParameter("assignmentId")) %>
+	<%= adminConfigDao.getLoginInstruction(assignmentId) %>
 	<br><br>
 		<%
 			if (authenticator.isLoggedIn()) {		
@@ -130,11 +145,12 @@
 
 <div align="center">
   <div id="postSubmitMessage" style="display: none;">      
-    <%= adminConfigDao.getPostSubmitMessage(request.getParameter("assignmentId")) %>   
+    <%= adminConfigDao.getPostSubmitMessage(assignmentId) %>   
   </div>
 </div>
 
 <div id="existingVideoMain" style="display: none;">
+  <%=potentiallyEmptyVideoSelectElement%>
 	<div class="tip">Select a video below, or paste a YouTube video URL.</div>
 	<div id="loadingVideos">Loading your most recent videos...</div>
 	<div id="existingVideos" style="display: none;">
@@ -174,6 +190,7 @@
 </div>
 
 <div id="uploaderMain" style="display: none;">
+  <%=potentiallyEmptyVideoSelectElement%>
 	<label class="required" for="title">Video Title:</label>
 	<br>
 	<div><input class="inputBox" type="text" name="title" id="title" /></div>
@@ -221,10 +238,30 @@
 </div>
 
   <%    
-    if (adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {   
+    if (adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {
   %>
 <div id="photoMain" style="display: none;">
   <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
+
+  <%
+    if (assignmentId.equals("undefined")) {
+  %>
+    <label for="assignmentId">Choose a Topic: </label>
+    <select id="assignmentId" name="assignmentId">
+  <%
+    for (Assignment assignment : assignmentDao.getActivePhotoAssignments()) {
+  %>
+      <option value="<%=assignment.getId()%>"><%=assignment.getDescription()%></option>
+  <%
+    }
+  %>
+    </select>
+    <br>
+    <br>
+  <%
+    }
+  %>
+  
     <label class="required" for="title">Photo Title:</label>
     <br>
     <div>
@@ -265,7 +302,15 @@
     <div>
       <input class="inputBox" type="text" name="phoneNumber" id="phoneNumber" />
     </div>
-    <input id="assignmentId" name="assignmentId" type="hidden" value="<%=request.getParameter("assignmentId")%>"/>
+
+    <%
+      if (!assignmentId.equals("undefined")) {
+    %>
+    <input id="assignmentId" name="assignmentId" type="hidden" value="<%=assignmentId%>"/>
+    <%
+      }
+    %>
+    
     <input id="articleUrl" name="articleUrl" type="hidden" value="<%=request.getParameter("articleUrl")%>"/>
     <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=<%= adminConfig.getRecaptchaPublicKey() %>"></script>
     <br>

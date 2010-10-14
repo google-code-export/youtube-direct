@@ -6,10 +6,6 @@
     <script type="text/javascript">
 jQuery(document).ready(function() {
 	var assignmentId = getUrlParams().id;
-	if (!assignmentId) {
-		alert('missing assignment id, please append to end of the URL ?id=assignmentId');
-		return;
-	}
   
 	var ytd = new Ytd();
 	ytd.setAssignmentId(assignmentId);

@@ -183,7 +183,7 @@ function photoMainInit() {
 
 function addFileElement() {
 	var photoUploadForm = jQuery('#photoUploadForm');
-	var siblingElement = photoUploadForm.find('#assignmentId');
+	var siblingElement = photoUploadForm.find('#articleUrl');
 	
 	var fileElementCount = photoUploadForm.find('input[type="file"]').length;
 	
@@ -247,11 +247,17 @@ function existingVideoMainInit() {
     var phoneNumber = jQuery('#phoneNumber').val();  
     var date = jQuery('#submitDate').val();
     var email = jQuery('#submitEmail').val();
+    
+    var assignmentIdField = jQuery('#existingVideoMain').find('#assignmentId');
 
     jsonObj.location = location;
     jsonObj.phoneNumber = phoneNumber;
     jsonObj.date = date;
     jsonObj.email = email;
+    
+    if (assignmentIdField != null) {
+      jsonObj.assignmentId = assignmentIdField.val();
+    }
     
     var sessionId = window.URL_PARAMS.sessionId || '';
     
@@ -411,6 +417,8 @@ function getUploadToken() {
   var date = jQuery('#uploadDate').val();
   var email = jQuery('#uploadEmail').val();
   var tagsString = jQuery('#tags').val();
+  
+  var assignmentIdField = jQuery('#uploaderMain').find('#assignmentId');
 
   var tags = tagsString.split(',');
   jQuery.each(tags, function(index, value) {
@@ -425,6 +433,10 @@ function getUploadToken() {
   jsonObj.date = date;
   jsonObj.email = email;
   jsonObj.tags = tags;
+  
+  if (assignmentIdField != null) {
+    jsonObj.assignmentId = assignmentIdField.val();
+  }
   
   var sessionId = window.URL_PARAMS.sessionId || '';
 
