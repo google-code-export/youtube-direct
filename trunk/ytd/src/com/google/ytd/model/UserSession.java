@@ -59,7 +59,12 @@ public class UserSession {
   }
 
   public void addMetaData(String key, String value) {
-    getMetaDataMap().put(key, value);
+    Map<String, String> dataMap = getMetaDataMap();
+    if (dataMap.containsKey(key)) {
+      dataMap.remove(key);
+    }
+    
+    dataMap.put(key, value);
   }
 
   public String getMetaData(String key) {

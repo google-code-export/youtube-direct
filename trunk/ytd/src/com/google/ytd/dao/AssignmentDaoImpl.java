@@ -18,6 +18,7 @@ package com.google.ytd.dao;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +85,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
     try {
       return getAssignmentById(Long.parseLong(id));
     } catch (NumberFormatException e) {
-      log.log(Level.WARNING, "", e);
       return null;
     }
   }
@@ -114,6 +114,36 @@ public class AssignmentDaoImpl implements AssignmentDao {
     }
 
     return assignments;
+  }
+  
+  @SuppressWarnings("unchecked")
+  private List<Assignment> getActiveAssignments(String fieldName) {
+    PersistenceManager pm = pmf.getPersistenceManager();
+    List<Assignment> assignments = new ArrayList<Assignment>();
+    
+    try {
+      Query query = pm.newQuery(Assignment.class);
+      query.setOrdering(String.format("%s asc, description asc", fieldName));
+      query.setFilter(String.format("status == 'ACTIVE' && %s != null && %s != ''", fieldName,
+          fieldName));
+
+      assignments = (List<Assignment>) query.execute();
+      assignments = (List<Assignment>) pm.detachCopyAll(assignments);
+    } finally {
+      pm.close();
+    }
+    
+    return assignments;
+  }
+  
+  public List<Assignment> getActiveVideoAssignments() {
+    // If this field is set, then there's a good chance the assignment accepts video submissions.
+    return getActiveAssignments("playlistId");
+  }
+  
+  public List<Assignment> getActivePhotoAssignments() {
+    // If this field is set, then there's a good chance the assignment accepts photo submissions.
+    return getActiveAssignments("unreviewedAlbumUrl");
   }
 
   /*
@@ -215,6 +245,11 @@ public class AssignmentDaoImpl implements AssignmentDao {
   }
 
   public boolean isAssignmentPhotoEnabled(String id) {
+    if (util.isNullOrEmpty(id) || id.equals("undefined")) {
+      // Default to true if id isn't given or isn't numeric.
+      return true;
+    }
+    
     Assignment assignment = getAssignmentById(id);
 
     if (assignment == null || util.isNullOrEmpty(assignment.getUnreviewedAlbumUrl())

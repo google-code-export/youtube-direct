@@ -79,7 +79,12 @@ public class GetUploadToken extends HttpServlet {
       String date = jsonObj.getString("date");
       String email = jsonObj.getString("email");
       JSONArray tagsArray = jsonObj.getJSONArray("tags");
-
+      
+      String assignmentId = null;
+      if (jsonObj.has("assignmentId")) {
+        assignmentId = jsonObj.getString("assignmentId");
+      }
+      
       // Only check for required parameters 'title' and 'description'.
       if (util.isNullOrEmpty(title)) {
         throw new IllegalArgumentException("'title' parameter is null or empty.");
@@ -94,8 +99,15 @@ public class GetUploadToken extends HttpServlet {
         throw new IllegalArgumentException("No user session found.");
       }
       String authSubToken = userSession.getMetaData("authSubToken");
-      String assignmentId = userSession.getMetaData("assignmentId");
-
+      
+      // Assignment id might be set in the JSON object if there wasn't an assignment associated
+      // with the embedded iframe, and the assignment was chosen at run time.
+      if (util.isNullOrEmpty(assignmentId)) {
+        assignmentId = userSession.getMetaData("assignmentId");
+      } else {
+        userSession.addMetaData("assignmentId", assignmentId);
+      }
+      
       Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
       if (assignment == null) {
         throw new IllegalArgumentException(String.format(

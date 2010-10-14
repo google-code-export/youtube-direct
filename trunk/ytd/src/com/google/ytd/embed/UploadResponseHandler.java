@@ -61,7 +61,6 @@ public class UploadResponseHandler extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     String videoId = req.getParameter("id");
     String status = req.getParameter("status");
 
@@ -82,9 +81,6 @@ public class UploadResponseHandler extends HttpServlet {
 
       log.fine(String.format("Attempting to persist VideoSubmission with YouTube id '%s' "
           + "for assignment id '%s'...", videoId, assignmentId));
-
-      // VideoSubmission submission = new
-      // VideoSubmission(Long.parseLong(assignmentId));
 
       VideoSubmission submission = submissionDao.newSubmission(Long.parseLong(assignmentId));
 

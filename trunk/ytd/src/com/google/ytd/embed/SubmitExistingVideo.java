@@ -78,6 +78,10 @@ public class SubmitExistingVideo extends HttpServlet {
       String date = jsonObj.getString("date");
       String email = jsonObj.getString("email");
 
+      String assignmentId = null;
+      if (jsonObj.has("assignmentId")) {
+        assignmentId = jsonObj.getString("assignmentId");
+      }
       // Only check for required parameters 'videoId'.
       if (util.isNullOrEmpty(videoId)) {
         throw new IllegalArgumentException("'videoId' parameter is null or empty.");
@@ -87,9 +91,16 @@ public class SubmitExistingVideo extends HttpServlet {
       UserSession userSession = userSessionManager.getUserSession(req);
       String youTubeName = userSession.getMetaData("youTubeName");
       String authSubToken = userSession.getMetaData("authSubToken");
-      String assignmentId = userSession.getMetaData("assignmentId");
       String articleUrl = userSession.getMetaData("articleUrl");
 
+      // Assignment id might be set in the JSON object if there wasn't an assignment associated
+      // with the embedded iframe, and the assignment was chosen at run time.
+      if (util.isNullOrEmpty(assignmentId)) {
+        assignmentId = userSession.getMetaData("assignmentId");
+      } else {
+        userSession.addMetaData("assignmentId", assignmentId);
+      }
+      
       apiManager.setAuthSubToken(authSubToken);
 
       VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);

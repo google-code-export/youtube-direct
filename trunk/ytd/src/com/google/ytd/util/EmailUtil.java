@@ -81,7 +81,6 @@ public class EmailUtil {
       }
       String[] addresses = addressCommaSeparated.split("\\s*,\\s*");
 
-
       MailService mailService = MailServiceFactory.getMailService();
       Message message = new Message();
 
@@ -96,7 +95,7 @@ public class EmailUtil {
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
     } catch (IllegalArgumentException e) {
-      log.log(Level.WARNING, "", e);
+      log.info(e.getMessage());
     }
   }
 
