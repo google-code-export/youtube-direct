@@ -3,6 +3,7 @@ package com.google.ytd.command;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
+import com.google.ytd.dao.AdminConfigDao;
 import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.PhotoSubmissionDao;
 import com.google.ytd.model.Assignment;
@@ -19,17 +20,19 @@ public class UpdatePhotoEntriesStatus extends Command {
   private AssignmentDao assignmentDao = null;
   private PicasaApiHelper picasaApi = null;
   private Util util = null;
+  private AdminConfigDao adminConfigDao = null;
   
   @Inject
   private EmailUtil emailUtil;
 
   @Inject
   public UpdatePhotoEntriesStatus(PhotoSubmissionDao submissionDao, Util util,
-      AssignmentDao assignmentDao, PicasaApiHelper picasaApi) {
+      AssignmentDao assignmentDao, PicasaApiHelper picasaApi, AdminConfigDao adminConfigDao) {
     this.photoSubmissionDao = submissionDao;
     this.util = util;
     this.assignmentDao = assignmentDao;
     this.picasaApi = picasaApi;
+    this.adminConfigDao = adminConfigDao;
   }
 
   @Override
@@ -55,11 +58,8 @@ public class UpdatePhotoEntriesStatus extends Command {
       Assignment assignment = assignmentDao.getAssignmentById(submission.getAssignmentId());
 
       if (entry.getBlobKey() != null || util.isNullOrEmpty(entry.getPicasaUrl())) {
-        throw new IllegalStateException(
-            String
-                .format(
-                    "Can't update the state of PhotoEntry id '%s' because it has not yet been moved from App Engine to Picasa.",
-                    entry.getId()));
+        throw new IllegalStateException(String.format("Can't update the state of PhotoEntry id '%s'"
+            + " because it has not yet been moved from App Engine to Picasa.", entry.getId()));
       }
 
       String newAlbumUrl;
@@ -89,7 +89,10 @@ public class UpdatePhotoEntriesStatus extends Command {
       
       photoSubmissionDao.save(entry);
       
-      emailUtil.sendUserModerationEmail(submission, entry, statusEnum);
+      if (adminConfigDao.getAdminConfig().isModerationEmail()
+          && !util.isNullOrEmpty(submission.getNotifyEmail())) {
+        emailUtil.sendUserModerationEmail(submission, entry, statusEnum);
+      }
     }
 
     return json;
