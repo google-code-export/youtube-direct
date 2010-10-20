@@ -26,17 +26,20 @@ public class NewMobileVideoSubmission extends Command {
   private UserAuthTokenDao userAuthTokenDao = null;
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao;
+  YouTubeApiHelper youTubeApiHelper;
+
   private Util util = null;
 
   @Inject
   public NewMobileVideoSubmission(Util util, VideoSubmissionDao submissionDao,
       AssignmentDao assignmentDao, UserAuthTokenDao userAuthTokenDao,
-      AdminConfigDao adminConfigDao) {
+      AdminConfigDao adminConfigDao, YouTubeApiHelper youTubeApiHelper) {
     this.util = util;
     this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;
     this.userAuthTokenDao = userAuthTokenDao;
     this.adminConfigDao = adminConfigDao;
+    this.youTubeApiHelper = youTubeApiHelper;
   }
 
   @Override
@@ -119,9 +122,6 @@ public class NewMobileVideoSubmission extends Command {
     // the mobile app sends user account email, e.g. joe.cool@gmail.com
     // we need the associated (lnked) YouTube account name in order to access the feeds later on
     String youTubeName;
-    AdminConfig admin = adminConfigDao.getAdminConfig();
-    String clientId = admin.getClientId();
-    YouTubeApiHelper youTubeApiHelper = new YouTubeApiHelper(clientId);
     youTubeApiHelper.setClientLoginToken(clientLoginToken);
     try {
       log.fine(String.format("Resolving email '%s' to YT user name", youTubeEmail));
