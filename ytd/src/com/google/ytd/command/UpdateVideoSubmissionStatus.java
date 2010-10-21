@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gdata.data.youtube.VideoEntry;
@@ -57,7 +58,7 @@ public class UpdateVideoSubmissionStatus extends Command {
   }
 
   @Override
-  public JSONObject execute() {
+  public JSONObject execute() throws JSONException {
     JSONObject json = new JSONObject();
     String id = getParam("id");
     String status = getParam("status");
@@ -65,6 +66,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     if (util.isNullOrEmpty(id)) {
       throw new IllegalArgumentException("Missing required param: id");
     }
+    
     if (util.isNullOrEmpty(status)) {
       throw new IllegalArgumentException("Missing required param: status");
     }
@@ -72,8 +74,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     VideoSubmission submission = submissionDao.getSubmissionById(id);
 
     if (submission == null) {
-      throw new IllegalArgumentException(
-          "The input video id cannot be located.");
+      throw new IllegalArgumentException("The input video id cannot be located.");
     }
 
     ModerationStatus newStatus = ModerationStatus.valueOf(status.toUpperCase());
@@ -85,39 +86,42 @@ public class UpdateVideoSubmissionStatus extends Command {
       // Set the YouTubeApiHelper with the admin auth token
       String token = adminConfigDao.getAdminConfig().getYouTubeAuthSubToken();
       if (util.isNullOrEmpty(token)) {
-        throw new IllegalStateException(
-            "No AuthSub token found in admin config.");
+        throw new IllegalStateException("No AuthSub token found in admin config.");
       } else {
         adminYouTubeApi.setAuthSubToken(token);
       }
 
+      boolean success = false;
       switch (newStatus) {
-      case APPROVED:
-        submission.setStatus(ModerationStatus.APPROVED);
-        onApproved(submission);
-        break;
-      case REJECTED:
-        submission.setStatus(ModerationStatus.REJECTED);
-        onRejected(submission);
-        break;
-      case SPAM:
-        submission.setStatus(ModerationStatus.SPAM);
-        onRejected(submission);
-        break;
-      case UNREVIEWED:
-        submission.setStatus(ModerationStatus.UNREVIEWED);
-        onRejected(submission);
-        break;
+        case APPROVED:
+          submission.setStatus(ModerationStatus.APPROVED);
+          success = onApproved(submission);
+          break;
+        case REJECTED:
+          submission.setStatus(ModerationStatus.REJECTED);
+          success = onRejected(submission);
+          break;
+        case SPAM:
+          submission.setStatus(ModerationStatus.SPAM);
+          success = onRejected(submission);
+          break;
+        case UNREVIEWED:
+          submission.setStatus(ModerationStatus.UNREVIEWED);
+          success = onRejected(submission);
+          break;
       }
       submission.setUpdated(new Date());
       submissionDao.save(submission);
+      
+      json.put("success", success);
     }
-
+    
     return json;
   }
 
-  private void onRejected(VideoSubmission submission) {
+  private boolean onRejected(VideoSubmission submission) {
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+    boolean success = false;
 
     // Set the YouTubeApiHelper with the admin auth token
     String token = adminConfig.getYouTubeAuthSubToken();
@@ -133,6 +137,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // Remove video to YouTube playlist if it is in one.
     if (submission.isInPlaylist()) {
       if (removeFromPlaylist(submission)) {
+        success = true;
         submission.setIsInPlaylist(false);
         submission = submissionDao.save(submission);
       }
@@ -143,10 +148,13 @@ public class UpdateVideoSubmissionStatus extends Command {
         && !util.isNullOrEmpty(submission.getNotifyEmail())) {
       emailUtil.sendUserModerationEmail(submission, ModerationStatus.REJECTED);
     }
+    
+    return success;
   }
 
-  private void onApproved(VideoSubmission submission) {
+  private boolean onApproved(VideoSubmission submission) {
     AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+    boolean success = false;
 
     // Turn branding on if applicable
     if (adminConfig.getBrandingMode() == BrandingModeType.ON.ordinal()) {
@@ -171,6 +179,7 @@ public class UpdateVideoSubmissionStatus extends Command {
     // Add video to YouTube playlist if it isn't in it already.
     if (!submission.isInPlaylist()) {
       if (addToPlaylist(submission)) {
+        success = true;
         submission.setIsInPlaylist(true);
         submission = submissionDao.save(submission);
       }
@@ -181,6 +190,8 @@ public class UpdateVideoSubmissionStatus extends Command {
         && (submission.getNotifyEmail() != null)) {
       emailUtil.sendUserModerationEmail(submission, ModerationStatus.APPROVED);
     }
+    
+    return success;
   }
 
   /**

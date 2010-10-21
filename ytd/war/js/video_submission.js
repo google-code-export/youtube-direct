@@ -1065,7 +1065,12 @@ admin.sub.updateSubmissionStatus = function(entry) {
     try {
       var json = JSON.parse(jsonStr);
       if (!json.error) {
-        admin.showMessage("Video submission status updated.", messageElement);
+        if (json.success) {
+          admin.showMessage("Video submission status updated.", messageElement);
+        } else {
+          admin.showError("Unable to modify YouTube playlist. Please ensure that your YouTube " +
+          		"API settings are valid in the Configuration tab.", messageElement);
+        }
         admin.sub.refreshGrid();
       } else {         
         admin.showError(json.error, messageElement);      
