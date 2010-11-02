@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +45,7 @@ import com.google.gdata.data.youtube.VideoFeed;
 import com.google.gdata.util.ContentType;
 import com.google.gdata.util.InvalidEntryException;
 import com.google.gdata.util.ServiceException;
+import com.google.gdata.util.ServiceForbiddenException;
 import com.google.gdata.util.XmlBlob;
 import com.google.inject.Inject;
 import com.google.ytd.dao.AdminConfigDao;
@@ -63,7 +65,7 @@ public class YouTubeApiHelper {
   private static final String PLAYLIST_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/api/"
       + "playlists/%s";
   private static final String PLAYLIST_FEED_URL = "http://gdata.youtube.com/feeds/api/users/"
-      + "default/playlists";
+      + "default/playlists?max-results=50";
   private static final String USER_ENTRY_URL = "http://gdata.youtube.com/feeds/api/users/default";
   private static final String UPLOAD_TOKEN_URL = "http://gdata.youtube.com/action/GetUploadToken";
   private static final String MODERATION_FEED_ENTRY_URL_FORMAT = "http://gdata.youtube.com/feeds/"
@@ -405,12 +407,20 @@ public class YouTubeApiHelper {
     String playlistUrl = getPlaylistFeedUrl(playlistId);
 
     try {
-      PlaylistFeed playlistFeed = service.getFeed(new URL(playlistUrl), PlaylistFeed.class);
-
-      // TODO: Is there a better way to find the video in the playlist than O(n) looping?
-      for (PlaylistEntry playlistEntry : playlistFeed.getEntries()) {
-        if (playlistEntry.getMediaGroup().getVideoId().equals(videoId)) {
-          return playlistEntry;
+      while (playlistUrl != null) {
+        PlaylistFeed playlistFeed = service.getFeed(new URL(playlistUrl), PlaylistFeed.class);
+        
+        Link nextLink = playlistFeed.getNextLink();
+        if (nextLink == null) {
+          playlistUrl = null;
+        } else {
+          playlistUrl = nextLink.getHref();
+        }
+        
+        for (PlaylistEntry playlistEntry : playlistFeed.getEntries()) {
+          if (playlistEntry.getMediaGroup().getVideoId().equals(videoId)) {
+            return playlistEntry;
+          }
         }
       }
     } catch (MalformedURLException e) {
@@ -425,8 +435,14 @@ public class YouTubeApiHelper {
 
     return null;
   }
-
+  
   public boolean insertVideoIntoPlaylist(String playlistId, String videoId) {
+    return insertVideoIntoPlaylist(playlistId, videoId, true);
+  }
+
+  public boolean insertVideoIntoPlaylist(String playlistId, String videoId, boolean retry) {
+    log.info(String.format("Attempting to insert video id '%s' into playlist id '%s'...",
+        playlistId, videoId));
     PlaylistEntry playlistEntry = new PlaylistEntry();
     playlistEntry.setId(videoId);
 
@@ -450,14 +466,63 @@ public class YouTubeApiHelper {
       log.log(Level.WARNING, "", e);
     } catch (IOException e) {
       log.log(Level.WARNING, "", e);
+    } catch (ServiceForbiddenException e) {
+      log.log(Level.INFO, "Maximum size of playlist reached.", e);
+
+      if (retry) {
+        log.info("Removing oldest entry from playlist and retrying...");
+
+        PlaylistEntry lastVideo = getLastVideoInPlaylist(playlistId);
+        if (lastVideo != null) {
+          try {
+            lastVideo.delete();
+            log.info("Last entry removed.");
+
+            return insertVideoIntoPlaylist(playlistId, videoId, false);
+          } catch (IOException innerEx) {
+            log.log(Level.WARNING, "", innerEx);
+          } catch (ServiceException innerEx) {
+            log.log(Level.WARNING, "", innerEx);
+          }
+        }
+      }
     } catch (ServiceException e) {
-      // This may be thrown if the video is not found, i.e. because it is not done processing.
-      // We don't need to log it at WARNING level.
-      // TODO: Propogate AuthenticationExceptions so the calling code can invalidate the token.
       log.log(Level.WARNING, "", e);
     }
 
     return false;
+  }
+  
+  public PlaylistEntry getLastVideoInPlaylist(String playlistId) {
+    String playlistUrl = getPlaylistFeedUrl(playlistId);
+
+    try {
+      PlaylistFeed playlistFeed = null;
+      
+      while (playlistUrl != null) {
+        playlistFeed = service.getFeed(new URL(playlistUrl), PlaylistFeed.class);
+        Link nextLink = playlistFeed.getNextLink();
+        
+        if (nextLink == null) {
+          playlistUrl = null;
+        } else {
+          playlistUrl = nextLink.getHref();
+        }
+      }
+      
+      if (playlistFeed != null) {
+        List<PlaylistEntry> entries = playlistFeed.getEntries();
+        return entries.get(entries.size() - 1);
+      }
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+
+    return null;
   }
 
   public boolean removeVideoFromPlaylist(String playlistId, String videoId) {
