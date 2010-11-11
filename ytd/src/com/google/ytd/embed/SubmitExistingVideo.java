@@ -32,8 +32,10 @@ import com.google.gdata.data.youtube.YtStatistics;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
+import com.google.ytd.dao.AssignmentDao;
 import com.google.ytd.dao.UserAuthTokenDao;
 import com.google.ytd.model.AdminConfig;
+import com.google.ytd.model.Assignment;
 import com.google.ytd.model.UserSession;
 import com.google.ytd.model.VideoSubmission;
 import com.google.ytd.util.EmailUtil;
@@ -64,6 +66,9 @@ public class SubmitExistingVideo extends HttpServlet {
   private UserAuthTokenDao userAuthTokenDao;
   @Inject
   private AdminConfigDao adminConfigDao;
+  @Inject
+  private AssignmentDao assignmentDao;
+
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -151,6 +156,30 @@ public class SubmitExistingVideo extends HttpServlet {
           // branding, tags, emails,
           // etc.) isn't taking place.
           submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
+          
+          apiManager.updateModeration(videoId, true);
+          
+          // Add video to YouTube playlist if it isn't in it already.
+          // This code is kind of ugly and is mostly copy/pasted from UpdateVideoSubmissionStatus
+          // TODO: It should be refactored into a common helper method somewhere...
+          if (!submission.isInPlaylist()) {
+            Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
+
+            if (assignment == null) {
+              log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.",
+                  assignmentId, videoId));
+            } else {
+              String playlistId = assignment.getPlaylistId();
+              if (util.isNullOrEmpty(playlistId)) {
+                log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+                    assignmentId));
+              } else {
+                if (apiManager.insertVideoIntoPlaylist(playlistId, videoId)) {
+                  submission.setIsInPlaylist(true);
+                }
+              }
+            }
+          }
         }
 
         pmfUtil.persistJdo(submission);
