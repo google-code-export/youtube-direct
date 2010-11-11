@@ -442,7 +442,7 @@ public class YouTubeApiHelper {
 
   public boolean insertVideoIntoPlaylist(String playlistId, String videoId, boolean retry) {
     log.info(String.format("Attempting to insert video id '%s' into playlist id '%s'...",
-        playlistId, videoId));
+        videoId, playlistId));
     PlaylistEntry playlistEntry = new PlaylistEntry();
     playlistEntry.setId(videoId);
 

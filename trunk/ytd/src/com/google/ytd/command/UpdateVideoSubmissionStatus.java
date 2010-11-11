@@ -220,13 +220,7 @@ public class UpdateVideoSubmissionStatus extends Command {
       return false;
     }
 
-    // TODO: A playlist can have at most 200 videos. There needs to be a way to
-    // check for failures
-    // due to too many videos, and prevent continuously trying to add the same
-    // video to the same
-    // full playlist.
-    return adminYouTubeApi.insertVideoIntoPlaylist(playlistId, videoSubmission
-        .getVideoId());
+    return adminYouTubeApi.insertVideoIntoPlaylist(playlistId, videoSubmission.getVideoId());
   }
 
   /**
