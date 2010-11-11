@@ -8,6 +8,8 @@ Please make sure, especially if you are on Windows, that you have a JDK installe
 
 You can install the Google Plugin for Eclipse using the Software Update feature of Eclipse.
 
+*Note:* We haven't yet tested things with *Eclipse 3.6 (Helios)*. It's likely that different plugin versions will be needed if you're using that release.
+
 To install the plugin, using *Eclipse 3.5 (Galileo)*:
 
   # Select the *Help* menu > *Install New Software...*.
