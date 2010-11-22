@@ -149,10 +149,19 @@ public class PicasaApiHelper {
   public String moveToNewAlbum(String photoUrl, String newAlbumUrl) {
     LOG.info(String.format("Preparing to move '%s' to album '%s'...", photoUrl, newAlbumUrl));
 
-    AlbumFeed albumFeed = getAlbumFeedFromUrl(newAlbumUrl);
+    // We only need to get the feed's id from the feed metadata here, so there's no need to
+    // retrieve more than one entry.
+    String urlWithParam;
+    if (newAlbumUrl.indexOf("?") != -1) {
+      urlWithParam = newAlbumUrl + "&max-results=1";
+    } else {
+      urlWithParam = newAlbumUrl + "?max-results=1";
+    }
+    
+    AlbumFeed albumFeed = getAlbumFeedFromUrl(urlWithParam);
     if (albumFeed == null) {
       throw new IllegalArgumentException(String.format("Could not retrieve album from URL '%s'.",
-          newAlbumUrl));
+          urlWithParam));
     }
     String newAlbumId = albumFeed.getGphotoId();
 
