@@ -483,6 +483,8 @@ public class YouTubeApiHelper {
             log.log(Level.WARNING, "", innerEx);
           } catch (ServiceException innerEx) {
             log.log(Level.WARNING, "", innerEx);
+          } catch (UnsupportedOperationException innerEx) {
+            log.log(Level.WARNING, "", innerEx);
           }
         }
       }
