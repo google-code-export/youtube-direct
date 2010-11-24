@@ -157,8 +157,6 @@ public class SubmitExistingVideo extends HttpServlet {
           // etc.) isn't taking place.
           submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
           
-          apiManager.updateModeration(videoId, true);
-          
           // Add video to YouTube playlist if it isn't in it already.
           // This code is kind of ugly and is mostly copy/pasted from UpdateVideoSubmissionStatus
           // TODO: It should be refactored into a common helper method somewhere...
@@ -171,9 +169,10 @@ public class SubmitExistingVideo extends HttpServlet {
             } else {
               String playlistId = assignment.getPlaylistId();
               if (util.isNullOrEmpty(playlistId)) {
-                log.warning(String.format("Assignment id '%d' does not have an associated playlist.",
+                log.warning(String.format("Assignment id '%d' doesn't have an associated playlist.",
                     assignmentId));
               } else {
+                apiManager.setAuthSubToken(adminConfig.getYouTubeAuthSubToken());
                 if (apiManager.insertVideoIntoPlaylist(playlistId, videoId)) {
                   submission.setIsInPlaylist(true);
                 }
