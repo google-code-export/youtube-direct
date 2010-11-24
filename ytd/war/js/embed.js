@@ -272,7 +272,11 @@ function existingVideoMainInit() {
       
       var errorText;
       if (xhr.responseText) {
-      	errorText = JSON.parse(xhr.responseText).error;
+        try {
+          errorText = JSON.parse(xhr.responseText).error;
+        } catch (exception) {
+          errorText = xhr.responseText;
+        }
       } else {
       	errorText = xhr.statusText;
       }
@@ -451,7 +455,11 @@ function getUploadToken() {
     
     var errorText;
     if (xhr.responseText) {
-    	errorText = JSON.parse(xhr.responseText).error;
+      try {
+        errorText = JSON.parse(xhr.responseText).error;
+      } catch (exception) {
+        errorText = xhr.responseText;
+      }
     } else {
     	errorText = xhr.statusText;
     }
