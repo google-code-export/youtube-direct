@@ -106,6 +106,9 @@ public class SubmitPhoto extends HttpServlet {
       String phoneNumber = req.getParameter("phoneNumber");
 
       String location = req.getParameter("location");
+      
+      String latitude = req.getParameter("latitude");
+      String longitude = req.getParameter("longitude");
 
       String date = req.getParameter("date");
 
@@ -144,6 +147,16 @@ public class SubmitPhoto extends HttpServlet {
         PhotoSubmission photoSubmission =
             new PhotoSubmission(Long.parseLong(assignmentId), articleUrl, author, email,
                 phoneNumber, title, description, location, date, validSubmissionKeys.size());
+        
+        if (!util.isNullOrEmpty(latitude) && !util.isNullOrEmpty(longitude)) {
+          try {
+            photoSubmission.setLatitude(Double.parseDouble(latitude));
+            photoSubmission.setLongitude(Double.parseDouble(longitude));
+          } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Couldn't parse lat/long.", e);
+          }
+        }
+        
         pmfUtil.persistJdo(photoSubmission);
         String submissionId = photoSubmission.getId();
 

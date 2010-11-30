@@ -60,12 +60,15 @@ public class PicasaApiHelper {
     "http://picasaweb.google.com/data/upload/resumable/photos/create-session/feed/api/user/default/albumid/%s";
   private static final String UPLOAD_ENTRY_XML_FORMAT = 
     "<?xml version='1.0' encoding='UTF-8'?>\n"
-    + "<entry xmlns='http://www.w3.org/2005/Atom'>"
+    + "<entry xmlns='http://www.w3.org/2005/Atom' "
+    + "xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml'>"
     + "\n  <title>%s</title>"
     + "\n  <summary>%s</summary>"
     + "\n  <category scheme='http://schemas.google.com/g/2005#kind' "
     + "term='http://schemas.google.com/photos/2007#photo'/>"
-    + "\n</entry>";
+    + "\n%s</entry>";
+  private static final String GEO_RSS_XML_FORMAT = "<georss:where><gml:Point><gml:pos>%f %f"
+      + "</gml:pos></gml:Point></georss:where>";
   // The connect + read timeout needs to be <= 10 seconds, due to App Engine limitations.
   private static final int CONNECT_TIMEOUT = 1000 * 2; // In milliseconds
   private static final int READ_TIMEOUT = 1000 * 8; // In milliseconds
@@ -215,7 +218,7 @@ public class PicasaApiHelper {
   }
 
   public String getResumableUploadUrl(com.google.ytd.model.PhotoEntry photoEntry, String title,
-      String description, String albumId) throws IllegalArgumentException {
+      String description, String albumId, Double latitude, Double longitude) throws IllegalArgumentException {
     LOG.info(String.format("Resumable upload request.\nTitle: %s\nDescription: %s\nAlbum: %s",
         title, description, albumId));
     
@@ -241,8 +244,16 @@ public class PicasaApiHelper {
       connection.setRequestProperty("X-Upload-Content-Length",
           String.valueOf(photoEntry.getOriginalFileSize()));
       
+      // If we're given lat/long then create the element to geotag the picture; otherwise, pass in
+      // and empty string for no geotag.
+      String geoRss = "";
+      if (latitude != null && longitude != null) {
+        geoRss = String.format(GEO_RSS_XML_FORMAT, latitude, longitude);
+        LOG.info("Geo RSS XML: " + geoRss);
+      }
+      
       String atomXml = String.format(UPLOAD_ENTRY_XML_FORMAT, StringEscapeUtils.escapeXml(title),
-          StringEscapeUtils.escapeXml(description));
+          StringEscapeUtils.escapeXml(description), geoRss);
 
       OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
       writer.write(atomXml);

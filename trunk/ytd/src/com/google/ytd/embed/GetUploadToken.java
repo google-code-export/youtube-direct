@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.gdata.data.geo.impl.GeoRssWhere;
 import com.google.gdata.data.media.mediarss.MediaCategory;
 import com.google.gdata.data.media.mediarss.MediaDescription;
 import com.google.gdata.data.media.mediarss.MediaKeywords;
@@ -170,6 +171,13 @@ public class GetUploadToken extends HttpServlet {
       } else {
         log.warning(String.format("Assignment id '%s' is longer than 25 characters, and can't be "
             + "used as a developer tag.", assignmentId));
+      }
+      
+      if (jsonObj.has("latitude") && jsonObj.has("longitude")) {
+        newEntry.setGeoCoordinates(new GeoRssWhere(jsonObj.getDouble("latitude"),
+            jsonObj.getDouble("longitude")));
+      } else if (!util.isNullOrEmpty(location)) {
+        newEntry.setLocation(location);
       }
 
       userSession.addMetaData("videoTitle", title);
