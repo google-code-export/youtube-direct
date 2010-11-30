@@ -74,6 +74,14 @@ public class PhotoSubmission {
   @Persistent
   @Expose
   private String date = null;
+  
+  @Persistent
+  @Expose
+  private Double latitude = null;
+  
+  @Persistent
+  @Expose
+  private Double longitude = null;
 
   public PhotoSubmission(Long assignmentId, String articleUrl, String author, String email,
           String phoneNumber, String title, String description, String location, String date,
@@ -170,5 +178,33 @@ public class PhotoSubmission {
 
   public void setDate(String date) {
     this.date = date;
+  }
+
+  /**
+   * @return the latitude
+   */
+  public Double getLatitude() {
+    return latitude;
+  }
+
+  /**
+   * @param latitude the latitude to set
+   */
+  public void setLatitude(Double latitude) {
+    this.latitude = latitude;
+  }
+
+  /**
+   * @return the longitude
+   */
+  public Double getLongitude() {
+    return longitude;
+  }
+
+  /**
+   * @param longitude the longitude to set
+   */
+  public void setLongitude(Double longitude) {
+    this.longitude = longitude;
   }
 }

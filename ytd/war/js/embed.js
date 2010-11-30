@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-jQuery(document).ready( function() {
+jQuery(document).ready(function() {
   init();
 });
 
@@ -36,6 +36,29 @@ function init() {
 		jQuery('#loginInstruction').css('display', 'none');
 		photoMainInit();
 	});
+	
+	if (navigator.geolocation) {
+	  jQuery.each(jQuery('input[name="location"]'), function(index, locationField) {
+	    locationField.style.width = "90%";
+	    jQuery('<img src="/geolocation_icon.jpg" style="margin-left: 5px; cursor: pointer;">').insertAfter(locationField).click(function(event) {
+	      navigator.geolocation.getCurrentPosition(function(position) {
+	        jQuery('#latitude').val(position.coords.latitude);
+	        jQuery('#longitude').val(position.coords.longitude);
+	        
+	        var geocoder = new google.maps.Geocoder();
+	        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	        
+	        geocoder.geocode({'latLng': latlng}, function(results, status) {
+	          if (status == google.maps.GeocoderStatus.OK && results[1]) {
+	            locationField.value = results[1].formatted_address;
+	          } else {
+	            locationField.value = position.coords.latitude + ', ' + position.coords.longitude;
+	          }
+	        });
+	      });  
+	    });
+	  });
+	}
 
 	addFileElement();
 }
@@ -437,6 +460,13 @@ function getUploadToken() {
   jsonObj.date = date;
   jsonObj.email = email;
   jsonObj.tags = tags;
+  
+  if (jQuery('#latitude').val()) {
+    jsonObj.latitude = jQuery('#latitude').val();
+  }
+  if (jQuery('#longitude').val()) {
+    jsonObj.longitude = jQuery('#longitude').val();
+  }
   
   if (assignmentIdField != null) {
     jsonObj.assignmentId = assignmentIdField.val();

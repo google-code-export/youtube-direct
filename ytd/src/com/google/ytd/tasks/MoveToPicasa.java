@@ -98,9 +98,13 @@ public class MoveToPicasa extends HttpServlet {
       String albumId = albumUrl.substring(albumUrl.lastIndexOf("/") + 1);
 
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      
+      Double latitude = photoSubmission.getLatitude();
+      Double longitude = photoSubmission.getLongitude();
 
       for (PhotoEntry photoEntry : photoSubmissionDao.getAllPhotos(photoSubmissionId)) {
-        String uploadUrl = picasaApi.getResumableUploadUrl(photoEntry, title, description, albumId);
+        String uploadUrl = picasaApi.getResumableUploadUrl(photoEntry, title, description, albumId,
+            latitude, longitude);
 
         // TODO: Think about the cases that might lead to a null URL, and whether any of them
         // would necessitate a retry here. Right now we won't retry if we get null back.

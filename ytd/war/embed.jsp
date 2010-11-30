@@ -84,6 +84,8 @@
 <script type="text/javascript" src="/js/jsonrpc.js"></script>
 <script type="text/javascript" src="/js/embed.js"></script>
 
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
 </head>
 
 <body>
@@ -302,6 +304,9 @@
     <div>
       <input class="inputBox" type="text" name="phoneNumber" id="phoneNumber" />
     </div>
+    
+    <input id="latitude" name="latitude" type="hidden" value=""/>
+    <input id="longitude" name="longitude" type="hidden" value=""/>
 
     <%
       if (!assignmentId.equals("undefined")) {
