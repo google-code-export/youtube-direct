@@ -90,7 +90,7 @@
 
 <body>
 
-<span id="youTubeLogo"><img src="icon.png"/></span>
+<span id="youTubeLogo"><img src="/images/icon.png"/></span>
 
 <div align="center">
 <div id="main">
@@ -160,7 +160,7 @@
 			<select id="videosSelect"><option value="dummy">Select a Video...</option></select>
 		</div>
 		<div style="margin-top: 10px;">
-			<img id="thumbnail" src="/questionmark.png" style="display: none;">
+			<img id="thumbnail" src="/images/questionmark.png" style="display: none;">
 			<span id="existingVideoDescription"></span>
 		</div>
 	</div>

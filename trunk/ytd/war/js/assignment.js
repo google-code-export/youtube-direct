@@ -336,7 +336,7 @@ admin.assign.showEmbedCode = function(id) {
   code.push('  window.attachEvent("onload", ytdInitFunction);\n');
   code.push('}\n');
   code.push('</script>\n');
-  code.push(jQuery.sprintf('<a id="callToActionId-%s" href="javascript:void(0);"><img src="%s/calltoaction.png"></a>\n', entry.id, admin.assign.getSelfUrl()));
+  code.push(jQuery.sprintf('<a id="callToActionId-%s" href="javascript:void(0);"><img src="%s/images/calltoaction.png"></a>\n', entry.id, admin.assign.getSelfUrl()));
   code.push(jQuery.sprintf('<div id="ytdContainer-%s"></div>', entry.id));  
   
   code = code.join('');

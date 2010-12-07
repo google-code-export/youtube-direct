@@ -24,12 +24,12 @@ limitations under the License.
     <div class="clear">
       <label for="developerKey" class="configureLabel">YouTube Developer Key:</label>
       <input class="configureInput" id="developerKey" type="text"/>
-      <img class="tip" src="/questionmark.png" title="Register at http://code.google.com/apis/youtube/dashboard/gwt"></img>
+      <img class="tip" src="/images/questionmark.png" title="Register at http://code.google.com/apis/youtube/dashboard/gwt"></img>
     </div>
     <div class="clear">
       <label for="privateKeyBytes" class="configureLabel">Private Key Certificate: </label>
       <textarea cols="50" rows="10" id="privateKeyBytes"></textarea>
-      <img class="tip" src="/questionmark.png" title="Optional private key certificate data. Unless you're using secure AuthSub and have uploaded a security certificate to https://www.google.com/accounts/ManageDomains, leave blank."></img>
+      <img class="tip" src="/images/questionmark.png" title="Optional private key certificate data. Unless you're using secure AuthSub and have uploaded a security certificate to https://www.google.com/accounts/ManageDomains, leave blank."></img>
     </div>
   </fieldset>
   <fieldset>
@@ -40,7 +40,7 @@ limitations under the License.
     <div class="clear">
       <label for="photoSubmissionEnabled" class="configureLabel">Photo Submissions:</label>
       <input type="checkbox" id="photoSubmissionEnabled">Enabled</input>
-      <img class="tip" src="/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
+      <img class="tip" src="/images/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
     </div>
     <div id="photoSubmissionConfigDiv">
       <div class="clear">
@@ -57,17 +57,17 @@ limitations under the License.
           <option value="10">10</option>
           <option value="20">20</option>
         </select>
-        <img class="tip" src="/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
+        <img class="tip" src="/images/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
       </div>
       <div class="clear">
         <label for="recaptchaPrivateKey" class="configureLabel">ReCaptcha Private Key: </label>
         <input class="configureInput" id="recaptchaPrivateKey" type="text"/>
-        <img class="tip" src="/questionmark.png" title="Private key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+        <img class="tip" src="/images/questionmark.png" title="Private key registered for an *.appspot.com domain at http://recaptcha.net"></img>
       </div>
       <div class="clear">
         <label for="recaptchaPublicKey" class="configureLabel">ReCaptcha Public Key: </label>
         <input class="configureInput" id="recaptchaPublicKey" type="text"/>
-        <img class="tip" src="/questionmark.png" title="Public key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+        <img class="tip" src="/images/questionmark.png" title="Public key registered for an *.appspot.com domain at http://recaptcha.net"></img>
       </div>
     </div>
   </fieldset>
@@ -79,17 +79,17 @@ limitations under the License.
         <option value="0" selected="selected">ON</option>
         <option value="1">OFF</option>
       </select>
-      <img class="tip" src="/questionmark.png" title="ON: Add branding to approved submissions. OFF: No branding."></img>
+      <img class="tip" src="/images/questionmark.png" title="ON: Add branding to approved submissions. OFF: No branding."></img>
     </div>
     <div class="clear">
       <label for="defaultTag" class="configureLabel">Default YouTube Tag:</label>
       <input class="configureInput" id="defaultTag" type="text"/>
-      <img class="tip" src="/questionmark.png" title="User-visible YouTube tag added to all approved submissions, e.g. 'yourcompany'"></img>
+      <img class="tip" src="/images/questionmark.png" title="User-visible YouTube tag added to all approved submissions, e.g. 'yourcompany'"></img>
     </div>
     <div class="clear">
       <label for="linkBackText" class="configureLabel">Link Back Text:</label>
       <input class="configureInput" id="linkBackText" type="text"/>
-      <img class="tip" src="/questionmark.png" title="e.g. 'Submitted in response to article ARTICLE_URL.' If branding is on, automatically added to approved videos' YouTube descriptions. ARTICLE_URL = url of page hosting submission."></img>
+      <img class="tip" src="/images/questionmark.png" title="e.g. 'Submitted in response to article ARTICLE_URL.' If branding is on, automatically added to approved videos' YouTube descriptions. ARTICLE_URL = url of page hosting submission."></img>
     </div>
   </fieldset>
   <fieldset>
@@ -100,7 +100,7 @@ limitations under the License.
         <option value="0" selected="selected">ON</option>
         <option value="1">OFF</option>
       </select>
-      <img class="tip" src="/questionmark.png" title="ON: Submissions need to be moderated. OFF: All submissions are auto-approved."></img>
+      <img class="tip" src="/images/questionmark.png" title="ON: Submissions need to be moderated. OFF: All submissions are auto-approved."></img>
     </div>
     <div class="clear">
       <label for="submissionMode" class="configureLabel">Submission Mode:</label>
@@ -108,33 +108,33 @@ limitations under the License.
         <option value="0" selected="selected">NEW OR EXISTING</option>
         <option value="1">NEW ONLY</option>
       </select>
-      <img class="tip" src="/questionmark.png" title="NEW OR EXISTING: Accept new and existing videos. NEW ONLY: Only accept new uploads."></img>
+      <img class="tip" src="/images/questionmark.png" title="NEW OR EXISTING: Accept new and existing videos. NEW ONLY: Only accept new uploads."></img>
     </div>
     <div class="clear">
       <label for="newSubmissionAddress" class="configureLabel">Notification Address:</label>
       <input class="configureInput" id="newSubmissionAddress" type="text"/>
-      <img class="tip" src="/questionmark.png" title="Comma-separated list of one or more addresses that will receive email whenever a video is submitted. Addresses must correspond to App Engine admins."></img>
+      <img class="tip" src="/images/questionmark.png" title="Comma-separated list of one or more addresses that will receive email whenever a video is submitted. Addresses must correspond to App Engine admins."></img>
     </div>
     <div class="clear">
       <label for="moderationEmail" class="configureLabel">Moderation Email:</label>
       <input type="checkbox" id="moderationEmail">Email User Upon Moderation</input>
-      <img class="tip" src="/questionmark.png" title="If checked, user who submitted video will receive mail when their video is approved/rejected."></img>
+      <img class="tip" src="/images/questionmark.png" title="If checked, user who submitted video will receive mail when their video is approved/rejected."></img>
     </div>
     <div id="moderationEmailTextDiv">
       <div class="clear">
         <label for="fromAddress" class="configureLabel">Sender Email Address: </label>
         <input class="configureInput" id="fromAddress" type="text"/>
-        <img class="tip" src="/questionmark.png" title="Address to use as sender of moderation emails. Address must be an AppEngine admin."></img>
+        <img class="tip" src="/images/questionmark.png" title="Address to use as sender of moderation emails. Address must be an AppEngine admin."></img>
       </div>
       <div class="clear">
         <label for="approvalEmailText" class="configureLabel">Approval Email Text: </label>
         <textarea cols="50" rows="10" id="approvalEmailText"></textarea>
-        <img class="tip" src="/questionmark.png" title="Body of approval emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
+        <img class="tip" src="/images/questionmark.png" title="Body of approval emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
       </div>
       <div class="clear">
         <label for="rejectionEmailText" class="configureLabel">Rejection Email Text: </label>
         <textarea cols="50" rows="10" id="rejectionEmailText"></textarea>
-        <img class="tip" src="/questionmark.png" title="Body of rejection emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
+        <img class="tip" src="/images/questionmark.png" title="Body of rejection emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
       </div>
     </div>
   </fieldset>
@@ -143,12 +143,12 @@ limitations under the License.
     <div class="clear">
       <label for="loginInstruction" class="configureLabel">Initial Message:</label>
       <textarea cols="50" rows="10" id="loginInstruction"></textarea>
-      <img class="tip" src="/questionmark.png" title="Presented to user on the initial submission screen. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
+      <img class="tip" src="/images/questionmark.png" title="Presented to user on the initial submission screen. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
     </div>
     <div class="clear">
       <label for="postSubmitMessage" class="configureLabel">Post-Submit Message:</label>
       <textarea cols="50" rows="10" id="postSubmitMessage"></textarea>
-      <img class="tip" src="/questionmark.png" title="Presented to user after submitting a video. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
+      <img class="tip" src="/images/questionmark.png" title="Presented to user after submitting a video. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
     </div>
   </fieldset>
   <div class="clear">

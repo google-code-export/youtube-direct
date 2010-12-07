@@ -40,7 +40,7 @@ function init() {
 	if (navigator.geolocation) {
 	  jQuery.each(jQuery('input[name="location"]'), function(index, locationField) {
 	    locationField.style.width = "90%";
-	    jQuery('<img src="/geolocation_icon.jpg" title="Auto-detect your current location." style="margin-left: 5px; cursor: pointer;">').insertAfter(locationField).click(function(event) {
+	    jQuery('<img src="/images/geolocation_icon.jpg" title="Auto-detect your current location." style="margin-left: 5px; cursor: pointer;">').insertAfter(locationField).click(function(event) {
 	      navigator.geolocation.getCurrentPosition(function(position) {
 	        jQuery('#latitude').val(position.coords.latitude);
 	        jQuery('#longitude').val(position.coords.longitude);
