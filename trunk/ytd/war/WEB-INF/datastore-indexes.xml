@@ -148,5 +148,11 @@
         <property name="status" direction="asc"/>
         <property name="videoSource" direction="desc"/>
     </datastore-index>
+    
+    <datastore-index kind="Assignment" ancestor="false" source="manual">
+      <property name="status" direction="asc"/>
+      <property name="playlistId" direction="asc"/>
+      <property name="description" direction="asc"/>
+    </datastore-index>
 
 </datastore-indexes>
