@@ -314,7 +314,7 @@ admin.assign.getSelfUrl = function() {
 
 admin.assign.showEmbedCode = function(id) {  
   var entry = admin.assign.getAssignment(id);   
-  jQuery.ui.dialog.defaults.bgiframe = true;
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
 
   var code = [];
   code.push('<script type="text/javascript" src="' + admin.assign.getSelfUrl() 
@@ -360,7 +360,7 @@ admin.assign.showPlaylistCode = function(id) {
   var entry = admin.assign.getAssignment(id); 
   var playlistId = entry.playlistId;
   
-  jQuery.ui.dialog.defaults.bgiframe = true;
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
 
   var width = 480;
   var height = 385;
@@ -516,7 +516,7 @@ admin.assign.showAssignmentCreate = function(categories) {
   dialogOptions.width = 400;
   dialogOptions.height = 550;
   
-  jQuery.ui.dialog.defaults.bgiframe = true; 
+  jQuery.ui.dialog.prototype.options.bgiframe = true; 
   
   var div = jQuery('#assignmentCreateTemplate').clone();  
   

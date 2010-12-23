@@ -27,15 +27,13 @@ limitations under the License.
 <head>
 <title>Admin</title>
 
-<link type="text/css"
-	href="/css/ext/themes/redmond/jquery-ui-1.7.2.custom.css"
-	rel="stylesheet" />
+<link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.8.7.custom.css" rel="stylesheet" />
 <link type="text/css" href="/css/ext/ui.jqgrid.css" rel="stylesheet" />
 <link type="text/css" href="/css/admin.css" rel="stylesheet" />
 
 <script type="text/javascript" src="/js/ext/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
-<script type="text/javascript" src="/js/ext/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="/js/ext/jquery-ui-1.8.7.custom.min.js"></script>
 <script type="text/javascript" src="/js/ext/i18n/grid.locale-en.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.jqGrid.min.js"></script>
 <script type="text/javascript" src="/js/ext/jquery.sprintf.js"></script>

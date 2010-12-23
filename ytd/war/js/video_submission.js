@@ -829,7 +829,7 @@ admin.sub.showDetails = function(submission) {
     div.append(mainDiv);
   };
   
-  jQuery.ui.dialog.defaults.bgiframe = true;
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
   div.dialog(dialogOptions);
 };
 
@@ -1012,7 +1012,7 @@ admin.sub.previewVideo = function(entryId) {
     div.html(admin.sub.getVideoHTML(videoId, videoWidth, videoHeight));
   };
   
-  jQuery.ui.dialog.defaults.bgiframe = true;
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
   div.dialog(dialogOptions);
 };
 
