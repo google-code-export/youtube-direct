@@ -48,9 +48,8 @@ admin.assign.loadYouTubeCategories = function() {
 
   var command = 'GET_YOUTUBE_CATEGORIES';
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("YouTube categories loaded.", messageElement);
         admin.assign.showAssignmentCreate(json.categories);
@@ -550,9 +549,8 @@ admin.assign.showAssignmentCreate = function(categories) {
     params.status = div.find('#assignmentStatusType').get(0).
         options[div.find('#assignmentStatusType').attr('selectedIndex')].value;            
         
-    var callback = function(jsonStr) {
+    var callback = function(json) {
       try {
-        var json = JSON.parse(jsonStr);
         if (!json.error) {
         	admin.showMessage("Assignment created.", messageElement);
         	admin.assign.pageIndex = 1;
@@ -583,9 +581,8 @@ admin.assign.getAllAssignments = function(callback) {
   params.pageSize = admin.assign.pageSize;
   params.filterType = admin.assign.filterType;
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Assignments loaded.", messageElement);
         admin.assign.total = json.totalSize;
@@ -609,9 +606,8 @@ admin.assign.updateAssignment = function(entry) {
   var command = 'UPDATE_ASSIGNMENT';
   var params = entry;
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Assignment updated.", messageElement);
         admin.assign.refreshGrid();

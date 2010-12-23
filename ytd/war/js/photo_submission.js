@@ -626,9 +626,8 @@ admin.photo.showDetails = function(entryId) {
       params.id = submission.id;
       params.adminNotes = mainDiv.find('#adminNotes').val();
   
-      var jsonRpcCallback = function(jsonStr) {
+      var jsonRpcCallback = function(json) {
         try {
-          var json = JSON.parse(jsonStr);
           if (!json.error) {
             submission.adminNotes = params.adminNotes;
             alert('Notes are saved.');
@@ -658,9 +657,8 @@ admin.photo.updateStatus = function(ids, status, callback) {
   params.ids = ids.join(',');
   params.status = status;
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo entries updated.", messageElement);
         var entries = json.result;
@@ -683,9 +681,8 @@ admin.photo.deletePhotos = function(ids, callback) {
   var params = {};
   params.ids = ids.join(',');
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo entries deleted.", messageElement);
         var entries = json.result;
@@ -708,9 +705,8 @@ admin.photo.deleteSubmission = function(id, callback) {
   var params = {};
   params.id = id
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo submission deleted.", messageElement);
         var entries = json.result;
@@ -733,9 +729,8 @@ admin.photo.getAllPhotos = function(submissionId, callback) {
   var params = {};
   params.submissionId = submissionId;
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo entries loaded.", messageElement);
         var entries = json.result;
@@ -761,9 +756,8 @@ admin.photo.getAllSubmissions = function(callback) {
   params.pageIndex = admin.photo.pageIndex;
   params.pageSize = admin.photo.pageSize;
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo submission loaded.", messageElement);
         admin.photo.total = json.totalSize;
@@ -789,9 +783,8 @@ admin.photo.updateSubmissionStatus = function(entry) {
   params.id = entry.id;
   params.status = entry.status;
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Photo entry status updated.", messageElement);
         admin.photo.refreshGrid();
