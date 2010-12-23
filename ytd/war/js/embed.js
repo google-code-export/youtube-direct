@@ -397,7 +397,7 @@ function uploaderMainInit() {
     
     if (!validateTags(jQuery('#uploaderMain'))) {
         event.preventDefault();
-        showMessage('Each tag must be between 3 and 29 characters long.');
+        showMessage('Each tag must be between 3 and 28 characters long.');
         return false;
     }
     
