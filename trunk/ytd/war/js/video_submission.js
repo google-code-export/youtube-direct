@@ -678,9 +678,8 @@ admin.sub.fetchDetails = function(entryId) {
   var params = {};
   params.submissionId = entryId;
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Video details loaded.", messageElement);
         admin.sub.showDetails(JSON.parse(json.videoSubmission));
@@ -799,9 +798,8 @@ admin.sub.showDetails = function(submission) {
       params.id = submission.id;
       params.adminNotes = mainDiv.find('#adminNotes').val();
       
-      var jsonRpcCallback = function(jsonStr) {
+      var jsonRpcCallback = function(json) {
         try {
-          var json = JSON.parse(jsonStr);
           if (!json.error) {
             admin.showMessage("Admin notes saved.", messageElement);
             submission.adminNotes = params.adminNotes;
@@ -847,9 +845,8 @@ admin.sub.loadCaptions = function(submissionId) {
   var params = {};
   params.submissionId = submissionId;
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
       	admin.showMessage("Video captions loaded.", messageElement);
         admin.sub.showCaptionInfo(json);
@@ -918,9 +915,8 @@ admin.sub.showCaptionInfo = function(json) {
   	  params.url = json.captions[selectedLanguageCode];
   	  params.username = json.username;
   	  
-  	  var jsonRpcCallback = function(jsonStr) {
+  	  var jsonRpcCallback = function(json) {
   	    try {
-  	      var json = JSON.parse(jsonStr);
   	      if (!json.error) {
   	      	admin.showMessage("Caption track loaded.", messageElement);
   	      	dialogDiv.find('#captionTrack').val(json.captionTrack);
@@ -949,9 +945,8 @@ admin.sub.showCaptionInfo = function(json) {
 	  params.captionTrack = dialogDiv.find('#captionTrack').val();
 	  params.languageCode = selectedLanguageCode;
 	  
-	  var jsonRpcCallback = function(jsonStr) {
+	  var jsonRpcCallback = function(json) {
 	    try {
-	      var json = JSON.parse(jsonStr);
 	      if (!json.error) {
 	      	if (json.success) {
 	      		admin.showMessage("Caption track saved.", messageElement);
@@ -982,9 +977,8 @@ admin.sub.deleteEntry = function(entryId) {
     var params = {};
     params.id = entryId;
 
-    var jsonRpcCallback = function(jsonStr) {
+    var jsonRpcCallback = function(json) {
       try {
-        var json = JSON.parse(jsonStr);
         if (!json.error) {
           admin.showMessage("Video submission deleted.", messageElement);
           admin.sub.refreshGrid();
@@ -1033,9 +1027,8 @@ admin.sub.getAllSubmissions = function(callback) {
   params.pageSize = admin.sub.pageSize;
   params.filterType = admin.sub.filterType;
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Video submissions loaded.", messageElement);
         admin.sub.total = json.totalSize;
@@ -1061,9 +1054,8 @@ admin.sub.updateSubmissionStatus = function(entry) {
   params.id = entry.id;
   params.status = entry.status;
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         if (json.success) {
           admin.showMessage("Video submission status updated.", messageElement);

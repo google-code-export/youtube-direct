@@ -107,9 +107,8 @@ admin.config.getAdminConfig = function(callback) {
   var command = 'GET_ADMIN_CONFIG';
   var params = {};
   
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage('Configuration loaded.', messageElement);
         callback(json.result);
@@ -137,9 +136,8 @@ admin.config.updateAdminConfig = function() {
 
   var command = 'UPDATE_ADMIN_CONFIG';
 
-  var jsonRpcCallback = function(jsonStr) {
+  var jsonRpcCallback = function(json) {
     try {
-      var json = JSON.parse(jsonStr);
       if (!json.error) {
         admin.showMessage("Configuration saved.", messageElement);
       } else {
