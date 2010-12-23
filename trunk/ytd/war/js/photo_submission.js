@@ -410,7 +410,7 @@ admin.photo.getImageThumb = function(entry) {
           img = null;
         };
         
-        jQuery.ui.dialog.defaults.bgiframe = true;
+        jQuery.ui.dialog.prototype.options.bgiframe = true;
         popUp.dialog(options);
       };
     });
@@ -645,7 +645,7 @@ admin.photo.showDetails = function(entryId) {
     div.append(mainDiv);
   };
 
-  jQuery.ui.dialog.defaults.bgiframe = true;
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
   div.dialog(dialogOptions);
 };
 
