@@ -94,7 +94,7 @@ function validateTags(section) {
 	
 	var splits = tags.split(',');
 	for (var i = 0; i < splits.length; i++) {
-		if (splits[i].length >= 29) {
+		if (splits[i].length >= 29 || splits[i].length <= 2) {
 			return false;
 		}
 	}
@@ -397,7 +397,7 @@ function uploaderMainInit() {
     
     if (!validateTags(jQuery('#uploaderMain'))) {
         event.preventDefault();
-        showMessage('Please use fewer, or shorter, tag values.');
+        showMessage('Each tag must be between 3 and 29 characters long.');
         return false;
     }
     
