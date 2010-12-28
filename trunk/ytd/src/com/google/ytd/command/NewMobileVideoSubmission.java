@@ -1,7 +1,6 @@
 package com.google.ytd.command;
 
 import com.google.gdata.util.ServiceException;
-import com.google.ytd.model.AdminConfig;
 import com.google.ytd.youtube.YouTubeApiHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +24,6 @@ public class NewMobileVideoSubmission extends Command {
   private VideoSubmissionDao submissionDao = null;
   private UserAuthTokenDao userAuthTokenDao = null;
   private AssignmentDao assignmentDao = null;
-  private AdminConfigDao adminConfigDao;
   YouTubeApiHelper youTubeApiHelper;
 
   private Util util = null;
@@ -38,7 +36,6 @@ public class NewMobileVideoSubmission extends Command {
     this.assignmentDao = assignmentDao;
     this.submissionDao = submissionDao;
     this.userAuthTokenDao = userAuthTokenDao;
-    this.adminConfigDao = adminConfigDao;
     this.youTubeApiHelper = youTubeApiHelper;
   }
 
