@@ -138,9 +138,7 @@ function validateCaptcha() {
   params.challenge = jQuery('#recaptcha_challenge_field').val();
   params.response = jQuery('#recaptcha_response_field').val();
 
-  jsonrpc.makeRequest('VALIDATE_CAPTCHA', params, function(data) {
-  	var json = JSON.parse(data);
-  	
+  jsonrpc.makeRequest('VALIDATE_CAPTCHA', params, function(json) {  	
   	if (json.result == 'true') {
   		startPhotoUpload();
     } else {
