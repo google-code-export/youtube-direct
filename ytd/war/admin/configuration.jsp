@@ -21,32 +21,41 @@ limitations under the License.
       <span id="youTubeUsername">Unauthenticated</span>
       <input id="authenticateButton" type="button" value="Authenticate"/>
     </div>
+    <div class="help">
+      This account will contain the playlists for submitted videos.
+    </div>
     <div class="clear">
       <label for="developerKey" class="configureLabel">YouTube Developer Key:</label>
       <input class="configureInput" id="developerKey" type="text"/>
-      <img class="tip" src="/images/questionmark.png" title="Register at http://code.google.com/apis/youtube/dashboard/gwt"></img>
+    </div>
+    <div class="help">
+      Please <a target="_blank" href="http://code.google.com/apis/youtube/dashboard/gwt">register for a key</a> and then enter it above.
     </div>
     <div class="clear">
       <label for="privateKeyBytes" class="configureLabel">Private Key Certificate: </label>
       <textarea cols="50" rows="10" id="privateKeyBytes"></textarea>
-      <img class="tip" src="/images/questionmark.png" title="Optional private key certificate data. Unless you're using secure AuthSub and have uploaded a security certificate to https://www.google.com/accounts/ManageDomains, leave blank."></img>
+    </div>
+    <div class="help">
+      Optional private key certificate. If you want to use secure AuthSub, follow <a target="_blank" href="http://code.google.com/p/youtube-direct/wiki/GettingStarted#Registering_your_website_for_AuthSub">these instructions</a> and enter the certificate above. Otherwise, leave blank.
     </div>
   </fieldset>
   <fieldset>
     <legend>Photo Settings</legend>
     <div class="clear">
-      You <b>must</b> <a target="_blank" href="http://code.google.com/appengine/docs/billing.html">enable billing</a> on your production App Engine instance <b>before</b> you enable photo submissions. YouTube Direct will not work otherwise.
-    </div>
-    <div class="clear">
       <label for="photoSubmissionEnabled" class="configureLabel">Photo Submissions:</label>
       <input type="checkbox" id="photoSubmissionEnabled">Enabled</input>
-      <img class="tip" src="/images/questionmark.png" title="If checked, users will be able to submit photos as well as videos."></img>
+    </div>
+    <div class="help">
+      Check to enable photo submissions. You <b>must</b> <a target="_blank" href="http://code.google.com/appengine/docs/billing.html">enable billing</a> on your production App Engine instance <b>before</b> you enable photo submissions. YouTube Direct will not work otherwise.
     </div>
     <div id="photoSubmissionConfigDiv">
       <div class="clear">
         <label class="configureLabel">Picasa Account:</label>
         <span id="picasaUsername">Unauthenticated</span>
         <input id="picasaAuthenticateButton" type="button" value="Authenticate"/>
+      </div>
+      <div class="help">
+        This account will contain the albums that hold photo submissions.
       </div>
       <div class="clear">
         <label for="maxPhotoSizeMb" class="configureLabel">Max. Photo Size (MB):</label>
@@ -57,17 +66,23 @@ limitations under the License.
           <option value="10">10</option>
           <option value="20">20</option>
         </select>
-        <img class="tip" src="/images/questionmark.png" title="Photos uploaded that are larger than this number of megabytes will be ignored."></img>
+      </div>
+      <div class="help">
+        Only individual photo submissions smaller than this size will be allowed.
       </div>
       <div class="clear">
         <label for="recaptchaPrivateKey" class="configureLabel">ReCaptcha Private Key: </label>
         <input class="configureInput" id="recaptchaPrivateKey" type="text"/>
-        <img class="tip" src="/images/questionmark.png" title="Private key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+      </div>
+      <div class="help">
+        Please register your *.appspot.com domain with <a target="_blank" href="http://www.google.com/recaptcha">reCAPTCHA</a> and enter the private key above.
       </div>
       <div class="clear">
         <label for="recaptchaPublicKey" class="configureLabel">ReCaptcha Public Key: </label>
         <input class="configureInput" id="recaptchaPublicKey" type="text"/>
-        <img class="tip" src="/images/questionmark.png" title="Public key registered for an *.appspot.com domain at http://recaptcha.net"></img>
+      </div>
+      <div class="help">
+        Please register your *.appspot.com domain with <a target="_blank" href="http://www.google.com/recaptcha">reCAPTCHA</a> and enter the public key above.
       </div>
     </div>
   </fieldset>
@@ -79,17 +94,23 @@ limitations under the License.
         <option value="0" selected="selected">ON</option>
         <option value="1">OFF</option>
       </select>
-      <img class="tip" src="/images/questionmark.png" title="ON: Add branding to approved submissions. OFF: No branding."></img>
+    </div>
+    <div class="help">
+      If set to ON, the default YouTube tag and link back text will be added to all approved YouTube submissions. If set to OFF, the video submissions won't be modified when they're approved.
     </div>
     <div class="clear">
       <label for="defaultTag" class="configureLabel">Default YouTube Tag:</label>
       <input class="configureInput" id="defaultTag" type="text"/>
-      <img class="tip" src="/images/questionmark.png" title="User-visible YouTube tag added to all approved submissions, e.g. 'yourcompany'"></img>
+    </div>
+    <div class="help">
+      If the branding mode is ON, this tag will be added to all approved YouTube video submissions.
     </div>
     <div class="clear">
       <label for="linkBackText" class="configureLabel">Link Back Text:</label>
       <input class="configureInput" id="linkBackText" type="text"/>
-      <img class="tip" src="/images/questionmark.png" title="e.g. 'Submitted in response to article ARTICLE_URL.' If branding is on, automatically added to approved videos' YouTube descriptions. ARTICLE_URL = url of page hosting submission."></img>
+    </div>
+    <div class="help">
+      If the branding mode is ON, this text will be prepended to the YouTube video's description. The macro <code>ARTICLE_URL</code> will be substituted for the URL of the page on which the video was submitted.
     </div>
   </fieldset>
   <fieldset>
@@ -100,7 +121,9 @@ limitations under the License.
         <option value="0" selected="selected">ON</option>
         <option value="1">OFF</option>
       </select>
-      <img class="tip" src="/images/questionmark.png" title="ON: Submissions need to be moderated. OFF: All submissions are auto-approved."></img>
+    </div>
+    <div class="help">
+      If set to ON, then all submission are initially unreviewed, and need to be moderated. If set to OFF, all submissions are auto-approved.
     </div>
     <div class="clear">
       <label for="submissionMode" class="configureLabel">Submission Mode:</label>
@@ -108,33 +131,45 @@ limitations under the License.
         <option value="0" selected="selected">NEW OR EXISTING</option>
         <option value="1">NEW ONLY</option>
       </select>
-      <img class="tip" src="/images/questionmark.png" title="NEW OR EXISTING: Accept new and existing videos. NEW ONLY: Only accept new uploads."></img>
+    </div>
+    <div class="help">
+      If set to NEW OR EXISTING, both new and existing YouTube submissions are allowed. If set to NEW ONLY, then existing YouTube videos cannot be submitted.
     </div>
     <div class="clear">
       <label for="newSubmissionAddress" class="configureLabel">Notification Address:</label>
       <input class="configureInput" id="newSubmissionAddress" type="text"/>
-      <img class="tip" src="/images/questionmark.png" title="Comma-separated list of one or more addresses that will receive email whenever a video is submitted. Addresses must correspond to App Engine admins."></img>
+    </div>
+    <div class="help">
+      Comma-separated list of one or more addresses that will receive email for each new submission. Each address must be <a target="_blank" href="https://appengine.google.com/">configured</a> as an administrator for the App Engine instance.
     </div>
     <div class="clear">
       <label for="moderationEmail" class="configureLabel">Moderation Email:</label>
       <input type="checkbox" id="moderationEmail">Email User Upon Moderation</input>
-      <img class="tip" src="/images/questionmark.png" title="If checked, user who submitted video will receive mail when their video is approved/rejected."></img>
+    </div>
+    <div class="help">
+      If checked, the user will be sent mail when their submission is approved or rejected.
     </div>
     <div id="moderationEmailTextDiv">
       <div class="clear">
         <label for="fromAddress" class="configureLabel">Sender Email Address: </label>
         <input class="configureInput" id="fromAddress" type="text"/>
-        <img class="tip" src="/images/questionmark.png" title="Address to use as sender of moderation emails. Address must be an AppEngine admin."></img>
+      </div>
+      <div class="help">
+        "From" address to use for user notification mails. The address must be <a target="_blank" href="https://appengine.google.com/">configured</a> as an administrator for the App Engine instance.
       </div>
       <div class="clear">
         <label for="approvalEmailText" class="configureLabel">Approval Email Text: </label>
         <textarea cols="50" rows="10" id="approvalEmailText"></textarea>
-        <img class="tip" src="/images/questionmark.png" title="Body of approval emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
+      </div>
+      <div class="help">
+        The body of the email sent to the user when a submission is approved. The following macros are supported: <code>ARTICLE_URL</code> (URL of original submission page) and <code>MEDIA_URL</code> (URL of YouTube video/Picasa photo).
       </div>
       <div class="clear">
         <label for="rejectionEmailText" class="configureLabel">Rejection Email Text: </label>
         <textarea cols="50" rows="10" id="rejectionEmailText"></textarea>
-        <img class="tip" src="/images/questionmark.png" title="Body of rejection emails. ARTICLE_URL = url of page hosting submission. YOUTUBE_URL = url of video on YouTube."></img>
+      </div>
+      <div class="help">
+        The body of the email sent to the user when a submission is rejected. The following macros are supported: <code>ARTICLE_URL</code> (URL of original submission page) and <code>MEDIA_URL</code> (URL of YouTube video/Picasa photo).
       </div>
     </div>
   </fieldset>
@@ -143,12 +178,16 @@ limitations under the License.
     <div class="clear">
       <label for="loginInstruction" class="configureLabel">Initial Message:</label>
       <textarea cols="50" rows="10" id="loginInstruction"></textarea>
-      <img class="tip" src="/images/questionmark.png" title="Presented to user on the initial submission screen. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
+    </div>
+    <div class="help">
+      Presented to user on the initial submission screen. HTML is okay. The macro <code>ASSIGNMENT_MESSAGE</code> will be replaced with an assignment-specific override, if configured for a given assignment.
     </div>
     <div class="clear">
       <label for="postSubmitMessage" class="configureLabel">Post-Submit Message:</label>
       <textarea cols="50" rows="10" id="postSubmitMessage"></textarea>
-      <img class="tip" src="/images/questionmark.png" title="Presented to user after submitting a video. HTML is okay. ASSIGNMENT_MESSAGE will be replaced with an assignment-specific override, if present."></img>
+    </div>
+    <div class="help">
+      Presented to user after submission is complete. HTML is okay. The macro <code>ASSIGNMENT_MESSAGE</code> will be replaced with an assignment-specific override, if configured for a given assignment.
     </div>
   </fieldset>
   <div class="clear">

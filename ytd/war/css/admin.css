@@ -84,7 +84,6 @@ td {
 	display: block;
 	width: 200px;
 	float: left;
-	margin-bottom: 10px;
 }
 
 .configureLabel {
@@ -96,6 +95,13 @@ td {
 
 div.clear {
 	clear: left;
+}
+
+div.help {
+  clear: left;
+  color: #555555;
+  margin-left: 175px;
+  margin-bottom: 10px;
 }
 
 .filter {
@@ -111,11 +117,6 @@ div.clear {
 	background: red;
 	color: white;	
 	padding: 3px;
-}
-
-.tip {
-  padding-top: 3px;
-  padding-left: 6px;
 }
 
 fieldset {
