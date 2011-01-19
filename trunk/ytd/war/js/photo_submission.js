@@ -415,7 +415,7 @@ admin.photo.getImageThumb = function(entry) {
       };
     });
   } else {
-  	thumbImage.attr('src', '/images/questionmark.png');
+  	thumbImage.attr('src', '/images/loading.gif');
   }
   
   thumbDiv.append(thumbImage);

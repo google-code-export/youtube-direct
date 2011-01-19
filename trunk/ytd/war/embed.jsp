@@ -160,7 +160,7 @@
 			<select id="videosSelect"><option value="dummy">Select a Video...</option></select>
 		</div>
 		<div style="margin-top: 10px;">
-			<img id="thumbnail" src="/images/questionmark.png" style="display: none;">
+			<img id="thumbnail" style="display: none;">
 			<span id="existingVideoDescription"></span>
 		</div>
 	</div>
