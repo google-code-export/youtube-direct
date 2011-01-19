@@ -125,7 +125,7 @@ public class Util {
   public String readInputStream(InputStream inputStream) throws IOException {
     StringBuffer body = new StringBuffer();
     String line = null;
-    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
     while ((line = br.readLine()) != null) {
       body.append(line);
       body.append("\n");
