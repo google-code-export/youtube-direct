@@ -11,6 +11,12 @@ jQuery(document).ready(function() {
 	ytd.setAssignmentId(assignmentId);
 	ytd.setCallToAction('callToAction');
 	ytd.setYtdContainer('ytd', 400, 800);
+
+  var matches = document.location.href.match(/[?&]parent=(.+)/);
+  if (matches && matches.length > 1) {
+    ytd.setArticleUrl(matches[1]);
+  }
+  
 	ytd.ready();
 });
 
