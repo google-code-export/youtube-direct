@@ -354,12 +354,9 @@ admin.assign.showPlaylistCode = function(id) {
   
   jQuery.ui.dialog.prototype.options.bgiframe = true;
 
-  var width = 480;
-  var height = 385;
-  var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
-
   var code = [];
   var dialogContainer;
+  
   if (playlistId == null || playlistId == '') {
   	dialogContainer = jQuery('<div>');
 
@@ -367,21 +364,17 @@ admin.assign.showPlaylistCode = function(id) {
     	'try waiting a few seconds and then refeshing. Otherwise, please check the YouTube account ' +
       'settings in the "Configuration" tab.';
   } else {
+    var width = 480;
+    var height = 385;
+    var playlistUrl = jQuery.sprintf('http://www.youtube.com/p/%s?fs=1', playlistId);
+    
   	dialogContainer = jQuery('<pre>');
   	
-    code.push('<object width="' + width + '" height="' + height + '">\n');
-    code.push('<param name="movie" value="\n');
-    code.push(playlistUrl);
-    code.push('&hl=en&fs=1&">\n');
-    code.push('</param>\n');
-    code.push('<param name="allowFullScreen" value="true"></param>\n');
-    code.push('<param name="allowscriptaccess" value="always"></param>\n');
-    code.push('<embed src="\n');
-    code.push(playlistUrl);
-    code.push('&hl=en&fs=1&" type="application/x-shockwave-flash"\n');
-    code.push(' allowscriptaccess="always" allowfullscreen="true" width="'
-            + width + '" height="' + height + '">\n');
-    code.push('</embed>\n');
+    code.push(jQuery.sprintf('<object width="%d" height="%d">\n', width, height));
+    code.push(jQuery.sprintf('  <param name="movie" value="%s"></param>\n', playlistUrl));
+    code.push('  <param name="allowFullScreen" value="true"></param>\n');
+    code.push('  <param name="allowscriptaccess" value="always"></param>\n');
+    code.push(jQuery.sprintf('  <embed src="%s" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>\n', playlistUrl, width, height));
     code.push('</object>\n');
     
     code = code.join('');
@@ -612,26 +605,4 @@ admin.assign.updateAssignment = function(entry) {
   } 
   
   jsonrpc.makeRequest(command, params, jsonRpcCallback);
-};
-
-admin.assign.getPlaylistHTML = function(playlistId, width, height) {
-  var width = width || 250;
-  var height = height || 250;
-  var playlistUrl = 'http://www.youtube.com/p/' + playlistId + '&hl=en&fs=1';
-
-  var html = [];
-  html.push('<object width="' + width + '" height="' + height + '">');
-  html.push('<param name="movie" value="');
-  html.push(playlistUrl);
-  html.push('&hl=en&fs=1&"></param>');
-  html.push('<param name="allowFullScreen" value="true"></param>');
-  html.push('<param name="allowscriptaccess" value="always"></param>');
-  html.push('<embed src="');
-  html.push(playlistUrl);
-  html.push('&hl=en&fs=1&" type="application/x-shockwave-flash"');
-  html.push(' allowscriptaccess="always" allowfullscreen="true" width="'
-      + width + '" height="' + height + '">');
-  html.push('</embed></object>');
-  
-  return html.join('');
 };
