@@ -185,3 +185,9 @@ fieldset legend {
 #captionInfo {
   margin-left: 50px;
 }
+
+.preDialog {
+  font-size: 1em;
+  color: black;
+  border: 0px;
+}
