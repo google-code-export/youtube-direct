@@ -334,18 +334,15 @@ admin.sub.initSubmissionGrid = function() {
   grid.afterInsertRow = function(rowid, rowdata, rowelem) {
     var entryId = admin.sub.getEntryId(rowid);
     
-    var previewButton = '<input type="button" onclick=admin.sub.previewVideo("' + 
-        entryId + '") value="preview" />';
+    var previewButton = jQuery.sprintf('<input type="button" onclick=admin.sub.previewVideo("%s") value="Preview" />', entryId);
     jQuery('#submissionGrid').setCell(rowid, 'preview', previewButton);
     
-    var deleteButton = '<input type="button" onclick=admin.sub.deleteEntry("' + 
-        entryId + '") value="delete" />';
+    var deleteButton = jQuery.sprintf('<input type="button" onclick=admin.sub.deleteEntry("%s") value="Delete" />', entryId);
     jQuery('#submissionGrid').setCell(rowid, 'delete', deleteButton);
     
-    var detailsButton = '<input type="button" onclick=admin.sub.fetchDetails("' + 
-    entryId + '") value="details" />';
+    var detailsButton = jQuery.sprintf('<input type="button" onclick=admin.sub.fetchDetails("%s") value="Details" />', entryId);
     jQuery('#submissionGrid').setCell(rowid, 'details', detailsButton);     
-    
+
     if (rowdata['viewCount'] > 0) {
       var viewCountLink = 
           '<a title="Click to download YouTube Insight data." href="/admin/InsightDownloadRedirect?id=' + 
@@ -674,55 +671,45 @@ admin.sub.fetchDetails = function(entryId) {
 };
 
 admin.sub.showDetails = function(submission) {
-  var div = jQuery('<div style="width: 700px; height: 600;" align="center"/>');
+  var div = jQuery('<div style="width: 700px; height: 600px;" align="center"/>');
   
   var dialogOptions = {};
   dialogOptions.title = submission.videoTitle;
   dialogOptions.width = 700;
   dialogOptions.height = 700;
   dialogOptions.open = function() {
-    var videoWidth = 255;
-    var videoHeight = 220;  
+    var videoWidth = 360;
+    var videoHeight = 265;  
   
     var mainDiv = jQuery('#submissionDetailsTemplate').clone();
     mainDiv.css('display', 'block');  
     mainDiv.find('#assignmentId').html(submission.assignmentId);
     
-    var created = new Date(submission.created).toLocaleTimeString() + ' ' + 
-        new Date(submission.created).toLocaleDateString()
-    
+    var created = new Date(submission.created).toLocaleTimeString() + ' ' + new Date(submission.created).toLocaleDateString();
     mainDiv.find('#created').html(created);
     
     mainDiv.find('#videoSource').html(submission.videoSource);  
-    
-    var creatorInfo = submission.youTubeName + 
-        (submission.notifyEmail?' (' + submission.notifyEmail +')':'');    
-    mainDiv.find('#youTubeName').html(creatorInfo);  
-    
-    mainDiv.find('#videoId').html(
-        '<a target="_blank" href="http://www.youtube.com/watch#v=' + 
-        submission.videoId + '">' + 
-        submission.videoId + '</a>');
+
+    var creatorInfo = submission.youTubeName + (submission.notifyEmail ? ' (' + submission.notifyEmail + ')' : '');    
+    mainDiv.find('#youTubeName').html(creatorInfo);
+
+    mainDiv.find('#videoId').html(jQuery.sprintf('<a target="_blank" href="http://www.youtube.com/watch?v=%s">%s</a>', submission.videoId, submission.videoId));
     mainDiv.find('#youTubeState').html(submission.youTubeState);
     
     mainDiv.find('#videoTitle').html(submission.videoTitle);
-    
+
     mainDiv.find('#videoDescription').html(submission.videoDescription);
-    
+
     mainDiv.find('#videoTags').html(submission.videoTags);  
     
-    var articleLink = submission.articleUrl?'<a target="_blank" href="' + 
-        submission.articleUrl + '">' + submission.articleUrl + '</a>':'N/A';  
+    var articleLink = submission.articleUrl ? jQuery.sprintf('<a target="_blank" href="%s">%s</a>', submission.articleUrl, submission.articleUrl) : 'N/A';  
     mainDiv.find('#articleUrl').html(articleLink);  
     
-    mainDiv.find('#videoDate').html(
-        submission.videoDate?submission.videoDate:'N/A');
+    mainDiv.find('#videoDate').html(submission.videoDate ? submission.videoDate : 'N/A');
     
-    mainDiv.find('#videoLocation').html(
-        submission.videoLocation?submission.videoLocation:'N/A');
+    mainDiv.find('#videoLocation').html(submission.videoLocation ? submission.videoLocation : 'N/A');
     
-    mainDiv.find('#phoneNumber').html(
-        submission.phoneNumber?submission.phoneNumber:'N/A');  
+    mainDiv.find('#phoneNumber').html(submission.phoneNumber ? submission.phoneNumber : 'N/A');  
     
     var moderationStatus = -1;
     switch(submission.status) {
@@ -813,8 +800,7 @@ admin.sub.showDetails = function(submission) {
 };
 
 admin.sub.downloadVideo = function(submission) {
-  document.location.href = '/admin/VideoDownloadRedirect?id=' + submission.videoId + 
-  '&username=' + submission.youTubeName;   
+  document.location.href = jQuery.sprintf('/admin/VideoDownloadRedirect?id=%s&username=%s', submission.videoId, submission.youTubeName);
 };
 
 admin.sub.loadCaptions = function(submissionId) {
@@ -978,15 +964,15 @@ admin.sub.previewVideo = function(entryId) {
   var videoId = submission.videoId;
   var title = submission.videoTitle;
 
-  var videoWidth = 275;
-  var videoHeight = 250;
+  var videoWidth = 640;
+  var videoHeight = 385;
   
-  var div = jQuery('<div style="width: 330px; height: 300px;" align="center"/>');
+  var div = jQuery('<div align="center">');
   
   var dialogOptions = {};
   dialogOptions.title = title;
-  dialogOptions.width = 330;
-  dialogOptions.height = 330;
+  dialogOptions.width = videoWidth + 40;
+  dialogOptions.height = videoHeight + 50;
   dialogOptions.open = function() {
     div.html(admin.sub.getVideoHTML(videoId, videoWidth, videoHeight));
   };
@@ -1055,24 +1041,15 @@ admin.sub.updateSubmissionStatus = function(entry) {
 };
 
 admin.sub.getVideoHTML = function(videoId, width, height) {
-  var width = width || 250;
-  var height = height || 250;
-
-  var youtubeUrl = 'http://www.youtube.com/v/' + videoId;
+  var playerWidth = width || 640;
+  var playerHeight = height || 385;
 
   var html = [];
-  html.push('<object width="' + width + '" height="' + height + '">');
-  html.push('<param name="movie" value="');
-  html.push(youtubeUrl);
-  html.push('&hl=en&fs=1&"></param>');
-  html.push('<param name="allowFullScreen" value="true"></param>');
-  html.push('<param name="allowscriptaccess" value="always"></param>');
-  html.push('<embed src="');
-  html.push(youtubeUrl);
-  html.push('&hl=en&fs=1&" type="application/x-shockwave-flash"');
-  html.push(' allowscriptaccess="always" allowfullscreen="true" width="'
-      + width + '" height="' + height + '">');
-  html.push('</embed></object>');
+  html.push(jQuery.sprintf('<object width="%d" height="%d">', playerWidth, playerHeight));
+  html.push(jQuery.sprintf('<param name="movie" value="http://www.youtube.com/v/%s?fs=1&rel=0&version=3"></param>', videoId));
+  html.push('<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>');
+  html.push(jQuery.sprintf('<embed src="http://www.youtube.com/v/%s?fs=1&rel=0&version=3" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>', videoId, playerWidth, playerHeight));
+  html.push('</object>');
 
   return html.join('');
 };

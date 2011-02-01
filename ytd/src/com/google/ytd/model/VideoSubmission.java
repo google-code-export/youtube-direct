@@ -35,7 +35,7 @@ import com.google.gson.annotations.Expose;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class VideoSubmission implements Serializable {
   private static final String YOUTUBE_VIDEO_URL_FORMAT = "http://www.youtube.com/v/%s";
-  private static final String YOUTUBE_WATCH_URL_FORMAT = "http://www.youtube.com/watch#v=%s";
+  private static final String YOUTUBE_WATCH_URL_FORMAT = "http://www.youtube.com/watch?v=%s";
 
   @PrimaryKey
   @Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
