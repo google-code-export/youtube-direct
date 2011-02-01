@@ -326,7 +326,7 @@ admin.sub.initSubmissionGrid = function() {
   grid.caption = 'Submissions';
 
   grid.cellsubmit = 'clientArray';  
-  //grid.autowidth = true;  
+  grid.autowidth = true;  
   grid.cellEdit = true;   
   
   admin.sub.initGridModels(grid);

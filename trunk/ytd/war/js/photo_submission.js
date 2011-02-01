@@ -107,7 +107,7 @@ admin.photo.initSubmissionGrid = function() {
   grid.caption = 'Photo Submission';
 
   grid.cellsubmit = 'clientArray';
-  // grid.autowidth = true;
+  grid.autowidth = true;
   grid.cellEdit = true;
 
   admin.photo.initGridModels(grid);

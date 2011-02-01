@@ -158,6 +158,7 @@ admin.assign.initAssignmentGrid = function() {
   grid.caption = 'Assignments';
 
   grid.cellsubmit = 'clientArray';
+  grid.autowidth = true;
   grid.cellEdit = true;   
   
   admin.assign.initGridModels(grid);
