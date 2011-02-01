@@ -344,10 +344,7 @@ admin.sub.initSubmissionGrid = function() {
     jQuery('#submissionGrid').setCell(rowid, 'details', detailsButton);     
 
     if (rowdata['viewCount'] > 0) {
-      var viewCountLink = 
-          '<a title="Click to download YouTube Insight data." href="/admin/InsightDownloadRedirect?id=' + 
-          rowdata['videoId'] + '&token=' + rowdata['authSubToken'] + '">' + 
-          rowdata['viewCount'] + '</a>';
+      var viewCountLink = jQuery.sprintf('<a title="Click to download YouTube Insight data." href="/admin/InsightDownloadRedirect?id=%s&user=%s">%s</a>', rowdata['videoId'], rowdata['youTubeName'], rowdata['viewCount']);
       jQuery('#submissionGrid').setCell(rowid, 'viewCount', viewCountLink);
     }   
 
@@ -391,11 +388,11 @@ admin.sub.initGridModels = function(grid) {
   });
   
   // TODO: Need to write unformatter so jqgrid can sort it, now it's unsortable.
-  grid.colNames.push('Created on');
+  grid.colNames.push('Created On');
   grid.colModel.push( {
     name : 'created',
     index : 'created',
-    width : 120,
+    width : 100,
     sortype : 'date',
     formatter : function(cellvalue, options, rowObject) {
       var date = new Date(cellvalue);
@@ -417,7 +414,7 @@ admin.sub.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'assignmentId',
     index : 'assignmentId',
-    width : 80,
+    width : 60,
     hidden : false,
     sorttype : 'string'
   });
@@ -460,7 +457,7 @@ admin.sub.initGridModels = function(grid) {
   grid.colModel.push( {
     name : 'videoTitle',
     index : 'videoTitle',
-    width : 100,
+    width : 200,
     sorttype : 'string',
     edittype : 'text'
   });
@@ -491,7 +488,7 @@ admin.sub.initGridModels = function(grid) {
     index : 'viewCount',
     width : 80,
     sorttype : 'int',
-    hidden: true,
+    hidden: false,
     formatter : function(cellvalue, options, rowObject) {
       if (cellvalue < 0) {
         return 'no data';
