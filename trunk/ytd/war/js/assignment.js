@@ -309,35 +309,32 @@ admin.assign.showEmbedCode = function(id) {
   jQuery.ui.dialog.prototype.options.bgiframe = true;
 
   var code = [];
-  code.push('<script type="text/javascript" src="' + admin.assign.getSelfUrl() 
-      + '/js/ytd-embed.js"></script>\n');
-  code.push('<script type="text/javascript">\n');
-  code.push('var ytdInitFunction = function() {\n');
-  code.push('  var ytd = new Ytd();\n');
-  code.push(jQuery.sprintf('  ytd.setAssignmentId("%s");\n', entry.id));
-  code.push(jQuery.sprintf('  ytd.setCallToAction("callToActionId-%s");\n', entry.id));
-  code.push('  var containerWidth = 350;\n');
-  code.push('  var containerHeight = 550;\n');
-  code.push(jQuery.sprintf('  ytd.setYtdContainer("ytdContainer-%s", containerWidth, containerHeight);\n', entry.id));
-  code.push('  ytd.ready();\n');
-  code.push('};\n');
-  code.push('if (window.addEventListener) {\n');
-  code.push('  window.addEventListener("load", ytdInitFunction, false);\n');
-  code.push('} else if (window.attachEvent) {\n');
-  code.push('  window.attachEvent("onload", ytdInitFunction);\n');
-  code.push('}\n');
-  code.push('</script>\n');
-  code.push(jQuery.sprintf('<a id="callToActionId-%s" href="javascript:void(0);"><img src="%s/images/calltoaction.png"></a>\n', entry.id, admin.assign.getSelfUrl()));
+  code.push(jQuery.sprintf('<script type="text/javascript" src="%s/js/ytd-embed.js"></script>', admin.assign.getSelfUrl()));
+  code.push('<script type="text/javascript">');
+  code.push('var ytdInitFunction = function() {');
+  code.push('  var ytd = new Ytd();');
+  code.push(jQuery.sprintf('  ytd.setAssignmentId("%s");', entry.id));
+  code.push(jQuery.sprintf('  ytd.setCallToAction("callToActionId-%s");', entry.id));
+  code.push('  var containerWidth = 350;');
+  code.push('  var containerHeight = 550;');
+  code.push(jQuery.sprintf('  ytd.setYtdContainer("ytdContainer-%s", containerWidth, containerHeight);', entry.id));
+  code.push('  ytd.ready();');
+  code.push('};');
+  code.push('if (window.addEventListener) {');
+  code.push('  window.addEventListener("load", ytdInitFunction, false);');
+  code.push('} else if (window.attachEvent) {');
+  code.push('  window.attachEvent("onload", ytdInitFunction);');
+  code.push('}');
+  code.push('</script>');
+  code.push('//Modify the next two lines to customize the Call to Action button.');
+  code.push(jQuery.sprintf('<a id="callToActionId-%s" href="javascript:void(0);"><img src="%s/images/calltoaction.png"></a>', entry.id, admin.assign.getSelfUrl()));
   code.push(jQuery.sprintf('<div id="ytdContainer-%s"></div>', entry.id));  
   
-  code = code.join('');
+  code = code.join('\n');
   code = code.replace(/\</g,'&lt;');
   code = code.replace(/\>/g,'&gt;');
   
-  var dialogContainer = jQuery('<pre>');
-  dialogContainer.css('font-size', '11px');
-  dialogContainer.css('color', 'black');
-  dialogContainer.css('border', '0px');
+  var dialogContainer = jQuery('<pre class="preDialog">');
   dialogContainer.html(code);
   
   var dialogOptions = {};
@@ -368,24 +365,20 @@ admin.assign.showPlaylistCode = function(id) {
     var height = 385;
     var playlistUrl = jQuery.sprintf('http://www.youtube.com/p/%s?fs=1', playlistId);
     
-  	dialogContainer = jQuery('<pre>');
+  	dialogContainer = jQuery('<pre class="preDialog">');
   	
-    code.push(jQuery.sprintf('<object width="%d" height="%d">\n', width, height));
-    code.push(jQuery.sprintf('  <param name="movie" value="%s"></param>\n', playlistUrl));
-    code.push('  <param name="allowFullScreen" value="true"></param>\n');
-    code.push('  <param name="allowscriptaccess" value="always"></param>\n');
-    code.push(jQuery.sprintf('  <embed src="%s" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>\n', playlistUrl, width, height));
-    code.push('</object>\n');
+    code.push(jQuery.sprintf('<object width="%d" height="%d">', width, height));
+    code.push(jQuery.sprintf('  <param name="movie" value="%s"></param>', playlistUrl));
+    code.push('  <param name="allowFullScreen" value="true"></param>');
+    code.push('  <param name="allowscriptaccess" value="always"></param>');
+    code.push(jQuery.sprintf('  <embed src="%s" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>', playlistUrl, width, height));
+    code.push('</object>');
     
-    code = code.join('');
+    code = code.join('\n');
     code = code.replace(/\</g,'&lt;');
     code = code.replace(/\>/g,'&gt;');
   }
 
- 
-  dialogContainer.css('font-size', '11px');
-  dialogContainer.css('color', 'black');
-  dialogContainer.css('border', '0px');
   dialogContainer.html(code);
   
   var dialogOptions = {};
