@@ -16,7 +16,7 @@
 // namespace protection against collision
 var admin = admin || {};
 
-jQuery(document).ready( function() {
+jQuery(document).ready(function() {
 	if (window.isLoggedIn) {
 		jQuery('#tabs').tabs();
 		admin.init();
@@ -38,37 +38,6 @@ admin.showMessage = function(message, elementToHide, displaySeconds) {
 
 // errorObj may be a XHR object returned from an AJAX call, or a string.
 admin.showError = function(errorString, elementToHide) {
-  /*
-  var errorString = '';
-  
-  if (errorObj.responseText) {
-    errorString = errorObj.responseText;
-    
-    // In the local App Engine web server, errors are returned wrapped in <pre>.
-    var re = new RegExp('<pre>(.*?)</pre>', 'i');
-    var matches = re.exec(errorObj.responseText);
-    if (matches && matches.length  && matches.length >= 2) {
-      errorString = matches[1];
-    } else {
-      // In the production App Engine web server, errors are returned wrapped in <h1>.
-      re = new RegExp('<h1>(.*?)</h1>', 'i');
-      matches = re.exec(errorObj.responseText);
-      if (matches && matches.length  && matches.length >= 2) {
-        errorString = matches[1];
-      }
-    }
-  } else {
-    errorString = errorObj.toString();
-  }
-  
-  try {
-    var jsonObj = JSON.parse(errorString);
-    errorString = jsonObj.error;
-  } catch (e) {
-    // Ignore parse exceptions, as we'll just use the original errorString.
-  }
-  */  
-  
   return admin.showSomething(errorString, 'error', elementToHide, 10);
 };
 
@@ -77,7 +46,7 @@ admin.showSomething = function(message, elementClass, elementToHide, displaySeco
   var messageElement = jQuery('<span>' + message + '</span>').addClass(elementClass);
   messageElement.prependTo(wrapperElement);
   
-  if(elementToHide) {
+  if (elementToHide) {
     jQuery(elementToHide).hide();
   }
   
