@@ -211,7 +211,7 @@ admin.assign.initGridModels = function(grid) {
     sortype : 'date',
     formatter : function(cellvalue, options, rowObject) {
       var date = new Date(cellvalue);
-      return admin.assign.formatDate(date);
+      return admin.formatDate(date);
     }  
   });  
   
@@ -387,27 +387,6 @@ admin.assign.showPlaylistCode = function(id) {
   dialogOptions.height = 'auto';  
    
   dialogContainer.dialog(dialogOptions);
-};
-
-
-admin.assign.formatDate = function(date) {
-  var year = admin.assign.padZero(date.getFullYear());
-  var month = admin.assign.padZero(date.getMonth() + 1);
-  var day = admin.assign.padZero(date.getDate());
-  var hours = admin.assign.padZero(date.getHours());
-  var minutes = admin.assign.padZero(date.getMinutes());
-  var seconds = admin.assign.padZero(date.getSeconds());
-  
-  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-};
-
-admin.assign.padZero = function(value) {
-  value = value + '';
-  if (value.length < 2) {
-    return '0' + value;
-  } else {
-    return value;
-  }
 };
 
 admin.assign.getAssignment = function(id) {

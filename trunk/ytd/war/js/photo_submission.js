@@ -168,7 +168,7 @@ admin.photo.initGridModels = function(grid) {
     sortype : 'date',
     formatter : function(cellvalue, options, rowObject) {
       var date = new Date(cellvalue);
-      return admin.photo.formatDate(date);
+      return admin.formatDate(date);
     }
   });
 
@@ -253,27 +253,6 @@ admin.photo.initGridModels = function(grid) {
     sortable : false,
     hidden : false
   });
-};
-
-admin.photo.formatDate = function(date) {
-  var year = admin.photo.padZero(date.getFullYear());
-  var month = admin.photo.padZero(date.getMonth() + 1);
-  var day = admin.photo.padZero(date.getDate());
-  var hours = admin.photo.padZero(date.getHours());
-  var minutes = admin.photo.padZero(date.getMinutes());
-  var seconds = admin.photo.padZero(date.getSeconds());
-
-  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':'
-      + seconds;
-};
-
-admin.photo.padZero = function(value) {
-  value = value + '';
-  if (value.length < 2) {
-    return '0' + value;
-  } else {
-    return value;
-  }
 };
 
 admin.photo.getSubmission = function(id) {
