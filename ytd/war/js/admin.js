@@ -58,3 +58,24 @@ admin.showSomething = function(message, elementClass, elementToHide, displaySeco
   
   return wrapperElement;
 };
+
+admin.formatDate = function(date) {
+  var year = admin.padZero(date.getFullYear());
+  var month = admin.padZero(date.getMonth() + 1);
+  var day = admin.padZero(date.getDate());
+  var hours = admin.padZero(date.getHours());
+  var minutes = admin.padZero(date.getMinutes());
+  var seconds = admin.padZero(date.getSeconds());
+  
+  // Use %s to maintain zero-padding, which the jQuery.sprintf() library can't provide.
+  return jQuery.sprintf('%s-%s-%s %s:%s:%s', year, month, day, hours, minutes, seconds);
+};
+
+admin.padZero = function(value) {
+  value = value + '';
+  if (value.length < 2) {
+    return '0' + value;
+  } else {
+    return value;
+  }
+};

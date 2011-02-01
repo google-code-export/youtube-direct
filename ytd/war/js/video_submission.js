@@ -402,7 +402,7 @@ admin.sub.initGridModels = function(grid) {
     sortype : 'date',
     formatter : function(cellvalue, options, rowObject) {
       var date = new Date(cellvalue);
-      return admin.sub.formatDate(date);
+      return admin.formatDate(date);
     }
   });
 
@@ -564,28 +564,7 @@ admin.sub.initGridModels = function(grid) {
     align : 'center',
     sortable : false,
     hidden: false
-  });    
-  
-};
-
-admin.sub.formatDate = function(date) {
-  var year = admin.sub.padZero(date.getFullYear());
-  var month = admin.sub.padZero(date.getMonth() + 1);
-  var day = admin.sub.padZero(date.getDate());
-  var hours = admin.sub.padZero(date.getHours());
-  var minutes = admin.sub.padZero(date.getMinutes());
-  var seconds = admin.sub.padZero(date.getSeconds());
-  
-  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-};
-
-admin.sub.padZero = function(value) {
-  value = value + '';
-  if (value.length < 2) {
-    return '0' + value;
-  } else {
-    return value;
-  }
+  });
 };
 
 admin.sub.getSubmission = function(id) {
