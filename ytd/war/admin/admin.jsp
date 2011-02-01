@@ -25,7 +25,7 @@ limitations under the License.
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Admin</title>
+<title>YouTube Direct Admin</title>
 
 <link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.8.7.custom.css" rel="stylesheet" />
 <link type="text/css" href="/css/ext/ui.jqgrid.css" rel="stylesheet" />
@@ -59,17 +59,13 @@ limitations under the License.
     User user = userService.getCurrentUser();
     if (user != null) {
   %>
-  <p><b><%=user.getNickname()%></b> [ <a
-    href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a>
-  ]</p>
+  <p><b><%=user.getNickname()%></b> [ <a href="<%=userService.createLogoutURL(request.getRequestURI())%>">logout</a> ]</p>
   <script type="text/javascript">
   window.isLoggedIn = true;
   </script> <%
      } else {
    %>
-  <p>[ <a
-    href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a>
-  ]</p>
+  <p>[ <a href="<%=userService.createLoginURL(request.getRequestURI())%>">login</a> ]</p>
   <script type="text/javascript">
   window.isLoggedIn = false;
   </script> <%
