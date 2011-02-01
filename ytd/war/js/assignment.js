@@ -17,9 +17,6 @@
 var admin = admin || {};
 admin.assign = admin.assign || {};
 
-// TODO fetch the category list from server
-admin.assign.ytCategories = 'News,People,Tech,Music,Entertainment,Film';
-
 // user current setting
 admin.assign.total = 0; // size of current working set
 admin.assign.assignments = []; // current working set
@@ -34,7 +31,7 @@ admin.assign.init = function() {
   admin.assign.initControlPanel();  
   admin.assign.initAssignmentFilters();
   
-  jQuery('#assignmentSearchText').keyup( function() {
+  jQuery('#assignmentSearchText').keyup(function() {
     admin.assign.filterByText();
   });    
   
@@ -66,39 +63,37 @@ admin.assign.loadYouTubeCategories = function() {
 
 admin.assign.initAssignmentFilters = function() {
   var labels = jQuery('#assignmentFilters a.filter');
-  for(var i=0; i<labels.length; i++) {    
+  for (var i = 0; i<labels.length; i++) {    
     var label = jQuery(labels[i]);     
     admin.assign.setupLabelFilter(label);
   }  
 };
 
 admin.assign.setupLabelFilter = function(label) {
-  label.click(function() {    
-    
+  label.click(function() {
     // reset all label colors
     var labels = jQuery('#assignmentFilters a.filter');
-    for(var i = 0; i < labels.length; i++) {    
-      var label_ = jQuery(labels[i]);     
+    for (var i = 0; i < labels.length; i++) {
+      var label_ = jQuery(labels[i]);
       label_.css('background', 'white');
       label_.css('color', '#black');
-    }     
-    
+    }
+
     // set the selected label to be highlighted
     label.css('background', '#a6c9e2');
-    label.css('color', 'black');     
-    
+    label.css('color', 'black');
+
     admin.assign.filterType = label.html();
-          
+
     // reset the page index to first page
     admin.assign.pageIndex = 1;
-    
-    admin.assign.refreshGrid();                    
-    
-  });     
-  
+
+    admin.assign.refreshGrid();
+  });
+
   if (label.html() == "ALL") {
     label.css('background', '#a6c9e2');
-    label.css('color', 'black');      
+    label.css('color', 'black');
   }
 };
 
@@ -136,14 +131,12 @@ admin.assign.hasPrevPage = function() {
 };
 
 admin.assign.filterByText = function() {
-
   var matches = [];
 
   var text = jQuery('#assignmentSearchText').val();   
-  
   var regex = new RegExp(text, 'i');
 
-  for ( var i = 0; i < admin.assign.assignments.length; i++) {
+  for (var i = 0; i < admin.assign.assignments.length; i++) {
     var entry = admin.assign.assignments[i];
 
     var description = entry.description;
@@ -164,8 +157,7 @@ admin.assign.initAssignmentGrid = function() {
   grid.pgbuttons = false;  
   grid.caption = 'Assignments';
 
-  grid.cellsubmit = 'clientArray';  
-  //grid.autowidth = true;  
+  grid.cellsubmit = 'clientArray';
   grid.cellEdit = true;   
   
   admin.assign.initGridModels(grid);
@@ -505,7 +497,7 @@ admin.assign.refreshGrid = function() {
 
 admin.assign.refreshGridUI = function(entries) {
   var jqGrid = jQuery('#assignmentGrid').clearGridData();
-  for ( var i = 0; i < entries.length; i++) {
+  for (var i = 0; i < entries.length; i++) {
     jqGrid.addRowData(i + 1, entries[i]);
   }
 };
