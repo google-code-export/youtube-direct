@@ -20,6 +20,7 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.gdata.client.photos.PicasawebService;
+import com.google.gdata.data.Link;
 import com.google.gdata.data.ParseSource;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.photos.AlbumEntry;
@@ -43,6 +44,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +59,8 @@ public class PicasaApiHelper {
   // CONSTANTS
   private static final String USER_FEED_URL =
       "http://picasaweb.google.com/data/feed/api/user/default";
+  private static final String ALBUM_FEED_URL =
+    "http://picasaweb.google.com/data/feed/api/user/default?kind=album&max-results=1000";
   private static final String RESUMABLE_UPLOADS_URL_FORMAT =
     "http://picasaweb.google.com/data/upload/resumable/photos/create-session/feed/api/user/default/albumid/%s";
   private static final String UPLOAD_ENTRY_XML_FORMAT = 
@@ -111,6 +116,36 @@ public class PicasaApiHelper {
       UserFeed userFeed = service.getFeed(new URL(USER_FEED_URL), UserFeed.class);
       return userFeed.getUsername();
     } catch (MalformedURLException e) {
+      LOG.log(Level.WARNING, "", e);
+    }
+
+    return null;
+  }
+  
+  public List<AlbumEntry> getAllAlbums() {
+    ArrayList<AlbumEntry> albums = new ArrayList<AlbumEntry>();
+
+    try {
+      URL feedUrl = new URL(ALBUM_FEED_URL);
+
+      while (feedUrl != null) {
+        UserFeed albumFeed = service.getFeed(feedUrl, UserFeed.class);
+        albums.addAll(albumFeed.getAlbumEntries());
+        
+        Link nextLink = albumFeed.getNextLink();
+        if (nextLink == null) {
+          feedUrl = null;
+        } else {
+          feedUrl = new URL(nextLink.getHref());
+        }
+      }
+      
+      return albums;
+    } catch (MalformedURLException e) {
+      LOG.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      LOG.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
       LOG.log(Level.WARNING, "", e);
     }
 
