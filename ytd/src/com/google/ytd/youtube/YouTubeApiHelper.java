@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -560,9 +561,25 @@ public class YouTubeApiHelper {
     return String.format(PLAYLIST_ENTRY_URL_FORMAT, playlistId);
   }
   
-  public PlaylistLinkFeed getDefaultUsersPlaylistFeed() {
+  public List<PlaylistLinkEntry> getDefaulUsersPlaylists() {
+    ArrayList<PlaylistLinkEntry> playlistEntries = new ArrayList<PlaylistLinkEntry>();
+
     try {
-      return service.getFeed(new URL(PLAYLIST_FEED_URL), PlaylistLinkFeed.class);
+      URL feedUrl = new URL(PLAYLIST_FEED_URL);
+
+      while (feedUrl != null) {
+        PlaylistLinkFeed playlistFeed = service.getFeed(feedUrl, PlaylistLinkFeed.class);
+        playlistEntries.addAll(playlistFeed.getEntries());
+        
+        Link nextLink = playlistFeed.getNextLink();
+        if (nextLink == null) {
+          feedUrl = null;
+        } else {
+          feedUrl = new URL(nextLink.getHref());
+        }
+      }
+      
+      return playlistEntries;
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
     } catch (IOException e) {
@@ -570,7 +587,7 @@ public class YouTubeApiHelper {
     } catch (ServiceException e) {
       log.log(Level.WARNING, "", e);
     }
-    
+
     return null;
   }
 
