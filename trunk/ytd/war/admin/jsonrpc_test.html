@@ -11,13 +11,8 @@ jQuery(document).ready(function() {
     var command = jQuery('#command').val();
     var params = JSON.parse(jQuery('#params').val());
     jsonrpc.makeRequest(command, params, function(data) {
-      try {
-	      var json = JSON.parse(data);
-	      jQuery('#returnJson').html(data);
-      } catch (exception) {
-        jQuery('#returnJson').html('json parse exception: ' + data);
-      }
-    }); 
+      jQuery('#returnJson').html(JSON.stringify(data));
+    });
   });
 });
 </script>

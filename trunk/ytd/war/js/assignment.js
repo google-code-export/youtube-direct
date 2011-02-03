@@ -114,7 +114,7 @@ admin.assign.initControlPanel = function() {
 };
 
 admin.assign.hasNextPage = function() {
-  var totalPages = Math.ceil(admin.assign.total/admin.assign.pageSize);
+  var totalPages = Math.ceil(admin.assign.total / admin.assign.pageSize);
   if (admin.assign.pageIndex < totalPages) {
     return true;
   } else {
@@ -166,14 +166,11 @@ admin.assign.initAssignmentGrid = function() {
   grid.afterInsertRow = function(rowid, rowdata, rowelem) {
     var entryId = admin.assign.getEntryId(rowid);
 
-    var embedButton = '<input type="button" onclick=admin.assign.showEmbedCode("' + 
-    entryId + '") value="embed" />';    
-    jQuery('#assignmentGrid').setCell(rowid, 'embed', embedButton);    
+    var embedButton = jQuery.sprintf('<input type="button" onclick=admin.assign.showEmbedCode("%s") value="Embed"/>', entryId);
+    jQuery('#assignmentGrid').setCell(rowid, 'embed', embedButton);
 
-    var playlistButton = '<input type="button" onclick=admin.assign.showPlaylistCode("' + 
-    entryId + '") value="playlist" />';    
-    jQuery('#assignmentGrid').setCell(rowid, 'playlist', playlistButton);        
-    
+    var playlistButton = jQuery.sprintf('<input type="button" onclick=admin.assign.showPlaylistCode("%s") value="Playlist"/>', entryId);
+    jQuery('#assignmentGrid').setCell(rowid, 'playlist', playlistButton);    
   };
 
   grid.afterSaveCell = function(rowid, cellname, value, iRow, iCol) {
