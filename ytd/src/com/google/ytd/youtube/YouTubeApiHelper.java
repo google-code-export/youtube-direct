@@ -39,6 +39,7 @@ import com.google.gdata.data.youtube.FormUploadToken;
 import com.google.gdata.data.youtube.PlaylistEntry;
 import com.google.gdata.data.youtube.PlaylistFeed;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
+import com.google.gdata.data.youtube.PlaylistLinkFeed;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.VideoFeed;
@@ -557,6 +558,20 @@ public class YouTubeApiHelper {
 
   public String getPlaylistFeedUrl(String playlistId) {
     return String.format(PLAYLIST_ENTRY_URL_FORMAT, playlistId);
+  }
+  
+  public PlaylistLinkFeed getDefaultUsersPlaylistFeed() {
+    try {
+      return service.getFeed(new URL(PLAYLIST_FEED_URL), PlaylistLinkFeed.class);
+    } catch (MalformedURLException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (IOException e) {
+      log.log(Level.WARNING, "", e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, "", e);
+    }
+    
+    return null;
   }
 
   public String createPlaylist(String title, String description) {
