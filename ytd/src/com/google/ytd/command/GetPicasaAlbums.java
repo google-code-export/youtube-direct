@@ -30,34 +30,35 @@ public class GetPicasaAlbums extends Command {
       if (albumEntries.size() > 0) {
         // We want to determine the related (Rejected) and (Unreviewed) albums for each main album.
         // A HashMap and title lookups is a bit hacky, but it's the only real solution.
-        HashMap<String, String> albumNameToId = new HashMap<String, String>();
+        HashMap<String, String> albumNameToUrl = new HashMap<String, String>();
         for (AlbumEntry albumEntry : albumEntries) {
-          albumNameToId.put(albumEntry.getTitle().getPlainText(), albumEntry.getGphotoId());
+          albumNameToUrl.put(albumEntry.getTitle().getPlainText(),
+              albumEntry.getFeedLink().getHref());
         }
         
-        HashMap<String, Map<String, String>> albumIdToMetadata =
+        HashMap<String, Map<String, String>> albumUrlToMetadata =
           new HashMap<String, Map<String, String>>();
         for (AlbumEntry albumEntry : albumEntries) {
           if (albumEntry.getAccess().equals("public")) {
             HashMap<String, String> metadata = new HashMap<String, String>();
             String publicAlbumTitle = albumEntry.getTitle().getPlainText();
             
-            String rejectedAlbumId = albumNameToId.get(String.format(REJECTED_ALBUM_FORMAT,
+            String rejectedAlbumUrl = albumNameToUrl.get(String.format(REJECTED_ALBUM_FORMAT,
                 publicAlbumTitle));
-            String unreviewedAlbumId = albumNameToId.get(String.format(UNREVIEWED_ALBUM_FORMAT,
+            String unreviewedAlbumUrl = albumNameToUrl.get(String.format(UNREVIEWED_ALBUM_FORMAT,
                 publicAlbumTitle));
             
-            if (rejectedAlbumId != null && unreviewedAlbumId != null) {
+            if (rejectedAlbumUrl != null && unreviewedAlbumUrl != null) {
               metadata.put("title", publicAlbumTitle);
-              metadata.put("rejectedAlbumId", rejectedAlbumId);
-              metadata.put("unreviewedAlbumId", unreviewedAlbumId);
+              metadata.put("rejectedAlbumUrl", rejectedAlbumUrl);
+              metadata.put("unreviewedAlbumUrl", unreviewedAlbumUrl);
               
-              albumIdToMetadata.put(albumEntry.getGphotoId(), metadata);
+              albumUrlToMetadata.put(albumEntry.getFeedLink().getHref(), metadata);
             }
           }
         }
 
-        json.put("albums", albumIdToMetadata);
+        json.put("albums", albumUrlToMetadata);
       } else {
         json.put("error", "There are no Picasa albums in your account.");
       }

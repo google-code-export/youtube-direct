@@ -21,7 +21,6 @@ var JSON_RPC_URL = "/jsonrpc";
 
 jsonrpc.makeRequest = function(command, params, callback) {  
   var postData = {};
-    
   postData.method = command;
   postData.params = params;
   
@@ -32,10 +31,14 @@ jsonrpc.makeRequest = function(command, params, callback) {
   ajaxCall.cache = false;
   ajaxCall.processData = false;
   ajaxCall.error = function(res) {
+    document.body.style.cursor = "default";
     callback(res);
   };
   ajaxCall.success = function(res) {
+    document.body.style.cursor = "default";
     callback(res);
-  };  
-  jQuery.ajax(ajaxCall);    
+  };
+  
+  document.body.style.cursor = "wait";
+  jQuery.ajax(ajaxCall);
 };

@@ -68,3 +68,52 @@ limitations under the License.
 		<input id="createButton" type="button" value="Create"/>
 		<input id="createCancelButton" type="button" value="Cancel"/>
 	</div>
+	
+  <div id="assignmentEditTemplate" style="display: none;">
+    <fieldset>
+      <div class="clear">
+        <label for="description" class="configureLabel">Description:</label>
+        <span id="description"></span>
+      </div>
+      <div class="help">The assignment's description.</div>
+      
+      <div class="clear">
+        <label for="status" class="configureLabel">Assignment Status:</label>
+        <select id="status">
+          <option value="ACTIVE">Active</option>
+          <option value="PENDING">Pending</option>
+          <option value="ARCHIVED">Archived</option>
+        </select>
+      </div>
+      <div class="help">
+        Active assignments can receive new submissions. Pending/Archived assignments cannot.
+      </div>
+      
+      <div class="clear">
+        <label for="category" class="configureLabel">Assignment Category:</label>
+        <select id="category"></select>
+      </div>
+      <div class="help">
+        Newly-uploaded videos will be assigned this category in YouTube.
+      </div>
+      
+      <div class="clear">
+        <label for="playlist" class="configureLabel">Assignment Playlist:</label>
+        <select id="playlist"></select>
+      </div>
+      <div class="help">
+        When approved, videos will be added to this YouTube playlist.
+      </div>
+      
+      <div class="clear">
+        <label for="album" class="configureLabel">Assignment Album:</label>
+        <select id="album"></select>
+      </div>
+      <div class="help">
+        When approved, pictures will be added to this Picasa album.
+      </div>
+    </fieldset>
+
+    <input id="modifyButton" type="button" value="Modify"/>
+    <input id="modifyCancelButton" type="button" value="Cancel"/>
+  </div>
