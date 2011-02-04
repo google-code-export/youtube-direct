@@ -30,8 +30,7 @@ import com.google.ytd.util.Util;
 import com.google.ytd.youtube.YouTubeApiHelper;
 
 public class UpdateVideoSubmissionStatus extends Command {
-  private static final Logger LOG = Logger
-      .getLogger(UpdateVideoSubmissionStatus.class.getName());
+  private static final Logger LOG = Logger.getLogger(UpdateVideoSubmissionStatus.class.getName());
 
   private AssignmentDao assignmentDao = null;
   private AdminConfigDao adminConfigDao = null;
