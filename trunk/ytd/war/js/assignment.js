@@ -61,6 +61,25 @@ admin.assign.loadYouTubeCategories = function() {
   jsonrpc.makeRequest(command, {}, jsonRpcCallback);
 };
 
+// This is hacky, but I'm trying to retrofit some new functionality and hopefully I can remove this
+// distinct method at some point in the future.
+admin.assign.loadYouTubeCategoriesForModify = function(assignmentId) {
+  var messageElement = admin.showMessage("Loading YouTube categories...");
+  
+  jsonrpc.makeRequest('GET_YOUTUBE_CATEGORIES', {}, function(json) {
+    try {
+      if (!json.error) {
+        admin.showMessage("YouTube categories loaded.", messageElement);
+        admin.assign.loadAllPlaylists(json.categories, assignmentId);
+      } else {
+        admin.showError(json.error, messageElement);  
+      }
+    } catch(exception) {
+      admin.showError('Request failed: ' + exception, messageElement);
+    }
+  });
+};
+
 admin.assign.initAssignmentFilters = function() {
   var labels = jQuery('#assignmentFilters a.filter');
   for (var i = 0; i<labels.length; i++) {    
@@ -170,7 +189,10 @@ admin.assign.initAssignmentGrid = function() {
     jQuery('#assignmentGrid').setCell(rowid, 'embed', embedButton);
 
     var playlistButton = jQuery.sprintf('<input type="button" onclick=admin.assign.showPlaylistCode("%s") value="Playlist"/>', entryId);
-    jQuery('#assignmentGrid').setCell(rowid, 'playlist', playlistButton);    
+    jQuery('#assignmentGrid').setCell(rowid, 'playlist', playlistButton);
+    
+    var modifyButton = jQuery.sprintf('<input type="button" onclick=admin.assign.loadYouTubeCategoriesForModify("%s") value="Modify"/>', entryId);
+    jQuery('#assignmentGrid').setCell(rowid, 'modify', modifyButton);
   };
 
   grid.afterSaveCell = function(rowid, cellname, value, iRow, iCol) {
@@ -246,11 +268,6 @@ admin.assign.initGridModels = function(grid) {
     name : 'status',
     index : 'status',
     width : 90,
-    edittype : 'select',
-    editable : true,
-    editoptions : {
-      value : 'ACTIVE:ACTIVE;PENDING:PENDING;ARCHIVED:ARCHIVED'
-    },
     sorttype : 'string',
     sortable: true
   });  
@@ -292,8 +309,16 @@ admin.assign.initGridModels = function(grid) {
     width : 80,
     align : 'center',
     sortable : false
-  });    
+  });
   
+  grid.colNames.push('Modify Assignment');
+  grid.colModel.push({
+    name : 'modify',
+    index : 'modify',
+    width : 120,
+    align : 'center',
+    sortable : false
+  });  
 };
 
 admin.assign.getSelfUrl = function() {
@@ -475,8 +500,7 @@ admin.assign.showAssignmentCreate = function(categories) {
   
   var div = jQuery('#assignmentCreateTemplate').clone();  
   
-  var categorySelector = div.find('#assignmentCategories'); 
-
+  var categorySelector = div.find('#assignmentCategories');
   for (var i = 0; i < categories.length; i++) {
     var category = categories[i];
     if (category == 'News') {
@@ -524,6 +548,119 @@ admin.assign.showAssignmentCreate = function(categories) {
   
   div.dialog(dialogOptions);    
 };
+
+admin.assign.loadAllPlaylists = function(categories, assignmentId) {
+  var messageElement = admin.showMessage("Loading YouTube playlists...");
+  
+  jsonrpc.makeRequest('GET_YOUTUBE_PLAYLISTS', {}, function(playlistsJson) {
+    try {
+      if (!playlistsJson.error) {
+        admin.showMessage("Playlists loaded.", messageElement);
+        
+        admin.assign.loadAllAlbums(categories, assignmentId, playlistsJson);
+      } else {
+        admin.showError(playlistsJson.error, messageElement);  
+      }
+    } catch(exception) {
+      admin.showError('Request failed: ' + exception, messageElement);
+    }
+  });
+}
+
+admin.assign.loadAllAlbums = function(categories, assignmentId, playlistsJson) {
+  var messageElement = admin.showMessage("Loading Picasa albums...");
+  
+  jsonrpc.makeRequest('GET_PICASA_ALBUMS', {}, function(albumsJson) {
+    try {
+      if (!albumsJson.error) {
+        admin.showMessage("Albums loaded.", messageElement);
+        
+        admin.assign.showAssignmentModify(categories, assignmentId, playlistsJson, albumsJson);
+      } else {
+        admin.showError(albumsJson.error, messageElement);  
+      }
+    } catch(exception) {
+      admin.showError('Request failed: ' + exception, messageElement);
+    }
+  });
+}
+
+admin.assign.showAssignmentModify = function(categories, assignmentId, playlistsJson, albumsJson) {
+  var assignment = admin.assign.getAssignment(assignmentId);
+
+  var dialogDiv = jQuery('#assignmentEditTemplate').clone();
+  
+  dialogDiv.find('#description').html(assignment.description);
+  
+  var categorySelector = dialogDiv.find('#category');
+  for (var i = 0; i < categories.length; i++) {
+    var category = categories[i];
+    if (category == assignment.category) {
+      categorySelector.append(jQuery.sprintf('<option value="%s" selected="selected">%s</option>', category, category));
+    } else {
+      categorySelector.append(jQuery.sprintf('<option value="%s">%s</option>', category, category));
+    }
+  }
+
+  var playlistHtml = [];
+  jQuery.each(playlistsJson.playlists, function(playlistId, metadata) {
+    if (playlistId == assignment.playlistId) {
+      playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, playlistId, metadata.title));
+    } else {
+      playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, playlistId, metadata.title));
+    }
+  });
+  dialogDiv.find('#playlist').html(playlistHtml.sort().join());
+
+  var albumHtml = [];
+  jQuery.each(albumsJson.albums, function(albumUrl, metadata) {
+    if (albumUrl == assignment.approvedAlbumUrl) {
+      albumHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, albumUrl, metadata.title));
+    } else {
+      albumHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, albumUrl, metadata.title));
+    }
+  });
+  dialogDiv.find('#album').html(albumHtml.sort().join());
+  
+  dialogDiv.find('#modifyCancelButton').click(function() {
+    dialogDiv.dialog('destroy');
+  });
+  
+  dialogDiv.find('#modifyButton').click(function() {
+    var messageElement = admin.showMessage("Modifying assignment...");
+    
+    assignment.category = dialogDiv.find('#category').val();
+    assignment.playlistId = dialogDiv.find('#playlist').val();
+    assignment.status = dialogDiv.find('#status').val();
+    
+    var approvedAlbumUrl = dialogDiv.find('#album').val();
+    assignment.approvedAlbumUrl = approvedAlbumUrl;
+    assignment.rejectedAlbumUrl = albumsJson.albums[approvedAlbumUrl].rejectedAlbumUrl;
+    assignment.unreviewedAlbumUrl = albumsJson.albums[approvedAlbumUrl].unreviewedAlbumUrl;
+    
+    jsonrpc.makeRequest('UPDATE_ASSIGNMENT', assignment, function(json) {
+      try {
+        if (!json.error) {
+          admin.showMessage("Assignment modified.", messageElement);
+          admin.assign.refreshGrid();
+        } else {
+          admin.showError("Could not modify assignment: " + json.error, messageElement);
+        }
+      } catch(exception) {
+        admin.showError('Request failed: ' + exception, messageElement);
+      }
+    });
+
+    dialogDiv.dialog('destroy');
+  });
+  
+  jQuery.ui.dialog.prototype.options.bgiframe = true;
+  dialogDiv.dialog({
+    title: "Modify an Assignment",
+    width: 700,
+    height: 400
+  });
+}
 
 admin.assign.getAllAssignments = function(callback) {
   var messageElement = admin.showMessage("Loading assignments...");
