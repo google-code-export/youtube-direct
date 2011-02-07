@@ -492,9 +492,9 @@ admin.assign.refreshGridUI = function(entries) {
 
 admin.assign.showAssignmentCreate = function(categories) {
   var dialogOptions = {};
-  dialogOptions.title = "Create New Assignment";
-  dialogOptions.width = 400;
-  dialogOptions.height = 550;
+  dialogOptions.title = "Create a New Assignment";
+  dialogOptions.width = 700;
+  dialogOptions.height = 'auto';
   
   jQuery.ui.dialog.prototype.options.bgiframe = true; 
   
@@ -658,7 +658,7 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
   dialogDiv.dialog({
     title: "Modify an Assignment",
     width: 700,
-    height: 400
+    height: 'auto'
   });
 }
 
