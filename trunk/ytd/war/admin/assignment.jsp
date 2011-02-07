@@ -65,8 +65,10 @@ limitations under the License.
     <textarea cols="40" rows="5" id="assignmentPostSubmitMessage"></textarea>   
     <br><br>
 		
-		<input id="createButton" type="button" value="Create"/>
-		<input id="createCancelButton" type="button" value="Cancel"/>
+		<div class="actionButtons">
+  		<input id="createCancelButton" type="button" value="Cancel"/>
+      <input id="createButton" type="button" value="Create"/>
+    </div>
 	</div>
 	
   <div id="assignmentEditTemplate" style="display: none;">
@@ -113,7 +115,9 @@ limitations under the License.
         When approved, pictures will be added to this Picasa album.
       </div>
     </fieldset>
-
-    <input id="modifyButton" type="button" value="Modify"/>
-    <input id="modifyCancelButton" type="button" value="Cancel"/>
+    
+    <div class="actionButtons">
+      <input id="modifyCancelButton" type="button" value="Cancel"/>
+      <input id="modifyButton" type="button" value="Modify"/>
+    </div>
   </div>
