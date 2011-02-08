@@ -569,7 +569,9 @@ admin.assign.loadAllPlaylists = function(categories, assignmentId) {
         
         admin.assign.loadAllAlbums(categories, assignmentId, playlistsJson);
       } else {
-        admin.showError(playlistsJson.error, messageElement);  
+        admin.showError(playlistsJson.error, messageElement);
+        
+        admin.assign.loadAllAlbums(categories, assignmentId, null);
       }
     } catch(exception) {
       admin.showError('Request failed: ' + exception, messageElement);
@@ -587,7 +589,9 @@ admin.assign.loadAllAlbums = function(categories, assignmentId, playlistsJson) {
         
         admin.assign.showAssignmentModify(categories, assignmentId, playlistsJson, albumsJson);
       } else {
-        admin.showError(albumsJson.error, messageElement);  
+        admin.showError(albumsJson.error, messageElement);
+        
+        admin.assign.showAssignmentModify(categories, assignmentId, playlistsJson, null);
       }
     } catch(exception) {
       admin.showError('Request failed: ' + exception, messageElement);
@@ -613,25 +617,29 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
     }
   }
 
-  var playlistHtml = [];
-  jQuery.each(playlistsJson.playlists, function(playlistId, metadata) {
-    if (playlistId == assignment.playlistId) {
-      playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, playlistId, metadata.title));
-    } else {
-      playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, playlistId, metadata.title));
-    }
-  });
-  dialogDiv.find('#playlist').html(playlistHtml.sort().join());
+  if (playlistsJson != null) {
+    var playlistHtml = [];
+    jQuery.each(playlistsJson.playlists, function(playlistId, metadata) {
+      if (playlistId == assignment.playlistId) {
+        playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, playlistId, metadata.title));
+      } else {
+        playlistHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, playlistId, metadata.title));
+      }
+    });
+    dialogDiv.find('#playlist').html(playlistHtml.sort().join());
+  }
 
-  var albumHtml = [];
-  jQuery.each(albumsJson.albums, function(albumUrl, metadata) {
-    if (albumUrl == assignment.approvedAlbumUrl) {
-      albumHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, albumUrl, metadata.title));
-    } else {
-      albumHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, albumUrl, metadata.title));
-    }
-  });
-  dialogDiv.find('#album').html(albumHtml.sort().join());
+  if (albumsJson != null) {
+    var albumHtml = [];
+    jQuery.each(albumsJson.albums, function(albumUrl, metadata) {
+      if (albumUrl == assignment.approvedAlbumUrl) {
+        albumHtml.push(jQuery.sprintf('<option id="%s" value="%s" selected="selected">%s</option>', metadata.title, albumUrl, metadata.title));
+      } else {
+        albumHtml.push(jQuery.sprintf('<option id="%s" value="%s">%s</option>', metadata.title, albumUrl, metadata.title));
+      }
+    });
+    dialogDiv.find('#album').html(albumHtml.sort().join());
+  }
   
   dialogDiv.find('#modifyCancelButton').click(function() {
     dialogDiv.dialog('destroy');
@@ -641,14 +649,19 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
     var messageElement = admin.showMessage("Modifying assignment...");
     
     assignment.category = dialogDiv.find('#category').val();
-    assignment.playlistId = dialogDiv.find('#playlist').val();
     assignment.status = dialogDiv.find('#status').val();
     assignment.description = dialogDiv.find('#description').val();
     
-    var approvedAlbumUrl = dialogDiv.find('#album').val();
-    assignment.approvedAlbumUrl = approvedAlbumUrl;
-    assignment.rejectedAlbumUrl = albumsJson.albums[approvedAlbumUrl].rejectedAlbumUrl;
-    assignment.unreviewedAlbumUrl = albumsJson.albums[approvedAlbumUrl].unreviewedAlbumUrl;
+    if (playlistsJson != null) {
+      assignment.playlistId = dialogDiv.find('#playlist').val();
+    }
+    
+    if (albumsJson != null) {
+      var approvedAlbumUrl = dialogDiv.find('#album').val();
+      assignment.approvedAlbumUrl = approvedAlbumUrl;
+      assignment.rejectedAlbumUrl = albumsJson.albums[approvedAlbumUrl].rejectedAlbumUrl;
+      assignment.unreviewedAlbumUrl = albumsJson.albums[approvedAlbumUrl].unreviewedAlbumUrl;
+    }
     
     jsonrpc.makeRequest('UPDATE_ASSIGNMENT', assignment, function(json) {
       try {
