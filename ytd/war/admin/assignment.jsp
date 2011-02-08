@@ -89,7 +89,7 @@ limitations under the License.
     <fieldset>
       <div class="clear">
         <label for="title" class="configureLabel">Title:</label>
-        <span id="title"></span>
+        <span id="title">Legacy Assignment</span>
       </div>
       <div class="help">The assignment's title. Cannot be changed after creation.</div>
 
