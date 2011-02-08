@@ -53,6 +53,7 @@ public class NewAssignment extends Command {
     assignment.setCategory(category);
     assignment.setLoginInstruction(loginInstruction);
     assignment.setPostSubmitMessage(postSubmitMessage);
+    assignment.setTitle(title);
 
     assignment = assignmentDao.newAssignment(assignment, title);
 

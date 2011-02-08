@@ -88,10 +88,16 @@ limitations under the License.
   <div id="assignmentEditTemplate" style="display: none;">
     <fieldset>
       <div class="clear">
-        <label for="description" class="configureLabel">Description:</label>
-        <span id="description"></span>
+        <label for="title" class="configureLabel">Title:</label>
+        <span id="title"></span>
       </div>
-      <div class="help">The assignment's description.</div>
+      <div class="help">The assignment's title. Cannot be changed after creation.</div>
+
+      <div class="clear">
+        <label for="description" class="configureLabel">Description:</label>
+        <textarea cols="50" rows="5" id="description"></textarea>
+      </div>
+      <div class="help">The assignment's description. This is not user-visible.</div>
       
       <div class="clear">
         <label for="status" class="configureLabel">Assignment Status:</label>

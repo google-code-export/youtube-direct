@@ -48,6 +48,10 @@ public class Assignment implements Serializable {
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   @Expose
   private Long id;
+  
+  @Persistent
+  @Expose
+  private String title = null;
 
   @Persistent
   @Expose
@@ -275,4 +279,18 @@ public class Assignment implements Serializable {
   public void setApprovedAlbumUrl(String approvedAlbumUrl) {
     this.approvedAlbumUrl = approvedAlbumUrl;
   }
+
+  /**
+   * @return the title
+   */
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * @param title the title to set
+   */
+  public void setTitle(String title) {
+    this.title = title;
+  }  
 }

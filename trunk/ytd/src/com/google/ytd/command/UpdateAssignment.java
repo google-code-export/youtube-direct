@@ -40,6 +40,11 @@ public class UpdateAssignment extends Command {
       assignment.setDescription(description);
     }
     
+    String title = getParam("title");
+    if (!util.isNullOrEmpty(title)) {
+      assignment.setTitle(title);
+    }
+    
     String category = getParam("category");
     if (!util.isNullOrEmpty(category)) {
       assignment.setCategory(category);

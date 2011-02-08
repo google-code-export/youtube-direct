@@ -252,6 +252,16 @@ admin.assign.initGridModels = function(grid) {
     editoptions: {rows:'3', cols: '30'},
     editrules: {required: true}
   });
+  
+  grid.colNames.push('Title');  
+  grid.colModel.push({
+    name: 'title',
+    index: 'title',
+    width: 60,
+    sortable: true,
+    sorttype : 'string',
+    hidden: true
+  });
 
   grid.colNames.push('Category');
   grid.colModel.push( {
@@ -590,7 +600,8 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
 
   var dialogDiv = jQuery('#assignmentEditTemplate').clone();
   
-  dialogDiv.find('#description').html(assignment.description);
+  dialogDiv.find('#title').html(assignment.title);
+  dialogDiv.find('#description').val(assignment.description);
   
   var categorySelector = dialogDiv.find('#category');
   for (var i = 0; i < categories.length; i++) {
@@ -632,6 +643,7 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
     assignment.category = dialogDiv.find('#category').val();
     assignment.playlistId = dialogDiv.find('#playlist').val();
     assignment.status = dialogDiv.find('#status').val();
+    assignment.description = dialogDiv.find('#description').val();
     
     var approvedAlbumUrl = dialogDiv.find('#album').val();
     assignment.approvedAlbumUrl = approvedAlbumUrl;
