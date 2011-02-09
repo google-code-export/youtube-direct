@@ -31,7 +31,7 @@ limitations under the License.
       <span id="assignmentPageIndex"></span>  
       <input id="assignmentNextPage" value="Next >>" type="button"/>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <input id="assignmentCreateButton" value="New Assignment" type="button"/> 
+      <input id="assignmentCreateButton" value="New Assignment" type="button"/>
   </div>
   <table id="assignmentGrid" class="scroll" cellpadding="0" cellspacing="0"></table>
   
@@ -67,13 +67,13 @@ limitations under the License.
       <div class="help">Newly-uploaded videos will be assigned this category in YouTube.</div>
       
       <div class="clear">
-        <label for="assignmentLoginInstruction" class="configureLabel">Initial Message:</label>
+        <label for="assignmentLoginInstruction" class="configureLabel">Custom Initial Message:</label>
         <textarea cols="50" rows="5" id="assignmentLoginInstruction"></textarea>
       </div>
       <div class="help">Optional: This text will be substituted in place of the <code>ASSIGNMENT_MESSAGE</code> macro in the pre-submission message.</div>
       
       <div class="clear">
-        <label for="assignmentPostSubmitMessage" class="configureLabel">Initial Message:</label>
+        <label for="assignmentPostSubmitMessage" class="configureLabel">Custom Post-Submission Message:</label>
         <textarea cols="50" rows="5" id="assignmentPostSubmitMessage"></textarea>
       </div>
       <div class="help">Optional: This text will be substituted in place of the <code>ASSIGNMENT_MESSAGE</code> macro in the post-submission message.</div>
