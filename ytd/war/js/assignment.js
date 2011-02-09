@@ -54,7 +54,7 @@ admin.assign.loadYouTubeCategories = function() {
         admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   }
   
@@ -75,7 +75,7 @@ admin.assign.loadYouTubeCategoriesForModify = function(assignmentId) {
         admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   });
 };
@@ -548,7 +548,7 @@ admin.assign.showAssignmentCreate = function(categories) {
           admin.showError("Could not create a new assignment: " + json.error, messageElement);
         }
       } catch(exception) {
-      	admin.showError('Request failed: ' + exception, messageElement);
+      	admin.showError(exception, messageElement);
       }
     } 
     
@@ -574,7 +574,7 @@ admin.assign.loadAllPlaylists = function(categories, assignmentId) {
         admin.assign.loadAllAlbums(categories, assignmentId, null);
       }
     } catch(exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   });
 }
@@ -594,7 +594,7 @@ admin.assign.loadAllAlbums = function(categories, assignmentId, playlistsJson) {
         admin.assign.showAssignmentModify(categories, assignmentId, playlistsJson, null);
       }
     } catch(exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   });
 }
@@ -672,7 +672,7 @@ admin.assign.showAssignmentModify = function(categories, assignmentId, playlists
           admin.showError("Could not modify assignment: " + json.error, messageElement);
         }
       } catch(exception) {
-        admin.showError('Request failed: ' + exception, messageElement);
+        admin.showError(exception, messageElement);
       }
     });
 
@@ -710,7 +710,7 @@ admin.assign.getAllAssignments = function(callback) {
         admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   } 
   
@@ -732,7 +732,7 @@ admin.assign.updateAssignment = function(entry) {
         admin.showError(json.error, messageElement);  
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   } 
   

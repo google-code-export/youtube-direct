@@ -614,7 +614,7 @@ admin.photo.showDetails = function(entryId) {
             admin.showError(json.error, messageElement);
           }
         } catch (exception) {
-          admin.showError('Request failed: ' + exception, messageElement);
+          admin.showError(exception, messageElement);
         }
       }
   
@@ -646,7 +646,7 @@ admin.photo.updateStatus = function(ids, status, callback) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -670,7 +670,7 @@ admin.photo.deletePhotos = function(ids, callback) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -694,7 +694,7 @@ admin.photo.deleteSubmission = function(id, callback) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -718,7 +718,7 @@ admin.photo.getAllPhotos = function(submissionId, callback) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -747,7 +747,7 @@ admin.photo.getAllSubmissions = function(callback) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -771,7 +771,7 @@ admin.photo.updateSubmissionStatus = function(entry) {
         admin.showError(json.error, messageElement);
       }
     } catch (exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
