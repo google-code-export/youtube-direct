@@ -36,9 +36,15 @@ admin.showMessage = function(message, elementToHide, displaySeconds) {
   return admin.showSomething(message, 'message', elementToHide, displaySeconds);
 };
 
-// errorObj may be a XHR object returned from an AJAX call, or a string.
-admin.showError = function(errorString, elementToHide) {
-  return admin.showSomething(errorString, 'error', elementToHide, 10);
+admin.showError = function(error, elementToHide) {
+  // Let's console.log() exceptions if it's available and we're on a dev server (not port 443)
+  if (window.location.port != 443 && typeof error != 'string' && typeof console != 'undefined' && typeof console.log != 'undefined') {
+    for (property in error) {
+      console.log(jQuery.sprintf("%s: %s", property, error[property]));
+    }
+  }
+  
+  return admin.showSomething(error, 'error', elementToHide, 10);
 };
 
 admin.showSomething = function(message, elementClass, elementToHide, displaySeconds) {

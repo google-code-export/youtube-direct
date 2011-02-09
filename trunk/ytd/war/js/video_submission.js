@@ -660,7 +660,7 @@ admin.sub.fetchDetails = function(entryId) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-      admin.showError('Request failed: ' + exception, messageElement);
+      admin.showError(exception, messageElement);
     }
   }
 
@@ -770,7 +770,7 @@ admin.sub.showDetails = function(submission) {
             admin.showError(json.error, messageElement);
           }
         } catch(exception) {
-          admin.showError('Request failed: ' + exception, messageElement);
+          admin.showError(exception, messageElement);
         }
       } 
       
@@ -816,7 +816,7 @@ admin.sub.loadCaptions = function(submissionId) {
         admin.showError(json.error, messageElement);
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   }
   
@@ -886,7 +886,7 @@ admin.sub.showCaptionInfo = function(json) {
   	        admin.showError(json.error, messageElement);
   	      }
   	    } catch(exception) {
-  	    	admin.showError('Request failed: ' + exception, messageElement);
+  	    	admin.showError(exception, messageElement);
   	    }
   	  }
   	  
@@ -921,7 +921,7 @@ admin.sub.showCaptionInfo = function(json) {
 	        admin.showError(json.error, messageElement);
 	      }
 	    } catch(exception) {
-	    	admin.showError('Request failed: ' + exception, messageElement);
+	    	admin.showError(exception, messageElement);
 	    }
 	  }
 	  
@@ -948,7 +948,7 @@ admin.sub.deleteEntry = function(entryId) {
           admin.showError(json.error, messageElement);
         }
       } catch (exception) {
-        admin.showError('Request failed: ' + exception, messageElement);
+        admin.showError(exception, messageElement);
       }
     }
 
@@ -1001,7 +1001,7 @@ admin.sub.getAllSubmissions = function(callback) {
         admin.showError(json.error, messageElement);          
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   } 
   
@@ -1030,7 +1030,7 @@ admin.sub.updateSubmissionStatus = function(entry) {
         admin.showError(json.error, messageElement);      
       }
     } catch(exception) {
-    	admin.showError('Request failed: ' + exception, messageElement);
+    	admin.showError(exception, messageElement);
     }
   } 
   
