@@ -189,3 +189,7 @@ fieldset legend {
 .actionButtons {
   text-align: center;
 }
+
+#assignmentCreateButton {
+  margin-left: 50px;
+}
