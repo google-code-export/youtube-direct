@@ -26,6 +26,7 @@ public enum CommandType {
   DELETE_VIDEO_SUBMISSION(DeleteVideoSubmission.class),
   DELETE_STUFF(DeleteStuff.class),
   GET_YOUTUBE_PLAYLISTS(GetYouTubePlaylists.class),
+  OPEN_CHANNEL_CONNECTION(OpenChannelConnection.class),
   GET_PICASA_ALBUMS(GetPicasaAlbums.class);
 
   private Class<? extends Command> clazz = null;

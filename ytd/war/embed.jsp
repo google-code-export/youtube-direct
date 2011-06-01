@@ -213,9 +213,9 @@
 	<br>
 	<div><input class="inputBox" type="text" name="location" id="uploadLocation" /></div>
 	<br>
-  <label for="phoneNumber">Phone Number:</label>
+  <label for="uploadPhoneNumber">Phone Number:</label>
   <br>
-  <div><input class="inputBox" type="text" name="phoneNumber" id="uploadPhoneNumber" /></div>
+  <div><input class="inputBox" type="text" name="uploadPhoneNumber" id="uploadPhoneNumber" /></div>
   <br>		
 	<label>Email me on approval: </label><input id="uploadEmailAsk" type="checkbox" />
 	<input class="emailInputBox" id="uploadEmail" type="text" value=""/>

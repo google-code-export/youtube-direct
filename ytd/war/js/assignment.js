@@ -525,38 +525,39 @@ admin.assign.showAssignmentCreate = function(categories) {
   });
   
   div.find('#createButton').click(function() {
-    var messageElement = admin.showMessage("Creating assignment...");
-    
-    var command = 'NEW_ASSIGNMENT';
-    var params = {};
-    params.description = div.find('#assignmentDescription').val();
-    params.title = div.find('#playlistTitle').val();
-    params.loginInstruction = div.find('#assignmentLoginInstruction').val();
-    params.postSubmitMessage = div.find('#assignmentPostSubmitMessage').val();
-    params.category = div.find('#assignmentCategories').get(0).
-        options[div.find('#assignmentCategories').attr('selectedIndex')].value;
-    params.status = div.find('#assignmentStatusType').get(0).
-        options[div.find('#assignmentStatusType').attr('selectedIndex')].value;            
-        
-    var callback = function(json) {
-      try {
-        if (!json.error) {
-        	admin.showMessage("Assignment created.", messageElement);
-        	admin.assign.pageIndex = 1;
-        	admin.assign.refreshGrid();
-        } else {
-          admin.showError("Could not create a new assignment: " + json.error, messageElement);
+    admin.getChannelId(function(channelId) {
+      var messageElement = admin.showMessage("Creating assignment...");
+
+      var command = 'NEW_ASSIGNMENT';
+      var params = {};
+      params.channelId = channelId;
+      params.description = div.find('#assignmentDescription').val();
+      params.title = div.find('#playlistTitle').val();
+      params.loginInstruction = div.find('#assignmentLoginInstruction').val();
+      params.postSubmitMessage = div.find('#assignmentPostSubmitMessage').val();
+      params.category = div.find('#assignmentCategories').val();
+      params.status = div.find('#assignmentStatusType').val();
+
+      var callback = function(json) {
+        try {
+          if (!json.error) {
+            admin.showMessage("Assignment created.", messageElement);
+            admin.assign.pageIndex = 1;
+            admin.assign.refreshGrid();
+          } else {
+            admin.showError("Could not create a new assignment: " + json.error, messageElement);
+          }
+        } catch(exception) {
+          admin.showError(exception, messageElement);
         }
-      } catch(exception) {
-      	admin.showError(exception, messageElement);
-      }
-    } 
-    
-    jsonrpc.makeRequest(command, params, callback);
-    div.dialog('destroy');
-  });  
-  
-  div.dialog(dialogOptions);    
+      } 
+
+      jsonrpc.makeRequest(command, params, callback);
+      div.dialog('destroy');
+    });
+  });
+
+  div.dialog(dialogOptions);
 };
 
 admin.assign.loadAllPlaylists = function(categories, assignmentId) {
