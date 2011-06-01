@@ -591,7 +591,7 @@ public class YouTubeApiHelper {
     return null;
   }
 
-  public String createPlaylist(String title, String description) {
+  public String createPlaylist(String title, String description) throws ServiceException {
     PlaylistLinkEntry newEntry = new PlaylistLinkEntry();
     newEntry.setTitle(new PlainTextConstruct(title));
     newEntry.setSummary(new PlainTextConstruct(description));
@@ -621,10 +621,6 @@ public class YouTubeApiHelper {
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
     } catch (IOException e) {
-      log.log(Level.WARNING, "", e);
-    } catch (ServiceException e) {
-      // TODO: Propogate AuthenticationExceptions so the calling code can
-      // invalidate the token.
       log.log(Level.WARNING, "", e);
     }
 

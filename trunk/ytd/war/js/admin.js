@@ -31,8 +31,8 @@ admin.init = function() {
 };
 
 admin.showMessage = function(message, elementToHide, displaySeconds) {
-  // Default timeout is 5 sec.
-  displaySeconds = displaySeconds || 5;
+  // Default timeout is 15 sec.
+  displaySeconds = displaySeconds || 15;
   return admin.showSomething(message, 'message', elementToHide, displaySeconds);
 };
 
@@ -85,3 +85,43 @@ admin.padZero = function(value) {
     return value;
   }
 };
+
+admin.getChannelId = function(callback) {
+  if (admin.channelId != null) {
+    callback(admin.channelId);
+  } else {
+    var messageElement = admin.showMessage("Opening communications channel...");
+  
+    jsonrpc.makeRequest('OPEN_CHANNEL_CONNECTION', {}, function(json) {
+      try {
+        if (!json.error) {
+          admin.showMessage("Communications channel opened.", messageElement);
+          
+          var channel = new goog.appengine.Channel(json.token);
+          admin.socket = channel.open();
+
+          admin.socket.onmessage = function(message) {
+            admin.showMessage(message.data);
+          };
+          
+          admin.socket.onclose = function(message) {
+            admin.channelId = null;
+          };
+
+          admin.socket.onerror = function(error) {
+            admin.showError(error.description);
+            admin.socket.close();
+            admin.channelId = null;
+          };
+          
+          admin.channelId = json.channelId;
+          callback(json.channelId);
+        } else {
+          admin.showError(json.error, messageElement);  
+        }
+      } catch(exception) {
+        admin.showError(exception, messageElement);
+      }
+    });
+  }
+}

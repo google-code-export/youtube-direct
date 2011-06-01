@@ -153,7 +153,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
    * com.google.ytd.dao.AssignmentDao#newAssignment(com.google.ytd.model.Assignment
    * )
    */
-  public Assignment newAssignment(Assignment assignment, String title) {
+  public Assignment newAssignment(Assignment assignment, String title, String channelId) {
     PersistenceManager pm = pmf.getPersistenceManager();
     try {
       assignment = pm.makePersistent(assignment);
@@ -165,19 +165,19 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
       queue.add(url("/tasks/CreatePlaylist").method(Method.POST)
           .param("assignmentId", assignmentId).param("title", title).param("description",
-              description));
+              description).param("channelId", channelId));
 
       if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
           && picasaApiHelper.isAuthenticated()) {
         queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
             .param("title", title).param("description", description).param("status",
-                ModerationStatus.APPROVED.toString()));
+                ModerationStatus.APPROVED.toString()).param("channelId", channelId));
         queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
             .param("title", title).param("description", description).param("status",
-                ModerationStatus.UNREVIEWED.toString()));
+                ModerationStatus.UNREVIEWED.toString()).param("channelId", channelId));
         queue.add(url("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
             .param("title", title).param("description", description).param("status",
-                ModerationStatus.REJECTED.toString()));
+                ModerationStatus.REJECTED.toString()).param("channelId", channelId));
       } else {
         log.info("Photo submissions are : " + (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled() ? "enabled" : "disabled"));
         log.info("Picassa AuthSub token : " + (picasaApiHelper.isAuthenticated() ? "found" : "not found"));
@@ -235,7 +235,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
         assignment = pm.detachCopy(assignment);
         assignmentId = assignment.getId();
         
-        newAssignment(assignment, "Mobile Submissions");
+        newAssignment(assignment, "Mobile Submissions", "");
       }
     } finally {
       pm.close();

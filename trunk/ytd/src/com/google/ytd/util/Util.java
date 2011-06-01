@@ -45,7 +45,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Util {
-  public static final String CLIENT_ID_PREFIX = "ytd23-";
+  public static final String CLIENT_ID_PREFIX = "ytd24-";
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
   public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(

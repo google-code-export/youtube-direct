@@ -14,6 +14,11 @@
 
 package com.google.ytd.tasks;
 
+import com.google.appengine.api.channel.ChannelFailureException;
+import com.google.appengine.api.channel.ChannelMessage;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
+import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.ytd.dao.AdminConfigDao;
@@ -33,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class CreatePlaylist extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(CreatePlaylist.class.getName());
+  private ChannelService channelService = ChannelServiceFactory.getChannelService();
 
   @Inject
   private Util util;
@@ -46,8 +52,11 @@ public class CreatePlaylist extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     LOG.info("Starting up...");
+    String channelId = null;
 
     try {
+      channelId = request.getParameter("channelId");
+      
       String assignmentId = request.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
         throw new IllegalArgumentException("Required parameter 'assignmentId' is null or empty.");
@@ -91,13 +100,42 @@ public class CreatePlaylist extends HttpServlet {
       }
 
       assignmentDao.save(assignment);
+
+      if (!util.isNullOrEmpty(channelId)) {
+        try {
+          channelService.sendMessage(new ChannelMessage(channelId, "YouTube playlist created."));
+        } catch (ChannelFailureException e) {
+          LOG.log(Level.WARNING, "", e);
+        }
+      }
     } catch (IllegalArgumentException e) {
       // We don't want to send an error response here, since that will result in
       // the TaskQueue retrying and this is not a transient error.
-      LOG.log(Level.WARNING, "", e);
+      reportError(channelId, e);
     } catch (IllegalStateException e) {
-      LOG.log(Level.WARNING, "", e);
+      reportError(channelId, e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (ServiceException e) {
+      // We don't want to send an error response here, since that will result in
+      // the TaskQueue retrying and this is not a transient error.
+      reportError(channelId, "Could not create playlist: " + e.getInternalReason());
+    }
+  }
+  
+  private void reportError(String channelId, Exception exception) {
+    LOG.log(Level.WARNING, "", exception);
+    reportError(channelId, exception.getMessage());
+  }
+  
+  private void reportError(String channelId, String errorMessage) {
+    LOG.warning(errorMessage);
+    
+    if (!util.isNullOrEmpty(channelId)) {
+      try {
+        channelService.sendMessage(new ChannelMessage(channelId, errorMessage));
+      } catch(ChannelFailureException e) {
+        LOG.log(Level.WARNING, "", e);
+      }
     }
   }
 }

@@ -44,6 +44,7 @@ limitations under the License.
 <script type="text/javascript" src="/js/photo_submission.js"></script>
 <script type="text/javascript" src="/js/assignment.js"></script>
 <script type="text/javascript" src="/js/configuration.js"></script>
+<script type="text/javascript" src='/_ah/channel/jsapi'></script>
 
 </head>
 

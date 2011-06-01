@@ -30,6 +30,7 @@ public class NewAssignment extends Command {
     String title = getParam("title");
     String loginInstruction = getParam("loginInstruction");
     String postSubmitMessage = getParam("postSubmitMessage");
+    String channelId = getParam("channelId");
 
     if (util.isNullOrEmpty(description)) {
       throw new IllegalArgumentException("Missing required param: description");
@@ -55,7 +56,7 @@ public class NewAssignment extends Command {
     assignment.setPostSubmitMessage(postSubmitMessage);
     assignment.setTitle(title);
 
-    assignment = assignmentDao.newAssignment(assignment, title);
+    assignment = assignmentDao.newAssignment(assignment, title, channelId);
 
     json.put("id", assignment.getId());
 

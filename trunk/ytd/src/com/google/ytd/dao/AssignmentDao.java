@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.ytd.model.Assignment;
 
 public interface AssignmentDao {
-  public Assignment newAssignment(Assignment assignment, String playlistTitle);
+  public Assignment newAssignment(Assignment assignment, String playlistTitle, String channelId);
 
   public Assignment save(Assignment assignment);
 
