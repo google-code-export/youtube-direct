@@ -2,11 +2,12 @@
 
 package com.google.ytd.mail;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
+
 import com.google.gdata.data.DateTime;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -191,7 +192,7 @@ public class IncomingMail extends HttpServlet {
       }
       
       Queue queue = QueueFactory.getDefaultQueue();
-      queue.add(url("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
+      queue.add(withUrl("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
           .countdownMillis(TASK_DELAY));
     } catch (MessagingException e) {
       LOG.log(Level.WARNING, "", e);

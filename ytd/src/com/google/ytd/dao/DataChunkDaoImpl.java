@@ -22,6 +22,7 @@ public class DataChunkDaoImpl implements DataChunkDao {
     this.pmf = pmf;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public byte[] getBytes(String photoEntryId, long startByte) {
     PersistenceManager pm = pmf.getPersistenceManager();
@@ -52,6 +53,7 @@ public class DataChunkDaoImpl implements DataChunkDao {
     return bytes;
   }
 
+  @Override
   public void deleteChunks(String photoEntryId) {
     LOG.info(String.format("Attempting to delete all DataChunks with photoEntryId '%s'...",
         photoEntryId));
