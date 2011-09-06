@@ -32,11 +32,11 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.*;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -171,7 +171,7 @@ public class SubmitPhoto extends HttpServlet {
         }
         
         Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(url("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
+        queue.add(withUrl("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
             .countdownMillis(TASK_DELAY));
       } else {
         LOG.warning("No valid photos found in upload.");

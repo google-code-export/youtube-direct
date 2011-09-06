@@ -63,10 +63,12 @@ public class Util {
       return deserialize(json, type, context);
     }
 
+    @Override
     public JsonElement serialize(Text text, Type type, JsonSerializationContext context) {
       return new JsonPrimitive(text.getValue());
     }
 
+    @Override
     public Text deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
       try {
         return new Text(json.getAsString());
@@ -89,10 +91,12 @@ public class Util {
       return deserialize(json, type, context);
     }
 
+    @Override
     public JsonElement serialize(Blob blob, Type type, JsonSerializationContext context) {
       return new JsonPrimitive(Base64.encode(blob.getBytes()));
     }
 
+    @Override
     public Blob deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
       try {
         return new Blob(Base64.decode(json.getAsString()));

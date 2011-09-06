@@ -31,6 +31,7 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
     this.pmf = pmf;
   }
 
+  @Override
   public VideoSubmission newSubmission(long assignmentId) {
     return new VideoSubmission(assignmentId);
   }
@@ -134,6 +135,7 @@ public class VideoSubmissionDaoImpl implements VideoSubmissionDao {
     return submission;
   }
   
+  @Override
   public void deleteSubmission(String id) {
     LOG.info(String.format("Attempting to delete VideoSubmission '%s'...", id));
     

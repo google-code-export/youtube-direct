@@ -28,6 +28,7 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     this.pmf = pmf;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public AdminConfig getAdminConfig() {
     AdminConfig adminConfig = null;
@@ -57,6 +58,7 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     return adminConfig;
   }
 
+  @Override
   public boolean isUploadOnly() {
     boolean uploadOnly = false;
     AdminConfig adminConfig = getAdminConfig();
@@ -66,14 +68,17 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     return uploadOnly;
   }
 
+  @Override
   public boolean allowPhotoSubmission() {
     return getAdminConfig().getPhotoSubmissionEnabled();
   }
 
+  @Override
   public long getMaxPhotoSize() {
     return getAdminConfig().getMaxPhotoSizeMb() * 1024 * 1024;
   }
 
+  @Override
   public PrivateKey getPrivateKey() {
     byte[] privateKeyBytes = getAdminConfig().getPrivateKeyBytes();
     if (privateKeyBytes != null && privateKeyBytes.length > 0) {
@@ -105,6 +110,7 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     return adminConfig;
   }
 
+  @Override
   public String getLoginInstruction(String assignmentId) {
     String globalInstruction = getAdminConfig().getLoginInstruction();
 
@@ -119,6 +125,7 @@ public class AdminConfigDaoImpl implements AdminConfigDao {
     return globalInstruction.replace("ASSIGNMENT_MESSAGE", assignmentLoginInstruction);
   }
 
+  @Override
   public String getPostSubmitMessage(String assignmentId) {
     String globalPostSubmitMessage = getAdminConfig().getPostSubmitMessage();
 

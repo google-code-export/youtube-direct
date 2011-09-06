@@ -51,7 +51,7 @@ public class GetYouTubeCategories extends Command {
     Cache cache = null;
 
     try {
-      Map cachedProperties = new HashMap();
+      Map<Integer, Integer> cachedProperties = new HashMap<Integer, Integer>();
       cachedProperties.put(GCacheFactory.EXPIRATION_DELTA, CACHE_EXPIRATION_SECONDS);
       cache = CacheManager.getInstance().getCacheFactory().createCache(cachedProperties);
       List<String> cachedCategories = (List<String>) cache.get(CATEGORIES_CACHE_KEY);
