@@ -75,16 +75,16 @@
 <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <title>YouTube Direct</title>
 
-<link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.8.7.custom.css" rel="stylesheet" />
+<link type="text/css" href="/css/ext/themes/redmond/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
 <link type="text/css" href="/css/embed.css" rel="stylesheet" />
 
-<script type="text/javascript" src="/js/ext/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="/js/ext/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/js/ext/json2.js"></script>
-<script type="text/javascript" src="/js/ext/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="/js/ext/jquery-ui-1.8.16.custom.min.js"></script>
 <script type="text/javascript" src="/js/jsonrpc.js"></script>
 <script type="text/javascript" src="/js/embed.js"></script>
 
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false"></script>
 
 </head>
 
