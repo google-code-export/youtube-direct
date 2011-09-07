@@ -454,15 +454,14 @@ public class YouTubeApiHelper {
       // Return true here, so that the video is flagged as being in the playlist.
       return true;
     }
+    
+    // As of Aug 2011, it's now possible to set the playlist position at insertion time.
+    playlistEntry.setPosition(0);
 
     try {
       playlistEntry = service.insert(new URL(getPlaylistFeedUrl(playlistId)), playlistEntry);
-      log.info(String.format("Inserted video id '%s' into playlist id '%s'. Now moving to front " +
-      		"of playlist.", videoId, playlistId));
-      playlistEntry.setPosition(0);
-      service.update(new URL(playlistEntry.getEditLink().getHref()), playlistEntry);
-      log.info(String.format("Moved video id '%s' to front of playlist id '%s'.", videoId,
-          playlistId));
+      log.info(String.format("Inserted video id '%s' into playlist id '%s' at position 1.",
+        videoId, playlistId));
       return true;
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
