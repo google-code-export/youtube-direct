@@ -1043,9 +1043,9 @@ admin.sub.getVideoHTML = function(videoId, width, height) {
 
   var html = [];
   html.push(jQuery.sprintf('<object width="%d" height="%d">', playerWidth, playerHeight));
-  html.push(jQuery.sprintf('<param name="movie" value="http://www.youtube.com/v/%s?fs=1&rel=0&version=3"></param>', videoId));
+  html.push(jQuery.sprintf('<param name="movie" value="//www.youtube.com/v/%s?fs=1&rel=0&version=3"></param>', videoId));
   html.push('<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>');
-  html.push(jQuery.sprintf('<embed src="http://www.youtube.com/v/%s?fs=1&rel=0&version=3" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>', videoId, playerWidth, playerHeight));
+  html.push(jQuery.sprintf('<embed src="//www.youtube.com/v/%s?fs=1&rel=0&version=3" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>', videoId, playerWidth, playerHeight));
   html.push('</object>');
 
   return html.join('');
