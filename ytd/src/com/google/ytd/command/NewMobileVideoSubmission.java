@@ -25,6 +25,7 @@ public class NewMobileVideoSubmission extends Command {
   private UserAuthTokenDao userAuthTokenDao = null;
   private AssignmentDao assignmentDao = null;
   YouTubeApiHelper youTubeApiHelper;
+  private boolean isTokenClientLogin = false;
 
   private Util util = null;
 
@@ -45,12 +46,17 @@ public class NewMobileVideoSubmission extends Command {
     String assignmentId = getParam("assignmentId");
     String videoId = getParam("videoId");
     String clientLoginToken = getParam("clientLoginToken");
+    String authToken = getParam("authToken");
     String youTubeEmail = getParam("youTubeName");
     String title = getParam("title");
     String description = getParam("description");
     String videoDate = getParam("videoDate");
     String videoLocation = getParam("videoLocation");
     String tags = getParam("tags");
+
+    if (!util.isNullOrEmpty(clientLoginToken)) {
+      isTokenClientLogin = true;
+    }
 
     if (util.isNullOrEmpty(assignmentId)) {
       assignmentId = this.assignmentDao.getDefaultMobileAssignmentId() + "";
@@ -60,8 +66,12 @@ public class NewMobileVideoSubmission extends Command {
       throw new IllegalArgumentException("Missing required param: videoId");
     }
 
-    if (util.isNullOrEmpty(clientLoginToken)) {
+    if (util.isNullOrEmpty(clientLoginToken) && isTokenClientLogin) {
       throw new IllegalArgumentException("Missing required param: clientLoginToken");
+    }
+
+    if (util.isNullOrEmpty(authToken) && !isTokenClientLogin) {
+      throw new IllegalArgumentException("Missing required param: authToken");
     }
 
     if (util.isNullOrEmpty(youTubeEmail)) {
@@ -79,8 +89,15 @@ public class NewMobileVideoSubmission extends Command {
     if (util.isNullOrEmpty(videoDate)) {
       throw new IllegalArgumentException("Missing required param: videoDate");
     }
+
     // translate the Google account email into YouTube account name
-    String youTubeName = getYouTubeName(clientLoginToken, youTubeEmail);
+    String youTubeName = null;
+    if (isTokenClientLogin) {
+      youTubeName = getYouTubeName(clientLoginToken, youTubeEmail);
+    } else {
+      youTubeName = getYouTubeName(authToken, youTubeEmail);
+    }
+
     VideoSubmission submission = new VideoSubmission();
     submission.setAssignmentId(Long.parseLong(assignmentId));
     submission.setYouTubeName(youTubeName);
@@ -100,8 +117,13 @@ public class NewMobileVideoSubmission extends Command {
 
     submissionDao.save(submission);
 
+    if (isTokenClientLogin) {
     userAuthTokenDao.setUserAuthToken(youTubeName, clientLoginToken,
         UserAuthToken.TokenType.CLIENT_LOGIN);
+    } else {
+      userAuthTokenDao.setUserAuthToken(youTubeName, authToken,
+        UserAuthToken.TokenType.AUTH_SUB);
+    }
 
     return json;
   }
@@ -110,16 +132,20 @@ public class NewMobileVideoSubmission extends Command {
    * The mobile app sends user account email, e.g. joe.cool@gmail.com
    * we need the associated (linked) YouTube account name in order to access the feeds later on.
    * This method resolves account email to YouTube account name   
-   * @param clientLoginToken login token supplied by the mobile app
+   * @param loginToken login token supplied by the mobile app
    * @param youTubeEmail email address supplied by the mobile app
    * @return YouTube account name
    * @throws JSONException when resolution fail
    */
-  private String getYouTubeName(String clientLoginToken, String youTubeEmail) throws JSONException {
+  private String getYouTubeName(String loginToken, String youTubeEmail) throws JSONException {
     // the mobile app sends user account email, e.g. joe.cool@gmail.com
     // we need the associated (lnked) YouTube account name in order to access the feeds later on
     String youTubeName;
-    youTubeApiHelper.setClientLoginToken(clientLoginToken);
+    if (isTokenClientLogin) {
+      youTubeApiHelper.setClientLoginToken(loginToken);
+    } else {
+      youTubeApiHelper.setAuthSubToken(loginToken);
+    }
     try {
       log.fine(String.format("Resolving email '%s' to YT user name", youTubeEmail));
       youTubeName = youTubeApiHelper.getCurrentUsername();
