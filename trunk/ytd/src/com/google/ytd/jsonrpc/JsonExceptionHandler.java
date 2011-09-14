@@ -23,6 +23,7 @@ public class JsonExceptionHandler {
     } catch (JSONException e1) {
       throw new RuntimeException();
     } finally {
+      resp.setContentType("application/json; charset=UTF-8");
       resp.getWriter().write(json.toString());
     }
   }
@@ -36,6 +37,7 @@ public class JsonExceptionHandler {
     } catch (JSONException e1) {
       throw new RuntimeException();
     } finally {
+      resp.setContentType("application/json; charset=UTF-8");
       resp.getWriter().write(json.toString());
     }
   }

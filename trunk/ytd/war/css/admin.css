@@ -149,15 +149,15 @@ fieldset legend {
 #messageContainer {
   position: fixed;
   z-index: 1;
-  top: 0px;
-  width: 100%;
+  top: 0;
+  right: 0;
+  background-color: #eeeeee;
 }
 
 #messageList {
   font-size: 14px;
   font-weight: bold;
   text-align: right;
-  padding-right: 15px;
 }
 
 .messageListWrapper {
