@@ -749,7 +749,7 @@ admin.sub.showDetails = function(submission) {
       }
       
       admin.sub.updateSubmissionStatus(submission);
-    });    
+    });
     
     mainDiv.find('#adminNotes').html(submission.adminNotes);
     
@@ -788,6 +788,74 @@ admin.sub.showDetails = function(submission) {
   
     var videoHtml = admin.sub.getVideoHTML(submission.videoId, videoWidth, videoHeight);
     mainDiv.find('#video').html(videoHtml);
+    
+    mainDiv.find('#changeAssignment').click(function() {
+      var messageElement = admin.showMessage("Loading assignments...");
+      
+      var command = 'GET_ASSIGNMENTS';
+      var params = {
+          sortBy: 'created',
+          sortOrder: 'desc',
+          pageIndex: 1,
+          pageSize: 1000,
+          filterType: 'ALL'
+      };
+      
+      var jsonRpcCallback = function(json) {
+        try {
+          if (!json.error) {
+            admin.showMessage("Assignments loaded.", messageElement);
+            
+            var currentAssignment = mainDiv.find('#assignmentId').html();
+            var options = [];
+            $.each(json.result, function(index, assignment) {
+              var selected = '';
+              if (assignment.id == currentAssignment) {
+                selected = 'selected';
+              }
+              
+              options.push($.sprintf('<option value="%d" %s>%s (%d)</option>', assignment.id,
+                  selected, assignment.description, assignment.id));
+            });
+            
+            var selectElement = $($.sprintf('<select>%s</select>', options.join('')));
+            selectElement.change(function() {
+              var newAssignment = $(this).val();
+              
+              var updateMessageElement = admin.showMessage("Updating assignment for submission...");
+              
+              var updateCommand = 'UPDATE_VIDEO_SUBMISSION_ASSIGNMENT';
+              var updateParams = {
+                  id: submission.id,
+                  oldAssignment: currentAssignment,
+                  newAssignment: newAssignment
+              };
+              
+              var updateCallback = function(updateJson) {
+                if (!updateJson.error) {
+                  admin.showMessage("Submission's assignment updated.", updateMessageElement);
+                  mainDiv.find('#assignmentId').html(newAssignment);
+                  
+                  admin.sub.refreshGrid();
+                } else {
+                  admin.showError(updateJson.error, updateMessageElement);
+                }
+              };
+              
+              jsonrpc.makeRequest(updateCommand, updateParams, updateCallback);
+            });
+            
+            mainDiv.find('#assignmentId').html(selectElement);
+          } else {
+            admin.showError(json.error, messageElement);
+          }
+        } catch(exception) {
+          admin.showError(exception, messageElement);
+        }
+      }
+      
+      jsonrpc.makeRequest(command, params, jsonRpcCallback);
+    });
     
     div.append(mainDiv);
   };

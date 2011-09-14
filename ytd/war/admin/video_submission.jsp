@@ -38,7 +38,7 @@ limitations under the License.
 	  <table cellspacing="10" cellspadding="10" style="width: 90%;">
 	  	<tr valign="top">
 	  		<td>
-				  <b>Assignment ID:&nbsp;</b><div id="assignmentId"></div><br>
+				  <b>Assignment ID:&nbsp;</b> <a href="#" id="changeAssignment">Change</a><div id="assignmentId"></div><br>
 				  <b>Submitted on:</b><div id="created"></div><br>
 				  <b>Submitted by:</b><div id="youTubeName"></div><br>
 				  <b>Phone number:</b><div id="phoneNumber"></div><br>
