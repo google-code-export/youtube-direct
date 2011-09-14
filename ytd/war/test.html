@@ -2,64 +2,71 @@
   <head>
     <title>YouTube Direct Test Page</title>
     <script type="text/javascript" src="js/ext/jquery-1.6.2.min.js"></script>
-    <script type="text/javascript" src="js/ytd-embed.js"></script>
+    <script type="text/javascript" src="js/ext/jquery.getUrlParam.js"></script>
+    <script type="text/javascript" src="js/ext/jquery.sprintf.js"></script>
     <script type="text/javascript">
-jQuery(document).ready(function() {
-	var assignmentId = getUrlParams().id;
-  
-	var ytd = new Ytd();
-	ytd.setAssignmentId(assignmentId);
-	ytd.setCallToAction('callToAction');
-	ytd.setYtdContainer('ytd', 400, 800);
-
-  var matches = document.location.href.match(/[?&]parent=(.+)/);
-  if (matches && matches.length > 1) {
-    ytd.setArticleUrl(matches[1]);
-  }
-  
-	ytd.ready();
-});
-
-function getUrlParams() {
-  var args = new Object();
-  var params = window.location.href.split('?');
-
-  if (params.length > 1) {
-    params = params[1];
-    var pairs = params.split("&");
-    for ( var i = 0; i < pairs.length; i++) {
-      var pos = pairs[i].indexOf('=');
-      if (pos == -1)
-        continue;
-      var argname = pairs[i].substring(0, pos);
-      var value = pairs[i].substring(pos + 1);
-      value = value.replace(/\+/g, " ");
-      args[argname] = value;
-    }
-  }
-  return args;
-}
+      $(function() {
+        var assignmentId = $(document).getUrlParam('assignmentId');
+        var instanceId = $(document).getUrlParam('instanceId');
+        
+        var scriptUrl = 'js/ytd-embed.js';
+        if (instanceId) {
+          scriptUrl = $.sprintf('http://%s.appspot.com/%s', instanceId, scriptUrl);
+        }
+        
+        var scriptElement = document.createElement('script');
+        scriptElement.src = scriptUrl;
+        scriptElement.type = "text/javascript";
+        scriptElement.onload = function() {
+          var ytd = new Ytd();
+          
+          if (assignmentId) {
+            ytd.setAssignmentId(assignmentId);
+          }
+          
+          ytd.setCallToAction('callToAction');
+          ytd.setYtdContainer('ytd', 400, 800);
+          
+          var articleUrl = $(document).getUrlParam('parent');
+          if (articleUrl) {
+            ytd.setArticleUrl(articleUrl);
+          }
+          
+          ytd.ready();
+        };
+        document.head.appendChild(scriptElement);
+      });
     </script>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, sans;
+      }
+      
+      #parent {
+        position: relative;
+      }
+      
+      #left {
+        position: absolute;
+        width: 500px;
+      }
+      
+      #right {
+        position: absolute;
+        right: 0;
+      }
+    </style>
   </head>
   <body>
-    <div align="center">
-      <div align="center" style="width: 900px;">
-        <table cellpadding="5" cellspacing="5">
-          <tr valign="top">
-            <td>
-              <h3>Donec pulvinar vehicula massa nec aliquam.</h3>
-              <p style="font-size: 12px; font-family: arial;">
-                <img src="/images/skeleton.jpg"/>
-		            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ullamcorper hendrerit ligula in fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent vulputate nibh ut ante varius lobortis ac id nisl. Mauris quam purus, rhoncus ac sollicitudin eu, tincidunt eu diam. Aliquam vel semper nisl. Nam euismod imperdiet nisl in adipiscing. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras quis elit nisi, at bibendum enim. Proin ac ipsum metus, sit amet accumsan justo. Nam eu neque a nulla tempor euismod eget commodo purus. Cras consequat lectus ac massa hendrerit eleifend. Etiam dolor nibh, auctor sed vulputate in, scelerisque et purus. Maecenas aliquam tempus enim, vitae cursus nunc dignissim et. Curabitur vehicula mattis velit at sodales. Sed porta porta erat, in fermentum felis venenatis eu. Mauris turpis sapien, volutpat nec scelerisque vel, vehicula eget arcu. Quisque elementum pharetra libero, vel tincidunt enim malesuada nec. Aenean sollicitudin neque nec urna vulputate cursus.
-              </p>
-            </td>
-            <td align="center">
-              <br><br>
-              <a id="callToAction" href="javascript:void(0);"><img src="/images/calltoaction.png" border="0"/></a>
-		          <div id="ytd"></div>
-		        </td>
-          </tr>
-        </table>
+    <div id="parent">
+      <div id="left">
+        <h1>Dummy Article Title</h1>
+        <img src="/images/skeleton.jpg"/>
+        <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ullamcorper hendrerit ligula in fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent vulputate nibh ut ante varius lobortis ac id nisl. Mauris quam purus, rhoncus ac sollicitudin eu, tincidunt eu diam. Aliquam vel semper nisl. Nam euismod imperdiet nisl in adipiscing. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras quis elit nisi, at bibendum enim. Proin ac ipsum metus, sit amet accumsan justo. Nam eu neque a nulla tempor euismod eget commodo purus. Cras consequat lectus ac massa hendrerit eleifend. Etiam dolor nibh, auctor sed vulputate in, scelerisque et purus. Maecenas aliquam tempus enim, vitae cursus nunc dignissim et. Curabitur vehicula mattis velit at sodales. Sed porta porta erat, in fermentum felis venenatis eu. Mauris turpis sapien, volutpat nec scelerisque vel, vehicula eget arcu. Quisque elementum pharetra libero, vel tincidunt enim malesuada nec. Aenean sollicitudin neque nec urna vulputate cursus.</div>
+      </div>
+      <div id="right">
+        <a id="callToAction" href="#"><img src="/images/calltoaction.png" border="0"></a>
+        <div id="ytd"></div>
       </div>
     </div>
   </body>
