@@ -5,8 +5,33 @@
     <script type="text/javascript" src="js/ext/jquery.getUrlParam.js"></script>
     <script type="text/javascript" src="js/ext/jquery.sprintf.js"></script>
     <script type="text/javascript">
-      $(function() {
+      var alreadyInitialized = false;
+      
+      function initializeYtd() {
+        if (alreadyInitialized) {
+          return;
+        }
+        alreadyInitialized = true;
+        
+        var ytd = new Ytd();
+        
         var assignmentId = $(document).getUrlParam('assignmentId');
+        if (assignmentId) {
+          ytd.setAssignmentId(assignmentId);
+        }
+        
+        ytd.setCallToAction('callToAction');
+        ytd.setYtdContainer('ytd', 400, 800);
+        
+        var articleUrl = $(document).getUrlParam('parent');
+        if (articleUrl) {
+          ytd.setArticleUrl(articleUrl);
+        }
+        
+        ytd.ready();
+      }
+      
+      $(function() {
         var instanceId = $(document).getUrlParam('instanceId');
         
         var scriptUrl = 'js/ytd-embed.js';
@@ -17,24 +42,13 @@
         var scriptElement = document.createElement('script');
         scriptElement.src = scriptUrl;
         scriptElement.type = "text/javascript";
-        scriptElement.onload = function() {
-          var ytd = new Ytd();
-          
-          if (assignmentId) {
-            ytd.setAssignmentId(assignmentId);
+        scriptElement.onload = initializeYtd;
+        scriptElement.onreadystatechange = function() {
+          if (scriptElement.readyState == "loaded" || scriptElement.readyState == "complete") {
+            initializeYtd();
           }
-          
-          ytd.setCallToAction('callToAction');
-          ytd.setYtdContainer('ytd', 400, 800);
-          
-          var articleUrl = $(document).getUrlParam('parent');
-          if (articleUrl) {
-            ytd.setArticleUrl(articleUrl);
-          }
-          
-          ytd.ready();
         };
-        document.head.appendChild(scriptElement);
+        document.getElementsByTagName('head')[0].appendChild(scriptElement);
       });
     </script>
     <style type="text/css">
