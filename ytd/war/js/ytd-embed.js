@@ -60,7 +60,9 @@ Ytd.prototype.ready = function() {
     var callToAction = document.getElementById(this.callToAction);
     callToAction.style.display = 'none';
     this.embed();
-  }  
+    
+    document.location.hash = '';
+  }
 };
 
 Ytd.prototype.embed = function() {

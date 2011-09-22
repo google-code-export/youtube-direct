@@ -251,14 +251,25 @@ function existingVideoMainInit() {
   	}
 
     var jsonObj = {};
-    var url = jQuery('#videoUrl').val();
-    jsonObj.videoId = getVideoId(url);
-    if (jsonObj.videoId == null) {
+    var uniqueVideoIds = {};
+    jQuery.each(jQuery('[name="videoUrl"]'), function(index, videoUrlElement) {
+      var videoId = getVideoId(videoUrlElement.value);
+      if (videoId != null) {
+        uniqueVideoIds[videoId] = true;
+      }
+    });
+    
+    jsonObj.videoIds = [];
+    jQuery.each(uniqueVideoIds, function(videoId, value) {
+      jsonObj.videoIds.push(videoId);
+    });
+    
+    if (jsonObj.videoIds.length < 1) {
       event.preventDefault();
-      showMessage('Please enter a valid video URL.');
+      showMessage('Please enter at least one valid YouTube URL.');
       return;
     }
-
+    
     // Disable buttons while submitting.
     jQuery('#submitButton').get(0).disabled = true;
     jQuery('#cancelSubmitButton').get(0).disabled = true;
@@ -303,6 +314,7 @@ function existingVideoMainInit() {
       
       showMessage('Sorry, your video submission failed: ' + errorText);
     };
+    
     ajaxCall.success = function(res) {
       clearProcessing();
       
@@ -344,7 +356,15 @@ function existingVideoMainInit() {
     }
   });
 
-  jQuery("#submitDate").datepicker();  
+  jQuery("#submitDate").datepicker();
+  
+  jQuery('#addAnotherVideo').click(function() {
+    var videoUrlElements = jQuery(".inputBox.videoUrl");
+    var lastVideoUrlElement = jQuery(videoUrlElements.get(-1));
+    var newVideoUrlElement = lastVideoUrlElement.clone();
+    newVideoUrlElement.attr('id', 'videoUrl' + (videoUrlElements.length + 1));
+    lastVideoUrlElement.after(newVideoUrlElement);
+  });
 }
 
 function displayExistingVideos(videos) {
@@ -356,7 +376,6 @@ function displayExistingVideos(videos) {
 	var videosSelect = jQuery('#videosSelect');
 	videosSelect.append(options.join('\n'));
 	
-	var videoUrlInput = jQuery('#videoUrl');
 	var thumbnailImg = jQuery('#thumbnail');
 	var descriptionDiv = jQuery('#existingVideoDescription');
 	
@@ -365,7 +384,7 @@ function displayExistingVideos(videos) {
 
 		if (videos[selectedVideoId]) {
 			descriptionDiv.html(videos[selectedVideoId].description);
-			videoUrlInput.val(videos[selectedVideoId].videoUrl);
+			jQuery('[name="videoUrl"]:last').val(videos[selectedVideoId].videoUrl);
 			
 			if (videos[selectedVideoId].thumbnailUrl) {
 				thumbnailImg.attr('src', videos[selectedVideoId].thumbnailUrl);
@@ -375,7 +394,7 @@ function displayExistingVideos(videos) {
 			}
 		} else {
 			descriptionDiv.html('');
-			videoUrlInput.val('');
+			jQuery('[name="videoUrl"]:last').val('');
 			thumbnailImg.attr('style', 'display: none');
 		}
 	});

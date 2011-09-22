@@ -116,3 +116,7 @@ div[align="center"] input[value="Login"] {
 #loadingVideos {
   color: red;
 }
+#addAnotherVideo {
+  float: right;
+  text-decoration: none;
+}
