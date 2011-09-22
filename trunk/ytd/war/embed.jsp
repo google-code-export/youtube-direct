@@ -165,9 +165,10 @@
 		</div>
 	</div>
 	<div style="clear: both; padding: 5px;"></div>
-	<label class="required" for="videoUrl">Video URL:</label> 
+	<label class="required" for="videoUrl1">Video URL:</label> 
   <br>
-  <div><input class="inputBox" type="text" name="videoUrl" id="videoUrl" /></div>
+  <div><input class="inputBox" type="text" name="videoUrl" id="videoUrl1" /></div>
+  <a href="#" id="addAnotherVideo">add another video</a>
   <br>
 	<label for="date">Date:</label>
 	<br>

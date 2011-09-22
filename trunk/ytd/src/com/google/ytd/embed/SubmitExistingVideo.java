@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,7 +78,7 @@ public class SubmitExistingVideo extends HttpServlet {
     try {
       JSONObject jsonObj = new JSONObject(json);
 
-      String videoId = jsonObj.getString("videoId");
+      JSONArray videoIds = jsonObj.getJSONArray("videoIds");
       String location = jsonObj.getString("location");
       String phoneNumber = jsonObj.getString("phoneNumber");
       String date = jsonObj.getString("date");
@@ -87,9 +88,9 @@ public class SubmitExistingVideo extends HttpServlet {
       if (jsonObj.has("assignmentId")) {
         assignmentId = jsonObj.getString("assignmentId");
       }
-      // Only check for required parameters 'videoId'.
-      if (util.isNullOrEmpty(videoId)) {
-        throw new IllegalArgumentException("'videoId' parameter is null or empty.");
+      
+      if (videoIds.length() < 1) {
+        throw new IllegalArgumentException("No video ids were provided.");
       }
 
       // Grab user session meta data
@@ -108,89 +109,93 @@ public class SubmitExistingVideo extends HttpServlet {
       
       apiManager.setAuthSubToken(authSubToken);
 
-      VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
-
-      if (videoEntry == null) {
-        JSONObject responseJsonObj = new JSONObject();
-        responseJsonObj.put("success", "false");
-        responseJsonObj.put("message", "Cannot find this video in your account.");
-
-        resp.setContentType("text/javascript");
-        resp.getWriter().println(responseJsonObj.toString());
-      } else {
-        String title = videoEntry.getTitle().getPlainText();
-        String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
-
-        List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
-        String sortedTags = util.sortedJoin(tags, ",");
-
-        long viewCount = -1;
-
-        YtStatistics stats = videoEntry.getStatistics();
-        if (stats != null) {
-          viewCount = stats.getViewCount();
-        }
-
-        VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
-
-        submission.setArticleUrl(articleUrl);
-        submission.setVideoId(videoId);
-        submission.setVideoTitle(title);
-        submission.setVideoDescription(description);
-        submission.setVideoTags(sortedTags);
-        submission.setVideoLocation(location);
-        submission.setPhoneNumber(phoneNumber);
-        submission.setVideoDate(date);
-        submission.setYouTubeName(youTubeName);
-
-        userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
-
-        submission.setViewCount(viewCount);
-        submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
-        submission.setNotifyEmail(email);
-
-        AdminConfig adminConfig = adminConfigDao.getAdminConfig();
-        if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
-          // NO_MOD is set, auto approve all submission
-          // TODO: This isn't enough, as the normal approval flow (adding the
-          // branding, tags, emails,
-          // etc.) isn't taking place.
-          submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
-          
-          // Add video to YouTube playlist if it isn't in it already.
-          // This code is kind of ugly and is mostly copy/pasted from UpdateVideoSubmissionStatus
-          // TODO: It should be refactored into a common helper method somewhere...
-          if (!submission.isInPlaylist()) {
-            Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
-
-            if (assignment == null) {
-              log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.",
-                  assignmentId, videoId));
-            } else {
-              String playlistId = assignment.getPlaylistId();
-              if (util.isNullOrEmpty(playlistId)) {
-                log.warning(String.format("Assignment id '%d' doesn't have an associated playlist.",
-                    assignmentId));
+      for (int i = 0; i < videoIds.length(); i++) {
+        String videoId = videoIds.getString(i);
+        
+        VideoEntry videoEntry = apiManager.getUploadsVideoEntry(videoId);
+  
+        if (videoEntry == null) {
+          JSONObject responseJsonObj = new JSONObject();
+          responseJsonObj.put("success", "false");
+          responseJsonObj.put("message", "Cannot find this video in your account.");
+  
+          resp.setContentType("text/javascript");
+          resp.getWriter().println(responseJsonObj.toString());
+        } else {
+          String title = videoEntry.getTitle().getPlainText();
+          String description = videoEntry.getMediaGroup().getDescription().getPlainTextContent();
+  
+          List<String> tags = videoEntry.getMediaGroup().getKeywords().getKeywords();
+          String sortedTags = util.sortedJoin(tags, ",");
+  
+          long viewCount = -1;
+  
+          YtStatistics stats = videoEntry.getStatistics();
+          if (stats != null) {
+            viewCount = stats.getViewCount();
+          }
+  
+          VideoSubmission submission = new VideoSubmission(Long.parseLong(assignmentId));
+  
+          submission.setArticleUrl(articleUrl);
+          submission.setVideoId(videoId);
+          submission.setVideoTitle(title);
+          submission.setVideoDescription(description);
+          submission.setVideoTags(sortedTags);
+          submission.setVideoLocation(location);
+          submission.setPhoneNumber(phoneNumber);
+          submission.setVideoDate(date);
+          submission.setYouTubeName(youTubeName);
+  
+          userAuthTokenDao.setUserAuthToken(youTubeName, authSubToken);
+  
+          submission.setViewCount(viewCount);
+          submission.setVideoSource(VideoSubmission.VideoSource.EXISTING_VIDEO);
+          submission.setNotifyEmail(email);
+  
+          AdminConfig adminConfig = adminConfigDao.getAdminConfig();
+          if (adminConfig.getModerationMode() == AdminConfig.ModerationModeType.NO_MOD.ordinal()) {
+            // NO_MOD is set, auto approve all submission
+            // TODO: This isn't enough, as the normal approval flow (adding the
+            // branding, tags, emails,
+            // etc.) isn't taking place.
+            submission.setStatus(VideoSubmission.ModerationStatus.APPROVED);
+            
+            // Add video to YouTube playlist if it isn't in it already.
+            // This code is kind of ugly and is mostly copy/pasted from UpdateVideoSubmissionStatus
+            // TODO: It should be refactored into a common helper method somewhere...
+            if (!submission.isInPlaylist()) {
+              Assignment assignment = assignmentDao.getAssignmentById(assignmentId);
+  
+              if (assignment == null) {
+                log.warning(String.format("Couldn't find assignment id '%d' for video id '%s'.",
+                    assignmentId, videoId));
               } else {
-                apiManager.setAuthSubToken(adminConfig.getYouTubeAuthSubToken());
-                if (apiManager.insertVideoIntoPlaylist(playlistId, videoId)) {
-                  submission.setIsInPlaylist(true);
+                String playlistId = assignment.getPlaylistId();
+                if (util.isNullOrEmpty(playlistId)) {
+                  log.warning(String.format("Assignment id '%d' doesn't have an associated playlist.",
+                      assignmentId));
+                } else {
+                  apiManager.setAuthSubToken(adminConfig.getYouTubeAuthSubToken());
+                  if (apiManager.insertVideoIntoPlaylist(playlistId, videoId)) {
+                    submission.setIsInPlaylist(true);
+                  }
                 }
               }
             }
           }
+  
+          pmfUtil.persistJdo(submission);
+  
+          emailUtil.sendNewSubmissionEmail(submission);
         }
-
-        pmfUtil.persistJdo(submission);
-
-        emailUtil.sendNewSubmissionEmail(submission);
-
-        JSONObject responseJsonObj = new JSONObject();
-        responseJsonObj.put("success", "true");
-
-        resp.setContentType("text/javascript");
-        resp.getWriter().println(responseJsonObj.toString());
       }
+      
+      JSONObject responseJsonObj = new JSONObject();
+      responseJsonObj.put("success", "true");
+
+      resp.setContentType("text/javascript");
+      resp.getWriter().println(responseJsonObj.toString());
     } catch (IllegalArgumentException e) {
       log.log(Level.FINE, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
