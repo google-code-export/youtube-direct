@@ -57,6 +57,8 @@ public class UserSessionManager {
   }
 
   public void sendSessionIdCookie(String sessionId, HttpServletResponse response) {
+    disableHttpCaching(response);
+    
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, sessionId);
     // cookie lives for a year
     cookie.setMaxAge(31536000);
@@ -64,13 +66,20 @@ public class UserSessionManager {
   }
 
   public void destroySessionIdCookie(HttpServletResponse response) {
+    disableHttpCaching(response);
+    
     Cookie cookie = new Cookie(USER_SESSION_ID_NAME, "");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
   }
+  
+  private void disableHttpCaching(HttpServletResponse response) {
+    response.setHeader("Expires", "Mon, 01 Jan 1990 00:00:00 GMT");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
+  }
 
   public boolean isSessionValid(UserSession session) {
-
     boolean valid = true;
 
     String authSubToken = session.getMetaData("authSubToken");
