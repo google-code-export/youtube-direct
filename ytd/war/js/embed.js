@@ -294,7 +294,7 @@ function existingVideoMainInit() {
     
     var ajaxCall = {};
     ajaxCall.type = 'POST';
-    ajaxCall.contentType = 'application/octet-stream';
+    ajaxCall.contentType = 'application/json';
     ajaxCall.url = '/SubmitExistingVideo?sessionId=' + sessionId;
     ajaxCall.data = JSON.stringify(jsonObj);
     ajaxCall.dataType = 'json'; // expecting back
@@ -493,7 +493,7 @@ function getUploadToken() {
 
   var ajaxCall = {};
   ajaxCall.type = 'POST';
-  ajaxCall.contentType = 'application/octet-stream';
+  ajaxCall.contentType = 'application/json';
   ajaxCall.url = '/GetUploadToken?sessionId=' + sessionId;
   ajaxCall.data = JSON.stringify(jsonObj);
   ajaxCall.dataType = 'json'; // expecting back
