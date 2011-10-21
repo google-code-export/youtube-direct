@@ -66,7 +66,7 @@ function init() {
 function highlightRequired() {
   jQuery.each(jQuery('.required'), function(index, value) {
     jQuery(value).after('&nbsp;<span class="smallRed">(required)</span>&nbsp;')
-  });  
+  });
 }
 
 function isRequiredFilled(sectionId) {
@@ -291,11 +291,12 @@ function existingVideoMainInit() {
     }
     
     var sessionId = window.URL_PARAMS.sessionId || '';
+    var namespace = window.URL_PARAMS.ns || '';
     
     var ajaxCall = {};
     ajaxCall.type = 'POST';
     ajaxCall.contentType = 'application/json';
-    ajaxCall.url = '/SubmitExistingVideo?sessionId=' + sessionId;
+    ajaxCall.url = '/SubmitExistingVideo?sessionId=' + sessionId + '&ns=' + namespace;
     ajaxCall.data = JSON.stringify(jsonObj);
     ajaxCall.dataType = 'json'; // expecting back
     ajaxCall.processData = false;
@@ -490,11 +491,12 @@ function getUploadToken() {
   }
   
   var sessionId = window.URL_PARAMS.sessionId || '';
+  var namespace = window.URL_PARAMS.ns || '';
 
   var ajaxCall = {};
   ajaxCall.type = 'POST';
   ajaxCall.contentType = 'application/json';
-  ajaxCall.url = '/GetUploadToken?sessionId=' + sessionId;
+  ajaxCall.url = '/GetUploadToken?sessionId=' + sessionId + '&ns=' + namespace;
   ajaxCall.data = JSON.stringify(jsonObj);
   ajaxCall.dataType = 'json'; // expecting back
   ajaxCall.processData = false;
@@ -527,7 +529,7 @@ function getUploadToken() {
     } else {
       jQuery('#token').val(uploadToken);
       jQuery('#uploadForm').get(0).action = uploadUrl + '?nexturl='
-          + getSelfUrl() + '/UploadResponseHandler?sessionId=' + sessionId;
+          + getSelfUrl() + '/UploadResponseHandler?sessionId=' + sessionId + '&ns=' + namespace;
       initiateUpload(jQuery('#uploadForm'));
     }
   };
