@@ -27,6 +27,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
@@ -103,11 +104,18 @@ public class UserSessionManager {
   }
 
   public UserSession save(UserSession session) {
-    return (UserSession) pmfUtil.persistJdo(session);
+    String oldNamespace = NamespaceManager.get();
+    NamespaceManager.set("");
+    UserSession userSession = (UserSession) pmfUtil.persistJdo(session);
+    NamespaceManager.set(oldNamespace);
+    return userSession;
   }
 
   public void delete(UserSession session) {
+    String oldNamespace = NamespaceManager.get();
+    NamespaceManager.set("");
     pmfUtil.removeJdo(session);
+    NamespaceManager.set(oldNamespace);
   }
 
   @SuppressWarnings("unchecked")
@@ -137,6 +145,9 @@ public class UserSessionManager {
 
   @SuppressWarnings("unchecked")
   public UserSession getUserSessionById(String id) {
+    String oldNamespace = NamespaceManager.get();
+    NamespaceManager.set("");
+    
     PersistenceManager pm = pmf.getPersistenceManager();
     UserSession userSession = null;
 
@@ -151,6 +162,8 @@ public class UserSessionManager {
     }
 
     pm.close();
+    
+    NamespaceManager.set(oldNamespace);
 
     return userSession;
   }

@@ -14,12 +14,8 @@
  */
 
 function Ytd() {
-    
+  // no-op
 }
-
-Ytd.prototype.isAuthReturn = function() {
-	return /#return-sessionId-(.+)/i.test(document.location.href);
-};
 
 Ytd.prototype.setAssignmentId = function(id) {
 	this.assignmentId = id;
@@ -28,6 +24,10 @@ Ytd.prototype.setAssignmentId = function(id) {
 Ytd.prototype.setArticleUrl = function(url) {
 	this.articleUrl = url;
 };
+
+Ytd.prototype.setNamespace = function(ns) {
+  this.namespace = ns;
+}
 
 Ytd.prototype.setYtdContainer = function(id, width, height) {
   
@@ -88,12 +88,19 @@ Ytd.prototype.embed = function() {
   }
 
 	this.articleUrl = this.articleUrl || document.location.href;
-	// remove hash link
-	this.articleUrl = this.articleUrl.replace(/#.+$/, '');	
+	// Remove hash fragment.
+	this.articleUrl = this.articleUrl.replace(/#.+$/, '');
 	
-	var iframeUrl = 'http://' + getScriptSelfDomain() + '/embed?articleUrl=' + escape(this.articleUrl)
-  		+ '&assignmentId=' + this.assignmentId + '&width=' + this.width + '&height=' + this.height + 
-  		'&sessionId=' + this.sessionId;
+	var namespacePath = '';
+	var namespaceParam = '';
+	if (this.namespace != null) {
+	  namespacePath = this.namespace + '/';
+	  namespaceParam = '&ns=' + this.namespace;
+	}
+	
+	var iframeUrl = 'http://' + getScriptSelfDomain() + '/' + namespacePath + 'embed?articleUrl=' +
+	    escape(this.articleUrl) + '&assignmentId=' + this.assignmentId + '&width=' + this.width +
+	    '&height=' + this.height + '&sessionId=' + this.sessionId + namespaceParam;
 	iframeElement.src = iframeUrl;
 	
 	var iframeContainer = document.getElementById(this.ytdContainer);

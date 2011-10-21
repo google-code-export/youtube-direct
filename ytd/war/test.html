@@ -28,6 +28,11 @@
           ytd.setArticleUrl(articleUrl);
         }
         
+        var namespace = $(document).getUrlParam('ns');
+        if (namespace) {
+          ytd.setNamespace(namespace);
+        }
+        
         ytd.ready();
       }
       

@@ -28,7 +28,10 @@ public enum CommandType {
   GET_YOUTUBE_PLAYLISTS(GetYouTubePlaylists.class),
   OPEN_CHANNEL_CONNECTION(OpenChannelConnection.class),
   GET_PICASA_ALBUMS(GetPicasaAlbums.class),
-  UPDATE_VIDEO_SUBMISSION_ASSIGNMENT(UpdateVideoSubmissionAssignment.class);
+  UPDATE_VIDEO_SUBMISSION_ASSIGNMENT(UpdateVideoSubmissionAssignment.class),
+  INVITE_EMAIL_TO_NAMESPACE(InviteEmailToNamespace.class),
+  GET_NAMESPACE_ADMINS(GetNamespaceAdmins.class),
+  REMOVE_EMAIL_FROM_NAMESPACE(RemoveEmailFromNamespace.class);
 
   private Class<? extends Command> clazz = null;
 

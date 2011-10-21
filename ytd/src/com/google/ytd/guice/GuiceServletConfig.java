@@ -6,6 +6,7 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.google.ytd.cron.PurgeBlobstorePhotos;
+import com.google.ytd.embed.AcceptInvite;
 import com.google.ytd.embed.AuthSubHandler;
 import com.google.ytd.embed.GetUploadToken;
 import com.google.ytd.embed.LogoutHandler;
@@ -38,13 +39,15 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         serve("/admin/VideoDownloadRedirect").with(VideoDownloadRedirect.class);
         
         // Frontend jsp embed endpoint
-        serve("/embed").with(EmbedJspForwarder.class);
+        serveRegex("/(\\w+/)?embed").with(EmbedJspForwarder.class);
+        
         serve("/logout").with(LogoutHandler.class);
         serve("/UploadResponseHandler").with(UploadResponseHandler.class);
         serve("/GetUploadToken").with(GetUploadToken.class);
         serve("/AuthsubHandler").with(AuthSubHandler.class);
         serve("/LogoutHandler").with(LogoutHandler.class);
         serve("/SubmitExistingVideo").with(SubmitExistingVideo.class);
+        serve("/AcceptInvite").with(AcceptInvite.class);
         serve("/admin/PersistAuthSubToken").with(PersistAuthSubToken.class);
         serve("/admin/PersistPicasaAuthSubToken").with(PersistPicasaAuthSubToken.class);
         serve("/admin/InsightDownloadRedirect").with(InsightDownloadRedirect.class);

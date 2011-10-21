@@ -23,8 +23,9 @@ admin.config.BASIC_PARAMS = ['developerKey', 'defaultTag', 'linkBackText',
                              'loginInstruction', 'postSubmitMessage', 'fromAddress',
                              'approvalEmailText', 'rejectionEmailText', 'privateKeyBytes', 
                              'maxPhotoSizeMb', 'recaptchaPrivateKey', 'recaptchaPublicKey'];
+admin.config.CHECKBOX_PARAMS = ['photoSubmissionEnabled', 'moderationEmail'];
 
-admin.config.init = function() {
+admin.config.init = function(namespace) {
   var saveButton = jQuery('#saveButton');     
   
   admin.config.getAdminConfig(function(data) {
@@ -66,11 +67,16 @@ admin.config.init = function() {
     admin.config.updateAdminConfig();
   });
   
+  var namespaceParam = '';
+  if (namespace != null && namespace != '') {
+    namespaceParam = '?ns=' + namespace;
+  }
+  
   jQuery('#authenticateButton').click(function() {
     // Hardcode http:// rather than allowing for https:// to ensure that we can get by with
     // registering http://APP.appspot.com/ as the prefix for AuthSub requests in the Google
     // Manage Your Domain pages.
-    var nextUrl = jQuery.sprintf('http://%s/admin/PersistAuthSubToken', window.location.host);
+    var nextUrl = jQuery.sprintf('http://%s/admin/PersistAuthSubToken' + namespaceParam, window.location.host);
     window.location = jQuery.sprintf('https://www.google.com/accounts/AuthSubRequest?next=%s&scope=http%3A%2F%2Fgdata.youtube.com&session=1&secure=0', nextUrl);
   });
   
@@ -78,7 +84,7 @@ admin.config.init = function() {
     // Hardcode http:// rather than allowing for https:// to ensure that we can get by with
     // registering http://APP.appspot.com/ as the prefix for AuthSub requests in the Google
     // Manage Your Domain pages.
-    var nextUrl = jQuery.sprintf('http://%s/admin/PersistPicasaAuthSubToken', window.location.host);
+    var nextUrl = jQuery.sprintf('http://%s/admin/PersistPicasaAuthSubToken' + namespaceParam, window.location.host);
     window.location = jQuery.sprintf('https://www.google.com/accounts/AuthSubRequest?next=%s&scope=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2F&session=1&secure=0', nextUrl);
   });
   
@@ -130,9 +136,9 @@ admin.config.updateAdminConfig = function() {
 	jQuery.each(admin.config.BASIC_PARAMS, function(i, param) {
 		params[param] = jQuery('#' + param).val();
 	});
-  
-	params.moderationEmail = jQuery('#moderationEmail').attr('checked');
-	params.photoSubmissionEnabled = jQuery('#photoSubmissionEnabled').attr('checked');
+	jQuery.each(admin.config.CHECKBOX_PARAMS, function(i, param) {
+    params[param] = jQuery('#' + param).is(':checked');
+  });
 
   var command = 'UPDATE_ADMIN_CONFIG';
 

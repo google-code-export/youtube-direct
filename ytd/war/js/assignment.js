@@ -26,10 +26,12 @@ admin.assign.pageIndex = 1;
 admin.assign.pageSize = 20; 
 admin.assign.filterType = 'ALL';
 
-admin.assign.init = function() {
+admin.assign.init = function(namespace) {
   admin.assign.initAssignmentGrid();  
   admin.assign.initControlPanel();  
   admin.assign.initAssignmentFilters();
+  
+  admin.assign.namespace = namespace;
   
   jQuery('#assignmentSearchText').keyup(function() {
     admin.assign.filterByText();
@@ -348,6 +350,9 @@ admin.assign.showEmbedCode = function(id) {
   code.push('  var ytd = new Ytd();');
   code.push(jQuery.sprintf('  ytd.setAssignmentId("%s");', entry.id));
   code.push(jQuery.sprintf('  ytd.setCallToAction("callToActionId-%s");', entry.id));
+  if (admin.assign.namespace != null && admin.assign.namespace != '') {
+    code.push(jQuery.sprintf('  ytd.setNamespace("%s");', admin.assign.namespace));
+  }
   code.push('  var containerWidth = 350;');
   code.push('  var containerHeight = 550;');
   code.push(jQuery.sprintf('  ytd.setYtdContainer("ytdContainer-%s", containerWidth, containerHeight);', entry.id));

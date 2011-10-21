@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
@@ -73,6 +74,15 @@ public class SubmitPhoto extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
+      // The namespace needs to be set explicitly here.
+      // Normally this is handled by the NamespaceFilter, but this servlet is called via a
+      // Blobstore redirect, and that doesn't go through the filter.
+      String namespace = req.getParameter("ns");
+      if (namespace == null) {
+        namespace = "";
+      }
+      NamespaceManager.set(namespace);
+      
       String assignmentId = req.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
         throw new IllegalArgumentException("'assignmentId' is null or empty.");
@@ -171,8 +181,9 @@ public class SubmitPhoto extends HttpServlet {
         }
         
         Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(withUrl("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
-            .countdownMillis(TASK_DELAY));
+        queue.add(withUrl("/tasks/MoveToPicasa").method(Method.POST)
+          .param("id", submissionId).param("ns", namespace)
+          .countdownMillis(TASK_DELAY));
       } else {
         LOG.warning("No valid photos found in upload.");
       }

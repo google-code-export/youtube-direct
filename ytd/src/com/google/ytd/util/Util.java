@@ -20,13 +20,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.users.User;
 import com.google.appengine.repackaged.com.google.common.util.Base64;
 import com.google.appengine.repackaged.com.google.common.util.Base64DecoderException;
 import com.google.gson.Gson;
@@ -40,13 +48,18 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Singleton;
 
+import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheException;
+import net.sf.jsr107cache.CacheManager;
+
 /**
  * Misc. utility methods.
  */
 @Singleton
 public class Util {
-  public static final String CLIENT_ID_PREFIX = "ytd24-";
+  public static final String CLIENT_ID_PREFIX = "ytd30-";
   private static final String DATE_TIME_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
+  private static Cache cache = null;
 
   public final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat(
       DATE_TIME_PATTERN).registerTypeAdapter(Text.class, new TextToStringAdapter())
@@ -186,5 +199,106 @@ public class Util {
     }
 
     return tempBuffer.toString();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public boolean isUserPermissionedForNamespace(User currentUser, String namespace) {
+    if (cache == null) {
+      try {
+        cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+      } catch (CacheException e) {
+        // no-op
+      }
+    }
+    
+    if (namespace == null) {
+      namespace = "";
+    }
+    
+    String oldNamespace = NamespaceManager.get();
+    NamespaceManager.set("nsadmin");
+    
+    List<User> usersForNamespace = null;
+    if (cache != null) {
+      usersForNamespace = (List<User>) cache.get(namespace);
+    }
+
+    if (usersForNamespace == null) {
+      usersForNamespace = new ArrayList<User>();
+
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Query query = new Query("NamespaceToUserMapping");
+      query.addFilter("namespace", FilterOperator.EQUAL, namespace);
+      query.addFilter("confirmed", FilterOperator.EQUAL, true);
+      PreparedQuery preparedQuery = datastore.prepare(query);
+      for (Entity entity : preparedQuery.asIterable()) {
+        usersForNamespace.add((User) entity.getProperty("user"));
+      }
+
+      if (cache != null) {
+        cache.put(namespace, usersForNamespace);
+      }
+    }
+
+    NamespaceManager.set(oldNamespace);
+    return usersForNamespace.contains(currentUser);
+  }
+  
+  public List<String> getAuthorizedNamespacesForUser(User user) {
+    String oldNamespace = NamespaceManager.get();
+    NamespaceManager.set("nsadmin");
+    
+    ArrayList<String> authorizedNamespaces = new ArrayList<String>();
+    
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("NamespaceToUserMapping");
+    query.addFilter("user", FilterOperator.EQUAL, user);
+    PreparedQuery preparedQuery = datastore.prepare(query);
+    for (Entity entity : preparedQuery.asIterable()) {
+      authorizedNamespaces.add((String) entity.getProperty("namespace"));
+    }
+    
+    NamespaceManager.set(oldNamespace);
+    return authorizedNamespaces;
+  }
+  
+  public boolean removeFromCache(String key) {
+    try {
+      Cache cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+      cache.remove(key);
+      return true;
+    } catch (CacheException e) {
+      return false;
+    }
+  }
+  
+  public String addNamespaceParamIfNeeded(String url) {
+    String namespace = NamespaceManager.get();
+    if (isNullOrEmpty(namespace)) {
+      return url;
+    } else {
+      return addNamespaceParam(url, namespace);
+    }
+  }
+  
+  public String addNamespaceParam(String url, String namespace) {
+    if (isNullOrEmpty(namespace)) {
+      return url;
+    }
+    
+    String[] parts = url.split("#", 2);
+    StringBuffer newUrl = new StringBuffer(parts[0]);
+    if (parts[0].contains("?")) {
+      newUrl.append("&ns=");
+    } else {
+      newUrl.append("?ns=");
+    }
+    newUrl.append(namespace);
+    
+    if (parts.length > 1) {
+      newUrl.append("#").append(parts[1]);
+    }
+    
+    return newUrl.toString();
   }
 }

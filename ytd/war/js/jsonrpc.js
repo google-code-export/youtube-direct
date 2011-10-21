@@ -18,6 +18,7 @@ var jsonrpc = jsonrpc || {};
 
 // JSON-RPC endpoint
 var JSON_RPC_URL = "/jsonrpc";
+var NS_REGEX = /ns=(\w+)/i;
 
 jsonrpc.makeRequest = function(command, params, callback) {  
   var postData = {};
@@ -28,6 +29,12 @@ jsonrpc.makeRequest = function(command, params, callback) {
   ajaxCall.type = 'POST';
   ajaxCall.contentType = 'application/json';
   ajaxCall.url = JSON_RPC_URL + '?cachebust=' + new Date().getTime();
+  
+  var regexResults = NS_REGEX.exec(window.location.search);
+  if (regexResults != null) {
+    ajaxCall.url += "&ns=" + regexResults[1];
+  }
+  
   ajaxCall.data = JSON.stringify(postData);
   ajaxCall.cache = false;
   ajaxCall.processData = false;

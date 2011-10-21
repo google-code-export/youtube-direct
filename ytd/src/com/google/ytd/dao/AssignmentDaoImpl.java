@@ -26,6 +26,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
@@ -51,9 +52,9 @@ public class AssignmentDaoImpl implements AssignmentDao {
   @Inject
   private PersistenceManagerFactory pmf;
   @Inject
-  private PicasaApiHelper picasaApiHelper;
-  @Inject
   private AdminConfigDao adminConfigDao;
+  @Inject
+  private PicasaApiHelper picasaApiHelper;
 
   @Inject
   public AssignmentDaoImpl(PersistenceManagerFactory pmf) {
@@ -167,25 +168,33 @@ public class AssignmentDaoImpl implements AssignmentDao {
       String assignmentId = assignment.getId().toString();
 
       Queue queue = QueueFactory.getDefaultQueue();
-
+      String namespace = NamespaceManager.get();
+      if (namespace == null) {
+        namespace = "";
+      }
       queue.add(withUrl("/tasks/CreatePlaylist").method(Method.POST)
-          .param("assignmentId", assignmentId).param("title", title).param("description",
-              description).param("channelId", channelId));
+          .param("assignmentId", assignmentId).param("title", title)
+          .param("description", description).param("channelId", channelId)
+          .param("ns", namespace));
 
+      picasaApiHelper.setAuthSubTokenFromConfig();
       if (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled()
           && picasaApiHelper.isAuthenticated()) {
-        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
-            .param("title", title).param("description", description).param("status",
-                ModerationStatus.APPROVED.toString()).param("channelId", channelId));
-        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
-            .param("title", title).param("description", description).param("status",
-                ModerationStatus.UNREVIEWED.toString()).param("channelId", channelId));
-        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST).param("assignmentId", assignmentId)
-            .param("title", title).param("description", description).param("status",
-                ModerationStatus.REJECTED.toString()).param("channelId", channelId));
+        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST)
+          .param("assignmentId", assignmentId).param("title", title)
+          .param("description", description).param("status", ModerationStatus.APPROVED.toString())
+          .param("channelId", channelId).param("ns", namespace));
+        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST)
+          .param("assignmentId", assignmentId).param("title", title)
+          .param("description", description).param("status", ModerationStatus.UNREVIEWED.toString())
+          .param("channelId", channelId).param("ns", namespace));
+        queue.add(withUrl("/tasks/CreateAlbum").method(Method.POST)
+          .param("assignmentId", assignmentId).param("title", title)
+          .param("description", description).param("status", ModerationStatus.REJECTED.toString())
+          .param("channelId", channelId).param("ns", namespace));
       } else {
-        log.info("Photo submissions are : " + (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled() ? "enabled" : "disabled"));
-        log.info("Picassa AuthSub token : " + (picasaApiHelper.isAuthenticated() ? "found" : "not found"));
+        log.info("Photo submissions are: " + (adminConfigDao.getAdminConfig().getPhotoSubmissionEnabled() ? "enabled" : "disabled"));
+        log.info("Picassa AuthSub token: " + (picasaApiHelper.isAuthenticated() ? "found" : "not found"));
         log.info("Not attempting to create Picasa albums, since no Picasa AuthSub token was "
             + "found in the config or photo submissions are disabled.");
       }

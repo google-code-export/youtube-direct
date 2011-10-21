@@ -17,17 +17,23 @@
 var admin = admin || {};
 
 jQuery(document).ready(function() {
+  var namespace = '';
+  var regexResults = /ns=(\w+)/i.exec(window.location.search);
+  if (regexResults != null) {
+    namespace = regexResults[1];
+  }
+  
 	if (window.isLoggedIn) {
 		jQuery('#tabs').tabs();
-		admin.init();
+		admin.init(namespace);
 	}
 });
 
-admin.init = function() {
-  admin.sub.init(); // from video_submission.js	
-  admin.photo.init(); // from photo_submission.js   
-  admin.assign.init(); // from assignments.js
-  admin.config.init(); //from configuration.js
+admin.init = function(namespace) {
+  admin.sub.init(namespace); // from video_submission.js	
+  admin.photo.init(namespace); // from photo_submission.js   
+  admin.assign.init(namespace); // from assignments.js
+  admin.config.init(namespace); //from configuration.js
 };
 
 admin.showMessage = function(message, elementToHide, displaySeconds) {

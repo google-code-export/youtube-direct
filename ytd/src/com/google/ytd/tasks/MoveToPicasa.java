@@ -16,6 +16,7 @@
 
 package com.google.ytd.tasks;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
@@ -61,9 +62,7 @@ public class MoveToPicasa extends HttpServlet {
     LOG.info("Starting up...");
 
     try {
-      if (!picasaApi.isAuthenticated()) {
-        throw new IllegalStateException("No Picasa AuthSub token found in the configuration.");
-      }
+      picasaApi.setAuthSubTokenFromConfig();      
 
       String photoSubmissionId = request.getParameter("id");
       if (util.isNullOrEmpty(photoSubmissionId)) {
@@ -113,10 +112,13 @@ public class MoveToPicasa extends HttpServlet {
           photoSubmissionDao.save(photoEntry);
 
           Queue queue = QueueFactory.getDefaultQueue();
-          queue.add(withUrl("/tasks/PicasaUpload")
-              .method(Method.POST)
-              .param("id", photoEntry.getId())
-              .countdownMillis(TASK_DELAY));
+          String namespace = NamespaceManager.get();
+          if (namespace == null) {
+            namespace = "";
+          }
+          queue.add(withUrl("/tasks/PicasaUpload").method(Method.POST)
+            .param("id", photoEntry.getId()).param("ns", namespace)
+            .countdownMillis(TASK_DELAY));
         }
       }
     } catch (IllegalArgumentException e) {
