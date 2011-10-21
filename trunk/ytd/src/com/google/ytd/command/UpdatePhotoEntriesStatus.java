@@ -38,6 +38,9 @@ public class UpdatePhotoEntriesStatus extends Command {
   @Override
   public JSONObject execute() {
     JSONObject json = new JSONObject();
+    
+    picasaApi.setAuthSubTokenFromConfig();
+    
     String ids = getParam("ids");
     String status = getParam("status");
 

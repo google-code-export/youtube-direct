@@ -242,9 +242,10 @@
 
   <%    
     if (adminConfigDao.allowPhotoSubmission() && photosEnabledForAssignment) {
+      String namespace = request.getParameter("ns");
   %>
 <div id="photoMain" style="display: none;">
-  <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl("/SubmitPhoto") %>" method="post" enctype="multipart/form-data">
+  <form id="photoUploadForm" action="<%= blobstoreService.createUploadUrl(util.addNamespaceParam("/SubmitPhoto", namespace)) %>" method="post" enctype="multipart/form-data">
 
   <%
     if (assignmentId.equals("undefined")) {

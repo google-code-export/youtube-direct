@@ -1,0 +1,34 @@
+body {
+  font-family: Helvetia, Arial, sans;
+}
+
+h3 {
+  margin-top: 50px;
+}
+
+#messageContainer {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: #eee;
+}
+
+#messageList {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.messageListWrapper {
+  margin: 0;
+  padding: 5px;
+}
+
+.message {
+  color: black;
+}
+
+.error {
+  color: red;
+}

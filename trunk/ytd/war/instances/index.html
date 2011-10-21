@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Instances Administration</title>
+    
+    <link type="text/css" href="/css/instances.css" rel="stylesheet"/>
+    
+    <script type="text/javascript" src="/js/ext/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="/js/ext/json2.js"></script>
+    <script type="text/javascript" src="/js/ext/jquery.sprintf.js"></script>
+
+    <script type="text/javascript" src="/js/jsonrpc.js"></script>
+    <script type="text/javascript" src="/js/instances.js"></script>
+  </head>
+  <body>
+    <div id="messageContainer">
+      <div id="messageList"></div>
+    </div>
+    <h1>Instances Administration</h1>
+    <p>YouTube Direct lets you set up optional instances with segregated data.</p>
+    <p>This requires only one App Engine deployment for multiple sets of admins.</p>
+    <h3>Create a New Instance / Invite an Admin to Existing Instance</h3>
+    <form>
+      <label for="new-namespace">Instance Name</label>
+      <input type="text" id="new-namespace"></input>
+      <label for="new-email">Admin Email</label>
+      <input type="text" id="new-email"></input>
+      <input type="button" id="invite" value="Invite"></input>
+    </form>
+    <h3>Existing Instances</h3>
+    <div id="instances"></div>
+  </body>
+</html>

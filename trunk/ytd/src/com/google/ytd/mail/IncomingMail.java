@@ -2,6 +2,7 @@
 
 package com.google.ytd.mail;
 
+import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
@@ -94,15 +95,21 @@ public class IncomingMail extends HttpServlet {
       }
 
       String assignmentId;
-      Pattern regex = Pattern.compile("/(\\d+)@");
+      String namespace = "";
+      Pattern regex = Pattern.compile("/(\\d+)(?:\\+(\\w+))?@");
       Matcher matcher = regex.matcher(request.getRequestURI());
       if (matcher.find()) {
         assignmentId = matcher.group(1);
+        if (matcher.groupCount() > 2) {
+          namespace = matcher.group(2);
+          NamespaceManager.set(namespace);
+        }
       } else {
         assignmentId = String.valueOf(assignmentDao.getDefaultMobileAssignmentId());
       }
       
-      LOG.info("Assignment id is " + assignmentId);
+      LOG.info(String.format("Assignment id is '%s' and namespace is '%s'.",
+        assignmentId, namespace));
       
       if (!assignmentDao.isAssignmentPhotoEnabled(assignmentId)) {
         throw new IllegalArgumentException(String.format("Assignment id '%s' either does not "
@@ -193,7 +200,7 @@ public class IncomingMail extends HttpServlet {
       
       Queue queue = QueueFactory.getDefaultQueue();
       queue.add(withUrl("/tasks/MoveToPicasa").method(Method.POST).param("id", submissionId)
-          .countdownMillis(TASK_DELAY));
+        .param("ns", namespace).countdownMillis(TASK_DELAY));
     } catch (MessagingException e) {
       LOG.log(Level.WARNING, "", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

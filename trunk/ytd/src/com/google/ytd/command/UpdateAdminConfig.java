@@ -92,8 +92,7 @@ public class UpdateAdminConfig extends Command {
     }
 
     if (moderationEmail != null) {
-      boolean isModerationEmailOn = moderationEmail.toLowerCase().equals("true");
-      adminConfig.setModerationEmail(isModerationEmailOn);
+      adminConfig.setModerationEmail(moderationEmail.equalsIgnoreCase("true"));
     }
 
     if (fromAddress != null) {
@@ -126,7 +125,7 @@ public class UpdateAdminConfig extends Command {
     }
 
     if (photoSubmissionEnabled != null) {
-      adminConfig.setPhotoSubmissionEnabled(photoSubmissionEnabled.equals("true"));
+      adminConfig.setPhotoSubmissionEnabled(photoSubmissionEnabled.equalsIgnoreCase("true"));
     }
 
     if (recaptchaPrivateKey != null) {

@@ -24,6 +24,8 @@ public class GetPicasaAlbums extends Command {
   @Override
   public JSONObject execute() throws JSONException {
     JSONObject json = new JSONObject();
+    
+    apiManager.setAuthSubTokenFromConfig();
 
     List<AlbumEntry> albumEntries = apiManager.getAllAlbums();
     if (albumEntries != null) {

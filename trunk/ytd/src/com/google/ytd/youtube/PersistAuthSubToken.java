@@ -84,7 +84,7 @@ public class PersistAuthSubToken extends HttpServlet {
 
       pm.makePersistent(adminConfig);
 
-      resp.sendRedirect("/admin#configuration");
+      resp.sendRedirect(util.addNamespaceParamIfNeeded("/admin#configuration"));
     } catch (IllegalArgumentException e) {
       log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

@@ -83,7 +83,7 @@ public class PersistPicasaAuthSubToken extends HttpServlet {
 
       pm.makePersistent(adminConfig);
 
-      resp.sendRedirect("/admin#configuration");
+      resp.sendRedirect(util.addNamespaceParamIfNeeded("/admin#configuration"));
     } catch (ResourceNotFoundException e) {
       log.log(Level.WARNING, "", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "No Picasa account found for the "

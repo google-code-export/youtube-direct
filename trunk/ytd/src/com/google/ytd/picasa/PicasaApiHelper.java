@@ -94,10 +94,7 @@ public class PicasaApiHelper {
     this.adminConfigDao = adminConfigDao;
     this.dataChunkDao = dataChunkDao;
 
-    String authSubToken = adminConfigDao.getAdminConfig().getPicasaAuthSubToken();
-    if (!util.isNullOrEmpty(authSubToken)) {
-      service.setAuthSubToken(authSubToken);
-    }
+    setAuthSubTokenFromConfig();
 
     service.setConnectTimeout(CONNECT_TIMEOUT);
     service.setReadTimeout(READ_TIMEOUT);
@@ -105,6 +102,13 @@ public class PicasaApiHelper {
 
   public boolean isAuthenticated() {
     return service.getAuthTokenFactory().getAuthToken() != null;
+  }
+  
+  public void setAuthSubTokenFromConfig() {
+    String authSubToken = adminConfigDao.getAdminConfig().getPicasaAuthSubToken();
+    if (!util.isNullOrEmpty(authSubToken)) {
+      service.setAuthSubToken(authSubToken);
+    }
   }
 
   public void setAuthSubToken(String token) {

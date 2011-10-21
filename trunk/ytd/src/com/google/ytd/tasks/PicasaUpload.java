@@ -46,18 +46,16 @@ public class PicasaUpload extends HttpServlet {
   @Inject
   private DataChunkDao dataChunkDao;
   @Inject
-  private PicasaApiHelper picasaApi;
-  @Inject
   private EmailUtil emailUtil;
+  @Inject
+  private PicasaApiHelper picasaApi;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     LOG.info("Starting up...");
 
     try {
-      if (!picasaApi.isAuthenticated()) {
-        throw new IllegalStateException("No Picasa AuthSub token found in the configuration.");
-      }
+      picasaApi.setAuthSubTokenFromConfig();
 
       String photoEntryId = request.getParameter("id");
       if (util.isNullOrEmpty(photoEntryId)) {

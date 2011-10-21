@@ -20,8 +20,7 @@ public class EmbedJspForwarder extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     try {
       getServletContext().setAttribute("pmf", pmf);
-
-      getServletContext().getRequestDispatcher("/embed.jsp").forward(req, resp);
+      getServletContext().getRequestDispatcher(req.getRequestURI() + ".jsp").forward(req, resp);
     } catch (ServletException e) {
       e.printStackTrace();
     }

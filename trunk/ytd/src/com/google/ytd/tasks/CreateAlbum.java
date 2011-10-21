@@ -42,15 +42,13 @@ public class CreateAlbum extends HttpServlet {
   private AssignmentDao assignmentDao;
   @Inject
   private PicasaApiHelper picasaApi;
-
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     LOG.info("Starting up...");
 
     try {
-      if (!picasaApi.isAuthenticated()) {
-        throw new IllegalArgumentException("No Picasa AuthSub token found in the configuration.");
-      }
+      picasaApi.setAuthSubTokenFromConfig();
       
       String assignmentId = request.getParameter("assignmentId");
       if (util.isNullOrEmpty(assignmentId)) {
