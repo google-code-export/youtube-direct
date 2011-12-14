@@ -13,9 +13,6 @@ Multi-instance mode relies on App Engine's support for [http://code.google.com/a
 ===Configuration Steps===
 
   # Ensure that you're starting with an up to date codebase. Either [http://code.google.com/p/youtube-direct/downloads/list download] a 3.0 (or higher) `tar.gz` archive or sync to the [http://code.google.com/p/youtube-direct/source/checkout SVN trunk] using an SVN client of your choice.
-
   # Rename the `web.xml` file (in the `war/WEB-INF/` directory of the downloaded code) to something else, like `web_ORIGINAL.xml`.
-
   # Rename the existing `web_INSTANCES.xml` file (in the same `war/WEB-INF` directory) to `web.xml`.
-
- # Follow the normal !YouTube Direct deployment and configuration process, as outlined in the GettingStarted guide.
+  # Follow the normal !YouTube Direct deployment and configuration process, as outlined in the GettingStarted guide.
