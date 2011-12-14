@@ -14,6 +14,9 @@ In addition to the material below, you might find the following video tutorial u
 
 <wiki:video url="http://www.youtube.com/watch?v=p1pxGe3zLXg"/>
 
+= Getting Help = 
+If you have any questions about setting up !YouTube Direct and have already read through the online guides, please let us know in the [https://groups.google.com/group/youtube-api-gdata YouTube API Developer Forum].
+
 = Details =
 
 ==`YouTube` Direct Getting Started Guide==
