@@ -89,7 +89,9 @@ Once videos have been submitted through the uploader, you can go back the YouTub
   * Note that in the "Configuration" tab, you can specify an address to receive an email whenever a new video is submitted.
 
 ===Embedding playlists===
-
 Once you have approved videos to display, you can go back to Assignment tab to get the code to display the playlist.
   * Select the Assignment, and click on the "Playlist" button.
   * Copy the code and paste it onto the page where you want to display the approved videos. Approved videos are automatically added to the playlist. 
+
+===Optional: Setting Up Multiple Instances===
+This is an advanced feature aimed at organizations who want to maintain a single App Engine deployment that hosts multiple logical instance of !YouTube Direct. The MultipleInstances guide has more details on setting things up.
