@@ -16,3 +16,5 @@ Multi-instance mode relies on App Engine's support for [http://code.google.com/a
   # Rename the `web.xml` file (in the `war/WEB-INF/` directory of the downloaded code) to something else, like `web_ORIGINAL.xml`.
   # Rename the existing `web_INSTANCES.xml` file (in the same `war/WEB-INF` directory) to `web.xml`.
   # Follow the normal !YouTube Direct deployment and configuration process, as outlined in the GettingStarted guide.
+  # After you've deployed your instance to App Engine, visit https://APP_ID.appspot.com/instances/ and log in using the Google Account that owns the App Engine instance.
+  # Create a new instance and permission at least one Google Account email address as an instance administrator. Repeat with additional instances and additional administrators as needed. _Note: The Google Account email address you provide in this step does not need to be permissioned as an owner of the App Engine instance. Any Google Account email address will work._
