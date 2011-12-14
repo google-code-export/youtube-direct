@@ -22,3 +22,7 @@ Multi-instance mode relies on App Engine's support for [http://code.google.com/a
   # For each new instance you add, create a directory under `war/` in your codebase that has the same name (i.e. `war/INSTANCE_NAME`), and add a copy of `embed.jsp` to the directory.
   # You can then customize that `war/INSTANCE_NAME/embed.jsp` file as you see fit. Each instance's web submission form can maintain its own look and feel based on the customized `embed.jsp` file.
   # Deploy your updated code to App Engine again. When an administrator visits the https://APP_ID.appspot.com/admin interface from now on, they'll automatically be routed to the correct instance's administrative interface and can moderate submissions for that instance.
+
+===Getting Help===
+
+You can ask questions about setting up multiple instances or about anything else related to YouTube Direct in our [https://groups.google.com/group/youtube-api-gdata YouTube API Developer's Forum].
