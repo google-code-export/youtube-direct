@@ -3,13 +3,13 @@
 
 =Release Notes=
 ===3.0-20111214===
-  * First release in the YouTube Direct 3.0 codebase.
+  * First release in the !YouTube Direct 3.0 codebase.
   * Support for multi-instance deployments. See MultipleInstances for more info.
   * Assignments can now be edited after creation (e.g. their associated playlist can be modified).
   * Many bug fixes and general updates to the code.
 
 ===2.0-20100422===
-  * First release in the YouTube Direct 2.0 codebase.
+  * First release in the !YouTube Direct 2.0 codebase.
   * Many changes -- see the [YTD20WhatsNew what's new in 2.0] guide.
 
 ===1.0-20100421===
@@ -17,7 +17,7 @@
   * Updated Java Google Data client libraries to 1.41.1 release.
 
 ===20100309===
-  * Modified the code that inserts videos into playlists. It should be more reliable for newly-uploaded videos that are not yet in YouTube's search index.
+  * Modified the code that inserts videos into playlists. It should be more reliable for newly-uploaded videos that are not yet in !YouTube's search index.
   * Changed the method that parses YouTube video ids from YouTube URLs to accommodate upcoming [http://apiblog.youtube.com/2010/03/upcoming-change-to-youtube-video-page.html changes].
   * There is basic support for adding captioning to submitted videos, via the "details" interface in the video submission tab. More information about the format for the captioning data can be found in the [http://code.google.com/apis/youtube/2.0/developers_guide_protocol_captions.html YouTube API developer's guide].
 
