@@ -1,0 +1,21 @@
+==Configuring YouTube Direct's Multi-Instance Mode==
+
+===Introduction===
+
+As of the 3.0 release, YouTube! Direct supports multiple, logically separated instances to be served out of a single App Engine deployment. Each logical instance has its own configuration, set of administrators, and potentially its own custom UI.
+
+While this functionality isn't for everyone, we envision service providers, agencies or consultants being able to deploy a single App Engine app and then set up multiple logical instances to handle different client deployments.
+
+===Technical Details===
+
+Multi-instance mode relies on App Engine's support for [http://code.google.com/appengine/docs/java/multitenancy/multitenancy.html namespaces and multitenancy]. A filter is defined in a special `web.xml` configuration file that automatically applies the correct namespace to a given incoming HTTP request.
+
+===Configuration Steps===
+
+  # Ensure that you're starting with an up to date codebase. Either [http://code.google.com/p/youtube-direct/downloads/list download] a 3.0 (or higher) `tar.gz` archive or sync to the [http://code.google.com/p/youtube-direct/source/checkout SVN trunk] using an SVN client of your choice.
+
+  # Rename the `web.xml` file (in the `war/WEB-INF/` directory of the downloaded code) to something else, like `web_ORIGINAL.xml`.
+
+  # Rename the existing `web_INSTANCES.xml` file (in the same `war/WEB-INF` directory) to `web.xml`.
+
+ # Follow the normal YouTube! Direct deployment and configuration process, as outlined in the GettingStarted guide.
