@@ -2,6 +2,12 @@
 #labels Featured
 
 =Release Notes=
+===3.0-20111214===
+  * First release in the YouTube Direct 3.0 codebase.
+  * Support for multi-instance deployments. See MultipleInstances for more info.
+  * Assignments can now be edited after creation (e.g. their associated playlist can be modified).
+  * Many bug fixes and general updates to the code.
+
 ===2.0-20100422===
   * First release in the YouTube Direct 2.0 codebase.
   * Many changes -- see the [YTD20WhatsNew what's new in 2.0] guide.
