@@ -361,7 +361,7 @@ function existingVideoMainInit() {
   jQuery("#submitDate").datepicker();
   
   jQuery('#addAnotherVideo').click(function() {
-    var videoUrlElements = jQuery(".inputBox.videoUrl");
+    var videoUrlElements = jQuery('.inputBox[name="videoUrl"]');
     var lastVideoUrlElement = jQuery(videoUrlElements.get(-1));
     var newVideoUrlElement = lastVideoUrlElement.clone();
     newVideoUrlElement.attr('id', 'videoUrl' + (videoUrlElements.length + 1));
