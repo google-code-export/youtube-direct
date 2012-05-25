@@ -23,6 +23,7 @@
 
   <ssl-enabled>true</ssl-enabled>
   <sessions-enabled>true</sessions-enabled>
+  <threadsafe>false</threadsafe>
 
 	<inbound-services>
     <service>mail</service>
