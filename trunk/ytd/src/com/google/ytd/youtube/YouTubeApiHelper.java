@@ -44,6 +44,7 @@ import com.google.gdata.data.youtube.PlaylistLinkFeed;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.VideoFeed;
+import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ContentType;
 import com.google.gdata.util.InvalidEntryException;
 import com.google.gdata.util.ServiceException;
@@ -174,6 +175,14 @@ public class YouTubeApiHelper {
       return profile.getUsername();
     } catch (MalformedURLException e) {
       log.log(Level.WARNING, "", e);
+    } catch (AuthenticationException e) {
+      if (e.getResponseBody().contains("NoLinkedYouTubeAccount")) {
+        throw new IllegalArgumentException("Your account is not linked to a YouTube account. " +
+        		"Please visit https://www.youtube.com/create_channel to link to a YouTube " +
+        		"account, and try again.");
+      } else {
+        throw(e);
+      }
     }
 
     return null;
