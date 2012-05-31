@@ -290,7 +290,7 @@ function existingVideoMainInit() {
       jsonObj.assignmentId = assignmentIdField.val();
     }
     
-    var sessionId = window.URL_PARAMS.sessionId || '';
+    var sessionId = getSessionId();
     var namespace = window.URL_PARAMS.ns || '';
     
     var ajaxCall = {};
@@ -490,7 +490,7 @@ function getUploadToken() {
     jsonObj.assignmentId = assignmentIdField.val();
   }
   
-  var sessionId = window.URL_PARAMS.sessionId || '';
+  var sessionId = getSessionId();
   var namespace = window.URL_PARAMS.ns || '';
 
   var ajaxCall = {};
@@ -660,4 +660,15 @@ function isValidEmail(email) {
 	var regex = /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 	return regex.test(email);
+}
+
+function getSessionId() {
+  // If multiple namespaces are being used, then the sessionId won't properly be set based on the
+  // cookie by ytd-embed.js, since it's not available by that script. So try to grab the sessionId
+  // from the cookie (which can be read by embed.js) now.
+  var matches = document.cookie.match(/YTD_SESSION_ID=([^;]+)/);
+  if (matches && matches.length > 1) {
+    return matches[1];
+  }
+  return window.URL_PARAMS.sessionId || '';
 }
