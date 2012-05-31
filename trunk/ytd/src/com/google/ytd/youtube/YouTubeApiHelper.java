@@ -178,7 +178,7 @@ public class YouTubeApiHelper {
     } catch (AuthenticationException e) {
       if (e.getResponseBody().contains("NoLinkedYouTubeAccount")) {
         throw new IllegalArgumentException("Your account is not linked to a YouTube account. " +
-        		"Please visit https://www.youtube.com/create_channel to link to a YouTube " +
+        		"Please visit https://www.youtube.com/signin?next=/create_channel to link to a YouTube " +
         		"account, and try again.");
       } else {
         throw(e);
