@@ -398,21 +398,11 @@ admin.assign.showPlaylistCode = function(id) {
     code = 'No playlist is associated with this assignment. If you just created the assignment, ' +
     	'try waiting a few seconds and then refeshing. Otherwise, please check the YouTube account ' +
       'settings in the "Configuration" tab.';
-  } else {
-    var width = 480;
-    var height = 385;
-    var playlistUrl = jQuery.sprintf('http://www.youtube.com/p/%s?fs=1', playlistId);
-    
+  } else {    
   	dialogContainer = jQuery('<pre class="preDialog">');
-  	
-    code.push(jQuery.sprintf('<object width="%d" height="%d">', width, height));
-    code.push(jQuery.sprintf('  <param name="movie" value="%s"></param>', playlistUrl));
-    code.push('  <param name="allowFullScreen" value="true"></param>');
-    code.push('  <param name="allowscriptaccess" value="always"></param>');
-    code.push(jQuery.sprintf('  <embed src="%s" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="%d" height="%d"></embed>', playlistUrl, width, height));
-    code.push('</object>');
-    
-    code = code.join('\n');
+     
+    code = jQuery.sprintf('<iframe width="480" height="385" src="//www.youtube.com/embed/?listType=playlist&list=%s&showinfo=1" frameborder="0" allowfullscreen></iframe>', playlistId);
+
     code = code.replace(/\</g,'&lt;');
     code = code.replace(/\>/g,'&gt;');
   }
